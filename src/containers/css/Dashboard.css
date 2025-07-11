@@ -1,0 +1,10 @@
+.dashboard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-logo{
+    width: 100%;
+    max-width: 1220px;
+}

@@ -1,10 +1,10 @@
-import Card from "../components/Card";
 import "./css/Dashboard.css";
+import Logo from "../assets/logos/logo.svg";
 
 const Dashboard = () => {
   return (
       <div className="dashboard">
-        <Card title="Taller Tractores" value="1.240" />
+        <img src={Logo} alt="" className="dashboard-logo"></img>
       </div>
   );
 };
