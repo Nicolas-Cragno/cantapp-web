@@ -1,0 +1,83 @@
+.mecanicos-container {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.mecanicos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mecanicos-title{
+    font-size: 1.7rem;
+}
+
+.mecanicos-options{
+    display: flex;
+    justify-content: right;
+}
+
+.mecanicos-busqueda {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  width: 50%;
+}
+
+.mecanicos-agregar {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.mecanicos-agregar:hover {
+  background-color: #1d4ed8;
+}
+
+.mecanicos-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  min-height: 60vh;
+}
+
+.loading-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  font-style: italic;
+  height: 50px;
+}
+
+.mecanico-item {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mecanico-nombre {
+  font-weight: 600;
+  color: #111827;
+}
+
+.mecanico-info {
+  color: #6b7280;
+}

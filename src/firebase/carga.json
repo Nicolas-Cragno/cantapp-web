@@ -1,0 +1,17 @@
+[
+{"dni" : 11981740,"apellido" : "OVIEDO","nombres" : "DANIEL ALBERTO ","empresa" : 30683612916, "estado" :1, "ingreso" :"2003-12-17T00:00:00.000Z","puesto" :"MECANICO","detalle" : "OFICIAL 1º"},
+{"dni" : 17614007,"apellido" : "CELIS","nombres" : "CARLOS ALBERTO","empresa" : 30683612916, "estado" :1, "ingreso" :"1988-03-01T00:00:00.000Z","puesto" :"MECANICO","detalle" : "ADMINISTRATIVO"},
+{"dni" : 17984699,"apellido" : "FRUM","nombres" : "JULIO GUILLERMO","empresa" : 30683612916, "estado" :1, "ingreso" :"2010-07-02T00:00:00.000Z","puesto" :"MECANICO","detalle" : "OFICIAL (CHAPISTA)"},
+{"dni" : 18124302,"apellido" : "RINCON","nombres" : "OSCAR ALFREDO","empresa" : 30683612916, "estado" :1, "ingreso" :"1995-01-02T00:00:00.000Z","puesto" :"MECANICO","detalle" : "ENCARGADO"},
+{"dni" : 18525232,"apellido" : "AMARFIL CASTRO","nombres" : "RAUL GERARDO","empresa" : 0, "estado" :1, "ingreso" :"2015-07-11T00:00:00.000Z","puesto" :"MECANICO","detalle" : "1/2 OF MECANICO 2"},
+{"dni" : 26478587,"apellido" : "INSAURRALDE","nombres" : "DAVID RENE","empresa" : 30683612916, "estado" :1, "ingreso" :"2020-09-01T00:00:00.000Z","puesto" :"MECANICO","detalle" : "GOMERO"},
+{"dni" : 27513610,"apellido" : "CARDOZO","nombres" : "ARSENIO ALCIDES","empresa" : 30644511304, "estado" :1, "ingreso" :"2021-04-12T00:00:00.000Z","puesto" :"MECANICO","detalle" : "1/2 OFICIAL"},
+{"dni" : 28595173,"apellido" : "PEREYRA","nombres" : "HUGO ALBERTO","empresa" : 30644511304, "estado" :1, "ingreso" :"2022-06-24T00:00:00.000Z","puesto" :"MECANICO","detalle" : "OFICIAL CHAPISTA"},
+{"dni" : 29017093,"apellido" : "QUIROGA","nombres" : "EMILIO FACUNDO","empresa" : 30683612916, "estado" :1, "ingreso" :"2011-02-02T00:00:00.000Z","puesto" :"MECANICO","detalle" : "MECANICO"},
+{"dni" : 34151873,"apellido" : "BALDOVINO","nombres" : "JONATHAN DARIO","empresa" : 30683612916, "estado" :1, "ingreso" :"2022-01-25T00:00:00.000Z","puesto" :"MECANICO","detalle" : "1/2 OFICIAL"},
+{"dni" : 38326783,"apellido" : "GARCIA","nombres" : "FRANCO ANDRES","empresa" : 30683612916, "estado" :1, "ingreso" :"2025-03-05T00:00:00.000Z","puesto" :"MECANICO","detalle" : "MEDIO OFICIAL"},
+{"dni" : 41109982,"apellido" : "MONTENEGRO","nombres" : "LUIS EXEQUIEL","empresa" : 30683612916, "estado" :1, "ingreso" :"2025-04-01T00:00:00.000Z","puesto" :"MECANICO","detalle" : "1/2 OFICIAL CHAPISTA"},
+{"dni" : 42956348,"apellido" : "BELTRAN","nombres" : "FRANCISCO ANDRES","empresa" : 30683612916, "estado" :1, "ingreso" :"2025-02-17T00:00:00.000Z","puesto" :"MECANICO","detalle" : "OF. ELECTRICISTA"},
+{"dni" : 43509530,"apellido" : "PALAVECINO","nombres" : "NICOLAS ALBERTO","empresa" : 30683612916, "estado" :1, "ingreso" :"2022-08-04T00:00:00.000Z","puesto" :"MECANICO","detalle" : "1/2 OF. MECANICO"}
+
+]
