@@ -1,9 +1,9 @@
 import '../assets/css/App.css';
 import Dashboard from '../containers/Dashboard.jsx';
 import Personal from '../containers/Personal.jsx';
-import Mecanicos from '../containers/Mecanicos.jsx';
-import ChoferesLarga from '../containers/ChoferesLarga.jsx';
-import ChoferesMovimiento from '../containers/ChoferesMovimiento.jsx';
+import Mecanicos from '../containers/tables/Mecanicos.jsx';
+import ChoferesLarga from '../containers/tables/ChoferesLarga.jsx';
+import ChoferesMovimiento from '../containers/tables/ChoferesMovimiento.jsx';
 import Flota from '../containers/Flota.jsx';
 import Layout from '../components/Layout';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';

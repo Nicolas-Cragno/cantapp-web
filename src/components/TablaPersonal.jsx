@@ -31,7 +31,7 @@ const TablaPersonal = (props) => {
 
       setPersonas(listadoPersonas);
     } catch (error) {
-      console.error("Error al obtener informacion desde db: ", error);
+      console.error("Error al  obtener informacion desde db: ", error);
     } finally {
         setLoading(false);
     }
@@ -48,26 +48,26 @@ const TablaPersonal = (props) => {
 });
 
   return (
-    <section className="fichapersonal-container">
-        <div className="fichapersonal-header">
-            <h1 className="fichapersonal-title">{title}</h1>
+    <section className="tablapersonal-container">
+        <div className="tablapersonal-header">
+            <h1 className="tablapersonal-title">{title}</h1>
             <input
             type="text"
             placeholder="Buscar por nombre..."
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            className="fichapersonal-busqueda"
+            className="tablapersonal-busqueda"
             />
         </div>
 
-        <ul className="fichapersonal-lista">
+        <ul className="tablapersonal-lista">
             {loading ? (
                 <li className="loading-item">Cargando datos...</li>
             ) : personasFiltradas.length > 0 ? (
                 personasFiltradas.map((persona) => (
-                <li key={persona.id} className="fichapersonal-item">
-                    <span className="fichapersonal-nombre">{persona.apellido}, {persona.nombres}</span>
-                    <span className="fichapersonal-info">{persona.detalle}</span>
+                <li key={persona.id} className="tablapersonal-item">
+                    <span className="tablapersonal-nombre">{persona.apellido}, {persona.nombres}</span>
+                    <span className="tablapersonal-info">{persona.detalle}</span>
                 </li>
                 ))
             ) : (
@@ -75,8 +75,8 @@ const TablaPersonal = (props) => {
             )}
         </ul>
 
-        <div className="fichapersonal-options">
-            <button className="fichapersonal-agregar">+ AGREGAR</button>
+        <div className="tablapersonal-options">
+            <button className="tablapersonal-agregar">+ AGREGAR</button>
         </div>
     </section>
   );

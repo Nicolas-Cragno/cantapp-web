@@ -1,26 +1,26 @@
-.fichapersonal-container {
+.tablapersonal-container {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.fichapersonal-header {
+.tablapersonal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.fichapersonal-title{
+.tablapersonal-title{
     font-size: 1.7rem;
 }
 
-.fichapersonal-options{
+.tablapersonal-options{
     display: flex;
     justify-content: right;
 }
 
-.fichapersonal-busqueda {
+.tablapersonal-busqueda {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -28,7 +28,7 @@
   width: 50%;
 }
 
-.fichapersonal-agregar {
+.tablapersonal-agregar {
   background-color: #2563eb;
   color: white;
   border: none;
@@ -39,11 +39,11 @@
   transition: background 0.3s ease;
 }
 
-.fichapersonal-agregar:hover {
+.tablapersonal-agregar:hover {
   background-color: #1d4ed8;
 }
 
-.fichapersonal-lista {
+.tablapersonal-lista {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -54,7 +54,7 @@
   min-height: 60vh;
 }
 
-.fichapersonal-item {
+.tablapersonal-item {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,7 +63,7 @@
   height: 50px;
 }
 
-.fichapersonal-item {
+.tablapersonal-item {
   background-color: white;
   border-radius: 1rem;
   padding: 1rem 1.5rem;
@@ -73,11 +73,11 @@
   align-items: center;
 }
 
-.fichapersonal-nombre {
+.tablapersonal-nombre {
   font-weight: 600;
   color: #111827;
 }
 
-.fichapersonal-info {
+.tablapersonal-info {
   color: #6b7280;
 }
