@@ -1,0 +1,16 @@
+[
+{ "dni" :25404315, "apellido": "ALBORNOZ","nombres": "LEANDRO HERNAN","detalle" : "PEPE","empresa" :30644511304,"estado" :1,"ingreso" : "2024-06-05T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :25499380, "apellido": "ALBORNOZ","nombres": "LEONARDO JAVIER","detalle" : "PEPE","empresa" :30644511304,"estado" :1,"ingreso" : "2025-05-05T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :37848291, "apellido": "BARRIOS","nombres": "JONATAN DAVID","detalle" : "PEPE","empresa" :30644511304,"estado" :1,"ingreso" : "2025-04-21T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :92557203, "apellido": "BENTANCOR RODRIGUEZ","nombres": "WILSON FERNANDO","detalle" : "BARRACAS","empresa" :30683612916,"estado" :1,"ingreso" : "2022-02-01T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :36733494, "apellido": "LERA","nombres": "MAXIMILIANO","detalle" : "USH","empresa" :30683612916,"estado" :1,"ingreso" : "2024-12-18T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :40625706, "apellido": "LOPEZ","nombres": "ENRIQUE SAMUEL","detalle" : "RGD","empresa" :30610890403,"estado" :1,"ingreso" : "2025-04-11T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :29490674, "apellido": "LOPEZ","nombres": "RODRIGO MARTIN","detalle" : "PEPE","empresa" :30683612916,"estado" :1,"ingreso" : "2025-04-01T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :25108480, "apellido": "MACIEL","nombres": "MIGUEL","detalle" : "PEPE","empresa" :30683612916,"estado" :1,"ingreso" : "2025-04-01T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :29378297, "apellido": "PATIÑO","nombres": "SERGIO ARIEL","detalle" : "RGD","empresa" :30610890403,"estado" :1,"ingreso" : "2024-05-20T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :17359238, "apellido": "PUSTERLA","nombres": "GUSTAVO ANGEL","detalle" : "FEDE","empresa" :30683612916,"estado" :1,"ingreso" : "2019-05-08T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :42879847, "apellido": "SALDIVIA","nombres": "GONZALO MARIANO","detalle" : "PEPE","empresa" :30644511304,"estado" :1,"ingreso" : "2025-06-09T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :38939018, "apellido": "SANCHEZ","nombres": "JORGE MAXIMILIANO","detalle" : "FEDE","empresa" :30644511304,"estado" :1,"ingreso" : "2025-05-05T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"},
+{ "dni" :22918221, "apellido": "SEMIROZUM","nombres": "JULIO CESAR","detalle" : "FEDE","empresa" :30683612916,"estado" :1,"ingreso" : "2015-04-14T00:00:000Z","puesto" : "CHOFER MOVIMIENTO"}
+
+]

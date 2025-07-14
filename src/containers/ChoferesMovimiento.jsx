@@ -1,9 +1,9 @@
-import FichaPersonal from "./FichaPersonal";
+import TablaPersonal from "../components/TablaPersonal";
 
 const ChoferesMovimiento = () => {
     return(
         <section className="choferes-movimiento">
-            <FichaPersonal tipoPuesto="CHOFER MOVIMIENTO"></FichaPersonal>
+            <TablaPersonal tipoPuesto="CHOFER MOVIMIENTO"></TablaPersonal>
         </section>
     );
 };

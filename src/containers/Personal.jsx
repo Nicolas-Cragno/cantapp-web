@@ -1,4 +1,4 @@
-import './css/Personal.css';
+import './css/Sections.css';
 import Card from "../components/Card";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
@@ -23,7 +23,7 @@ const Personal = () => {
                 setCantChoferesLarga(cantChoferesLarga.length);
                 setCantChoferesMovimiento(cantChoferesMov.length);
             } catch (error) {
-                console.error("Error al obtener datos de Firestore:", error);
+                console.error("Error al obtener datos de Firestore: ", error);
             } finally {
                 setLoading(false);
             }
@@ -33,8 +33,8 @@ const Personal = () => {
     }, []);
 
     return (
-        <section className="personal-container">
-            <div className="personal-cards">
+        <section className="section-container">
+            <div className="section-cards">
                 <Card
                     title="Mecánicos"
                     value={loading ? "Cargando datos..." : `${cantMecanicos} activos`}
@@ -47,7 +47,7 @@ const Personal = () => {
                 />
                 <Card
                     title="Choferes movimiento"
-                    value={loading ? "Cargando datos..." : `${cantChoferesLarga} activos`}
+                    value={loading ? "Cargando datos..." : `${cantChoferesMovimiento} activos`}
                     route="/choferes-movimiento"
                 />
             </div>

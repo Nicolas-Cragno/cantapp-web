@@ -1,9 +1,9 @@
-import FichaPersonal from "./FichaPersonal";
+import TablaPersonal from "../components/TablaPersonal";
 
 const ChoferesLarga = () => {
     return(
         <section className="choferes-larga">
-            <FichaPersonal tipoPuesto="CHOFER LARGA DISTANCIA"></FichaPersonal>
+            <TablaPersonal tipoPuesto="CHOFER LARGA DISTANCIA"></TablaPersonal>
         </section>
     );
 };

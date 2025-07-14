@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
-import "./css/FichaPersonal.css";
+import "./css/TablaPersonal.css";
 
-const FichaPersonal = (props) => {
+const TablaPersonal = (props) => {
     const { tipoPuesto } = props;
     const [personas, setPersonas] = useState([]); // data del listado
     const [filtro, setFiltro] = useState(""); // filtro del listado
@@ -76,10 +76,10 @@ const FichaPersonal = (props) => {
         </ul>
 
         <div className="fichapersonal-options">
-            <button className="fichapersonal-agregar">+ Agregar {tipoPuesto}</button>
+            <button className="fichapersonal-agregar">+ AGREGAR</button>
         </div>
     </section>
   );
 };
 
-export default FichaPersonal;
+export default TablaPersonal;

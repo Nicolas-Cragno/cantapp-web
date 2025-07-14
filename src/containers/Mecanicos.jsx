@@ -1,10 +1,10 @@
-import FichaPersonal from "./FichaPersonal";
+import TablaPersonal from "../components/TablaPersonal";
 
 const Mecanicos = () => {
 
   return (
     <section className="mecanicos">
-        <FichaPersonal tipoPuesto="MECANICO"></FichaPersonal>
+        <TablaPersonal tipoPuesto="MECANICO"></TablaPersonal>
     </section>
   );
 };
