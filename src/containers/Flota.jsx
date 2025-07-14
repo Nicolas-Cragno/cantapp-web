@@ -58,6 +58,11 @@ const Flota = () => {
                     value={loading ? "Cargando datos..." : `${cantFurgones} activos`}
                     route="/tractores"
                 />
+                <Card 
+                    title="Utilitarios"
+                    value={loading ? "Cargando datos..." : `${cantFurgones} activos`}
+                    route="/tractores"
+                />
             </div>
         </section>
     )
