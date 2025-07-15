@@ -2,6 +2,7 @@ import './css/Sections.css';
 import Card from "../components/Card";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
+import { FaSpinner } from 'react-icons/fa';
 import { db } from "../firebase/firebaseConfig";
 
 const Personal = () => {
@@ -37,17 +38,17 @@ const Personal = () => {
             <div className="section-cards">
                 <Card
                     title="Mecánicos"
-                    value={loading ? "Cargando datos..." : `${cantMecanicos} activos`}
+                    value={loading ? <FaSpinner className='spinner'/> : `${cantMecanicos}`}
                     route="/mecanicos"
                 />
                 <Card
                     title="Choferes larga dist."
-                    value={loading ? "Cargando datos..." : `${cantChoferesLarga} activos`}
+                    value={loading ? <FaSpinner className='spinner'/> : `${cantChoferesLarga}`}
                     route="/choferes-larga"
                 />
                 <Card
                     title="Choferes movimiento"
-                    value={loading ? "Cargando datos..." : `${cantChoferesMovimiento} activos`}
+                    value={loading ? <FaSpinner className='spinner'/> : `${cantChoferesMovimiento}`}
                     route="/choferes-movimiento"
                 />
             </div>

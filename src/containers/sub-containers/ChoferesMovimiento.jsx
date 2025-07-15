@@ -1,4 +1,4 @@
-import TablaPersonal from "../../components/TablaPersonal";
+import TablaPersonal from "../../components/tablas/TablaPersonal";
 
 const ChoferesMovimiento = () => {
     return(

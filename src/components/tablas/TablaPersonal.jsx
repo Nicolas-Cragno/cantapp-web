@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase/firebaseConfig";
-import "./css/TablaPersonal.css";
+import { FaSpinner } from "react-icons/fa";
+import { db } from "../../firebase/firebaseConfig";
+import FichaPersonal from "../fichas/FichaPersonal";
+import "../css/Tables.css";
 
 const TablaPersonal = (props) => {
     const { tipoPuesto } = props;
     const [personas, setPersonas] = useState([]); // data del listado
     const [filtro, setFiltro] = useState(""); // filtro del listado
     const [loading, setLoading] = useState(true); // loading del listado
+    const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
 
     const titles = {
       "EMPLEADO": "EMPLEADOS",
@@ -18,9 +21,17 @@ const TablaPersonal = (props) => {
       "ADMINISTRATIVO": "ADMINISTRATIVOS"
     }
 
+    const handleClickPersona = (persona) => { // abrir ficha
+      setPersonaSeleccionada(persona);
+    }
+
+    const cerrarModal = () => { // cerrar ficha
+      setPersonaSeleccionada(null);
+    }
+
     const title = titles[tipoPuesto] || "EMPLEADO";
 
-  useEffect(() => {
+  useEffect(() => { // listado de personal
   const obtenerDatos = async () => {
     setLoading(true);
     try {
@@ -48,26 +59,26 @@ const TablaPersonal = (props) => {
 });
 
   return (
-    <section className="tablapersonal-container">
-        <div className="tablapersonal-header">
-            <h1 className="tablapersonal-title">{title}</h1>
+    <section className="table-container">
+        <div className="table-header">
+            <h1 className="table-title">{title}</h1>
             <input
             type="text"
             placeholder="Buscar por nombre..."
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            className="tablapersonal-busqueda"
+            className="table-busqueda"
             />
         </div>
 
-        <ul className="tablapersonal-lista">
+        <ul className="table-lista">
             {loading ? (
-                <li className="loading-item">Cargando datos...</li>
+                <li className="loading-item"><FaSpinner className='spinner'/></li>
             ) : personasFiltradas.length > 0 ? (
                 personasFiltradas.map((persona) => (
-                <li key={persona.id} className="tablapersonal-item">
-                    <span className="tablapersonal-nombre">{persona.apellido}, {persona.nombres}</span>
-                    <span className="tablapersonal-info">{persona.detalle}</span>
+                  <li key={persona.id} className="table-item" onClick={() => handleClickPersona(persona)}>
+                  <span className="table-nombre">{persona.apellido}, {persona.nombres}</span>
+                    <span className="table-info">{persona.detalle}</span>
                 </li>
                 ))
             ) : (
@@ -75,8 +86,12 @@ const TablaPersonal = (props) => {
             )}
         </ul>
 
-        <div className="tablapersonal-options">
-            <button className="tablapersonal-agregar">+ AGREGAR</button>
+        {personaSeleccionada && (
+          <FichaPersonal persona={personaSeleccionada} onClose={cerrarModal}/>
+        )}
+
+        <div className="table-options">
+            <button className="table-agregar">+ AGREGAR</button>
         </div>
     </section>
   );

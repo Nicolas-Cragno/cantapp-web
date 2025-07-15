@@ -2,6 +2,7 @@ import './css/Sections.css';
 import Card from "../components/Card";
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
+import { FaSpinner } from 'react-icons/fa';
 import { db } from "../firebase/firebaseConfig";
 
 const Flota = () => {
@@ -69,18 +70,18 @@ const Flota = () => {
             <div className='section-cards'>
                 <Card 
                     title="Tractores"
-                    value={loading ? "Cargando datos..." : `${cantTractores} activos`}
+                    value={loading ? <FaSpinner className='spinner'/> : `${cantTractores}`}
                     route="/tractores"
                 />
                 <Card 
                     title="Furgones"
-                    value={loading ? "Cargando datos..." : `${cantFurgones} activos`}
-                    route="/tractores"
+                    value={loading ? <FaSpinner className='spinner'/> : `${cantFurgones}`}
+                    route="/furgones"
                 />
                 <Card 
                     title="Utilitarios"
-                    value={loading ? "Cargando datos..." : `${cantUtilitarios} activos`}
-                    route="/tractores"
+                    value={loading ? <FaSpinner className='spinner'/> : `${cantUtilitarios}`}
+                    route="/utilitarios"
                 />
             </div>
         </section>

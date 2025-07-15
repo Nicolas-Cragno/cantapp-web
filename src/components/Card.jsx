@@ -5,7 +5,8 @@ const Card = ({ title, value, route }) => {
     <div className="card">
       <a href={route} className="card-route">
         <h3 className="card-title">{title}</h3>
-        <p className="card-value">{value}</p>
+        <p className="card-value big">{value} activos</p>
+        <p className="card-value small">{value}</p>
       </a>
     </div>
   );

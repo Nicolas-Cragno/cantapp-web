@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FaHome, FaUser, FaTruck, FaBars } from "react-icons/fa";
 import { GiAutoRepair } from "react-icons/gi";
+import { FaSignOutAlt } from "react-icons/fa";
+import { BsFillFuelPumpFill } from "react-icons/bs";
 import "./css/SideBar.css";
 
 const SideBar = () => {
@@ -32,9 +34,17 @@ const SideBar = () => {
           {!collapsed && <span>Flota</span>}
         </a>
         <br/>
+        <a href="/porteria" className="nav-link">
+          <FaSignOutAlt className="nav-icon"/>
+          {!collapsed && <span>Porteria</span>}
+        </a>
         <a href="/taller" className="nav-link">
           <GiAutoRepair className="nav-icon" />
           {!collapsed && <span>Taller</span>}
+        </a>
+        <a href="/combustible" className="nav-link">
+          <BsFillFuelPumpFill className="nav-icon"/>
+          {!collapsed && <span>Control</span>}
         </a>
       </nav>
     </aside>

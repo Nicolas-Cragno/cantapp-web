@@ -1,26 +1,26 @@
-.tablapersonal-container {
+.table-container {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.tablapersonal-header {
+.table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.tablapersonal-title{
+.table-title{
     font-size: 1.7rem;
 }
 
-.tablapersonal-options{
+.table-options{
     display: flex;
     justify-content: right;
 }
 
-.tablapersonal-busqueda {
+.table-busqueda {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -28,7 +28,7 @@
   width: 50%;
 }
 
-.tablapersonal-agregar {
+.table-agregar {
   background-color: #2563eb;
   color: white;
   border: none;
@@ -39,22 +39,22 @@
   transition: background 0.3s ease;
 }
 
-.tablapersonal-agregar:hover {
+.table-agregar:hover {
   background-color: #1d4ed8;
 }
 
-.tablapersonal-lista {
+.table-lista {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
   gap: 1rem;
-  max-height: 60vh;
+  max-height: 50vh;
   overflow-y: auto;
-  min-height: 60vh;
+  min-height: 50vh;
 }
 
-.tablapersonal-item {
+.table-item {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,7 +63,7 @@
   height: 50px;
 }
 
-.tablapersonal-item {
+.table-item {
   background-color: white;
   border-radius: 1rem;
   padding: 1rem 1.5rem;
@@ -73,11 +73,31 @@
   align-items: center;
 }
 
-.tablapersonal-nombre {
+.table-nombre {
   font-weight: 600;
   color: #111827;
 }
 
-.tablapersonal-info {
+.table-info {
   color: #6b7280;
+}
+
+@media (max-width: 640px){
+  .table-title{
+    display: none;
+  }
+  .table-info{
+    display: none;
+  }
+  .table-busqueda {
+    width: 100%;
+  }
+  .table-lista {
+    gap: 0.5rem;
+  }
+  .table-item {
+    padding: 1rem 0.1rem;
+    display: flex;
+    justify-content: center;
+  }
 }
