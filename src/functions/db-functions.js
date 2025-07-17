@@ -1,5 +1,6 @@
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
+import { obtenerCuitPorNombre } from "./data-functions";
 
 // Listar dnis (si hay cache y no hay modificaciones se lista desde ahi)
 export const listarColeccion = async (nombreColeccion, usarCache = true) => {
@@ -18,6 +19,13 @@ export const listarColeccion = async (nombreColeccion, usarCache = true) => {
     return [];
   }
 };
+
+export const listarPorEmpresa = async (nombreColeccion, empresa, usarCache = true) => {
+  let cuit = Number(obtenerCuitPorNombre(empresa));
+  const datos = await listarColeccion(nombreColeccion, usarCache);
+  const datosFiltrados = datos.filter(item => item.empresa === cuit);
+  return datosFiltrados;
+}
 
 // Agregar dni y actualizar cache
 export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {

@@ -4,6 +4,7 @@ import { listarColeccion } from "../../functions/db-functions";
 import FichaPersonal from "../fichas/FichaPersonal";
 import FormularioPersona from "../forms/FormularioPersona";
 import "../css/Tables.css";
+import { nombreEmpresa } from "../../functions/data-functions";
 
 const TablaPersonal = ({ tipoPuesto }) => {
   const [personas, setPersonas] = useState([]);
@@ -85,7 +86,7 @@ const TablaPersonal = ({ tipoPuesto }) => {
               <span className="table-nombre">
                 <strong>{persona.apellido}</strong> {persona.nombres}
               </span>
-              <span className="table-info">{persona.detalle}</span>
+              <span className="table-info">{nombreEmpresa(persona.empresa)}</span>
             </li>
           ))
         ) : (

@@ -9,7 +9,7 @@ export function nombreEmpresa(cuit) {
 
 // Cuit de empresas
 export const obtenerCuitPorNombre = (nombreEmpresa) => {
-  if (!nombreEmpresa || typeof nombreEmpresa !== "string") return "SIN ASIGNAR";
+  if (!nombreEmpresa || typeof nombreEmpresa !== "string") return 0;
 
   for (const [cuit, nombre] of Object.entries(empresas)) {
     if (nombre === nombreEmpresa.trim().toUpperCase()) {
@@ -17,7 +17,7 @@ export const obtenerCuitPorNombre = (nombreEmpresa) => {
     }
   }
 
-  return "SIN ASIGNAR";
+  return 0;
 };
 
 // Buscar DNI 

@@ -30,7 +30,7 @@ const Personal = () => {
   }, []);
 
   return (
-    <section className="section-container">
+    <section className="section-container page">
       <div className="section-cards">
         <Card
           title="Mecánicos"
