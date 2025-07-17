@@ -1,5 +1,5 @@
-/* Modal.css */
-.modal-overlay {
+/* ficha.css */
+.ficha {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
   text-align: left;
 }
 
-.modal-content {
+.ficha-content {
   background: #fff;
   padding: 2rem;
   border-radius: 10px;
@@ -23,7 +23,7 @@
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-.modal-close {
+.ficha-close {
   position: absolute;
   top: 0.5rem;
   right: 0.8rem;
@@ -52,7 +52,7 @@
   display: block;
 }
 
-.detalle{
+.puesto{
     text-align: right;
     margin-top: -0.7rem;
 }

@@ -1,23 +1,17 @@
 // src/components/PersonasList.js
-import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase/firebaseConfig";
+import { useEffect, useState } from "react";
+import { listarColeccion } from "../functions/db-functions"; // o el path correcto
 
 const PersonasList = () => {
   const [personas, setPersonas] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "personas"));
-        const docs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setPersonas(docs);
-      } catch (error) {
-        console.error("Error al obtener personas:", error);
-      }
+    const fetchPersonas = async () => {
+      const datos = await listarColeccion("personas"); // Usa cache si existe
+      setPersonas(datos);
     };
 
-    fetchData();
+    fetchPersonas();
   }, []);
 
   return (

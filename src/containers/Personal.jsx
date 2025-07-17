@@ -1,59 +1,55 @@
 import './css/Sections.css';
 import Card from "../components/Card";
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { listarColeccion } from "../functions/db-functions";
 import { FaSpinner } from 'react-icons/fa';
-import { db } from "../firebase/firebaseConfig";
 
 const Personal = () => {
-    const [cantMecanicos, setCantMecanicos] = useState(0);
-    const [cantChoferesLarga, setCantChoferesLarga] = useState(0);
-    const [cantChoferesMovimiento, setCantChoferesMovimiento] = useState(0);
-    const [loading, setLoading] = useState(true);
+  const [cantMecanicos, setCantMecanicos] = useState(0);
+  const [cantChoferesLarga, setCantChoferesLarga] = useState(0);
+  const [cantChoferesMovimiento, setCantChoferesMovimiento] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, "personas"));
-                const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const personas = await listarColeccion("personas");
 
-                const cantMecanicos = data.filter(mec => mec.puesto === "MECANICO");
-                const cantChoferesLarga = data.filter(cl => cl.puesto === "CHOFER LARGA DISTANCIA")
-                const cantChoferesMov = data.filter(cm => cm.puesto === "CHOFER MOVIMIENTO");
-                setCantMecanicos(cantMecanicos.length);
-                setCantChoferesLarga(cantChoferesLarga.length);
-                setCantChoferesMovimiento(cantChoferesMov.length);
-            } catch (error) {
-                console.error("Error al obtener datos de Firestore: ", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        setCantMecanicos(personas.filter(p => p.puesto === "MECANICO").length);
+        setCantChoferesLarga(personas.filter(p => p.puesto === "CHOFER LARGA DISTANCIA").length);
+        setCantChoferesMovimiento(personas.filter(p => p.puesto === "CHOFER MOVIMIENTO").length);
+      } catch (error) {
+        console.error("Error al obtener datos con caché: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchData();
-    }, []);
+    fetchData();
+  }, []);
 
-    return (
-        <section className="section-container">
-            <div className="section-cards">
-                <Card
-                    title="Mecánicos"
-                    value={loading ? <FaSpinner className='spinner'/> : `${cantMecanicos}`}
-                    route="/mecanicos"
-                />
-                <Card
-                    title="Choferes larga dist."
-                    value={loading ? <FaSpinner className='spinner'/> : `${cantChoferesLarga}`}
-                    route="/choferes-larga"
-                />
-                <Card
-                    title="Choferes movimiento"
-                    value={loading ? <FaSpinner className='spinner'/> : `${cantChoferesMovimiento}`}
-                    route="/choferes-movimiento"
-                />
-            </div>
-        </section>
-    );
+  return (
+    <section className="section-container">
+      <div className="section-cards">
+        <Card
+          title="Mecánicos"
+          value={loading ? <FaSpinner className='spinner' /> : `${cantMecanicos}`}
+          route="/mecanicos"
+        />
+        <Card
+          title="Choferes larga dist."
+          value={loading ? <FaSpinner className='spinner' /> : `${cantChoferesLarga}`}
+          route="/choferes-larga"
+        />
+        <Card
+          title="Choferes movimiento"
+          value={loading ? <FaSpinner className='spinner' /> : `${cantChoferesMovimiento}`}
+          route="/choferes-movimiento"
+        />
+      </div>
+    </section>
+  );
 };
 
 export default Personal;

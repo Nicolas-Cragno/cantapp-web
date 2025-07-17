@@ -1,0 +1,105 @@
+.form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: right;
+  align-items: top;
+  z-index: 999;
+  text-align: left;
+}
+
+/* Contenedor del modal */
+.form-content {
+  background-color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Estilos para los inputs y labels */
+.form-content form label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-content form input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-content form select {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-content form textarea{
+    width: 100%;
+    height: 7rem;
+  padding: 0.4rem 0.6rem;
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  resize: none; /* El usuario puede agrandarlo */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Botones del modal */
+.form-buttons {
+    margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-buttons button {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Botón guardar */
+.form-buttons button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+}
+
+.form-buttons button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Botón cancelar */
+.form-buttons button[type="button"] {
+  background-color: #ccc;
+  color: #333;
+}
+
+.form-buttons button[type="button"]:hover {
+  background-color: #999;
+}
+
+.input-readonly {
+  background-color: #f0f0f0;
+  color: #555;
+  cursor: not-allowed;
+}
