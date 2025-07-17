@@ -1,23 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import '../css/Forms.css';
-import puestos from "../../functions/data/puestos.json";
 import empresas from "../../functions/data/empresas.json";
 import { verificarDni, agregar } from "../../functions/db-functions";
+import { modificar } from "../../functions/db-functions"; // Asegurate de que esté exportado
+import { nombreEmpresa, obtenerCuitPorNombre } from "../../functions/data-functions";
 
-const FormularioPersona = ({ tipoPuesto, onClose, onGuardar }) => {
-  const [documento, setDocumento] = useState("");
+const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) => {
+  const [dni, setDni] = useState("");
   const [apellido, setApellido] = useState("");
   const [nombres, setNombres] = useState("");
-  const [empresa, setEmpresa] = useState("");
+  const [empresa, setEmpresa] = useState("SIN ASIGNAR");
   const [detalle, setDetalle] = useState("");
   const [puesto] = useState(tipoPuesto);
   const [loading, setLoading] = useState(false);
 
+  const modoEdicion = !!persona;
+
+  useEffect(() => {
+    if (modoEdicion && persona) {
+      setDni(persona.dni);
+      setApellido(persona.apellido);
+      setNombres(persona.nombres);
+      setEmpresa(nombreEmpresa(persona.empresa));
+      setDetalle(persona.detalle);
+    }
+  }, [modoEdicion, persona]);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validaciones básicas
-    if (!apellido.trim() || !nombres.trim() || !documento.trim()) {
+    if (!apellido.trim() || !nombres.trim() || !dni.trim()) {
       alert("Complete los datos obligatorios.");
       return;
     }
@@ -25,27 +38,44 @@ const FormularioPersona = ({ tipoPuesto, onClose, onGuardar }) => {
     setLoading(true);
 
     try {
-      const existeDni = await verificarDni(documento);
+      if (modoEdicion) {
+        const personaEditada = {
+          dni,
+          apellido: apellido.toUpperCase(),
+          nombres: nombres.toUpperCase(),
+          empresa: obtenerCuitPorNombre(empresa?.toUpperCase() || "") || "",
+          puesto,
+          detalle: detalle.toUpperCase(),
+          ingreso: persona.ingreso || new Date()
+        };
 
-      if (existeDni) {
-        alert("Ya existe una persona con ese DNI.");
-        setLoading(false);
-        return;
+        await modificar("personas", persona.dni, personaEditada);
+        if (onGuardar) onGuardar(personaEditada);
+
+      } else {
+        const existeDni = await verificarDni(dni);
+
+        if (existeDni) {
+          alert("Ya existe una persona con ese DNI.");
+          setLoading(false);
+          return;
+        }
+
+        const nuevaPersona = {
+          dni,
+          apellido: apellido.toUpperCase(),
+          nombres: nombres.toUpperCase(),
+          empresa: obtenerCuitPorNombre(empresa),
+          puesto,
+          detalle: detalle.toUpperCase(),
+          ingreso: new Date()
+        };
+
+        const personaAgregada = await agregar("personas", nuevaPersona, dni);
+        if (onGuardar) onGuardar(personaAgregada);
       }
 
-      const nuevaPersona = {
-        documento,
-        apellido: apellido.toUpperCase(),
-        nombres: nombres.toUpperCase(),
-        empresa,
-        puesto,
-        detalle: detalle.toUpperCase(),
-        ingreso: new Date()
-      };
-
-      const personaAgregada = await agregar("personas", nuevaPersona, documento); // Esperar respuesta de Firestore
-      if (onGuardar) onGuardar(personaAgregada); // informar al padre
-      onClose(); // cerrar modal
+      onClose();
 
     } catch (error) {
       alert("Ocurrió un error al guardar la persona. Revisá la consola.");
@@ -58,7 +88,7 @@ const FormularioPersona = ({ tipoPuesto, onClose, onGuardar }) => {
   return (
     <div className="form">
       <div className="form-content">
-        <h2>NUEVO {tipoPuesto}</h2>
+        <h2>{modoEdicion ? "MODIFICAR" : "NUEVO"} {tipoPuesto}</h2>
         <form onSubmit={handleSubmit}>
           <label>
             DNI
@@ -67,10 +97,10 @@ const FormularioPersona = ({ tipoPuesto, onClose, onGuardar }) => {
               inputMode="numeric"
               pattern="\d*"
               maxLength={10}
-              value={documento}
+              value={dni}
               placeholder="Ingrese sin puntos"
-              onChange={(e) => setDocumento(e.target.value)}
-              disabled={loading}
+              onChange={(e) => setDni(e.target.value)}
+              disabled={modoEdicion || loading}
             />
           </label>
           <label>

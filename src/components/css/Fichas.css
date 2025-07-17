@@ -56,3 +56,33 @@
     text-align: right;
     margin-top: -0.7rem;
 }
+
+.ficha-info{
+  padding: 1rem;
+}
+
+.ficha-buttons{
+  padding-top: 1rem;
+  display: flex;
+  justify-content: right;
+}
+
+.ficha-buttons button {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+/* Botón guardar */
+.ficha-buttons button {
+  background-color: #007bff;
+  color: white;
+}
+
+.ficha-buttons button:hover {
+  background-color: #0056b3;
+}

@@ -3,11 +3,14 @@ import { listarColeccion } from "./db-functions";
 
 // Nombre de empresas
 export function nombreEmpresa(cuit) {
-    return empresas[cuit] || "SIN ASIGNAR";
+    if (cuit === null || cuit === undefined) return "SIN ASIGNAR";
+    return empresas[String(cuit)] || "SIN ASIGNAR";
 }
 
 // Cuit de empresas
 export const obtenerCuitPorNombre = (nombreEmpresa) => {
+  if (!nombreEmpresa || typeof nombreEmpresa !== "string") return "SIN ASIGNAR";
+
   for (const [cuit, nombre] of Object.entries(empresas)) {
     if (nombre === nombreEmpresa.trim().toUpperCase()) {
       return cuit;

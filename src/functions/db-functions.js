@@ -1,7 +1,7 @@
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
-// Listar documentos (si hay cache y no hay modificaciones se lista desde ahi)
+// Listar dnis (si hay cache y no hay modificaciones se lista desde ahi)
 export const listarColeccion = async (nombreColeccion, usarCache = true) => {
   if (usarCache) {
     const cache = localStorage.getItem(nombreColeccion);
@@ -19,7 +19,7 @@ export const listarColeccion = async (nombreColeccion, usarCache = true) => {
   }
 };
 
-// Agregar documento y actualizar cache
+// Agregar dni y actualizar cache
 export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
   try {
     const docRef = doc(db, nombreColeccion, idPersonalizado); 
@@ -35,12 +35,12 @@ export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
 
     return nuevoDocConId;
   } catch (error) {
-    console.error(`Error al agregar documento en ${nombreColeccion}:`, error);
+    console.error(`Error al agregar dni en ${nombreColeccion}:`, error);
     throw error;
   }
 };
 
-// Modificar documento y cache
+// Modificar dni y cache
 export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
   try {
     const docRef = doc(db, nombreColeccion, idDoc);
@@ -57,13 +57,13 @@ export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
 
     return true;
   } catch (error) {
-    console.error(`Error al modificar documento en ${nombreColeccion}:`, error);
+    console.error(`Error al modificar dni en ${nombreColeccion}:`, error);
     throw error;
   }
 };
 
-// Eliminar documento y actualizar cache
-export const eliminarDocumento = async (nombreColeccion, idDoc) => {
+// Eliminar dni y actualizar cache
+export const eliminarDni = async (nombreColeccion, idDoc) => {
   try {
     const docRef = doc(db, nombreColeccion, idDoc);
     await deleteDoc(docRef);
@@ -77,19 +77,19 @@ export const eliminarDocumento = async (nombreColeccion, idDoc) => {
 
     return true;
   } catch (error) {
-    console.error(`Error al eliminar documento en ${nombreColeccion}:`, error);
+    console.error(`Error al eliminar dni en ${nombreColeccion}:`, error);
     throw error;
   }
 };
 
-// Evitar duplicar documento en firestore
-export const verificarDni = async (documento) => {
+// Evitar duplicar dni en firestore
+export const verificarDni = async (dni) => {
   try {
-    const q = query(collection(db, "personas"), where("documento", "==", documento));
+    const q = query(collection(db, "personas"), where("dni", "==", dni));
     const snapshot = await getDocs(q);
     return !snapshot.empty;
   } catch (error) {
-    console.error("Error verificando documento:", error);
+    console.error("Error verificando dni:", error);
     return false;
   }
 };
@@ -100,4 +100,3 @@ export const verificarDominio = async (dominio, coleccion) => {
   const snapshot = await getDocs(q);
   return !snapshot.empty; // devuelve true o false
 }
-

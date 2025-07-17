@@ -61,9 +61,6 @@
   color: #555;
   font-style: italic;
   height: 50px;
-}
-
-.table-item {
   background-color: white;
   border-radius: 1rem;
   padding: 1rem 1.5rem;
@@ -73,8 +70,12 @@
   align-items: center;
 }
 
+.table-item:hover{
+  background-color: rgba(0,0,0,0.01);
+}
+
 .table-nombre {
-  font-weight: 600;
+  font-weight: 400;
   color: #111827;
 }
 

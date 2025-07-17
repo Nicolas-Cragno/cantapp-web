@@ -4,48 +4,38 @@ import { listarColeccion } from "../../functions/db-functions";
 import FichaPersonal from "../fichas/FichaPersonal";
 import FormularioPersona from "../forms/FormularioPersona";
 import "../css/Tables.css";
-import { agregar } from "../../functions/db-functions";
 
-const TablaPersonal = (props) => {
-  const { tipoPuesto } = props;
+const TablaPersonal = ({ tipoPuesto }) => {
   const [personas, setPersonas] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
 
-  const titles = {
-    EMPLEADO: "EMPLEADOS",
-    MECANICO: "MECANICOS",
-    "CHOFER LARA DISTANCIA": "CHOFERES DE LARGA",
-    "CHOFER MOVIMIENTO": "CHOFERES MOVIMIMIENTO",
-    FLETERO: "FLETEROS",
-    ADMINISTRATIVO: "ADMINISTRATIVOS",
+  // Cargar personas filtradas por puesto
+  const cargarPersonas = async () => {
+    setLoading(true);
+    try {
+      const data = await listarColeccion("personas");
+      const listadoPersonas = data.filter((p) => p.puesto === tipoPuesto);
+      setPersonas(listadoPersonas);
+    } catch (error) {
+      console.error("Error al obtener información desde db: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const title = titles[tipoPuesto] || "EMPLEADO";
-
   useEffect(() => {
-    const obtenerDatos = async () => {
-      setLoading(true);
-      try {
-        const data = await listarColeccion("personas");
-        const listadoPersonas = data.filter((ps) => ps.puesto === tipoPuesto);
-        setPersonas(listadoPersonas);
-      } catch (error) {
-        console.error("Error al obtener información desde db: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    obtenerDatos();
+    cargarPersonas();
   }, [tipoPuesto]);
 
+  // Abrir ficha persona
   const handleClickPersona = (persona) => {
     setPersonaSeleccionada(persona);
   };
 
+  // Cerrar ficha o formulario
   const cerrarModal = () => {
     setPersonaSeleccionada(null);
   };
@@ -54,24 +44,14 @@ const TablaPersonal = (props) => {
     setModalAgregarVisible(false);
   };
 
-  // Función para guardar nueva persona y actualizar listado
-  const guardarNuevaPersona = async (nuevaPersona) => {
-    try {
-      setLoading(true);
-      await agregar("personas", nuevaPersona); // Debes implementar esta función para agregar doc a Firestore
-      setModalAgregarVisible(false);
-      // Recargar la lista
-      const data = await listarColeccion("personas");
-      const listadoPersonas = data.filter((ps) => ps.puesto === tipoPuesto);
-      setPersonas(listadoPersonas);
-    } catch (error) {
-      console.error("Error al guardar persona: ", error);
-    } finally {
-      setLoading(false);
-    }
+  // Guardar nueva persona o editar existente y recargar lista
+  const handleGuardar = async () => {
+    await cargarPersonas();
+    setModalAgregarVisible(false);
+    setPersonaSeleccionada(null);
   };
 
-  // Filtro
+  // Filtrado simple
   const personasFiltradas = personas.filter((p) => {
     const nombreCompleto = `${p.apellido || ""} ${p.nombres || ""} ${p.detalle || ""}`;
     return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
@@ -80,7 +60,7 @@ const TablaPersonal = (props) => {
   return (
     <section className="table-container">
       <div className="table-header">
-        <h1 className="table-title">{title}</h1>
+        <h1 className="table-title">{tipoPuesto}</h1>
         <input
           type="text"
           placeholder="Buscar por nombre..."
@@ -98,12 +78,12 @@ const TablaPersonal = (props) => {
         ) : personasFiltradas.length > 0 ? (
           personasFiltradas.map((persona) => (
             <li
-              key={persona.id}
+              key={persona.dni}
               className="table-item"
               onClick={() => handleClickPersona(persona)}
             >
               <span className="table-nombre">
-                {persona.apellido}, {persona.nombres}
+                <strong>{persona.apellido}</strong> {persona.nombres}
               </span>
               <span className="table-info">{persona.detalle}</span>
             </li>
@@ -114,14 +94,18 @@ const TablaPersonal = (props) => {
       </ul>
 
       {personaSeleccionada && (
-        <FichaPersonal persona={personaSeleccionada} onClose={cerrarModal} />
+        <FichaPersonal
+          persona={personaSeleccionada}
+          onClose={cerrarModal}
+          onGuardar={handleGuardar}
+        />
       )}
 
       {modalAgregarVisible && (
         <FormularioPersona
           tipoPuesto={tipoPuesto}
           onClose={cerrarModalAgregar}
-          onGuardar={guardarNuevaPersona}
+          onGuardar={handleGuardar}
         />
       )}
 
