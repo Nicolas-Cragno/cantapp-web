@@ -44,6 +44,27 @@
   margin-top: 0.5rem;
 }
 
+.small-logo{ /* LOGO PARA TODO */
+  margin-left: 1.5rem;
+}
+
+.card-route{
+  text-decoration: none;
+}
+
+.card-logo{
+  width: 10rem;
+  height: 10rem;
+  object-fit: contain;
+}
+
+/* BIG */
+.big-card-title{
+  font-size: 2.5rem;
+  color: #6b7280;
+  font-style: oblique;
+}
+
 .big-card-value{
   display: flex;
   align-items: center;
@@ -59,27 +80,74 @@
   margin: 0.5rem;
 }
 
-.small-logo{
-  margin-left: 1.5rem;
+/* SMALL */
+.card-logo-small{
+  width: 1rem;
 }
 
-.card-route{
-  text-decoration: none;
+.small-left{
+  display: flex;
+  justify-content: center;
 }
 
-.card-logo{
-  width: 10rem;
-  height: 10rem;
+.small-right{
+  display: flex;
+  justify-content: space-around;
+}
+
+.big-card-value-small{
+  display: none;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  background-color: #1f2937;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  padding-right: 1rem ;
+  padding-left: 1rem ;
+  border-radius: 0.8rem;
+  margin: 0.5rem;
+}
+
+.small-logo-small{
+  margin-left: 0.5rem;
+}
+
+.card-logo-small{
+  width: 5rem;
+  height: 5rem;
   object-fit: contain;
 }
 
-/*
-@media (max-width: 1024px) {
-  .big{
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .card {
+  width: 100%;
+  max-width: 500vh;
+  height: 25vh;
+  margin: 1vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.big-card-value-small{
+  display: flex;
+}
+
+.card-logo{
+  display: none;
+}
+
+.big-card-value{
+  display: none;
+}
+}
+
+@media screen and (max-width: 760px){
+  .big-card-title{
     display: none;
   }
-  .small{
-    display: flex;
-  }
 }
-*/

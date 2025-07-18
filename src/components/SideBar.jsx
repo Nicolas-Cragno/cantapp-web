@@ -6,7 +6,7 @@ import { BsFillFuelPumpFill } from "react-icons/bs";
 import "./css/SideBar.css";
 
 const SideBar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);

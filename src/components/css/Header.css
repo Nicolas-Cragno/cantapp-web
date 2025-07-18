@@ -16,3 +16,12 @@
 .header-user {
   color: #6b7280;
 }
+
+@media screen and (max-width:1200px){
+  .header-title{
+    display: none;
+  }
+  .header{
+    justify-content: right;
+  }
+}
