@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
 import empresas from "../../functions/data/empresas.json";
-import { agregar, listarColeccion, modificar } from "../../functions/db-functions";
+import { agregar, modificar, verificarInterno } from "../../functions/db-functions";
 import { nombreEmpresa, obtenerCuitPorNombre } from "../../functions/data-functions";
 
 const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar }) => {
+  const tipo = typeof tipoVehiculo === "string" ? tipoVehiculo : tipoVehiculo?.value || "";
+
   const [interno, setInterno] = useState("");
   const [dominio, setDominio] = useState("");
   const [marca, setMarca] = useState("");
@@ -26,15 +28,10 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
     }
   }, [modoEdicion, vehiculo]);
 
-  const verificarInterno = async (nuevoInterno) => {
-    const data = await listarColeccion(tipoVehiculo);
-    return data.some((v) => v.interno === nuevoInterno);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!interno.trim() || !dominio.trim()) {
+    if (!String(interno).trim() || !String(dominio).trim()) {
       alert("Complete los datos obligatorios.");
       return;
     }
@@ -44,20 +41,23 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
     try {
       if (modoEdicion) {
         const vehiculoEditado = {
-          interno,
+          interno: String(interno),
           dominio: dominio.toUpperCase(),
           marca: marca.toUpperCase(),
           modelo: modelo,
           empresa: obtenerCuitPorNombre(empresa?.toUpperCase() || "") || "",
-          detalle: detalle.toUpperCase()
+          detalle: detalle.toUpperCase(),
         };
 
-        await modificar(tipoVehiculo.toLowerCase(), vehiculo.interno, vehiculoEditado);
+        await modificar(tipo.toLowerCase(), String(vehiculo.interno), vehiculoEditado);
+
         if (onGuardar) onGuardar(vehiculoEditado);
+
       } else {
-        const existeInterno = await verificarInterno(interno);
+        const existeInterno = await verificarInterno(interno, tipoVehiculo);
+
         if (existeInterno) {
-          alert("Número de interno ya asignado.");
+          alert("El número de interno " + interno + " ya se encuentra asignado");
           setLoading(false);
           return;
         }
@@ -71,7 +71,7 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
           detalle: detalle.toUpperCase()
         };
 
-        const vehiculoAgregado = await agregar(tipoVehiculo, nuevoVehiculo, interno);
+        const vehiculoAgregado = await agregar(tipo.toLowerCase(), nuevoVehiculo, interno);
         if (onGuardar) onGuardar(vehiculoAgregado);
       }
 
@@ -87,12 +87,8 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
   return (
     <div className="form">
       <div className="form-content">
-        <h2>{modoEdicion ? "MODIFICAR" : "NUEVO"} {tipoVehiculo.toUpperCase()}</h2>
+        <h2>{modoEdicion ? "MODIFICAR" : "NUEVO"} {tipo.toUpperCase()}</h2>
         <form onSubmit={handleSubmit}>
-          <label>
-            Tipo
-            <input type="text" value={tipoVehiculo} readOnly className="input-readonly" />
-          </label>
           <label>
             Interno
             <input
@@ -150,8 +146,7 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
           </label>
           <label>
             Detalle
-            <input
-              type="text"
+            <textarea
               value={detalle}
               onChange={(e) => setDetalle(e.target.value)}
               disabled={loading}

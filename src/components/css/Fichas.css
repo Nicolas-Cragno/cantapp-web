@@ -36,12 +36,23 @@
 
 .person-name {
   font-size: 2.3rem;
-  margin: 0;
-  
+  margin: 0; 
+}
+
+.vehiculo-name{
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
 }
 
 .apellido {
   font-weight: 700;
+  display: block;
+}
+
+.interno{
+  color: #888;
+  font-weight: 400;
   display: block;
 }
 
@@ -50,6 +61,11 @@
   font-size: 1.8rem; 
   font-weight: 400;
   display: block;
+}
+
+.dominio{
+  font-size: 2.2rem;
+  font-weight: 700;
 }
 
 .puesto{

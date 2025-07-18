@@ -24,8 +24,6 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
       setDetalle(persona.detalle);
     }
   }, [modoEdicion, persona]);
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 

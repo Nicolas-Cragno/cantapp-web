@@ -21,8 +21,8 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
           <div className="ficha-content">
             <button className="ficha-close" onClick={onClose}> ✕ </button>
             <h1 className="vehiculo-name">
-              <strong className="interno">{vehiculo.interno}</strong>
-              <span className="dominio">{vehiculo.dominio}</span>
+              <strong className="dominio">{vehiculo.dominio}</strong>
+              <span className="interno">{vehiculo.interno} </span>
             </h1>
             <hr />
             <div className="ficha-info">

@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
 
@@ -102,9 +102,23 @@ export const verificarDni = async (dni) => {
   }
 };
 
-// Evitar duplicar patente
+// Evitar duplicar patente / interno
 export const verificarDominio = async (dominio, coleccion) => {
   const q = query(collection(db, coleccion), where("dominio", "==", dominio));
   const snapshot = await getDocs(q);
   return !snapshot.empty; // devuelve true o false
 }
+
+export const verificarInterno = async (interno, nombreColeccion) => {
+  try {
+    const q = query(
+      collection(db, nombreColeccion),
+      where("interno", "==", interno)
+    );
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty; 
+  } catch (error) {
+    console.error(`Error verificando interno en ${nombreColeccion}:`, error);
+    return false; 
+  }
+};

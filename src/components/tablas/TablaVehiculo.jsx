@@ -14,10 +14,10 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
 
   const title = tipoVehiculo.toUpperCase();
 
-  const obtenerDatos = async () => {
+  const obtenerDatos = async (usarCache = true) => {
     setLoading(true);
     try {
-      const data = await listarColeccion(tipoVehiculo);
+      const data = await listarColeccion(tipoVehiculo, usarCache);
       const listadoVehiculos = data.filter((v) => v.estado === 1 || v.estado === true);
       setVehiculos(listadoVehiculos);
     } catch (error) {
@@ -38,12 +38,15 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
   const cerrarModal = () => {
     setVehiculoSeleccionado(null);
   };
+
   const cerrarModalAgregar = () => {
     setModalAgregarVisible(false);
   };
 
+  // Esta función se llama cuando se agrega o modifica un vehículo,
+  // y fuerza recarga desde Firestore (sin usar cache localStorage)
   const handleGuardar = async () => {
-    await obtenerDatos();
+    await obtenerDatos(false); // forzar recarga directa desde Firestore
     cerrarModal();
     cerrarModalAgregar();
   };
@@ -73,7 +76,11 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
           </li>
         ) : vehiculosFiltrados.length > 0 ? (
           vehiculosFiltrados.map((vehiculo) => (
-            <li key={vehiculo.id} className="table-item" onClick={() => handleClickVehiculo(vehiculo)}>
+            <li
+              key={vehiculo.id}
+              className="table-item"
+              onClick={() => handleClickVehiculo(vehiculo)}
+            >
               <span className="table-nombre">
                 {vehiculo.interno} - {vehiculo.dominio}
               </span>
@@ -103,7 +110,9 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
       )}
 
       <div className="table-options">
-        <button className="table-agregar" onClick={() => setModalAgregarVisible(true)}>+ AGREGAR</button>
+        <button className="table-agregar" onClick={() => setModalAgregarVisible(true)}>
+          + AGREGAR
+        </button>
       </div>
     </section>
   );
