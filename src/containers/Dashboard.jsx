@@ -59,8 +59,8 @@ const Dashboard = () => {
           <BigCard 
             title="TRANSPORTES CANTARINI"
             value1={loading ? <FaSpinner className='spinner' /> : `${cantPersonasTC}`}
-            value2={loading ? <FaSpinner className='spinner' /> : `${cantPersonasEX}`}
-            value3={loading ? <FaSpinner className='spinner' /> : `${cantPersonasTA}`}
+            value2={loading ? <FaSpinner className='spinner' /> : `${cantTractoresTC}`}
+            value3={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesTC}`}
             logo={ImgTC}
           />
         </div>
@@ -68,9 +68,9 @@ const Dashboard = () => {
         <div className="col-md-12">
           <BigCard 
             title="EXPRESO CANTARINI"
-            value1={loading ? <FaSpinner className='spinner' /> : `${cantTractoresTC}`}
+            value1={loading ? <FaSpinner className='spinner' /> : `${cantPersonasEX}`}
             value2={loading ? <FaSpinner className='spinner' /> : `${cantTractoresEX}`}
-            value3={loading ? <FaSpinner className='spinner' /> : `${cantTractoresTA}`}
+            value3={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesEX}`}
             logo={ImgEX}
           />
         </div>
@@ -78,8 +78,8 @@ const Dashboard = () => {
         <div className="col-md-12">
           <BigCard 
             title="TRANSAMERICA TRANSPORTES"
-            value1={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesTC}`}
-            value2={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesEX}`}
+            value1={loading ? <FaSpinner className='spinner' /> : `${cantPersonasTA}`}
+            value2={loading ? <FaSpinner className='spinner' /> : `${cantTractoresTA}`}
             value3={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesTA}`}
             logo={ImgTA}
           />

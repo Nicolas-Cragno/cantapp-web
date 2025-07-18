@@ -103,7 +103,35 @@
 /* RESPONSIVE */
 
 @media (max-width: 1300px) {
-  
+  .big{display: none;}
+  .small{display: inline-flex;}
+  .small1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+  }
+  .small2{
+    display: block;
+    justify-content: center;
+    margin: auto;
+    width: 50%;
+  }
+  .card-logo-small{
+    min-width: 5rem;
+    min-height: 5rem;
+    max-width: 25rem;
+    max-height: 25rem;
+  }
+  .big-card-value{
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .big-card-section{
+    min-width: 5rem;
+    max-width: 25rem;
+  }
 }
 
 @media screen and (max-width: 760px){

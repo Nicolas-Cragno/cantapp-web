@@ -30,13 +30,13 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
                 <hr />
                 <p className="puesto"><strong>{persona.puesto}</strong></p>
             <div className="ficha-info">
-                <p><strong>DNI: </strong> {persona.dni || "No especificado"}</p>
+                <p><strong>DNI: </strong> {persona.dni || persona.id}</p>
                 <p><strong>Empresa: </strong> {empresa}</p>
                 <p><strong>Ingreso: </strong> {fechaIngreso || ""}</p>
                 <p><strong>Detalle: </strong> {persona.detalle || ""}</p>
             </div>
             <div className="ficha-buttons">
-              <button onClick={() => setModoEdicion(true)}>Modificar</button>
+              <button onClick={() => setModoEdicion(true)}>Editar</button>
             </div>
           </div>
         </div>

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import '../css/Forms.css';
 import empresas from "../../functions/data/empresas.json";
-import { verificarDni, agregar } from "../../functions/db-functions";
-import { modificar } from "../../functions/db-functions"; // Asegurate de que esté exportado
+import { verificarDni, agregar, modificar } from "../../functions/db-functions";
 import { nombreEmpresa, obtenerCuitPorNombre } from "../../functions/data-functions";
 
 const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) => {
@@ -78,7 +77,7 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
       onClose();
 
     } catch (error) {
-      alert("Ocurrió un error al guardar la persona. Revisá la consola.");
+      alert("Ocurrió un error al guardar la persona.");
       console.error("Error al guardar persona:", error);
     } finally {
       setLoading(false);

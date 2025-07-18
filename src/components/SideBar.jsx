@@ -3,6 +3,8 @@ import { FaHome, FaUser, FaTruck, FaBars } from "react-icons/fa";
 import { GiAutoRepair } from "react-icons/gi";
 import { FaSignOutAlt } from "react-icons/fa";
 import { BsFillFuelPumpFill } from "react-icons/bs";
+import { IoCalendarSharp } from "react-icons/io5";
+
 import "./css/SideBar.css";
 
 const SideBar = () => {
@@ -34,6 +36,11 @@ const SideBar = () => {
           {!collapsed && <span>Flota</span>}
         </a>
         <br/>
+        <a href="/eventos" className="nav-link">
+          <IoCalendarSharp className="nav-icon"/>
+          {!collapsed && <span>Eventos</span>}
+        </a>
+        <br/>
         <a href="/porteria" className="nav-link">
           <FaSignOutAlt className="nav-icon"/>
           {!collapsed && <span>Porteria</span>}
@@ -46,6 +53,7 @@ const SideBar = () => {
           <BsFillFuelPumpFill className="nav-icon"/>
           {!collapsed && <span>Control</span>}
         </a>
+        
       </nav>
     </aside>
   );
