@@ -14,6 +14,26 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
     if (onGuardar) await onGuardar(vehiculoModificado);
   };
 
+  const minimizarTipo = (tipoMax) => {
+    let auxTipo;  
+    switch(tipoMax){
+        case "utilitarios":
+          auxTipo = "UTILITARIO"
+          break;
+        case "tractores":
+          auxTipo = "TRACTOR"
+          break;
+        case "furgones":
+          auxTipo = "FURGON"
+          break;
+        default:
+          auxTipo = "SIN ASIGNAR"
+          break;
+    }
+    
+    return auxTipo;
+  }
+
   return (
     <>
       {!modoEdicion ? (
@@ -22,9 +42,10 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
             <button className="ficha-close" onClick={onClose}> ✕ </button>
             <h1 className="vehiculo-name">
               <strong className="dominio">{vehiculo.dominio}</strong>
-              <span className="interno">{vehiculo.interno} </span>
+              <span className="interno"> {vehiculo.interno} </span>
             </h1>
             <hr />
+            <p className="puesto"><strong>{minimizarTipo(tipoVehiculo)}</strong></p>
             <div className="ficha-info">
               <p><strong>Marca: </strong>{vehiculo.marca || ""}</p>
               <p><strong>Modelo: </strong>{vehiculo.modelo || ""}</p>

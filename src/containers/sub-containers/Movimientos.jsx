@@ -1,9 +1,9 @@
-import TablaMovimiento from "../../components/tablas/TablaMovimiento";
+import TablaEventos from "../../components/tablas/TablaEventos";
 
 const Movimientos = () => {
     return(
         <section className="movimientos">
-            <TablaMovimiento></TablaMovimiento>
+            <TablaEventos tipo="movimiento" area="porteria"></TablaEventos>
         </section>
     )
 }

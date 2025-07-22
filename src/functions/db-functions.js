@@ -12,8 +12,15 @@ export const listarColeccion = async (nombreColeccion, usarCache = true) => {
   try {
     const querySnapshot = await getDocs(collection(db, nombreColeccion));
     const datos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    localStorage.setItem(nombreColeccion, JSON.stringify(datos));
-    return datos;
+
+    const datosOrdenados = [...datos].sort((a, b) => {
+      const fechaA = a.fecha ? a.fecha.toDate() : new Date(0); // si no hay fecha, fecha mínima
+      const fechaB = b.fecha ? b.fecha.toDate() : new Date(0);
+      return fechaB - fechaA; // descendente: más reciente primero
+    });
+
+    localStorage.setItem(nombreColeccion, JSON.stringify(datosOrdenados));
+    return datosOrdenados;
   } catch (error) {
     console.error(`Error al obtener ${nombreColeccion}:`, error);
     return [];
@@ -120,5 +127,22 @@ export const verificarInterno = async (interno, nombreColeccion) => {
   } catch (error) {
     console.error(`Error verificando interno en ${nombreColeccion}:`, error);
     return false; 
+  }
+};
+
+export const buscarNombrePorDni = async (dni) => {
+  try {
+    const personas = await listarColeccion("personas", true);
+    const persona = personas.find(p => p.dni === dni);
+
+    if (!persona) {
+      console.warn(`No se encontró registro del DNI ${dni}`);
+      return "Desconocido";
+    }
+
+    return `${persona.apellido} ${persona.nombres}`;
+  } catch (error) {
+    console.error("Error en la búsqueda: ", error);
+    return "Error";
   }
 };

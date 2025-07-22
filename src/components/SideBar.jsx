@@ -36,16 +36,16 @@ const SideBar = () => {
           {!collapsed && <span>Flota</span>}
         </a>
         <br/>
-        <a href="/eventos" className="nav-link">
+        <a href="/actividad" className="nav-link">
           <IoCalendarSharp className="nav-icon"/>
-          {!collapsed && <span>Eventos</span>}
+          {!collapsed && <span>Actividad</span>}
         </a>
         <br/>
         <a href="/porteria" className="nav-link">
           <FaSignOutAlt className="nav-icon"/>
           {!collapsed && <span>Porteria</span>}
         </a>
-        <a href="/taller" className="nav-link">
+        <a href="/taller-tractores" className="nav-link">
           <GiAutoRepair className="nav-icon" />
           {!collapsed && <span>Taller</span>}
         </a>

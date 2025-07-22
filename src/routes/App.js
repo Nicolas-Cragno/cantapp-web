@@ -5,7 +5,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from '../containers/Dashboard.jsx';
 import Personal from '../containers/Personal.jsx';
 import Flota from '../containers/Flota.jsx';
+import Actividad from '../containers/Actividad.jsx';
 import Porteria from '../containers/Porteria.jsx';
+import TallerTractores from '../containers/TallerTractores.jsx';
 // pag secundarias
 import Mecanicos from '../containers/sub-containers/Mecanicos.jsx';
 import ChoferesLarga from '../containers/sub-containers/ChoferesLarga.jsx';
@@ -31,9 +33,12 @@ function App() {
             <Route path='/tractores' element={<Tractores />} />
             <Route path='/furgones' element={<Furgones />} />
             <Route path='/utilitarios' element={<Utilitarios />} />
+            {/* ACTIVIDAD (todos los eventos) */}
+            <Route path='/actividad' element={<Actividad /> } />
             {/* PORTERIA */}
             <Route path='/porteria' element={<Porteria />} />
             {/* TALLER */}
+            <Route path='/taller-tractores' element={<TallerTractores />} />
             {/* CONTROL COMBUSTIBLE */}
             {/*  */}
           </Routes>
