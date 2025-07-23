@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, getDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
 
@@ -109,7 +109,7 @@ export const verificarDni = async (dni) => {
   }
 };
 
-// Evitar duplicar patente / interno
+// buscar interno, patente, nombre...
 export const verificarDominio = async (dominio, coleccion) => {
   const q = query(collection(db, coleccion), where("dominio", "==", dominio));
   const snapshot = await getDocs(q);
@@ -143,6 +143,22 @@ export const buscarNombrePorDni = async (dni) => {
     return `${persona.apellido} ${persona.nombres}`;
   } catch (error) {
     console.error("Error en la búsqueda: ", error);
+    return "Error";
+  }
+};
+
+export const buscarNombreUsuario = async (uid) => {
+  try{
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists()) {
+      return docSnap.data().nombres || "Sin nombre";
+    } else {
+      console.warn("No existe el usuario con uid: ", uid);
+      return "Usuario no encontrado";
+    }
+  } catch(error){
+    console.error("Error al obtener nombre de usuario:", error);
     return "Error";
   }
 };
