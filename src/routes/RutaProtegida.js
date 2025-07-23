@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { auth } from "../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { Navigate } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";  // importar Firestore
+import { db } from "../firebase/firebaseConfig";
 
 const roles = ["user", "admin", "dev"]; // orden jerárquico
 
@@ -10,10 +12,31 @@ const RutaProtegida = ({ children, rolRequerido = null }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsuscribe = onAuthStateChanged(auth, (user) => {
+    const unsuscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+
+      if (user) {
+        const usuarioStr = localStorage.getItem("usuario");
+        if (!usuarioStr) {
+          // Recuperar datos desde Firestore y guardar en localStorage
+          try {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const usuario = docSnap.data();
+              localStorage.setItem("usuario", JSON.stringify(usuario));
+            } else {
+              console.warn("Usuario autenticado pero no registrado en la BD.");
+            }
+          } catch (error) {
+            console.error("Error recuperando usuario desde Firestore:", error);
+          }
+        }
+      }
+
       setLoading(false);
     });
+
     return () => unsuscribe();
   }, []);
 
