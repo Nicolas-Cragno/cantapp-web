@@ -63,3 +63,9 @@ export const formatearFecha = (fechaInput) => {
 
   return `${dia}/${mes}/${anio}`;
 };
+
+export const formatearFechaInput = (fecha) => {
+  if (!fecha) return "";
+  const f = new Date(fecha);
+  return f.toISOString().split("T")[0]; // yyyy-mm-dd
+};

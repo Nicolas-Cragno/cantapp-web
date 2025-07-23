@@ -1,48 +1,19 @@
 import '../assets/css/App.css';
-import Layout from '../components/Layout';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// pag principales
-import Dashboard from '../containers/Dashboard.jsx';
-import Personal from '../containers/Personal.jsx';
-import Flota from '../containers/Flota.jsx';
-import Actividad from '../containers/Actividad.jsx';
-import Porteria from '../containers/Porteria.jsx';
-import TallerTractores from '../containers/TallerTractores.jsx';
-// pag secundarias
-import Mecanicos from '../containers/sub-containers/Mecanicos.jsx';
-import ChoferesLarga from '../containers/sub-containers/ChoferesLarga.jsx';
-import ChoferesMovimiento from '../containers/sub-containers/ChoferesMovimiento.jsx';
-import Tractores from '../containers/sub-containers/Tractores.jsx';
-import Furgones from '../containers/sub-containers/Furgones.jsx';
-import Utilitarios from '../containers/sub-containers/Utilitarios.jsx';
+import Login from './Login.jsx';
+import { rutasProtegidas } from './RutasProtegidas.jsx';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path='/' element={<Dashboard />} />
-            {/* PERSONAL */}
-            <Route path='/personal' element={<Personal />} />
-            <Route path='/mecanicos' element={<Mecanicos />} />
-            <Route path='/choferes-larga' element={<ChoferesLarga />} />
-            <Route path='/choferes-movimiento' element={<ChoferesMovimiento />} />
-            {/* FLOTA */}
-            <Route path='/flota' element={<Flota />} />
-            <Route path='/tractores' element={<Tractores />} />
-            <Route path='/furgones' element={<Furgones />} />
-            <Route path='/utilitarios' element={<Utilitarios />} />
-            {/* ACTIVIDAD (todos los eventos) */}
-            <Route path='/actividad' element={<Actividad /> } />
-            {/* PORTERIA */}
-            <Route path='/porteria' element={<Porteria />} />
-            {/* TALLER */}
-            <Route path='/taller-tractores' element={<TallerTractores />} />
-            {/* CONTROL COMBUSTIBLE */}
-            {/*  */}
-          </Routes>
-        </Layout>
+        <Routes>
+          {/* Ruta pública */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Rutas protegidas */}
+          {rutasProtegidas}
+        </Routes>
       </BrowserRouter>
     </div>
   );
