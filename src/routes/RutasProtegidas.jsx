@@ -21,7 +21,7 @@ export const rutasProtegidas = (
     <Route
       path="/"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="user">
           <Layout>
             <Dashboard />
           </Layout>
@@ -31,7 +31,7 @@ export const rutasProtegidas = (
     <Route
       path="/personal"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <Personal />
           </Layout>
@@ -41,7 +41,7 @@ export const rutasProtegidas = (
     <Route
       path="/mecanicos"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <Mecanicos />
           </Layout>
@@ -51,7 +51,7 @@ export const rutasProtegidas = (
     <Route
       path="/choferes-larga"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <ChoferesLarga />
           </Layout>
@@ -61,7 +61,7 @@ export const rutasProtegidas = (
     <Route
       path="/choferes-movimiento"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <ChoferesMovimiento />
           </Layout>
@@ -71,7 +71,7 @@ export const rutasProtegidas = (
     <Route
       path="/flota"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <Flota />
           </Layout>
@@ -81,7 +81,7 @@ export const rutasProtegidas = (
     <Route
       path="/tractores"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <Tractores />
           </Layout>
@@ -91,7 +91,7 @@ export const rutasProtegidas = (
     <Route
       path="/furgones"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <Furgones />
           </Layout>
@@ -101,7 +101,7 @@ export const rutasProtegidas = (
     <Route
       path="/utilitarios"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="admin">
           <Layout>
             <Utilitarios />
           </Layout>
@@ -111,7 +111,7 @@ export const rutasProtegidas = (
     <Route
       path="/actividad"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="user">
           <Layout>
             <Actividad />
           </Layout>
@@ -121,7 +121,7 @@ export const rutasProtegidas = (
     <Route
       path="/porteria"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="user">
           <Layout>
             <Porteria />
           </Layout>
@@ -131,7 +131,7 @@ export const rutasProtegidas = (
     <Route
       path="/taller-tractores"
       element={
-        <RutaProtegida>
+        <RutaProtegida rolRequerido="user">
           <Layout>
             <TallerTractores />
           </Layout>

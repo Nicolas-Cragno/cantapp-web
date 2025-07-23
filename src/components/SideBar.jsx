@@ -1,15 +1,73 @@
 import { useState } from "react";
-import { FaHome, FaUser, FaTruck, FaBars } from "react-icons/fa";
+import {
+  FaHome,
+  FaUser,
+  FaTruck,
+  FaBars,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { GiAutoRepair } from "react-icons/gi";
-import { FaSignOutAlt } from "react-icons/fa";
 import { BsFillFuelPumpFill } from "react-icons/bs";
 import { IoCalendarSharp } from "react-icons/io5";
-
 import "./css/SideBar.css";
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(true);
 
+  // Obtener el rol desde localStorage
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const rol = usuario?.rol || "user";
+
+  // Función para validar el acceso por rol
+  const tieneAcceso = (rolesPermitidos) => rolesPermitidos.includes(rol);
+
+  // Lista de links con roles permitidos
+  const links = [
+    {
+      to: "/",
+      icon: <FaHome className="nav-icon" />,
+      label: "Inicio",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/personal",
+      icon: <FaUser className="nav-icon" />,
+      label: "Personal",
+      roles: ["dev", "admin"],
+    },
+    {
+      to: "/flota",
+      icon: <FaTruck className="nav-icon" />,
+      label: "Flota",
+      roles: ["dev", "admin"],
+    },
+    {
+      to: "/actividad",
+      icon: <IoCalendarSharp className="nav-icon" />,
+      label: "Actividad",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/porteria",
+      icon: <FaSignOutAlt className="nav-icon" />,
+      label: "Portería",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/taller-tractores",
+      icon: <GiAutoRepair className="nav-icon" />,
+      label: "Taller",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/combustible",
+      icon: <BsFillFuelPumpFill className="nav-icon" />,
+      label: "Control",
+      roles: ["dev"],
+    },
+  ];
+
+  // Toggle de colapsado
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
   };
@@ -22,38 +80,15 @@ const SideBar = () => {
         </button>
       </div>
       <nav className="nav">
-        <a href="/" className="nav-link">
-          <FaHome className="nav-icon" />
-          {!collapsed && <span>Inicio</span>}
-        </a>
-        <br/>
-        <a href="/personal" className="nav-link">
-          <FaUser className="nav-icon" />
-          {!collapsed && <span>Personal</span>}
-        </a>
-        <a href="/flota" className="nav-link">
-          <FaTruck className="nav-icon" />
-          {!collapsed && <span>Flota</span>}
-        </a>
-        <br/>
-        <a href="/actividad" className="nav-link">
-          <IoCalendarSharp className="nav-icon"/>
-          {!collapsed && <span>Actividad</span>}
-        </a>
-        <br/>
-        <a href="/porteria" className="nav-link">
-          <FaSignOutAlt className="nav-icon"/>
-          {!collapsed && <span>Porteria</span>}
-        </a>
-        <a href="/taller-tractores" className="nav-link">
-          <GiAutoRepair className="nav-icon" />
-          {!collapsed && <span>Taller</span>}
-        </a>
-        <a href="/combustible" className="nav-link">
-          <BsFillFuelPumpFill className="nav-icon"/>
-          {!collapsed && <span>Control</span>}
-        </a>
-        
+        {links.map(
+          ({ to, icon, label, roles }) =>
+            tieneAcceso(roles) && (
+              <a key={to} href={to} className="nav-link">
+                {icon}
+                {!collapsed && <span>{label}</span>}
+              </a>
+            )
+        )}
       </nav>
     </aside>
   );
