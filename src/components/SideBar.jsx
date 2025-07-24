@@ -59,12 +59,6 @@ const SideBar = () => {
       label: "Taller",
       roles: ["dev", "admin", "user"],
     },
-    {
-      to: "/combustible",
-      icon: <BsFillFuelPumpFill className="nav-icon" />,
-      label: "Control",
-      roles: ["dev"],
-    },
   ];
 
   // Toggle de colapsado

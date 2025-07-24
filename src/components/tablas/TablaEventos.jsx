@@ -6,7 +6,7 @@ import FichaEvento from "../fichas/FichaEvento";
 import FormularioEvento from "../forms/FormularioEvento";
 import "../css/Tables.css";
 
-const TablaEventos = ({ tipo = null, area = null }) => {
+const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
   const [filtro, setFiltro] = useState("");
@@ -122,6 +122,8 @@ const TablaEventos = ({ tipo = null, area = null }) => {
         <FormularioEvento
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
+          area={area.toUpperCase()}
+          tipoPorArea={tipoPorArea}
         />
       )}
 

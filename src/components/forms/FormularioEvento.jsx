@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import "../css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
 import { formatearFechaHoraInput } from "../../functions/data-functions"; // la función que formatea fecha+hora
+import tiposEventos from "../../functions/data/eventos.json";
 
-const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
+const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose, onGuardar }) => {
   // Fecha inicial: si viene, convertí a Date, sino ahora con hora
   const fechaInicial = evento.fecha
     ? (typeof evento.fecha.toDate === "function" ? evento.fecha.toDate() : new Date(evento.fecha))
@@ -18,7 +19,7 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
     detalle: evento.detalle || "",
     area: evento.area || "",
   });
-
+  const subtiposDisponibles = tipoPorArea ? tiposEventos[tipoPorArea] || [] : Object.values(tiposEventos).flat();
   const [personas, setPersonas] = useState([]);
   const [sectores, setSectores] = useState([]);
 
@@ -89,7 +90,7 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
         <form onSubmit={handleSubmit}>
           {/* Fecha y hora - solo lectura */}
           <label>
-            Fecha y hora:
+            Fecha y hora
             <input
               type="text"
               name="fecha"
@@ -100,18 +101,22 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Subtipo:
-            <input
-              type="text"
+            Tipo
+            <select
               name="subtipo"
               value={formData.subtipo}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="">Seleccione subtipo</option>
+              {subtiposDisponibles.map((sub, i) => (
+                <option key={i} value={sub}>{sub}</option>
+              ))}
+            </select>
           </label>
 
           <label>
-            Persona:
+            Persona / Empleado
             <select
               name="persona"
               value={formData.persona}
@@ -128,7 +133,7 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Tractor:
+            Tractor
             <input
               type="number"
               name="tractor"
@@ -138,7 +143,7 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Furgón:
+            Furgón
             <input
               type="number"
               name="furgon"
@@ -149,23 +154,34 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
 
           <label>
             Área:
-            <select
-              name="area"
-              value={formData.area}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Seleccione un sector</option>
-              {sectores.map((s) => (
-                <option key={s.id || s.nombre} value={s.nombre}>
-                  {s.nombre}
-                </option>
-              ))}
-            </select>
+            {area ? (
+              <input
+                type="text"
+                name="area"
+                value={area}
+                readOnly
+                disabled
+              />
+            ) : (
+              <select
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Seleccione un sector</option>
+                {sectores.map((s) => (
+                  <option key={s.id || s.nombre} value={s.nombre}>
+                    {s.nombre}
+                  </option>
+                ))}
+              </select>
+            )}
           </label>
 
+
           <label>
-            Detalle:
+            Detalle
             <textarea
               name="detalle"
               value={formData.detalle}
