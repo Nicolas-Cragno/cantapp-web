@@ -100,9 +100,7 @@
   cursor: not-allowed;
 }
 
-/* === MEDIA QUERIES === */
-
-/* Celulares: max-width 640px */
+/* Celulares */
 @media (max-width: 640px) {
   .form-content {
     width: 100%;
@@ -125,7 +123,7 @@
   }
 }
 
-/* Tablets: 641px - 991.98px */
+/* Tablets */
 @media (min-width: 641px) and (max-width: 991.98px) {
   .form-content {
     max-width: 420px;
@@ -138,7 +136,7 @@
   }
 }
 
-/* Desktops: 992px+ */
+/* Escritorio */
 @media (min-width: 992px) {
   .form-content {
     max-width: 480px;
