@@ -9,15 +9,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.table-title{
-    font-size: 1.7rem;
+.table-title {
+  font-size: 1.7rem;
 }
 
-.table-options{
-    display: flex;
-    justify-content: right;
+.table-options {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .table-busqueda {
@@ -26,6 +30,8 @@
   border: 1px solid #ccc;
   border-radius: 0.5rem;
   width: 50%;
+  min-width: 200px;
+  max-width: 100%;
 }
 
 .table-agregar {
@@ -37,6 +43,7 @@
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background 0.3s ease;
+  white-space: nowrap;
 }
 
 .table-agregar:hover {
@@ -55,39 +62,44 @@
 }
 
 .table-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   color: #555;
   font-style: italic;
   height: 50px;
   background-color: white;
   border-radius: 1rem;
   padding: 1rem 1.5rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background-color 0.3s ease;
 }
 
-.table-item:hover{
-  background-color: rgba(0,0,0,0.02);
+.table-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .table-nombre {
   font-weight: 400;
   color: #111827;
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table-info {
   color: #6b7280;
+  flex: 1;
+  white-space: nowrap;
 }
 
-@media (max-width: 640px){
-  .table-title{
+/* Celulares */
+@media (max-width: 640px) {
+  .table-title {
     display: none;
   }
-  .table-info{
+  .table-info {
     display: none;
   }
   .table-busqueda {
@@ -97,8 +109,60 @@
     gap: 0.5rem;
   }
   .table-item {
-    padding: 1rem 0.1rem;
-    display: flex;
-    justify-content: center;
+    padding: 1rem 0.5rem;
+    flex-direction: column;
+    max-height: 80px;
+    height: auto;
+    align-items: flex-start;
+    font-style: normal;
+  }
+  .table-nombre {
+    white-space: normal;
+    font-weight: 600;
+    font-style: normal;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Tablets */
+@media (min-width: 641px) and (max-width: 991.98px) {
+  .table-title {
+    font-size: 1.5rem;
+  }
+  .table-info {
+    font-size: 0.9rem;
+  }
+  .table-busqueda {
+    width: 60%;
+    min-width: 250px;
+  }
+  .table-agregar {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.95rem;
+  }
+  .table-item {
+    height: 60px;
+    padding: 0.8rem 1rem;
+  }
+}
+
+/* Escritorio */
+@media (min-width: 992px) {
+  .table-title {
+    font-size: 1.7rem;
+  }
+  .table-info {
+    font-size: 1rem;
+  }
+  .table-busqueda {
+    width: 50%;
+  }
+  .table-agregar {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+  }
+  .table-item {
+    height: 50px;
+    padding: 1rem 1.5rem;
   }
 }

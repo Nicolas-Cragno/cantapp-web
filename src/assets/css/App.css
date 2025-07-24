@@ -2,11 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 /* Formato de paginas en general*/
 .page{
     display: flex;
@@ -41,6 +36,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .login-card {
   max-width: 600px;
   margin: 50px auto;
@@ -96,4 +92,17 @@
 
 .login-logo{
   width: 120px;
+  margin-bottom: 2rem;
 }
+
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 991.9px){
+  .login-card {
+    max-width: 950px;
+    min-width: auto;
+  }
+}
+
+/* Celulares */
+@media (max-width: 767.98px) {}

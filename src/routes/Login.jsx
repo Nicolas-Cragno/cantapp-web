@@ -3,6 +3,7 @@ import { auth, db } from "../firebase/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";   
+import Logo from "../assets/images/logo-truck.png";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -36,6 +37,7 @@ const Login = () => {
         <div className="page login">
             <div className="login-card">
                 <div className="login-header">
+                    <img src={Logo} alt="" className="login-logo"></img>
                     <h2>Iniciar sesión</h2>
                 </div>
                 <form onSubmit={handleLogin}>

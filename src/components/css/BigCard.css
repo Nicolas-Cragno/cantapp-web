@@ -1,139 +1,151 @@
-.card {
-  background-color: white;
-  border-radius: 1rem;
-  padding: .5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: box-shadow 0.3s ease;
-  width: 100%;
-  min-width: 35vh;
-  height: 25vh;
-  margin: 1vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* === ESTILOS BASE === */
 
-.card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  background-color: rgba(0,0,0,0.01);
-}
-
-.card-title {
-  font-size: 1.8rem;
-  color: #6b7280;
-}
-
-.card-section{
-  height: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; /* opcional, evita que el contenido se desborde */
-}
-
-.card-value {
-  display: inline-block;
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: white;
-  background-color: #1f2937;
-  padding: 0.15rem;
-  padding-right: 0.8rem;
-  padding-left: 0.8rem;
-  border-radius: 0.8rem;
-  margin-top: 0.5rem;
-}
-
-.small-logo{ /* LOGO PARA TODO */
-  margin-left: 1.5rem;
-}
-
-.card-route{
-  text-decoration: none;
-}
-
-.card-logo{
-  width: 10rem;
-  height: 10rem;
-  object-fit: contain;
-}
-
-/* BIG */
+.card,
 .big-card {
   background-color: white;
   border-radius: 1rem;
-  padding: .5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
   width: 100%;
-  min-width: 35vh;
-  height: 25vh;
-  margin: 1vh;
+  height: auto;
+  margin: 1vh auto;
   display: flex;
-  justify-content: center;
   flex-direction: column;
   overflow: hidden;
+  max-width: 1000px;
 }
 
-.small{display: none;}
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: rgba(0, 0, 0, 0.01);
+}
 
-.big-card-title{
-  font-size: 2.5rem;
+.card-title,
+.big-card-title {
+  font-size: 2rem;
   color: #6b7280;
   font-style: oblique;
 }
 
-.big-card-value{
+.card-section {
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.card-value,
+.big-card-value {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
   color: white;
   background-color: #1f2937;
-  padding-top: 0.35rem;
-  padding-bottom: 0.35rem;
-  padding-right: 1rem ;
-  padding-left: 1rem ;
+  padding: 0.35rem 1rem;
   border-radius: 0.8rem;
-  margin: 0.5rem;
+  margin: 0.5rem 0;
 }
 
+.small-logo {
+  margin-left: 1.5rem;
+  font-size: 1.25rem;
+}
 
+.card-route {
+  text-decoration: none;
+}
 
-/* RESPONSIVE */
+.card-logo,
+.card-logo-small {
+  width: 100%;
+  max-width: 10rem;
+  height: auto;
+  object-fit: contain;
+}
 
-@media (max-width: 1300px) {
-  .big{display: none;}
-  .small{display: inline-flex;}
-  .small1{
+/* Ocultar versión mobile por defecto */
+.small-row,
+.small {
+  display: none;
+}
+
+/* Celulares */
+@media (max-width: 767.98px) {
+  .big {
+    display: none;
+  }
+
+  .small,
+  .small-row {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
-    width: 50%;
-  }
-  .small2{
-    display: block;
-    justify-content: center;
-    margin: auto;
-    width: 50%;
-  }
-  .card-logo-small{
-    min-width: 5rem;
-    min-height: 5rem;
-    max-width: 25rem;
-    max-height: 25rem;
-  }
-  .big-card-value{
-    font-size: 1rem;
-    display: flex;
     justify-content: space-between;
+    padding: 1rem;
   }
-  .big-card-section{
-    min-width: 5rem;
-    max-width: 25rem;
+
+  .card-logo-small {
+    width: 60px;
+  }
+
+  .big-card-value {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .big-card-title {
+    font-size: 1.5rem;
   }
 }
 
-@media screen and (max-width: 760px){
+/* Tablets */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .big-card {
+    padding: 0.75rem;
+  }
 
+  .card-logo {
+    max-width: 8rem;
+  }
+
+  .big-card-title {
+    font-size: 2.25rem;
+  }
+
+  .big-card-value {
+    font-size: 1.25rem;
+  }
+
+  .small-row,
+  .small {
+    display: none;
+  }
+}
+
+/* Escritorio */
+@media (min-width: 992px) {
+  .big-card {
+    padding: 1rem 2rem;
+  }
+
+  .card-logo {
+    max-width: 10rem;
+  }
+
+  .big-card-title {
+    font-size: 2.5rem;
+  }
+
+  .big-card-value {
+    font-size: 1.5rem;
+    padding: 0.5rem 1.25rem;
+  }
+
+  .small-row,
+  .small {
+    display: none;
+  }
 }
