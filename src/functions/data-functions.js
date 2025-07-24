@@ -64,8 +64,33 @@ export const formatearFecha = (fechaInput) => {
   return `${dia}/${mes}/${anio}`;
 };
 
+/*
 export const formatearFechaInput = (fecha) => {
   if (!fecha) return "";
   const f = new Date(fecha);
   return f.toISOString().split("T")[0]; // yyyy-mm-dd
+};
+*/
+
+export const formatearFechaInput = (fecha) => {
+  if (!fecha) return "";
+
+  const f = new Date(fecha);
+
+  if (isNaN(f.getTime())) return ""; // <-- evita el error
+
+  return f.toISOString().split("T")[0]; // yyyy-mm-dd
+};
+
+export const formatearFechaHoraInput = (fecha) => {
+  if (!fecha) return "";
+  const d = new Date(fecha);
+  const pad = (n) => (n < 10 ? "0" + n : n);
+  const yyyy = d.getFullYear();
+  const mm = pad(d.getMonth() + 1);
+  const dd = pad(d.getDate());
+  const hh = pad(d.getHours());
+  const min = pad(d.getMinutes());
+  const ss = pad(d.getSeconds());
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 };

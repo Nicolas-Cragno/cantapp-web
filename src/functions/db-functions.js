@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, getDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
 
@@ -14,9 +14,9 @@ export const listarColeccion = async (nombreColeccion, usarCache = true) => {
     const datos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
     const datosOrdenados = [...datos].sort((a, b) => {
-      const fechaA = a.fecha ? a.fecha.toDate() : new Date(0); // si no hay fecha, fecha mínima
-      const fechaB = b.fecha ? b.fecha.toDate() : new Date(0);
-      return fechaB - fechaA; // descendente: más reciente primero
+      const fechaA = a.fecha?.toDate?.() || new Date(a.fecha) || new Date(0);
+      const fechaB = b.fecha?.toDate?.() || new Date(b.fecha) || new Date(0);
+      return fechaB - fechaA;
     });
 
     localStorage.setItem(nombreColeccion, JSON.stringify(datosOrdenados));
@@ -26,6 +26,7 @@ export const listarColeccion = async (nombreColeccion, usarCache = true) => {
     return [];
   }
 };
+
 
 export const listarPorEmpresa = async (nombreColeccion, empresa, usarCache = true) => {
   let cuit = Number(obtenerCuitPorNombre(empresa));
@@ -51,6 +52,44 @@ export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
     return nuevoDocConId;
   } catch (error) {
     console.error(`Error al agregar dni en ${nombreColeccion}:`, error);
+    throw error;
+  }
+};
+
+export const agregarEvento = async (nuevoEvento, idPersonalizado = null) => {
+  try {
+    let docRef;
+
+    if (idPersonalizado) {
+      // Edición: actualiza con id existente
+      docRef = doc(db, "eventos", idPersonalizado);
+      await setDoc(docRef, nuevoEvento);
+    } else {
+      // Nuevo: crea con id automático
+      const colRef = collection(db, "eventos");
+      docRef = await addDoc(colRef, nuevoEvento);
+    }
+
+    // Actualizar cache localStorage
+    const cache = localStorage.getItem("eventos");
+    const cacheActual = cache ? JSON.parse(cache) : [];
+
+    // El id real (automatico o personalizado)
+    const idReal = docRef.id;
+
+    // Si ya existía, reemplazamos; si no, agregamos
+    const indiceExistente = cacheActual.findIndex((item) => item.id === idReal);
+    if (indiceExistente >= 0) {
+      cacheActual[indiceExistente] = { id: idReal, ...nuevoEvento };
+    } else {
+      cacheActual.push({ id: idReal, ...nuevoEvento });
+    }
+
+    localStorage.setItem("eventos", JSON.stringify(cacheActual));
+
+    return { id: idReal, ...nuevoEvento };
+  } catch (error) {
+    console.error("Error al agregar o modificar evento:", error);
     throw error;
   }
 };

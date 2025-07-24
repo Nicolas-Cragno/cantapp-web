@@ -20,6 +20,7 @@
   gap: 1.5rem;
 }
 
+
 @media (min-width: 640px) {
   .section-cards {
     grid-template-columns: repeat(2, 1fr);

@@ -1,9 +1,10 @@
 import TablaEventos from "../../components/tablas/TablaEventos";
 
 const Eventos = () => {
+    
     return(
         <div className="eventos">
-            <TablaEventos></TablaEventos>
+                <TablaEventos></TablaEventos>
         </div>
     );
 };

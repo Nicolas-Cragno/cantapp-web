@@ -1,18 +1,49 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
-import { agregar } from "../../functions/db-functions";
-import { formatearFechaInput } from "../../functions/data-functions"; // deberías tener esto para adaptar a yyyy-mm-dd
+import { agregarEvento, listarColeccion } from "../../functions/db-functions";
+import { formatearFechaHoraInput } from "../../functions/data-functions"; // la función que formatea fecha+hora
 
 const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
+  // Fecha inicial: si viene, convertí a Date, sino ahora con hora
+  const fechaInicial = evento.fecha
+    ? (typeof evento.fecha.toDate === "function" ? evento.fecha.toDate() : new Date(evento.fecha))
+    : new Date();
+
   const [formData, setFormData] = useState({
-    fecha: evento.fecha ? formatearFechaInput(evento.fecha) : "",
+    fecha: formatearFechaHoraInput(fechaInicial),
     subtipo: evento.subtipo || "",
-    persona: evento.persona || "",
+    persona: evento.persona ? String(evento.persona) : "",
     tractor: evento.tractor || "",
     furgon: evento.furgon || "",
     detalle: evento.detalle || "",
     area: evento.area || "",
   });
+
+  const [personas, setPersonas] = useState([]);
+  const [sectores, setSectores] = useState([]);
+
+  useEffect(() => {
+    const cargarPersonas = async () => {
+      try {
+        const data = await listarColeccion("personas");
+        setPersonas(data);
+      } catch (error) {
+        console.error("Error cargando personas:", error);
+      }
+    };
+
+    const cargarSectores = async () => {
+      try {
+        const data = await listarColeccion("sectores");
+        setSectores(data);
+      } catch (error) {
+        console.error("Error cargando sectores:", error);
+      }
+    };
+
+    cargarPersonas();
+    cargarSectores();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,18 +54,27 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
     e.preventDefault();
 
     try {
+      // La fecha guardada debe ser la original (Date) cuando edito, o la fecha actual (Date) si es nuevo
+      const fechaParaGuardar = evento.fecha
+        ? (typeof evento.fecha.toDate === "function" ? evento.fecha.toDate() : new Date(evento.fecha))
+        : new Date();
+
       const datosAGuardar = {
         ...formData,
-        fecha: new Date(formData.fecha),
+        fecha: fechaParaGuardar,
+        persona: formData.persona ? Number(formData.persona) : null,
+        tractor: formData.tractor ? Number(formData.tractor) : null,
+        furgon: formData.furgon ? Number(formData.furgon) : null,
       };
 
       if (evento.id) {
-        await agregar("eventos", evento.id, datosAGuardar);
+        await agregarEvento(datosAGuardar, evento.id);
       } else {
-        await agregar("eventos", null, datosAGuardar); // nuevo
+        await agregarEvento(datosAGuardar);
       }
 
       if (onGuardar) onGuardar();
+      alert("Evento guardado correctamente.");
     } catch (error) {
       console.error("Error al guardar evento:", error);
     }
@@ -43,46 +83,101 @@ const FormularioEvento = ({ evento = {}, onClose, onGuardar }) => {
   return (
     <div className="form">
       <div className="form-content">
-        <h2>{evento.id ? "Editar Evento" : "Nuevo Evento"}</h2>
+        <div className="form-header">
+          <h2>{evento.id ? "Editar Evento" : "Nuevo Evento"}</h2>
+        </div>
         <form onSubmit={handleSubmit}>
+          {/* Fecha y hora - solo lectura */}
           <label>
-            Fecha:
-            <input type="date" name="fecha" value={formData.fecha} onChange={handleChange} required />
+            Fecha y hora:
+            <input
+              type="text"
+              name="fecha"
+              value={formData.fecha}
+              readOnly
+              disabled
+            />
           </label>
 
           <label>
             Subtipo:
-            <input type="text" name="subtipo" value={formData.subtipo} onChange={handleChange} required />
+            <input
+              type="text"
+              name="subtipo"
+              value={formData.subtipo}
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <label>
-            Persona (DNI):
-            <input type="text" name="persona" value={formData.persona} onChange={handleChange} />
+            Persona:
+            <select
+              name="persona"
+              value={formData.persona}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccione una persona</option>
+              {personas.map((p) => (
+                <option key={p.dni} value={p.dni}>
+                  {p.apellido} {p.nombres} (DNI: {p.dni})
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
             Tractor:
-            <input type="text" name="tractor" value={formData.tractor} onChange={handleChange} />
+            <input
+              type="number"
+              name="tractor"
+              value={formData.tractor}
+              onChange={handleChange}
+            />
           </label>
 
           <label>
             Furgón:
-            <input type="text" name="furgon" value={formData.furgon} onChange={handleChange} />
-          </label>
-
-          <label>
-            Detalle:
-            <textarea name="detalle" value={formData.detalle} onChange={handleChange} />
+            <input
+              type="number"
+              name="furgon"
+              value={formData.furgon}
+              onChange={handleChange}
+            />
           </label>
 
           <label>
             Área:
-            <input type="text" name="area" value={formData.area} onChange={handleChange} />
+            <select
+              name="area"
+              value={formData.area}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccione un sector</option>
+              {sectores.map((s) => (
+                <option key={s.id || s.nombre} value={s.nombre}>
+                  {s.nombre}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            Detalle:
+            <textarea
+              name="detalle"
+              value={formData.detalle}
+              onChange={handleChange}
+            />
           </label>
 
           <div className="form-buttons">
             <button type="submit">Guardar</button>
-            <button type="button" onClick={onClose}>Cancelar</button>
+            <button type="button" onClick={onClose}>
+              Cancelar
+            </button>
           </div>
         </form>
       </div>
