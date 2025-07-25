@@ -77,8 +77,21 @@
   margin-top: -0.7rem;
 }
 
+.hora {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -0.7rem;
+  font-weight: 600;
+}
+
 .ficha-info {
+  margin-top: 2rem;
   padding: 1rem;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
 }
 
 .ficha-buttons {

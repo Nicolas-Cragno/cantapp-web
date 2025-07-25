@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
-import { formatearFechaHoraInput } from "../../functions/data-functions"; // la función que formatea fecha+hora
+import { formatearFecha, formatearFechaHoraInput, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
 import tiposEventos from "../../functions/data/eventos.json";
 
 const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose, onGuardar }) => {
-  // Fecha inicial: si viene, convertí a Date, sino ahora con hora
-  const fechaInicial = evento.fecha
-    ? (typeof evento.fecha.toDate === "function" ? evento.fecha.toDate() : new Date(evento.fecha))
-    : new Date();
 
   const [formData, setFormData] = useState({
-    fecha: formatearFechaHoraInput(fechaInicial),
+    fecha: formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha),
     subtipo: evento.subtipo || "",
     persona: evento.persona ? String(evento.persona) : "",
     tractor: evento.tractor || "",
@@ -77,39 +73,39 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const fechaParaGuardar = formData.fecha
-      ? new Date(formData.fecha)
-      : new Date();
+    try {
+      const fechaParaGuardar = evento.id
+        ? evento.fecha
+        : new Date();
 
-    if (isNaN(fechaParaGuardar.getTime())) {
-      throw new Error("La fecha es inválida");
+      if (isNaN(new Date(fechaParaGuardar).getTime())) {
+        throw new Error("La fecha es inválida");
+      }
+
+      const datosAGuardar = {
+        ...formData,
+        fecha: fechaParaGuardar,
+        persona: formData.persona ? Number(formData.persona) : null,
+        tractor: formData.tractor ? Number(formData.tractor) : null,
+        furgon: formData.furgon ? Number(formData.furgon) : null,
+        area: formData.area ? formData.area : null,
+        detalle: formData.area ? formData.detalle.toUpperCase() : null,
+      };
+
+      if (evento.id) {
+        await agregarEvento(datosAGuardar, evento.id);
+      } else {
+        await agregarEvento(datosAGuardar);
+      }
+
+      if (onGuardar) onGuardar();
+      alert("Evento guardado correctamente.");
+    } catch (error) {
+      console.error("Error al guardar evento:", error);
+      alert(`Error al guardar evento: ${error.message}`);
     }
-
-    const datosAGuardar = {
-      ...formData,
-      fecha: fechaParaGuardar,
-      persona: formData.persona ? Number(formData.persona) : null,
-      tractor: formData.tractor ? Number(formData.tractor) : null,
-      furgon: formData.furgon ? Number(formData.furgon) : null,
-      area: formData.area ? formData.area : null,
-      detalle: formData.area ? formData.detalle.toUpperCase() : null,
-    };
-
-    if (evento.id) {
-      await agregarEvento(datosAGuardar, evento.id);
-    } else {
-      await agregarEvento(datosAGuardar);
-    }
-
-    if (onGuardar) onGuardar();
-    alert("Evento guardado correctamente.");
-  } catch (error) {
-    console.error("Error al guardar evento:", error);
-    alert(`Error al guardar evento: ${error.message}`);
-  }
   };
   return (
     <div className="form">

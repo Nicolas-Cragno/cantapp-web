@@ -6,10 +6,11 @@ import {
   FaBars,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { VscDebugBreakpointLog } from "react-icons/vsc";
 import { GiAutoRepair } from "react-icons/gi";
-import { BsFillFuelPumpFill } from "react-icons/bs";
 import { IoCalendarSharp } from "react-icons/io5";
 import "./css/SideBar.css";
+import { BsFillFuelPumpFill } from "react-icons/bs";
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -22,13 +23,15 @@ const SideBar = () => {
   const tieneAcceso = (rolesPermitidos) => rolesPermitidos.includes(rol);
 
   // Lista de links con roles permitidos
-  const links = [
+  const linksAll = [
     {
       to: "/",
       icon: <FaHome className="nav-icon" />,
       label: "Inicio",
       roles: ["dev", "admin", "user"],
     },
+  ]
+  const linksManagement = [
     {
       to: "/personal",
       icon: <FaUser className="nav-icon" />,
@@ -41,6 +44,10 @@ const SideBar = () => {
       label: "Flota",
       roles: ["dev", "admin"],
     },
+    
+  ];
+
+  const linksEvents = [
     {
       to: "/actividad",
       icon: <IoCalendarSharp className="nav-icon" />,
@@ -55,12 +62,17 @@ const SideBar = () => {
     },
     {
       to: "/taller-tractores",
-      icon: <GiAutoRepair className="nav-icon" />,
+      icon: <GiAutoRepair className="nav-icon dev" />,
       label: "Taller",
       roles: ["dev", "admin", "user"],
     },
-  ];
-
+    {
+      to: "/control-combustible",
+      icon: <BsFillFuelPumpFill className="nav-icon dev" />,
+      label: "Consumo",
+      roles: ["dev", "admin", "user"], 
+    }
+  ]
   // Toggle de colapsado
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -74,7 +86,31 @@ const SideBar = () => {
         </button>
       </div>
       <nav className="nav">
-        {links.map(
+        {linksAll.map(
+          ({ to, icon, label, roles }) =>
+            tieneAcceso(roles) && (
+              <a key={to} href={to} className="nav-link">
+                {icon}
+                {!collapsed && <span>{label}</span>}
+              </a>
+            )
+        )}
+      </nav>
+      <spam className="divisor"><VscDebugBreakpointLog/></spam>
+      <nav className="nav">
+        {linksManagement.map(
+          ({ to, icon, label, roles }) =>
+            tieneAcceso(roles) && (
+              <a key={to} href={to} className="nav-link">
+                {icon}
+                {!collapsed && <span>{label}</span>}
+              </a>
+            )
+        )}
+      </nav>
+      <spam className="divisor"><VscDebugBreakpointLog/></spam>
+      <nav className="nav">
+        {linksEvents.map(
           ({ to, icon, label, roles }) =>
             tieneAcceso(roles) && (
               <a key={to} href={to} className="nav-link">

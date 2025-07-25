@@ -14,7 +14,9 @@ import ChoferesLarga from "../containers/sub-containers/ChoferesLarga";
 import ChoferesMovimiento from "../containers/sub-containers/ChoferesMovimiento";
 import Tractores from "../containers/sub-containers/Tractores";
 import Furgones from "../containers/sub-containers/Furgones";
+// Contenedores en edicion
 import Utilitarios from "../containers/sub-containers/Utilitarios";
+import ControlCombustible from "../containers/ControlCombustilbe";
 
 export const rutasProtegidas = (
   <>
@@ -131,12 +133,22 @@ export const rutasProtegidas = (
     <Route
       path="/taller-tractores"
       element={
-        <RutaProtegida rolRequerido="user">
+        <RutaProtegida rolRequerido="dev">
           <Layout>
             <TallerTractores />
           </Layout>
         </RutaProtegida>
       }
     />
-  </>
+    <Route
+      path="/control-combustible"
+      element={
+        <RutaProtegida rolRequerido="dev">
+          <Layout>
+            <ControlCombustible />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+      </>
 );

@@ -36,6 +36,15 @@
   font-weight: bold;
 }
 
+.dev{
+  color: gold;
+}
+
+.divisor{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #333232;
+}
 .nav {
   display: flex;
   flex-direction: column;
