@@ -64,6 +64,26 @@ export const formatearFecha = (fechaInput) => {
   return `${dia}/${mes}/${anio}`;
 };
 
+export const formatearHora = (fechaInput) => {
+  if (!fechaInput) return "";
+
+  // Si es Timestamp Firestore
+  if (fechaInput.seconds !== undefined && fechaInput.nanoseconds !== undefined) {
+    fechaInput = new Date(fechaInput.seconds * 1000 + fechaInput.nanoseconds / 1000000);
+  } else if (typeof fechaInput.toDate === "function") {
+    fechaInput = fechaInput.toDate();
+  } else {
+    fechaInput = new Date(fechaInput);
+  }
+
+  if (isNaN(fechaInput.getTime())) return "";
+
+  const horas = String(fechaInput.getHours()).padStart(2, "0");
+  const minutos = String(fechaInput.getMinutes()).padStart(2, "0");
+
+  return `${horas}:${minutos}`;
+};
+
 /*
 export const formatearFechaInput = (fecha) => {
   if (!fecha) return "";

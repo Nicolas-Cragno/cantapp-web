@@ -17,11 +17,16 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
     tractor: evento.tractor || "",
     furgon: evento.furgon || "",
     detalle: evento.detalle || "",
-    area: evento.area || "",
+    area: evento.area || area || "",
   });
-  const subtiposDisponibles = tipoPorArea ? tiposEventos[tipoPorArea] || [] : Object.values(tiposEventos).flat();
+
+  const subtiposDisponibles = tipoPorArea ? tiposEventos[tipoPorArea] || [] : Object.entries(tiposEventos).flatMap(
+  ([area, subtipos]) => subtipos.map((sub) => ({ area, subtipo: sub })));
+
   const [personas, setPersonas] = useState([]);
   const [sectores, setSectores] = useState([]);
+  const [tractores, setTractores] = useState([]);
+  const [furgones, setFurgones] = useState([]);
 
   useEffect(() => {
     const cargarPersonas = async () => {
@@ -42,8 +47,28 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
       }
     };
 
+    const cargarTractores = async () => {
+      try{
+        const data = await listarColeccion("tractores");
+        setTractores(data);
+      } catch(error){
+        console.error("Error al cargar tractores: ", error);
+      }
+    }
+
+    const cargarFurgones = async () => {
+      try{
+        const data = await listarColeccion("furgones");
+        setFurgones(data);
+      } catch (error){
+        console.error("Error al cargar furgones:", error);
+      }
+    }
+
     cargarPersonas();
     cargarSectores();
+    cargarTractores();
+    cargarFurgones();
   }, []);
 
   const handleChange = (e) => {
@@ -52,40 +77,46 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      // La fecha guardada debe ser la original (Date) cuando edito, o la fecha actual (Date) si es nuevo
-      const fechaParaGuardar = evento.fecha
-        ? (typeof evento.fecha.toDate === "function" ? evento.fecha.toDate() : new Date(evento.fecha))
-        : new Date();
+  try {
+    const fechaParaGuardar = formData.fecha
+      ? new Date(formData.fecha)
+      : new Date();
 
-      const datosAGuardar = {
-        ...formData,
-        fecha: fechaParaGuardar,
-        persona: formData.persona ? Number(formData.persona) : null,
-        tractor: formData.tractor ? Number(formData.tractor) : null,
-        furgon: formData.furgon ? Number(formData.furgon) : null,
-      };
-
-      if (evento.id) {
-        await agregarEvento(datosAGuardar, evento.id);
-      } else {
-        await agregarEvento(datosAGuardar);
-      }
-
-      if (onGuardar) onGuardar();
-      alert("Evento guardado correctamente.");
-    } catch (error) {
-      console.error("Error al guardar evento:", error);
+    if (isNaN(fechaParaGuardar.getTime())) {
+      throw new Error("La fecha es inválida");
     }
-  };
 
+    const datosAGuardar = {
+      ...formData,
+      fecha: fechaParaGuardar,
+      persona: formData.persona ? Number(formData.persona) : null,
+      tractor: formData.tractor ? Number(formData.tractor) : null,
+      furgon: formData.furgon ? Number(formData.furgon) : null,
+      area: formData.area ? formData.area : null,
+      detalle: formData.area ? formData.detalle.toUpperCase() : null,
+    };
+
+    if (evento.id) {
+      await agregarEvento(datosAGuardar, evento.id);
+    } else {
+      await agregarEvento(datosAGuardar);
+    }
+
+    if (onGuardar) onGuardar();
+    alert("Evento guardado correctamente.");
+  } catch (error) {
+    console.error("Error al guardar evento:", error);
+    alert(`Error al guardar evento: ${error.message}`);
+  }
+  };
   return (
     <div className="form">
       <div className="form-content">
         <div className="form-header">
           <h2>{evento.id ? "Editar Evento" : "Nuevo Evento"}</h2>
+          <p>* campo obligatorio</p>
         </div>
         <form onSubmit={handleSubmit}>
           {/* Fecha y hora - solo lectura */}
@@ -101,7 +132,7 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
           </label>
 
           <label>
-            Tipo
+            Tipo *
             <select
               name="subtipo"
               value={formData.subtipo}
@@ -109,9 +140,19 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
               required
             >
               <option value="">Seleccione subtipo</option>
-              {subtiposDisponibles.map((sub, i) => (
-                <option key={i} value={sub}>{sub}</option>
-              ))}
+
+              {/* Si es un array de strings */}
+              {typeof subtiposDisponibles[0] === "string"
+                ? subtiposDisponibles.map((sub, i) => (
+                    <option key={i} value={sub}>
+                      {sub}
+                    </option>
+                  ))
+                : subtiposDisponibles.map((item, i) => (
+                    <option key={i} value={item.subtipo}>
+                      {item.area} - {item.subtipo}
+                    </option>
+                  ))}
             </select>
           </label>
 
@@ -121,9 +162,9 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
               name="persona"
               value={formData.persona}
               onChange={handleChange}
-              required
+              //required
             >
-              <option value="">Seleccione una persona</option>
+              <option value=""></option>
               {personas.map((p) => (
                 <option key={p.dni} value={p.dni}>
                   {p.apellido} {p.nombres} (DNI: {p.dni})
@@ -134,31 +175,45 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
 
           <label>
             Tractor
-            <input
+            <select
               type="number"
               name="tractor"
               value={formData.tractor}
               onChange={handleChange}
-            />
+            >
+              <option value=""></option>
+              {tractores.map((t) => (
+                <option key={t.interno} value={t.interno}>
+                  {t.dominio} ({t.interno})
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
             Furgón
-            <input
+            <select
               type="number"
               name="furgon"
               value={formData.furgon}
               onChange={handleChange}
-            />
+            >
+              <option value=""></option>
+              {furgones.map((f) => (
+                <option key={f.interno} value={f.interno}>
+                  {f.dominio} ({f.interno})
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
-            Área:
+            Sector:
             {area ? (
               <input
                 type="text"
                 name="area"
-                value={area}
+                value={formData.area}
                 readOnly
                 disabled
               />
@@ -169,7 +224,7 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
                 onChange={handleChange}
                 required
               >
-                <option value="">Seleccione un sector</option>
+                <option value=""></option>
                 {sectores.map((s) => (
                   <option key={s.id || s.nombre} value={s.nombre}>
                     {s.nombre}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion, buscarNombrePorDni } from "../../functions/db-functions"; 
-import { formatearFecha } from "../../functions/data-functions";
+import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEvento from "../fichas/FichaEvento";
 import FormularioEvento from "../forms/FormularioEvento";
 import "../css/Tables.css";
@@ -14,18 +14,29 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
 
-  const title = tipo != null ? area.toUpperCase() : "EVENTOS";
+  // Evita error si 'area' es null
+  const title = tipo != null && typeof area === "string" ? area.toUpperCase() : "EVENTOS";
 
   const cargarEventos = async () => {
     setLoading(true);
     try {
       const datos = await listarColeccion("eventos");
-      const eventosFiltrados = tipo != null
-        ? datos.filter(e => e.area === area.toUpperCase())
-        : datos;
-      setEventos(eventosFiltrados);
 
-      const dnisUnicos = [...new Set(eventosFiltrados.map(e => e.persona).filter(Boolean))];
+      const eventosFiltrados =
+        tipo != null && typeof area === "string"
+          ? datos.filter((e) => e.area === area.toUpperCase())
+          : datos;
+
+      // Ordenar de más nuevo a más viejo
+      const eventosOrdenados = [...eventosFiltrados].sort((a, b) => {
+        const fechaA = new Date(a.fecha);
+        const fechaB = new Date(b.fecha);
+        return fechaB - fechaA; // más nuevo primero
+      });
+
+      setEventos(eventosOrdenados);
+
+      const dnisUnicos = [...new Set(eventosOrdenados.map(e => e.persona).filter(Boolean))];
       const nombresMap = {};
 
       await Promise.all(
@@ -48,12 +59,10 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
     cargarEventos();
   }, [tipo, area]);
 
-  // Abrir detalle evento
   const handleClickEvento = (evento) => {
     setEventoSeleccionado(evento);
   };
 
-  // Cerrar detalle o formulario
   const cerrarModal = () => {
     setEventoSeleccionado(null);
   };
@@ -61,7 +70,6 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
     setModalAgregarVisible(false);
   };
 
-  // Recargar lista después de guardar evento
   const handleGuardar = async () => {
     await cargarEventos();
     setModalAgregarVisible(false);
@@ -70,8 +78,9 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
 
   const eventosFiltrados = eventos.filter((e) => {
     const fechaTxt = formatearFecha(e.fecha);
+    const horaTxt = formatearHora(e.fecha);
     const nombre = nombresPorDni[e.persona] || e.persona || "";
-    const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${e.furgon || ""} ${fechaTxt}`;
+    const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${e.furgon || ""} ${fechaTxt} ${horaTxt}`;
     return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
   });
 
@@ -97,12 +106,13 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
               key={evento.id}
               className="table-item"
               onClick={() => handleClickEvento(evento)}
-            >
+              >
+              <span className="table-info">{formatearFecha(evento.fecha)} - {formatearHora(evento.fecha)} HS</span>
+              <span className="table-info"></span>
               <span className="table-nombre">{evento.subtipo}</span>
-              <span className="table-info">{nombresPorDni[evento.persona] || evento.persona}</span>
-              <span className="table-info">Tractor: {evento.tractor}</span>
-              <span className="table-info">Furgón: {evento.furgon}</span>
-              <span className="table-info">{formatearFecha(evento.fecha)}</span>
+              <span className="table-info">{evento.persona ? (nombresPorDni[evento.persona] || evento.persona) : ("")}</span>
+              <span className="table-info">{evento.tractor ? ("Tractor " + evento.tractor) : ("")}</span>
+              <span className="table-info">{evento.furgon ? ("Furgon " + evento.furgon) : ("")}</span>
             </li>
           ))
         ) : (
@@ -122,7 +132,7 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
         <FormularioEvento
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
-          area={area.toUpperCase()}
+          area={typeof area === "string" ? area.toUpperCase() : ""}
           tipoPorArea={tipoPorArea}
         />
       )}

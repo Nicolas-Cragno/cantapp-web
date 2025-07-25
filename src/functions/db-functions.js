@@ -16,7 +16,7 @@ export const listarColeccion = async (nombreColeccion, usarCache = true) => {
     const datosOrdenados = [...datos].sort((a, b) => {
       const fechaA = a.fecha?.toDate?.() || new Date(a.fecha) || new Date(0);
       const fechaB = b.fecha?.toDate?.() || new Date(b.fecha) || new Date(0);
-      return fechaB - fechaA;
+      return fechaA - fechaB;
     });
 
     localStorage.setItem(nombreColeccion, JSON.stringify(datosOrdenados));
@@ -27,13 +27,12 @@ export const listarColeccion = async (nombreColeccion, usarCache = true) => {
   }
 };
 
-
 export const listarPorEmpresa = async (nombreColeccion, empresa, usarCache = true) => {
   let cuit = Number(obtenerCuitPorNombre(empresa));
   const datos = await listarColeccion(nombreColeccion, usarCache);
   const datosFiltrados = datos.filter(item => item.empresa === cuit);
   return datosFiltrados;
-}
+};
 
 // Agregar dni y actualizar cache
 export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {

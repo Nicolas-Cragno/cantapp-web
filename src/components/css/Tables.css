@@ -79,6 +79,15 @@
   background-color: rgba(0, 0, 0, 0.02);
 }
 
+.table-dni{
+  font-weight: 500;
+  color: #111827;
+  flex: 0.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .table-nombre {
   font-weight: 400;
   color: #111827;
@@ -122,6 +131,9 @@
     font-style: normal;
     margin-bottom: 0.25rem;
   }
+  .table-dni{
+    display: none;
+  }
 }
 
 /* Tablets */
@@ -131,6 +143,9 @@
   }
   .table-info {
     font-size: 0.9rem;
+  }
+  .table-dni{
+    font-size: 1rem;
   }
   .table-busqueda {
     width: 60%;

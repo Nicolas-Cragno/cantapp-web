@@ -81,8 +81,14 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
               className="table-item"
               onClick={() => handleClickVehiculo(vehiculo)}
             >
+              <span className="table-dni">
+                {vehiculo.interno}
+              </span>
               <span className="table-nombre">
-                {vehiculo.interno} - {vehiculo.dominio}
+                {vehiculo.dominio}
+              </span>
+              <span className="table-nombre">
+                {vehiculo.marca} {vehiculo.modelo ? (vehiculo.modelo) : ("")}
               </span>
               <span className="table-info">{vehiculo.detalle}</span>
             </li>

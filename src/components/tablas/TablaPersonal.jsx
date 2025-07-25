@@ -83,8 +83,11 @@ const TablaPersonal = ({ tipoPuesto }) => {
               className="table-item"
               onClick={() => handleClickPersona(persona)}
             >
+              <span className="table-dni">
+                {persona.id}
+              </span>
               <span className="table-nombre">
-                <strong>{persona.apellido}</strong> {persona.nombres}
+                <strong>{persona.apellido}</strong>, {persona.nombres}
               </span>
               <span className="table-info">{nombreEmpresa(persona.empresa)}</span>
             </li>

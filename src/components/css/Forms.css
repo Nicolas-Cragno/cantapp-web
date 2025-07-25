@@ -28,6 +28,11 @@
   box-sizing: border-box;
 }
 
+.form-header{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
 /* Estilos para los inputs y labels */
 .form-content form label {
   display: block;
