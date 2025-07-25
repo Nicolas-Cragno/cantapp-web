@@ -56,6 +56,10 @@ const TablaPersonal = ({ tipoPuesto }) => {
   const personasFiltradas = personas.filter((p) => {
     const nombreCompleto = `${p.apellido || ""} ${p.nombres || ""} ${p.detalle || ""}`;
     return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+  }).sort((a,b) => {
+    const pA = (a.apellido || "").toLowerCase();
+    const pB = (b.apellido || "").toLowerCase();
+    return pA.localeCompare(pB);
   });
 
   return (

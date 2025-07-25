@@ -73,40 +73,40 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const fechaParaGuardar = evento.id
-        ? evento.fecha
-        : new Date();
+  try {
+    const fechaParaGuardar = evento.id
+      ? evento.fecha
+      : new Date();
 
-      if (isNaN(new Date(fechaParaGuardar).getTime())) {
-        throw new Error("La fecha es inválida");
-      }
-
-      const datosAGuardar = {
-        ...formData,
-        fecha: fechaParaGuardar,
-        persona: formData.persona ? Number(formData.persona) : null,
-        tractor: formData.tractor ? Number(formData.tractor) : null,
-        furgon: formData.furgon ? Number(formData.furgon) : null,
-        area: formData.area ? formData.area : null,
-        detalle: formData.area ? formData.detalle.toUpperCase() : null,
-      };
-
-      if (evento.id) {
-        await agregarEvento(datosAGuardar, evento.id);
-      } else {
-        await agregarEvento(datosAGuardar);
-      }
-
-      if (onGuardar) onGuardar();
-      alert("Evento guardado correctamente.");
-    } catch (error) {
-      console.error("Error al guardar evento:", error);
-      alert(`Error al guardar evento: ${error.message}`);
+    if (isNaN(new Date(fechaParaGuardar).getTime())) {
+      throw new Error("La fecha es inválida");
     }
-  };
+
+    const datosAGuardar = {
+      ...formData,
+      fecha: fechaParaGuardar,
+      persona: formData.persona ? Number(formData.persona) : null,
+      tractor: formData.tractor ? Number(formData.tractor) : null,
+      furgon: formData.furgon ? Number(formData.furgon) : null,
+      area: formData.area ? formData.area : null,
+      detalle: formData.area ? formData.detalle.toUpperCase() : null,
+    };
+
+    if (evento.id) {
+      await agregarEvento(datosAGuardar, evento.id);
+    } else {
+      await agregarEvento(datosAGuardar);
+    }
+
+    if (onGuardar) onGuardar();
+    alert("Evento guardado correctamente.");
+  } catch (error) {
+    console.error("Error al guardar evento:", error);
+    alert(`Error al guardar evento: ${error.message}`);
+  }
+};
   return (
     <div className="form">
       <div className="form-content">
