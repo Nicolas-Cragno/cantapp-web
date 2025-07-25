@@ -33,6 +33,37 @@ const Header = () => {
     obtenerNombre();
   }, []);
 
+  // manejar inactividad (3 horas sin hacer nada)
+  useEffect(() => {
+    const tiempoInactividad = 3 * 60 * 60 * 1000; // 3 horas en milisegundos
+    let timeout;
+
+    const resetTimeout = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        console.log("Sesión cerrada por inactividad");
+        handleLogout();
+      }, tiempoInactividad);
+    };
+
+    // Eventos que reinician el contador de inactividad
+    const eventos = ["mousemove", "keydown", "click", "scroll"];
+
+    eventos.forEach((evento) => {
+      window.addEventListener(evento, resetTimeout);
+    });
+
+    resetTimeout(); // Iniciar el contador al principio
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+      eventos.forEach((evento) => {
+        window.removeEventListener(evento, resetTimeout);
+      });
+    };
+  }, []);
+
+
   // Cerrar el menú si se hace clic fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -48,6 +79,12 @@ const Header = () => {
   const handleLogout = async () => {
     await signOut(auth);
     localStorage.clear();
+    sessionStorage.clear();
+    if('caches' in window){
+      caches.keys().then((names) => {
+        names.forEach((name) => caches.delete(name));
+      });
+    }
     navigate("/login");
   };
 
