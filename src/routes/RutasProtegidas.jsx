@@ -8,13 +8,13 @@ import Personal from "../containers/Personal";
 import Flota from "../containers/Flota";
 import Actividad from "../containers/Actividad";
 import Porteria from "../containers/Porteria";
-import TallerTractores from "../containers/TallerTractores";
 import Mecanicos from "../containers/sub-containers/Mecanicos";
 import ChoferesLarga from "../containers/sub-containers/ChoferesLarga";
 import ChoferesMovimiento from "../containers/sub-containers/ChoferesMovimiento";
 import Tractores from "../containers/sub-containers/Tractores";
 import Furgones from "../containers/sub-containers/Furgones";
 // Contenedores en edicion
+import TallerTractores from "../containers/TallerTractores";
 import Utilitarios from "../containers/sub-containers/Utilitarios";
 import ControlCombustible from "../containers/ControlCombustilbe";
 

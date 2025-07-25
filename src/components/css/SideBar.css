@@ -40,15 +40,11 @@
   color: gold;
 }
 
-.divisor{
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  color: #333232;
-}
 .nav {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  margin-top: 3rem;
 }
 
 .nav-link {

@@ -64,13 +64,13 @@ const SideBar = () => {
       to: "/taller-tractores",
       icon: <GiAutoRepair className="nav-icon dev" />,
       label: "Taller",
-      roles: ["dev", "admin", "user"],
+      roles: ["dev"],
     },
     {
       to: "/control-combustible",
       icon: <BsFillFuelPumpFill className="nav-icon dev" />,
       label: "Consumo",
-      roles: ["dev", "admin", "user"], 
+      roles: ["dev"], 
     }
   ]
   // Toggle de colapsado
@@ -96,7 +96,6 @@ const SideBar = () => {
             )
         )}
       </nav>
-      <spam className="divisor"><VscDebugBreakpointLog/></spam>
       <nav className="nav">
         {linksManagement.map(
           ({ to, icon, label, roles }) =>
@@ -108,7 +107,6 @@ const SideBar = () => {
             )
         )}
       </nav>
-      <spam className="divisor"><VscDebugBreakpointLog/></spam>
       <nav className="nav">
         {linksEvents.map(
           ({ to, icon, label, roles }) =>
