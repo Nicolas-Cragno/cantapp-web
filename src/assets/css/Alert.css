@@ -1,0 +1,76 @@
+.no-autorizado-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  text-align: center;
+  padding: 1rem;
+}
+
+.no-autorizado-titulo {
+  font-size: 2rem;
+  color: #cc0000;
+}
+
+.no-autorizado-texto {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+}
+
+.no-autorizado-boton {
+  margin-top: 2rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.no-autorizado-boton:hover {
+  background-color: #0056b3;
+}
+
+.pagina404-container {
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.pagina404-titulo {
+  font-size: 6rem;
+  font-weight: bold;
+  color: #ff4444;
+}
+
+.pagina404-subtitulo {
+  font-size: 2rem;
+  margin-top: -1rem;
+}
+
+.pagina404-texto {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  max-width: 500px;
+}
+
+.pagina404-boton {
+  margin-top: 2rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pagina404-boton:hover {
+  background-color: #0056b3;
+}
