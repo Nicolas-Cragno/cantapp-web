@@ -2,6 +2,7 @@ import "../css/Fichas.css";
 import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
 import { useState } from "react";
 import FormularioPersona from "../forms/FormularioPersona";
+import LogoEmpresa from "../LogoEmpresa";
 
 const FichaPersonal = ({ persona, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -28,13 +29,26 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
                     <span className="nombres">{persona.nombres}</span>
                 </h1>
                 <hr />
-                <p className="puesto"><strong>{persona.puesto}</strong></p>
-            <div className="ficha-info">
-                <p><strong>DNI: </strong> {persona.dni || persona.id}</p>
-                <p><strong>Empresa: </strong> {empresa}</p>
-                <p><strong>Ingreso: </strong> {fechaIngreso || ""}</p>
-                <p><strong>Detalle: </strong> {persona.detalle || ""}</p>
-            </div>
+                <div className="info-right">
+                  <p><strong>DNI </strong> {persona.dni || persona.id}</p>
+                </div>
+                <p className="ficha-info-title"><strong>Información laboral</strong></p>
+                <div className="ficha-info container">
+                  <div className="row">
+                    <div className="col-md-9">
+                      <p className="ficha-info-item"><strong>Empresa</strong> <spam className="ficha-info-item-txt">{nombreEmpresa(persona.empresa)}</spam></p>
+                      <p className="ficha-info-item"><strong>Ingreso</strong> <spam className="ficha-info-item-txt">{fechaIngreso || ""}</spam></p>
+                      <p className="ficha-info-item"><strong>Puesto</strong> <spam className="ficha-info-item-txt">{persona.puesto}</spam></p>
+                    </div>
+                    <div className="col-md-3 col-img">
+                      <LogoEmpresa cuitEmpresa={persona.empresa}/>
+                    </div>
+                  </div>
+                </div>
+                <p className="ficha-info-title"><strong>Detalle</strong></p>
+                <div className="ficha-info">
+                    <p>{persona.detalle || ""}</p>
+                </div>
             <div className="ficha-buttons">
               <button onClick={() => setModoEdicion(true)}>Editar</button>
             </div>

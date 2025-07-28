@@ -5,7 +5,7 @@ import FichaPersonal from "../fichas/FichaPersonal";
 import FormularioPersona from "../forms/FormularioPersona";
 import "../css/Tables.css";
 import { nombreEmpresa } from "../../functions/data-functions";
-import LogoEmpresa from "../LogoEmpresa";
+import LogoEmpresaTxt from "../LogoEmpresaTxt";
 
 const TablaPersonal = ({ tipoPuesto }) => {
   const [personas, setPersonas] = useState([]);
@@ -101,7 +101,7 @@ const TablaPersonal = ({ tipoPuesto }) => {
                     <td>{persona.dni}</td>
                     <td><strong>{persona.apellido}</strong></td>
                     <td>{persona.nombres}</td>
-                    <td><LogoEmpresa cuitEmpresa={persona.empresa}/></td>
+                    <td><LogoEmpresaTxt cuitEmpresa={persona.empresa}/></td>
                   </tr>
                 ))}
               </tbody>

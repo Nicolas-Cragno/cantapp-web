@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
 import {nombreEmpresa} from "../../functions/data-functions";
-import LogoEmpresa from "../LogoEmpresa";
+import LogoEmpresaTxt from "../LogoEmpresaTxt";
 import FichaVehiculo from "../fichas/FichaVehiculo";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
 import "../css/Tables.css";
@@ -96,7 +96,7 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
                     <td>{vehiculo.dominio}</td>
                     <td>{vehiculo.marca}</td>
                     <td>{vehiculo.modelo === 0 ? ("") : (vehiculo.modelo)}</td>
-                    <td><LogoEmpresa cuitEmpresa={vehiculo.empresa}/></td>
+                    <td><LogoEmpresaTxt cuitEmpresa={vehiculo.empresa}/></td>
                   </tr>
                 ))}
               </tbody>

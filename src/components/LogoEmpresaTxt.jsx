@@ -5,7 +5,7 @@ import LogoDefault from "../assets/images/logo-truck.png";
 import { nombreEmpresa } from "../functions/data-functions";
 import "./css/Logos.css";
 
-const LogoEmpresa = ({cuitEmpresa}) => {
+const LogoEmpresaTxt = ({cuitEmpresa}) => {
 
     const logos = {
         "30610890403" : LogoTC,
@@ -17,10 +17,11 @@ const LogoEmpresa = ({cuitEmpresa}) => {
   const nombre = nombreEmpresa(cuitEmpresa);
 
   return(
-    <div className="logo-empresa">
-        <img src={logo} alt={nombre} className="logo-img"></img>
+    <div className="logo-empresa-txt">
+        <img src={logo} alt={nombre} className="logo-img-small"></img>
+        <spam className="logo-name">{nombre}</spam>
     </div>
   );
 };
 
-export default LogoEmpresa;
+export default LogoEmpresaTxt;

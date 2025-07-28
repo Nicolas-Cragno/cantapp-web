@@ -72,8 +72,9 @@
   font-weight: 700;
 }
 
-.puesto {
-  text-align: right;
+.info-right {
+  display: flex;
+  justify-content: right;
   margin-top: -0.7rem;
 }
 
@@ -84,11 +85,24 @@
   font-weight: 600;
 }
 
+.ficha-info-title{
+  margin-bottom: -2rem;
+}
+
+.ficha-info-item{
+  display: flex;
+  padding-left: 2.3rem;
+}
+
+.ficha-info-item-txt{
+  padding-left: 0.8rem;
+}
 .ficha-info {
   margin-top: 2rem;
+  margin-bottom: 2rem;
   padding: 1rem;
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
   border-style: solid;
   border-width: 0.1rem;
   border-color: #888; 
@@ -112,7 +126,11 @@
   transition: background-color 0.2s ease;
   min-width: 100px;
 }
-
+.col-img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 /* Botón guardar */
 .ficha-buttons button {
   background-color: #007bff;
