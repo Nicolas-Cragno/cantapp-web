@@ -17,15 +17,15 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
   // Evita error si 'area' es null
   const title = tipo != null && typeof area === "string" ? area.toUpperCase() : "EVENTOS";
 
-  const cargarEventos = async () => {
+  const cargarEventos = async (usarCache = true) => {
     setLoading(true);
     try {
-      const datos = await listarColeccion("eventos");
+      const datos = await listarColeccion("eventos", usarCache);
 
       const eventosFiltrados =
-        tipo != null && typeof area === "string"
-          ? datos.filter((e) => e.area === area.toUpperCase())
-          : datos;
+      typeof area === "string"
+        ? datos.filter((e) => e.area === area.toUpperCase())
+        : datos;
 
       // Ordenar de más nuevo a más viejo
       const eventosOrdenados = [...eventosFiltrados].sort((a, b) => {
@@ -71,7 +71,7 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
   };
 
   const handleGuardar = async () => {
-    await cargarEventos();
+    await cargarEventos(false);
     setModalAgregarVisible(false);
     setEventoSeleccionado(null);
   };
@@ -97,28 +97,43 @@ const TablaEventos = ({ tipo = null, area = null, tipoPorArea = null }) => {
         />
       </div>
 
-      <ul className="table-lista">
-        {loading ? (
-          <li className="loading-item"><FaSpinner className="spinner" /></li>
-        ) : eventosFiltrados.length > 0 ? (
-          eventosFiltrados.map((evento) => (
-            <li
-              key={evento.id}
-              className="table-item"
-              onClick={() => handleClickEvento(evento)}
-              >
-              <span className="table-info">{formatearFecha(evento.fecha)} - {formatearHora(evento.fecha)} HS</span>
-              <span className="table-info"></span>
-              <span className="table-nombre">{evento.subtipo}</span>
-              <span className="table-info">{evento.persona ? (nombresPorDni[evento.persona] || evento.persona) : ("")}</span>
-              <span className="table-info">{evento.tractor ? ("Tractor " + evento.tractor) : ("")}</span>
-              <span className="table-info">{evento.furgon ? ("Furgon " + evento.furgon) : ("")}</span>
-            </li>
-          ))
+      {loading ? (
+          <div className="loading-item">
+            <FaSpinner className="spinner" />
+          </div>
         ) : (
-          <li className="table-item">No se encontraron eventos</li>
-        )}
-      </ul>
+          <div className="table-scroll-wrapper">
+            <table className="table-lista">
+              <thead className="table-titles">
+                <tr>
+                  <th>FECHA</th>
+                  <th>SECTOR</th>
+                  <th>EVENTO</th>
+                  <th>EMPLEADO</th>
+                  <th>TRACTOR</th>
+                  <th>FURGÓN</th>
+                </tr>
+              </thead>
+            </table>
+            <div className="table-body-wrapper">
+              <table className="table-lista">
+                <tbody className="table-body">
+                  {eventosFiltrados.map((evento) => (
+                    <tr key={evento.id} onClick={() => handleClickEvento(evento)} className="table-item">
+                      <td>{formatearFecha(evento.fecha)} - {formatearHora(evento.fecha)} HS</td>
+                      <td>{evento.area}</td>
+                      <td>{evento.subtipo}</td>
+                      <td>{evento.persona ? (nombresPorDni[evento.persona] || evento.persona) : ""}</td>
+                      <td>{evento.tractor ? evento.tractor : ""}</td>
+                      <td>{evento.furgon ? evento.furgon : ""}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      }
 
       {eventoSeleccionado && (
         <FichaEvento

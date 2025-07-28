@@ -5,6 +5,7 @@ import FichaPersonal from "../fichas/FichaPersonal";
 import FormularioPersona from "../forms/FormularioPersona";
 import "../css/Tables.css";
 import { nombreEmpresa } from "../../functions/data-functions";
+import LogoEmpresa from "../LogoEmpresa";
 
 const TablaPersonal = ({ tipoPuesto }) => {
   const [personas, setPersonas] = useState([]);
@@ -14,10 +15,10 @@ const TablaPersonal = ({ tipoPuesto }) => {
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
 
   // Cargar personas filtradas por puesto
-  const cargarPersonas = async () => {
+  const cargarPersonas = async (usarCache=true) => {
     setLoading(true);
     try {
-      const data = await listarColeccion("personas");
+      const data = await listarColeccion("personas", usarCache);
       const listadoPersonas = data.filter((p) => p.puesto === tipoPuesto);
       setPersonas(listadoPersonas);
     } catch (error) {
@@ -47,7 +48,7 @@ const TablaPersonal = ({ tipoPuesto }) => {
 
   // Guardar nueva persona o editar existente y recargar lista
   const handleGuardar = async () => {
-    await cargarPersonas();
+    await cargarPersonas(false);
     setModalAgregarVisible(false);
     setPersonaSeleccionada(null);
   };
@@ -75,31 +76,40 @@ const TablaPersonal = ({ tipoPuesto }) => {
         />
       </div>
 
-      <ul className="table-lista">
-        {loading ? (
-          <li className="loading-item">
-            <FaSpinner className="spinner" />
-          </li>
-        ) : personasFiltradas.length > 0 ? (
-          personasFiltradas.map((persona) => (
-            <li
-              key={persona.dni}
-              className="table-item"
-              onClick={() => handleClickPersona(persona)}
-            >
-              <span className="table-dni">
-                {persona.id}
-              </span>
-              <span className="table-nombre">
-                <strong>{persona.apellido}</strong>, {persona.nombres}
-              </span>
-              <span className="table-info">{nombreEmpresa(persona.empresa)}</span>
-            </li>
-          ))
-        ) : (
-          <li className="loading-item">No se encontraron {tipoPuesto}.</li>
-        )}
-      </ul>
+      {loading ? (
+        <div className="loading-item">
+          <FaSpinner className="spinner"/>
+        </div>
+      ) : (
+        <div className="table-scroll-wrapper">
+          <table className="table-lista">
+            <thead className="table-titles">
+              <tr>
+                <th>DOCUMENTO</th>
+                <th>APELLIDO/S</th>
+                <th>NOMBRE/S</th>
+                <th>EMPRESA</th>
+              </tr>
+            </thead>
+          </table>
+
+          <div className="table-body-wrapper">
+            <table className="table-lista">
+              <tbody className="table-body">
+                {personasFiltradas.map((persona) => (
+                  <tr key={persona.dni} onClick={() => handleClickPersona(persona)} className="table-item">
+                    <td>{persona.dni}</td>
+                    <td><strong>{persona.apellido}</strong></td>
+                    <td>{persona.nombres}</td>
+                    <td><LogoEmpresa cuitEmpresa={persona.empresa}/></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      )}
 
       {personaSeleccionada && (
         <FichaPersonal

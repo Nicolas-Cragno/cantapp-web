@@ -2,31 +2,45 @@ import { collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, 
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
 
-// Listar dnis (si hay cache y no hay modificaciones se lista desde ahi)
-export const listarColeccion = async (nombreColeccion, usarCache = true) => {
+// Listar dnis (si hay cache y no hay modificaciones se lista desde ahi) 5 minutos y se recarga
+export const listarColeccion = async (nombreColeccion, usarCache = true, tiempoCacheMs = 5 * 60 * 1000) => {
+  const cacheKey = `${nombreColeccion}_cache`;
+  const timestampKey = `${nombreColeccion}_timestamp`;
+  const ahora = Date.now();
+
+  // 👉 1. Si usarCache está activo, y existe cache válido, devolverlo
   if (usarCache) {
-    const cache = localStorage.getItem(nombreColeccion);
-    if (cache) return JSON.parse(cache);
+    const cache = localStorage.getItem(cacheKey);
+    const timestamp = localStorage.getItem(timestampKey);
+
+    if (cache && timestamp && (ahora - Number(timestamp)) < tiempoCacheMs) {
+      return JSON.parse(cache);
+    }
   }
 
+  // 👉 2. Si no hay cache válido, consultar Firestore
   try {
     const querySnapshot = await getDocs(collection(db, nombreColeccion));
     const datos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+    // 👉 3. Ordenar por fecha si es necesario
     const datosOrdenados = [...datos].sort((a, b) => {
       const fechaA = a.fecha?.toDate?.() || new Date(a.fecha) || new Date(0);
       const fechaB = b.fecha?.toDate?.() || new Date(b.fecha) || new Date(0);
       return fechaA - fechaB;
     });
 
-    localStorage.setItem(nombreColeccion, JSON.stringify(datosOrdenados));
+    // 👉 4. Guardar nuevo cache y timestamp
+    localStorage.setItem(cacheKey, JSON.stringify(datosOrdenados));
+    localStorage.setItem(timestampKey, ahora.toString());
+
     return datosOrdenados;
+
   } catch (error) {
     console.error(`Error al obtener ${nombreColeccion}:`, error);
     return [];
   }
 };
-
 export const listarPorEmpresa = async (nombreColeccion, empresa, usarCache = true) => {
   let cuit = Number(obtenerCuitPorNombre(empresa));
   const datos = await listarColeccion(nombreColeccion, usarCache);

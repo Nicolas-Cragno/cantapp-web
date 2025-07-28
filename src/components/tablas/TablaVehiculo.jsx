@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
+import {nombreEmpresa} from "../../functions/data-functions";
+import LogoEmpresa from "../LogoEmpresa";
 import FichaVehiculo from "../fichas/FichaVehiculo";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
 import "../css/Tables.css";
@@ -43,10 +45,8 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
     setModalAgregarVisible(false);
   };
 
-  // Esta función se llama cuando se agrega o modifica un vehículo,
-  // y fuerza recarga desde Firestore (sin usar cache localStorage)
   const handleGuardar = async () => {
-    await obtenerDatos(false); // forzar recarga directa desde Firestore
+    await obtenerDatos(false);
     cerrarModal();
     cerrarModalAgregar();
   };
@@ -69,34 +69,42 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
         />
       </div>
 
-      <ul className="table-lista">
-        {loading ? (
-          <li className="loading-item">
-            <FaSpinner className="spinner" />
-          </li>
-        ) : vehiculosFiltrados.length > 0 ? (
-          vehiculosFiltrados.map((vehiculo) => (
-            <li
-              key={vehiculo.id}
-              className="table-item"
-              onClick={() => handleClickVehiculo(vehiculo)}
-            >
-              <span className="table-dni">
-                {vehiculo.interno}
-              </span>
-              <span className="table-nombre">
-                {vehiculo.dominio}
-              </span>
-              <span className="table-nombre">
-                {vehiculo.marca} {vehiculo.modelo ? (vehiculo.modelo) : ("")}
-              </span>
-              <span className="table-info">{vehiculo.detalle}</span>
-            </li>
-          ))
-        ) : (
-          <li className="loading-item">No se encontraron {tipoVehiculo.toLowerCase()}s</li>
-        )}
-      </ul>
+      {loading ? (
+        <div className="loading-item">
+          <FaSpinner className="spinner"/>
+        </div>
+      ) : (
+        <div className="table-scroll-wrapper">
+          <table className="table-lista">
+            <thead className="table-titles">
+              <tr>
+                <th>INTERNO</th>
+                <th>PATENTE</th>
+                <th>MARCA</th>
+                <th>MODELO</th>
+                <th>EMPRESA</th>
+              </tr>
+            </thead>
+          </table>
+
+          <div className="table-body-wrapper">
+            <table className="table-lista">
+              <tbody className="table-body">
+                {vehiculosFiltrados.map((vehiculo) => (
+                  <tr key={vehiculo.id} onClick={() => handleClickVehiculo(vehiculo)} className="table-item">
+                    <td>{vehiculo.interno}</td>
+                    <td>{vehiculo.dominio}</td>
+                    <td>{vehiculo.marca}</td>
+                    <td>{vehiculo.modelo === 0 ? ("") : (vehiculo.modelo)}</td>
+                    <td><LogoEmpresa cuitEmpresa={vehiculo.empresa}/></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      
 
       {vehiculoSeleccionado && (
         <FichaVehiculo

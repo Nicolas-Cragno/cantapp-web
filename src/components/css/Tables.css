@@ -5,6 +5,17 @@
   gap: 1.5rem;
 }
 
+.table-scroll-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.table-body-wrapper {
+  max-height: 50vh; 
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .table-header {
   display: flex;
   justify-content: space-between;
@@ -51,14 +62,30 @@
 }
 
 .table-lista {
-  list-style: none;
-  padding: 0;
   margin: 0;
-  display: grid;
-  gap: 1rem;
-  max-height: 50vh;
-  overflow-y: auto;
-  min-height: 50vh;
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* para que las columnas coincidan */
+}
+
+.table-lista th,
+.table-lista td {
+  padding: 8px;
+  
+  text-align: left;
+}
+
+.table-titles{
+  background-color: #f3f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.table-body{
+  max-height: 50vh;     /* Altura máxima: 50% del alto de la ventana */
+  min-height: 50vh;     /* Altura mínima: también 50% => altura fija */
+  overflow-y: auto;     /* Muestra scroll vertical si es necesario */
 }
 
 .table-item {
@@ -66,18 +93,15 @@
   font-style: italic;
   height: 50px;
   background-color: white;
-  border-radius: 1rem;
-  padding: 1rem 1.5rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   transition: background-color 0.3s ease;
 }
 
-.table-item:hover {
+.table-item:hover{
+  color: black;
   background-color: rgba(0, 0, 0, 0.02);
 }
+/*
 
 .table-dni{
   font-weight: 500;
@@ -102,6 +126,8 @@
   flex: 1;
   white-space: nowrap;
 }
+
+*/
 
 /* Celulares */
 @media (max-width: 640px) {

@@ -1,0 +1,13 @@
+.logo-empresa{
+    display: flex;
+}
+
+.logo-img{
+    width: 1.8rem;
+    background-color: #f3f3f3;
+    border-radius: 50%;
+}
+
+.logo-name{
+    margin-left: .5rem;
+}

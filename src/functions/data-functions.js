@@ -1,6 +1,7 @@
 import empresas from "./data/empresas.json";
 import { listarColeccion } from "./db-functions";
 
+
 // Nombre de empresas
 export function nombreEmpresa(cuit) {
     if (cuit === null || cuit === undefined) return "SIN ASIGNAR";
