@@ -4,6 +4,7 @@ import { listarColeccion } from "../../functions/db-functions";
 import FichaPersonal from "../fichas/FichaPersonal";
 import FormularioPersona from "../forms/FormularioPersona";
 import "../css/Tables.css";
+import { obtenerCuitPorNombre } from "../../functions/data-functions";
 import { nombreEmpresa } from "../../functions/data-functions";
 import LogoEmpresaTxt from "../LogoEmpresaTxt";
 
@@ -13,16 +14,25 @@ const TablaPersonal = ({ tipoPuesto }) => {
   const [loading, setLoading] = useState(true);
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [cantPersonasTC, setCantPersonasTC] = useState(0);
+  const [cantPersonasEX, setCantPersonasEX] = useState(0);
+  const [cantPersonasTA, setCantPersonasTA] = useState(0);
   const [filtroTC, setFiltroTC] = useState(true);
   const [filtroEX, setFiltroEX] = useState(true);
   const [filtroTA, setFiltroTA] = useState(true);
 
-  // Cargar personas filtradas por puesto
+  // Cargar personas filtradas por puesto && cant de personas por empresa
   const cargarPersonas = async (usarCache=true) => {
     setLoading(true);
     try {
       const data = await listarColeccion("personas", usarCache);
+      const empresaTC = Number(obtenerCuitPorNombre("TRANSPORTES CANTARINI"));
+      const empresaEX = Number(obtenerCuitPorNombre("EXPRESO CANTARINI"));
+      const empresaTA = Number(obtenerCuitPorNombre("TRANSAMERICA TRANSPORTES"));      
       const listadoPersonas = data.filter((p) => p.puesto === tipoPuesto);
+      setCantPersonasTC(data.filter(p => p.empresa === empresaTC && p.puesto === tipoPuesto).length);
+      setCantPersonasEX(data.filter(p => p.empresa === empresaEX && p.puesto === tipoPuesto).length);
+      setCantPersonasTA(data.filter(p => p.empresa === empresaTA && p.puesto === tipoPuesto).length);
       setPersonas(listadoPersonas);
     } catch (error) {
       console.error("Error al obtener información desde db: ", error);
@@ -84,15 +94,15 @@ const TablaPersonal = ({ tipoPuesto }) => {
         <div className="table-checked">
           <label className="table-check">
             <input type="checkbox" checked={filtroTC} onChange={(e) => setFiltroTC(e.target.checked)} className="check-input"/>
-            TC
+            TC ({cantPersonasTC})
           </label>
           <label className="table-check">
             <input type="checkbox" checked={filtroEX} onChange={(e) => setFiltroEX(e.target.checked)} className="check-input"/>
-            EX
+            EX ({cantPersonasEX})
           </label>
           <label className="table-check">
             <input type="checkbox" checked={filtroTA} onChange={(e) => setFiltroTA(e.target.checked)} className="check-input"/>
-            TA
+            TA ({cantPersonasTA})
           </label>
         </div>
       </div>

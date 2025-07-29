@@ -1,88 +1,49 @@
 import "./css/Dashboard.css";
-import BigCard from "../components/BigCard";
-import { FaSpinner } from "react-icons/fa";
-import { useState, useEffect } from "react";
-import { listarColeccion } from "../functions/db-functions";
-import { obtenerCuitPorNombre } from "../functions/data-functions";
-import ImgTC from "../assets/images/logo-tc-color.png";
-import ImgEX from "../assets/images/logo-ex-color.png";
-import ImgTA from "../assets/images/logo-ta-color.png";
+import CardInfo from "../components/CardInfo";
+
 
 const Dashboard = () => {
-  const [cantPersonasTC, setCantPersonasTC] = useState(0);
-  const [cantPersonasEX, setCantPersonasEX] = useState(0);
-  const [cantPersonasTA, setCantPersonasTA] = useState(0);
-  const [cantTractoresTC, setCantTractoresTC] =useState(0);
-  const [cantTractoresEX, setCantTractoresEX] =useState(0);
-  const [cantTractoresTA, setCantTractoresTA] =useState(0);
-  const [cantFurgonesTC, setCantFurgonesTC] = useState(0);
-  const [cantFurgonesEX, setCantFurgonesEX] = useState(0);
-  const [cantFurgonesTA, setCantFurgonesTA] = useState(0);
-  
-  const [loading, setLoading] = useState(true);
 
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try{
-        const personas = await listarColeccion("personas");
-        const tractores = await listarColeccion("tractores");
-        const furgones = await listarColeccion("furgones");
-        const empresaTC = Number(obtenerCuitPorNombre("TRANSPORTES CANTARINI"));
-        const empresaEX = Number(obtenerCuitPorNombre("EXPRESO CANTARINI"));
-        const empresaTA = Number(obtenerCuitPorNombre("TRANSAMERICA TRANSPORTES"));
-
-        setCantPersonasTC(personas.filter(p => p.empresa === empresaTC).length);
-        setCantPersonasEX(personas.filter(p => p.empresa === empresaEX).length);
-        setCantPersonasTA(personas.filter(p => p.empresa === empresaTA).length);
-        setCantTractoresTC(tractores.filter(t => t.empresa === empresaTC).length);
-        setCantTractoresEX(tractores.filter(t => t.empresa === empresaEX).length);
-        setCantTractoresTA(tractores.filter(t => t.empresa === empresaTA).length);
-        setCantFurgonesTC(furgones.filter(f => f.empresa === empresaTC).length);
-        setCantFurgonesEX(furgones.filter(f => f.empresa === empresaEX).length);
-        setCantFurgonesTA(furgones.filter(f => f.empresa === empresaTA).length);
-      } catch(error){
-        console.error("Error al obtener datos con caché: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const colors = {
+    rojo: "#c93242",
+    azul: "#4161bd",
+    amarillo: "#ebda50",
+    naranja: "#f9bc86",
+    violeta: "#b39ddb",
+    verde: "#a5d6a7"
+  };
+  const sections = [
+    {title:"Porteria", route: "/porteria", color: colors.rojo},
+    {title:"Satelital", route:"/satelital", color:colors.azul},
+    {title:"Taller", route:"/taller-camiones", color:colors.amarillo},
+    {title:"Combustible", route:"/control-combustible", color:colors.naranja}
+  ]
+  const gestioners = [
+    {title:"Personal", route:"/personal", color:colors.verde},
+    {title:"Tractores", route:"/tractores", color:colors.violeta},
+    {title:"Furgones", route:"/furgones", color:colors.naranja},
+    {title:"Utilitarios", route:"utilitarios", color:colors.azul}
+  ]
 
   return (
-    <div className="dashboard container page">
-      <div className="row">
-        <div className="col-md-12">
-          <BigCard 
-            title="TRANSPORTES CANTARINI"
-            value1={loading ? <FaSpinner className='spinner' /> : `${cantPersonasTC}`}
-            value2={loading ? <FaSpinner className='spinner' /> : `${cantTractoresTC}`}
-            value3={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesTC}`}
-            logo={ImgTC}
-          />
+    <div className="dashboard page">
+      <div className="container">
+        <div className="row">
+          {sections.map((s) => (
+            <div className="col-md-4" key={s.title}>
+              <CardInfo title={s.title} route={s.route} backColor={s.color}/>
+            </div>
+          ))}
         </div>
-
-        <div className="col-md-12">
-          <BigCard 
-            title="EXPRESO CANTARINI"
-            value1={loading ? <FaSpinner className='spinner' /> : `${cantPersonasEX}`}
-            value2={loading ? <FaSpinner className='spinner' /> : `${cantTractoresEX}`}
-            value3={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesEX}`}
-            logo={ImgEX}
-          />
-        </div>
-
-        <div className="col-md-12">
-          <BigCard 
-            title="TRANSAMERICA TRANSPORTES"
-            value1={loading ? <FaSpinner className='spinner' /> : `${cantPersonasTA}`}
-            value2={loading ? <FaSpinner className='spinner' /> : `${cantTractoresTA}`}
-            value3={loading ? <FaSpinner className='spinner' /> : `${cantFurgonesTA}`}
-            logo={ImgTA}
-          />
+      </div><hr className="divisor"/>
+      <h1 className="page-title">Gestionar recursos</h1>
+      <div className="container">
+        <div className="row">
+          {gestioners.map((g) => (
+            <div className="col-md-4" key={g.title}>
+              <CardInfo title={g.title} route={g.route} backColor={g.color}/>
+            </div>
+          ))}
         </div>
       </div>
     </div>

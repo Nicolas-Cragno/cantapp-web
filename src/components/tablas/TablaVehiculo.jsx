@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
 import {nombreEmpresa} from "../../functions/data-functions";
+import { obtenerCuitPorNombre } from "../../functions/data-functions";
 import LogoEmpresaTxt from "../LogoEmpresaTxt";
 import FichaVehiculo from "../fichas/FichaVehiculo";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
@@ -13,6 +14,9 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
   const [loading, setLoading] = useState(true);
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [cantVehiculosTC, setCantVehiculosTC] = useState(0);
+  const [cantVehiculosEX, setCantVehiculosEX] = useState(0);
+  const [cantVehiculosTA, setCantVehiculosTA] = useState(0);
   const [filtroTC, setFiltroTC] = useState(true);
   const [filtroEX, setFiltroEX] = useState(true);
   const [filtroTA, setFiltroTA] = useState(true);
@@ -23,7 +27,13 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
     setLoading(true);
     try {
       const data = await listarColeccion(tipoVehiculo, usarCache);
+      const empresaTC = Number(obtenerCuitPorNombre("TRANSPORTES CANTARINI"));
+      const empresaEX = Number(obtenerCuitPorNombre("EXPRESO CANTARINI"));
+      const empresaTA = Number(obtenerCuitPorNombre("TRANSAMERICA TRANSPORTES"));      
       const listadoVehiculos = data.filter((v) => v.estado === 1 || v.estado === true);
+      setCantVehiculosTC(data.filter(v => v.empresa === empresaTC).length);
+      setCantVehiculosEX(data.filter(v => v.empresa === empresaEX).length);
+      setCantVehiculosTA(data.filter(v => v.empresa === empresaTA).length);
       setVehiculos(listadoVehiculos);
     } catch (error) {
       console.error("Error al obtener información desde db: ", error);
@@ -79,15 +89,15 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
         <div className="table-checked">
           <label className="table-check">
             <input type="checkbox" checked={filtroTC} onChange={(e) => setFiltroTC(e.target.checked)} className="check-input"/>
-            TC
+            TC ({cantVehiculosTC})
           </label>
           <label className="table-check">
             <input type="checkbox" checked={filtroEX} onChange={(e) => setFiltroEX(e.target.checked)} className="check-input"/>
-            EX
+            EX ({cantVehiculosEX})
           </label>
           <label className="table-check">
             <input type="checkbox" checked={filtroTA} onChange={(e) => setFiltroTA(e.target.checked)} className="check-input"/>
-            TA
+            TA ({cantVehiculosTA})
           </label>
         </div>
       </div>
