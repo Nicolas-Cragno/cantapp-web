@@ -8,7 +8,6 @@ export const listarColeccion = async (nombreColeccion, usarCache = true, tiempoC
   const timestampKey = `${nombreColeccion}_timestamp`;
   const ahora = Date.now();
 
-  // 👉 1. Si usarCache está activo, y existe cache válido, devolverlo
   if (usarCache) {
     const cache = localStorage.getItem(cacheKey);
     const timestamp = localStorage.getItem(timestampKey);
@@ -18,19 +17,16 @@ export const listarColeccion = async (nombreColeccion, usarCache = true, tiempoC
     }
   }
 
-  // 👉 2. Si no hay cache válido, consultar Firestore
   try {
     const querySnapshot = await getDocs(collection(db, nombreColeccion));
     const datos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // 👉 3. Ordenar por fecha si es necesario
     const datosOrdenados = [...datos].sort((a, b) => {
       const fechaA = a.fecha?.toDate?.() || new Date(a.fecha) || new Date(0);
       const fechaB = b.fecha?.toDate?.() || new Date(b.fecha) || new Date(0);
       return fechaA - fechaB;
     });
 
-    // 👉 4. Guardar nuevo cache y timestamp
     localStorage.setItem(cacheKey, JSON.stringify(datosOrdenados));
     localStorage.setItem(timestampKey, ahora.toString());
 
@@ -41,6 +37,7 @@ export const listarColeccion = async (nombreColeccion, usarCache = true, tiempoC
     return [];
   }
 };
+
 export const listarPorEmpresa = async (nombreColeccion, empresa, usarCache = true) => {
   let cuit = Number(obtenerCuitPorNombre(empresa));
   const datos = await listarColeccion(nombreColeccion, usarCache);
@@ -51,13 +48,14 @@ export const listarPorEmpresa = async (nombreColeccion, empresa, usarCache = tru
 // Agregar dni y actualizar cache
 export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
   try {
-    const docRef = doc(db, nombreColeccion, idPersonalizado); 
+    const idStr = String(idPersonalizado); // <-- Convertir a string
+    const docRef = doc(db, nombreColeccion, idStr);
     await setDoc(docRef, nuevoDoc);
 
     const cache = localStorage.getItem(nombreColeccion);
     const cacheActual = cache ? JSON.parse(cache) : [];
 
-    const nuevoDocConId = { id: idPersonalizado, ...nuevoDoc };
+    const nuevoDocConId = { id: idStr, ...nuevoDoc };
     const datosActualizados = [...cacheActual, nuevoDocConId];
 
     localStorage.setItem(nombreColeccion, JSON.stringify(datosActualizados));
@@ -74,23 +72,19 @@ export const agregarEvento = async (nuevoEvento, idPersonalizado = null) => {
     let docRef;
 
     if (idPersonalizado) {
-      // Edición: actualiza con id existente
-      docRef = doc(db, "eventos", idPersonalizado);
+      const idStr = String(idPersonalizado);
+      docRef = doc(db, "eventos", idStr);
       await setDoc(docRef, nuevoEvento);
     } else {
-      // Nuevo: crea con id automático
       const colRef = collection(db, "eventos");
       docRef = await addDoc(colRef, nuevoEvento);
     }
 
-    // Actualizar cache localStorage
     const cache = localStorage.getItem("eventos");
     const cacheActual = cache ? JSON.parse(cache) : [];
 
-    // El id real (automatico o personalizado)
     const idReal = docRef.id;
 
-    // Si ya existía, reemplazamos; si no, agregamos
     const indiceExistente = cacheActual.findIndex((item) => item.id === idReal);
     if (indiceExistente >= 0) {
       cacheActual[indiceExistente] = { id: idReal, ...nuevoEvento };
@@ -110,14 +104,15 @@ export const agregarEvento = async (nuevoEvento, idPersonalizado = null) => {
 // Modificar dni y cache
 export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
   try {
-    const docRef = doc(db, nombreColeccion, idDoc);
+    const idStr = String(idDoc);
+    const docRef = doc(db, nombreColeccion, idStr);
     await updateDoc(docRef, datosActualizados);
 
     const cache = localStorage.getItem(nombreColeccion);
     const lista = cache ? JSON.parse(cache) : [];
 
     const nuevaLista = lista.map(item =>
-      item.id === idDoc ? { ...item, ...datosActualizados } : item
+      item.id === idStr ? { ...item, ...datosActualizados } : item
     );
 
     localStorage.setItem(nombreColeccion, JSON.stringify(nuevaLista));
@@ -132,13 +127,14 @@ export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
 // Eliminar dni y actualizar cache
 export const eliminarDni = async (nombreColeccion, idDoc) => {
   try {
-    const docRef = doc(db, nombreColeccion, idDoc);
+    const idStr = String(idDoc);
+    const docRef = doc(db, nombreColeccion, idStr);
     await deleteDoc(docRef);
 
     const cache = localStorage.getItem(nombreColeccion);
     const lista = cache ? JSON.parse(cache) : [];
 
-    const nuevaLista = lista.filter(item => item.id !== idDoc);
+    const nuevaLista = lista.filter(item => item.id !== idStr);
 
     localStorage.setItem(nombreColeccion, JSON.stringify(nuevaLista));
 
@@ -152,7 +148,8 @@ export const eliminarDni = async (nombreColeccion, idDoc) => {
 // Evitar duplicar dni en firestore
 export const verificarDni = async (dni) => {
   try {
-    const q = query(collection(db, "personas"), where("dni", "==", dni));
+    const dniStr = String(dni);
+    const q = query(collection(db, "personas"), where("dni", "==", dniStr));
     const snapshot = await getDocs(q);
     return !snapshot.empty;
   } catch (error) {
@@ -160,6 +157,9 @@ export const verificarDni = async (dni) => {
     return false;
   }
 };
+
+// (los demás métodos se mantienen igual)
+
 
 // buscar interno, patente, nombre...
 export const verificarDominio = async (dominio, coleccion) => {

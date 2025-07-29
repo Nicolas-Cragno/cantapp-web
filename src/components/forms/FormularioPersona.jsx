@@ -28,7 +28,7 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!apellido.trim() || !nombres.trim() || !dni.trim()) {
+    if (!apellido.trim() || !nombres.trim() || !String(dni).trim()) {
       Swal.fire({
         title:"Faltan datos",
         text:"Complete los campos obligatorios.",

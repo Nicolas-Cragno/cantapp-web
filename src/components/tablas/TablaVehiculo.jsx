@@ -68,9 +68,9 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
     const texto = `${v.interno || ""} ${v.dominio || ""} ${v.marca} ${v.modelo}`;
     return texto.toLowerCase().includes(filtro.toLowerCase());
   }).filter((v) => {
-    if(filtroTC && v.empresa===30610890403) return true;
-    if(filtroTA && v.empresa===30683612916) return true;
-    if(filtroEX && v.empresa===30644511304) return true;
+    if(filtroTC && v.empresa===30610890403 || v.empresa==="30610890403") return true;
+    if(filtroTA && v.empresa===30683612916 || v.empresa==="30683612916") return true;
+    if(filtroEX && v.empresa===30644511304 || v.empresa==="30644511304") return true;
   }).sort((a,b) => {
     return (a.interno || 0) - (b.interno || 0);
   });

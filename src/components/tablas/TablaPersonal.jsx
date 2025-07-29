@@ -71,9 +71,9 @@ const TablaPersonal = ({ tipoPuesto }) => {
     const nombreCompleto = `${p.dni || ""} ${p.apellido || ""} ${p.nombres || ""}`;
     return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
   }).filter((p) => {
-    if(filtroTC && p.empresa===30610890403) return true;
-    if(filtroTA && p.empresa===30683612916) return true;
-    if(filtroEX && p.empresa===30644511304) return true;
+    if(filtroTC && p.empresa===30610890403 || p.empresa==="30610890403") return true;
+    if(filtroTA && p.empresa===30683612916 || p.empresa==="30683612916") return true;
+    if(filtroEX && p.empresa===30644511304 || p.empresa==="30644511304") return true;
   }).sort((a,b) => {
     const pA = (a.apellido || "").toLowerCase();
     const pB = (b.apellido || "").toLowerCase();
