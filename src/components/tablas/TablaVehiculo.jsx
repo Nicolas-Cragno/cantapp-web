@@ -13,6 +13,9 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
   const [loading, setLoading] = useState(true);
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [filtroTC, setFiltroTC] = useState(true);
+  const [filtroEX, setFiltroEX] = useState(true);
+  const [filtroTA, setFiltroTA] = useState(true);
 
   const title = tipoVehiculo.toUpperCase();
 
@@ -52,8 +55,14 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
   };
 
   const vehiculosFiltrados = vehiculos.filter((v) => {
-    const texto = `${v.dominio || ""} ${v.interno || ""} ${v.detalle || ""}`;
+    const texto = `${v.interno || ""} ${v.dominio || ""} ${v.marca} ${v.modelo}`;
     return texto.toLowerCase().includes(filtro.toLowerCase());
+  }).filter((v) => {
+    if(filtroTC && v.empresa===30610890403) return true;
+    if(filtroTA && v.empresa===30683612916) return true;
+    if(filtroEX && v.empresa===30644511304) return true;
+  }).sort((a,b) => {
+    return (a.interno || 0) - (b.interno || 0);
   });
 
   return (
@@ -67,6 +76,20 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
           onChange={(e) => setFiltro(e.target.value)}
           className="table-busqueda"
         />
+        <div className="table-checked">
+          <label className="table-check">
+            <input type="checkbox" checked={filtroTC} onChange={(e) => setFiltroTC(e.target.checked)} className="check-input"/>
+            TC
+          </label>
+          <label className="table-check">
+            <input type="checkbox" checked={filtroEX} onChange={(e) => setFiltroEX(e.target.checked)} className="check-input"/>
+            EX
+          </label>
+          <label className="table-check">
+            <input type="checkbox" checked={filtroTA} onChange={(e) => setFiltroTA(e.target.checked)} className="check-input"/>
+            TA
+          </label>
+        </div>
       </div>
 
       {loading ? (

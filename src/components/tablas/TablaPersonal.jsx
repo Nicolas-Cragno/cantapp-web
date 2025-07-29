@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
 import FichaPersonal from "../fichas/FichaPersonal";
@@ -13,6 +13,9 @@ const TablaPersonal = ({ tipoPuesto }) => {
   const [loading, setLoading] = useState(true);
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [filtroTC, setFiltroTC] = useState(true);
+  const [filtroEX, setFiltroEX] = useState(true);
+  const [filtroTA, setFiltroTA] = useState(true);
 
   // Cargar personas filtradas por puesto
   const cargarPersonas = async (usarCache=true) => {
@@ -55,8 +58,12 @@ const TablaPersonal = ({ tipoPuesto }) => {
 
   // Filtrado simple
   const personasFiltradas = personas.filter((p) => {
-    const nombreCompleto = `${p.apellido || ""} ${p.nombres || ""} ${p.detalle || ""}`;
+    const nombreCompleto = `${p.dni || ""} ${p.apellido || ""} ${p.nombres || ""}`;
     return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+  }).filter((p) => {
+    if(filtroTC && p.empresa===30610890403) return true;
+    if(filtroTA && p.empresa===30683612916) return true;
+    if(filtroEX && p.empresa===30644511304) return true;
   }).sort((a,b) => {
     const pA = (a.apellido || "").toLowerCase();
     const pB = (b.apellido || "").toLowerCase();
@@ -74,6 +81,20 @@ const TablaPersonal = ({ tipoPuesto }) => {
           onChange={(e) => setFiltro(e.target.value)}
           className="table-busqueda"
         />
+        <div className="table-checked">
+          <label className="table-check">
+            <input type="checkbox" checked={filtroTC} onChange={(e) => setFiltroTC(e.target.checked)} className="check-input"/>
+            TC
+          </label>
+          <label className="table-check">
+            <input type="checkbox" checked={filtroEX} onChange={(e) => setFiltroEX(e.target.checked)} className="check-input"/>
+            EX
+          </label>
+          <label className="table-check">
+            <input type="checkbox" checked={filtroTA} onChange={(e) => setFiltroTA(e.target.checked)} className="check-input"/>
+            TA
+          </label>
+        </div>
       </div>
 
       {loading ? (

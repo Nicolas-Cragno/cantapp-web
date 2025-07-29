@@ -35,6 +35,22 @@
   flex-wrap: wrap;
 }
 
+.table-checked{
+  width: 100%;
+  display: flex;
+  justify-content: right;
+}
+
+.table-check{
+  margin-right: 1rem;
+  margin-top: -1rem;
+  font-weight: 500;
+}
+
+.check-input{
+  margin-right: 0.3rem;
+}
+
 .table-busqueda {
   padding: 0.5rem 1rem;
   font-size: 1rem;

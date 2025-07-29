@@ -18,7 +18,7 @@ const LogoEmpresa = ({cuitEmpresa}) => {
 
   return(
     <div className="logo-empresa">
-        <img src={logo} alt={nombre} className="logo-img"></img>
+        <img src={logo} alt={nombre} className="logo-img-only"></img>
     </div>
   );
 };

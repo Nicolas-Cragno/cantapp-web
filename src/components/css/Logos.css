@@ -8,6 +8,10 @@
     border-radius: 50%;
 }
 
+.logo-img-only{
+    max-width: 6rem;
+}
+
 .logo-name{
     margin-left: .5rem;
 }
