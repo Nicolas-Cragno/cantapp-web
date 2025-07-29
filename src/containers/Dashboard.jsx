@@ -14,7 +14,7 @@ const Dashboard = () => {
   };
   const sections = [
     {title:"Porteria", route: "/porteria", color: colors.rojo, state: true},
-    {title:"Satelital", route:"/satelital", color:colors.azul, state: true},
+    {title:"Satelital", route:"/actividad", color:colors.azul, state: true},
     {title:"Taller", route:"/taller-camiones", color:colors.amarillo, state: false},
     {title:"Combustible", route:"/control-combustible", color:colors.naranja, state: false}
   ]
