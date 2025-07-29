@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
+import Swal from "sweetalert2";
 import empresas from "../../functions/data/empresas.json";
 import { agregar, modificar, verificarInterno } from "../../functions/db-functions";
 import { nombreEmpresa, obtenerCuitPorNombre } from "../../functions/data-functions";
@@ -32,7 +33,13 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
     e.preventDefault();
 
     if (!String(interno).trim() || !String(dominio).trim()) {
-      alert("Complete los datos obligatorios.");
+      Swal.fire({
+        title:"Faltan datos",
+        text:"Complete los campos obligatorios.",
+        icon: "question",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#4161bd"
+      });
       return;
     }
 
@@ -57,7 +64,14 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
         const existeInterno = await verificarInterno(interno, tipoVehiculo);
 
         if (existeInterno) {
-          alert("El número de interno " + interno + " ya se encuentra asignado");
+          Swal.fire({
+            title:"Duplicado",
+            text:"El interno" + interno + "ya se encuentra asignado.",
+            icon: "warning",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "#4161bd"
+          })
+
           setLoading(false);
           return;
         }
@@ -77,7 +91,14 @@ const FormularioVehiculo = ({ tipoVehiculo, vehiculo = null, onClose, onGuardar 
 
       onClose();
     } catch (error) {
-      alert("Ocurrió un error al guardar el vehículo.");
+      Swal.fire({
+        title:"Error",
+        text:"No hemos podido procesar la solicitud.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#4161bd"
+      })
+
       console.error("Error al guardar vehículo: ", error);
     } finally {
       setLoading(false);

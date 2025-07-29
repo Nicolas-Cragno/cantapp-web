@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import '../css/Forms.css';
 import empresas from "../../functions/data/empresas.json";
+import Swal from "sweetalert2";
 import { verificarDni, agregar, modificar } from "../../functions/db-functions";
 import { nombreEmpresa, obtenerCuitPorNombre } from "../../functions/data-functions";
 
@@ -28,7 +29,13 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
     e.preventDefault();
 
     if (!apellido.trim() || !nombres.trim() || !dni.trim()) {
-      alert("Complete los datos obligatorios.");
+      Swal.fire({
+        title:"Faltan datos",
+        text:"Complete los campos obligatorios.",
+        icon: "question",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#4161bd"
+      });
       return;
     }
 
@@ -53,7 +60,13 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
         const existeDni = await verificarDni(dni);
 
         if (existeDni) {
-          alert("Ya existe una persona con ese DNI.");
+          Swal.fire({
+            title:"Duplicado",
+            text:"Ya existe una persona con ese DNI.",
+            icon: "warning",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "#4161bd"
+          })
           setLoading(false);
           return;
         }
@@ -75,7 +88,13 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
       onClose();
 
     } catch (error) {
-      alert("Ocurrió un error al guardar la persona.");
+      Swal.fire({
+        title:"Error",
+        text:"No hemos podido procesar la solicitud.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#4161bd"
+      })
       console.error("Error al guardar persona:", error);
     } finally {
       setLoading(false);

@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";   
 import Logo from "../assets/images/logo-truck.png";
+import Swal from "sweetalert2";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -25,11 +26,24 @@ const Login = () => {
             localStorage.setItem("usuario", JSON.stringify(usuario)); // guarda nombre y rol
             navigate("/");
             } else {
-            alert("El usuario no está registrado en la base de datos.");
+            Swal.fire({
+                title:"Acceso denegado",
+                text:"El usuario no está registrado en la base de datos.",
+                icon: "error",
+                confirmButtonText: "Entendido",
+                confirmButtonColor: "#4161bd"
+            })
+
             }
 
         } catch (error) {
-            alert("Error al iniciar sesión: " + error.message);
+            Swal.fire({
+                title:"Error",
+                text:"Error al inciiar sesión.",
+                icon: "error",
+                confirmButtonText: "Entendido",
+                confirmButtonColor: "#4161bd"
+            })
         }
     };
 

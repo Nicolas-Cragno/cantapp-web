@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
+import Swal from "sweetalert2";
 import { formatearFecha, formatearFechaHoraInput, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
 import tiposEventos from "../../functions/data/eventos.json";
 
@@ -101,10 +102,22 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
     }
 
     if (onGuardar) onGuardar();
-    alert("Evento guardado correctamente.");
+    Swal.fire({
+      title:"Evento guardado",
+      text:"Se ha completado el registro exitosamente.",
+      icon:"succes",
+      confirmButtonText: "Entendido",
+      confirmButtonColor: "#4161bd"
+    })
   } catch (error) {
+    Swal.fire({
+      title:"Error",
+      text:"No hemos podido procesar la solicitud.",
+      icon:"error",
+      confirmButtonText: "Entendido",
+      confirmButtonColor: "#4161bd"
+    })
     console.error("Error al guardar evento:", error);
-    alert(`Error al guardar evento: ${error.message}`);
   }
 };
   return (
