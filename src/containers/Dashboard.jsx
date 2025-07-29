@@ -13,16 +13,16 @@ const Dashboard = () => {
     verde: "#a5d6a7"
   };
   const sections = [
-    {title:"Porteria", route: "/porteria", color: colors.rojo},
-    {title:"Satelital", route:"/satelital", color:colors.azul},
-    {title:"Taller", route:"/taller-camiones", color:colors.amarillo},
-    {title:"Combustible", route:"/control-combustible", color:colors.naranja}
+    {title:"Porteria", route: "/porteria", color: colors.rojo, state: true},
+    {title:"Satelital", route:"/satelital", color:colors.azul, state: true},
+    {title:"Taller", route:"/taller-camiones", color:colors.amarillo, state: false},
+    {title:"Combustible", route:"/control-combustible", color:colors.naranja, state: false}
   ]
   const gestioners = [
-    {title:"Personal", route:"/personal", color:colors.verde},
-    {title:"Tractores", route:"/tractores", color:colors.violeta},
-    {title:"Furgones", route:"/furgones", color:colors.naranja},
-    {title:"Utilitarios", route:"utilitarios", color:colors.azul}
+    {title:"Personal", route:"/personal", color:colors.verde, state: true},
+    {title:"Tractores", route:"/tractores", color:colors.violeta, state: true},
+    {title:"Furgones", route:"/furgones", color:colors.naranja, state: true},
+    {title:"Utilitarios", route:"utilitarios", color:colors.azul, state: true}
   ]
 
   return (
@@ -31,7 +31,7 @@ const Dashboard = () => {
         <div className="row">
           {sections.map((s) => (
             <div className="col-md-4" key={s.title}>
-              <CardInfo title={s.title} route={s.route} backColor={s.color}/>
+              <CardInfo title={s.title} route={s.route} backColor={s.color} state={s.state}/>
             </div>
           ))}
         </div>
@@ -41,7 +41,7 @@ const Dashboard = () => {
         <div className="row">
           {gestioners.map((g) => (
             <div className="col-md-4" key={g.title}>
-              <CardInfo title={g.title} route={g.route} backColor={g.color}/>
+              <CardInfo title={g.title} route={g.route} backColor={g.color} state={g.state}/>
             </div>
           ))}
         </div>
