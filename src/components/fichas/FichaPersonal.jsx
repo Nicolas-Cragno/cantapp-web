@@ -36,9 +36,9 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
                 <div className="ficha-info container">
                   <div className="row">
                     <div className="col-md-9">
-                      <p className="ficha-info-item"><strong>Empresa</strong> <spam className="ficha-info-item-txt">{nombreEmpresa(persona.empresa)}</spam></p>
-                      <p className="ficha-info-item"><strong>Ingreso</strong> <spam className="ficha-info-item-txt">{fechaIngreso || ""}</spam></p>
-                      <p className="ficha-info-item"><strong>Puesto</strong> <spam className="ficha-info-item-txt">{persona.puesto}</spam></p>
+                      <p className="ficha-info-item"><strong>Empresa</strong> <span className="ficha-info-item-txt">{nombreEmpresa(persona.empresa)}</span></p>
+                      <p className="ficha-info-item"><strong>Ingreso</strong> <span className="ficha-info-item-txt">{fechaIngreso || ""}</span></p>
+                      <p className="ficha-info-item"><strong>Puesto</strong> <span className="ficha-info-item-txt">{persona.puesto}</span></p>
                     </div>
                     <div className="col-md-3 col-img">
                       <LogoEmpresa cuitEmpresa={persona.empresa}/>

@@ -4,7 +4,7 @@ import Reparaciones from './sub-containers/Reparaciones';
 const TallerTractores = () => {
     return (
         <section className='section-containers'>
-                <Reparaciones></Reparaciones>
+                <Reparaciones subArea="tractores"></Reparaciones>
         </section>
     );
 };

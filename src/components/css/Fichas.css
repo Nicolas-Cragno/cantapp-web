@@ -108,6 +108,17 @@
   border-color: #888; 
 }
 
+.cant-detail{
+  background-color: black;
+  color: white;
+  padding-right: 0.4rem;
+  padding-left: 0.4rem;
+  margin-left: .6rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-size: small;
+}
+
 .ficha-buttons {
   padding-top: 1rem;
   display: flex;

@@ -214,3 +214,20 @@ export const buscarNombreUsuario = async (uid) => {
     return "Error";
   }
 };
+
+export const buscarRepuestoPorID = async (id) => {
+  try{
+    const repuestos = await listarColeccion("stock", true);
+  const repuesto = repuestos.find(r => r.id === id);
+
+  if(!repuesto){
+    console.warn("No se encontro repuesto con ese codigo.");
+    return "NO REGISTRADO";
+  }
+
+  return `${repuesto.descripcion} (${repuesto.marca})`;
+  } catch(error){
+    console.error("Error en la búsqueda: ", error);
+    return "Error";
+  }
+}

@@ -7,6 +7,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { VscDebugBreakpointLog } from "react-icons/vsc";
+import { RiListSettingsLine } from "react-icons/ri";
 import { GiAutoRepair } from "react-icons/gi";
 import { IoCalendarSharp } from "react-icons/io5";
 import "./css/SideBar.css";
@@ -44,7 +45,12 @@ const SideBar = () => {
       label: "Flota",
       roles: ["dev", "admin"],
     },
-    
+    {
+      to: "/stock",
+      icon: <RiListSettingsLine className="nav-icon dev" />,
+      label: "Stock",
+      roles: ["dev"],
+    }
   ];
 
   const linksEvents = [

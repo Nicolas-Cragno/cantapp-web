@@ -1,9 +1,9 @@
-import TablaEventos from "../../components/tablas/TablaEventos";
+import TablaEventosTaller from "../../components/tablas/TablaEventosTaller";
 
-const Reparaciones = () => {
+const Reparaciones = ({subArea}) => {
     return(
         <section className="reparaciones">
-            <TablaEventos tipo="reparacion" area="taller tractores" tipoPorArea="TALLER"></TablaEventos>
+            <TablaEventosTaller tipo="reparacion" area="taller" subarea={subArea} tipoPorArea="TALLER"></TablaEventosTaller>
         </section>
     )
 }

@@ -2,23 +2,27 @@ import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion, buscarNombrePorDni } from "../../functions/db-functions"; 
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
-import FichaEvento from "../fichas/FichaEvento";
+import FichaEventoTaller from "../fichas/FichaEventoTaller";
 import FormularioEvento from "../forms/FormularioEvento";
 import "../css/Tables.css";
 
-const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = null }) => {
+const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorArea = null}) => {
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [dominioTractores, setDominioTractores] = useState({});
+  const [dominioFurgones, setDominioFurgones] = useState({});
+  const [dominioVehiculos, setDominioVehiculos] = useState({});
+
 
   // Evita error si 'area' es null
-  const title = tipo != null && typeof area === "string"
-  ? area.toUpperCase()
-  : (typeof area === "string" && typeof subarea === "string"
-      ? area.toUpperCase() + subarea.toUpperCase()
+  const title = tipo != null && typeof area === "string" && typeof subarea === "string"
+  ? area.toUpperCase() + " " + subarea.toUpperCase()
+  : (typeof area === "string" 
+      ? area.toUpperCase() 
       : "EVENTOS");
 
   const cargarEventos = async (usarCache = true) => {
@@ -56,6 +60,36 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
         })
       );
 
+      
+      switch(subarea){
+        case "tractores":
+          const dTractores = await listarColeccion("tractores");
+          const dominioT = {};
+          dTractores.forEach(t => {
+            dominioT[t.interno] = t.dominio;
+          });
+          setDominioTractores(dominioT);
+
+          break;
+        case "furgones":
+          const dFurgones = await listarColeccion("furgones");
+          const dominioF = {};
+          dFurgones.forEach(f => {
+            dominioF[f.interno] = f.dominio;
+          });
+          setDominioFurgones(dominioF);
+          break;
+        default:
+          const dVehiculos = await listarColeccion("utilitarios");
+          const dominioV = {};
+          dVehiculos.forEach(v => {
+            dominioV[v.interno] = v.dominio;
+          });
+          setDominioVehiculos(dominioV);
+          break;
+      }
+      
+
       setNombresPorDni(nombresMap);
 
     } catch (error) {
@@ -67,7 +101,7 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
 
   useEffect(() => {
     cargarEventos();
-  }, [tipo, area]);
+  }, [tipo, area, subarea]);
 
   const handleClickEvento = (evento) => {
     setEventoSeleccionado(evento);
@@ -90,7 +124,25 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
     const fechaTxt = formatearFecha(e.fecha);
     const horaTxt = formatearHora(e.fecha);
     const nombre = nombresPorDni[e.persona] || e.persona || "";
-    const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${e.furgon || ""} ${fechaTxt} ${horaTxt}`;
+    let dominioFiltro;
+    let internoFiltro;
+    switch(subarea){
+        case "tractores":
+          internoFiltro = e.tractor;
+          dominioFiltro = dominioTractores[e.tractor];
+          break;
+        case "furgones":
+          internoFiltro = e.furgon;
+          dominioFiltro = dominioFurgones[e.furgon];
+          break;
+        default:
+          internoFiltro = e.vehiculo;
+          dominioFiltro = dominioVehiculos[e.vehiculo];
+          break;
+      }
+
+
+    const textoFiltro = `${e.subtipo || ""} ${nombre} ${internoFiltro || ""} ${dominioFiltro || ""} ${fechaTxt} ${horaTxt} ${e.parte}`;
     return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
   });
 
@@ -117,11 +169,10 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
               <thead className="table-titles">
                 <tr>
                   <th>FECHA</th>
-                  <th>SECTOR</th>
-                  <th>EVENTO</th>
-                  <th>EMPLEADO</th>
-                  <th>TRACTOR</th>
-                  <th>FURGÓN</th>
+                  <th>INTERNO</th>
+                  <th>MECANICO</th>
+                  <th>TIPO</th>
+                  <th>AREA DE TRABAJO</th>
                 </tr>
               </thead>
             </table>
@@ -131,11 +182,16 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
                   {eventosFiltrados.map((evento) => (
                     <tr key={evento.id} onClick={() => handleClickEvento(evento)} className="table-item">
                       <td>{formatearFecha(evento.fecha)} - {formatearHora(evento.fecha)} HS</td>
-                      <td>{evento.area}</td>
-                      <td>{evento.subtipo}</td>
-                      <td>{evento.persona ? (nombresPorDni[evento.persona] || evento.persona) : ""}</td>
-                      <td>{evento.tractor ? evento.tractor : ""}</td>
-                      <td>{evento.furgon ? evento.furgon : ""}</td>
+                        <td>
+                        {evento.subarea === "TRACTORES" && evento.tractor
+                            ? evento.tractor + " - " + `${dominioTractores[evento.tractor]}`
+                            : evento.subarea === "FURGONES" && evento.furgon
+                            ? evento.furgon + " - " + `${dominioFurgones[evento.furgon]}`
+                            : `${dominioVehiculos[evento.vehiculo]}`}
+                        </td>                      
+                        <td>{evento.persona ? (nombresPorDni[evento.persona] || evento.persona) : ""}</td>
+                        <td>{evento.subtipo}</td>
+                      <td>{evento.parte}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -146,8 +202,9 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
       }
 
       {eventoSeleccionado && (
-        <FichaEvento
+        <FichaEventoTaller
           evento={eventoSeleccionado}
+          tipoVehiculo={subarea}
           onClose={cerrarModal}
           onGuardar={handleGuardar}
         />
@@ -174,4 +231,4 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
   );
 };
 
-export default TablaEventos;
+export default TablaEventosTaller;

@@ -15,14 +15,15 @@ const Dashboard = () => {
   const sections = [
     {title:"Porteria", route: "/porteria", color: colors.rojo, state: true},
     {title:"Satelital", route:"/actividad", color:colors.azul, state: true},
-    {title:"Taller", route:"/taller-camiones", color:colors.amarillo, state: false},
+    {title:"Taller Tractores", route:"/taller-camiones", color:colors.amarillo, state: false},
     {title:"Combustible", route:"/control-combustible", color:colors.naranja, state: false}
   ]
   const gestioners = [
     {title:"Personal", route:"/personal", color:colors.verde, state: true},
     {title:"Tractores", route:"/tractores", color:colors.violeta, state: true},
     {title:"Furgones", route:"/furgones", color:colors.naranja, state: true},
-    {title:"Utilitarios", route:"utilitarios", color:colors.azul, state: true}
+    {title:"Utilitarios", route:"/utilitarios", color:colors.azul, state: true},
+    {title:"Stock", route: "/stock", color:colors.amarillo, state: false}
   ]
 
   return (
