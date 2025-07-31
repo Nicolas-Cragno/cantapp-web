@@ -1,11 +1,11 @@
-.card-info {
+.card-button {
     border-radius: 1rem;
     padding: 0.5rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
     width: 100%;
     max-width: 800px;
-    max-height: 25vh;
+    max-height: 10vh;
     margin: 1vh auto;
     display: flex;
     flex-direction: column;
@@ -15,7 +15,7 @@
     opacity: 0.85;
 }
 
-.card-info-alert{
+.card-button-alert{
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -32,17 +32,17 @@
   opacity: 0.5;
 }
 
-.card-info-alert-logo{
+.card-button-alert-logo{
   margin-left: 0.5rem;
 }
 
-.card-info:hover {
+.card-button:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background-color: rgba(0, 0, 0, 0.01);
   opacity: 1;
 }
 
-.card-info-title2 {
+.card-button-title2 {
   font-weight: bolder;
   font-size: 3rem;
   color: white;
@@ -50,32 +50,32 @@
   padding: 0;
 }
 
-.card-info-route {
+.card-button-route {
   text-decoration: none;
 }
 
 /* Celulares */
 @media (max-width: 767.98px) {
-  .card-info {
+  .card-button {
     height: auto;
     padding: 1rem;
     margin: 1rem;
   }
 
-  .card-info-title2 {
+  .card-button-title2 {
     font-size: 1.4rem;
   }
 }
 
 /* Tablets */
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .card-info {
+  .card-button {
     max-width: 450px;
     height: 22vh;
     padding: 0.75rem;
   }
 
-  .card-info-title2 {
+  .card-button-title2 {
     font-size: 1.6rem;
   }
 
@@ -83,13 +83,13 @@
 
 /* Escritorio */
 @media (min-width: 992px) {
-  .card-info {
+  .card-button {
     max-width: 600px;
     height: 25vh;
     padding: 1rem;
   }
 
-  .card-info-title2 {
+  .card-button-title2 {
     font-size: 1.8rem;
   }
 }

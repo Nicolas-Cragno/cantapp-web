@@ -5,14 +5,15 @@ import { obtenerNombreUnidad } from "../../functions/data-functions";
 import "../css/Tables.css";
 import FichaStock from "../fichas/FichaStock";
 import FormularioStock from "../forms/FormularioStock";
+import FormularioMovimientoStock from "../forms/FormularioMovimientoStock";
 
 const TablaStock = () => {
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const [articulos, setArticulos] = useState([]);
   const [articulosSeleccionado, setArticuloSeleccionado] = useState(null);
-    const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
-
+  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
 
   // Cargar personas filtradas por puesto && cant de personas por empresa
   const cargarArticulos = async (usarCache=true) => {
@@ -46,10 +47,15 @@ const TablaStock = () => {
     setModalAgregarVisible(false);
   };
 
+  const cerrarModalMovimiento = () => {
+    setModalMovimientoVisible(false);
+  }
+
   // Guardar nuevo articulo o editar existente y recargar lista
   const handleGuardar = async () => {
     await cargarArticulos(false);
     setModalAgregarVisible(false);
+    setModalMovimientoVisible(false);
     setArticuloSeleccionado(null);
   };
 
@@ -128,7 +134,20 @@ const TablaStock = () => {
         />
       )}
 
+      {modalMovimientoVisible && (
+        <FormularioMovimientoStock
+          onClose={cerrarModalMovimiento}
+          onGuardar={handleGuardar}
+        />
+      )}
+
       <div className="table-options">
+        <button
+          className="table-agregar"
+          onClick={() => setModalMovimientoVisible(true)}
+        >
+          ↓↑ ALTA STOCK
+        </button>
         <button
           className="table-agregar"
           onClick={() => setModalAgregarVisible(true)}

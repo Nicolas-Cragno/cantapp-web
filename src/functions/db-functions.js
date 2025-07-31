@@ -215,6 +215,8 @@ export const buscarNombreUsuario = async (uid) => {
   }
 };
 
+// stock
+
 export const buscarRepuestoPorID = async (id) => {
   try{
     const repuestos = await listarColeccion("stock", true);
@@ -247,5 +249,25 @@ export const codigoStock = async (tipo, prefijo) => {
 
   const nuevoNumero = maxNum + 1;
   return `${prefijo}${String(nuevoNumero).padStart(4, "0")}`;
+};
+
+export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {
+  try {
+    const stock = await listarColeccion("stock", true);
+    const articulo = stock.find(item => item.id === idArticulo);
+
+    if (!articulo) {
+      throw new Error("Artículo no encontrado");
+    }
+
+    const nuevaCantidad = (articulo.cantidad || 0) + cantidadASumar;
+
+    await modificar("stock", idArticulo, { cantidad: nuevaCantidad });
+
+    return nuevaCantidad;
+  } catch (error) {
+    console.error("Error al sumar cantidad al stock:", error);
+    throw error;
+  }
 };
 

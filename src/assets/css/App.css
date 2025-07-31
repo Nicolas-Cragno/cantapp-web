@@ -21,6 +21,10 @@
   opacity: 0.05;
 }
 
+.list{
+  list-style:decimal;
+}
+
 .page-title{
     margin: 2rem;
     display: flex;
