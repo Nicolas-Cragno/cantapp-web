@@ -1,6 +1,7 @@
 import { useState, useEffect, use } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
+import { obtenerNombreUnidad } from "../../functions/data-functions";
 import "../css/Tables.css";
 import FichaStock from "../fichas/FichaStock";
 import FormularioStock from "../forms/FormularioStock";
@@ -102,7 +103,7 @@ const TablaStock = () => {
                     <td>{articulo.descripcion}</td>
                     <td>{articulo.marca}</td>
                     <td>{articulo.codigoProveedor}</td>
-                    <td>{articulo.cantidad} {articulo.unidad}</td>
+                    <td>{articulo.cantidad} {obtenerNombreUnidad(articulo.unidad).toUpperCase()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -114,7 +115,7 @@ const TablaStock = () => {
 
       {articulosSeleccionado && (
         <FichaStock
-          persona={articulosSeleccionado}
+          articulo={articulosSeleccionado}
           onClose={cerrarModal}
           onGuardar={handleGuardar}
         />

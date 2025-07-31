@@ -231,3 +231,21 @@ export const buscarRepuestoPorID = async (id) => {
     return "Error";
   }
 }
+
+export const codigoStock = async (tipo, prefijo) => {
+  const articulos = await listarColeccion("stock", true);
+
+  const articulosTipo = articulos.filter(
+    (a) => a.tipo?.toLowerCase() === tipo.toLowerCase()
+  );
+
+  const maxNum = articulosTipo.reduce((max, art) => {
+    const match = art.id?.match(/\d+$/);
+    const numero = match ? parseInt(match[0], 10) : 0;
+    return numero > max ? numero : max;
+  }, 0);
+
+  const nuevoNumero = maxNum + 1;
+  return `${prefijo}${String(nuevoNumero).padStart(4, "0")}`;
+};
+

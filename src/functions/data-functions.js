@@ -1,4 +1,5 @@
 import empresas from "./data/empresas.json";
+import unidades from "./data/unidades.json";
 import { listarColeccion } from "./db-functions";
 
 
@@ -114,4 +115,8 @@ export const formatearFechaHoraInput = (fecha) => {
   const min = pad(d.getMinutes());
   const ss = pad(d.getSeconds());
   return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+};
+
+export const obtenerNombreUnidad = (abreviacion) => {
+  return Object.entries(unidades).find(([, abrev]) => abrev === abreviacion)?.[0] || "";
 };
