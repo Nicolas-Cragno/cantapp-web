@@ -2,6 +2,16 @@ import { collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, 
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
 
+// Limpiar cache
+
+export const limpiarCache = (...claves) => {
+  if (claves.length === 0) {
+    localStorage.clear(); // Elimina todo el localStorage
+  } else {
+    claves.forEach(clave => localStorage.removeItem(clave));
+  }
+};
+
 // Listar dnis (si hay cache y no hay modificaciones se lista desde ahi) 5 minutos y se recarga
 export const listarColeccion = async (nombreColeccion, usarCache = true, tiempoCacheMs = 5 * 60 * 1000) => {
   const cacheKey = `${nombreColeccion}_cache`;
@@ -253,16 +263,17 @@ export const codigoStock = async (tipo, prefijo) => {
 
 export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {
   try {
-    const stock = await listarColeccion("stock", true);
-    const articulo = stock.find(item => item.id === idArticulo);
+    const ref = doc(db, "stock", idArticulo);
+    const snap = await getDoc(ref);
 
-    if (!articulo) {
+    if (!snap.exists()) {
       throw new Error("Artículo no encontrado");
     }
 
-    const nuevaCantidad = (articulo.cantidad || 0) + cantidadASumar;
+    const data = snap.data();
+    const nuevaCantidad = (data.cantidad || 0) + cantidadASumar;
 
-    await modificar("stock", idArticulo, { cantidad: nuevaCantidad });
+    await updateDoc(ref, { cantidad: nuevaCantidad });
 
     return nuevaCantidad;
   } catch (error) {
@@ -271,3 +282,24 @@ export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {
   }
 };
 
+export const sumarMultiplesCantidades = async (ingresosMap) => {
+  try {
+    for (const [idArticulo, cantidadASumar] of Object.entries(ingresosMap)) {
+      const ref = doc(db, "stock", idArticulo);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) {
+        console.warn(`Artículo con ID ${idArticulo} no encontrado`);
+        continue; // o lanzar error si preferís
+      }
+
+      const data = snap.data();
+      const nuevaCantidad = (data.cantidad || 0) + cantidadASumar;
+
+      await updateDoc(ref, { cantidad: nuevaCantidad });
+    }
+  } catch (error) {
+    console.error("Error al actualizar múltiples cantidades:", error);
+    throw error;
+  }
+};

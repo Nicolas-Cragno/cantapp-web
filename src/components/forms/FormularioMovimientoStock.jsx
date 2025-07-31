@@ -1,7 +1,7 @@
 import "../css/Forms.css";
 import { useState, useEffect, use } from "react";
 import Swal from "sweetalert2";
-import { listarColeccion, sumarCantidadStock } from "../../functions/db-functions";
+import { listarColeccion, sumarMultiplesCantidades } from "../../functions/db-functions";
 import { obtenerNombreUnidad } from "../../functions/data-functions";
 import { FaCirclePlus } from "react-icons/fa6";
 
@@ -15,7 +15,6 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
   const [loading, setLoading] = useState(true);
 
     console.log("Ingresos:", ingresos);
-
 
   useEffect(() => {
     const fetchArticulos = async () => {
@@ -35,15 +34,14 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
 
     const articulo = articulos.find(a => a.id === articuloSeleccionado);
 
-    setIngresos(prev => [
-      ...prev,
-      {
-        id: articulo.id,
-        descripcion: articulo.descripcion,
-        cantidad: Number(cantidad),
-        unidad: articulo.unidad
-      }
-    ]);
+    const nuevoIngreso = {
+      id: articulo.id,
+      descripcion: articulo.descripcion,
+      cantidad: Number(cantidad),
+      unidad: articulo.unidad
+    };
+
+    setIngresos(prev => [...prev, nuevoIngreso]);
 
     setArticuloSeleccionado("");
     setCantidad("");
@@ -53,16 +51,27 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
     setIngresos(ing => ing.filter((_, i) => i != indexEliminar));
   };
 
-  const handleGuardar = async () => {
+  const handleGuardar = async (e) => {
+    e.preventDefault();
+
     if (ingresos.length === 0) {
       Swal.fire("Atención", "No hay artículos cargados", "info");
       return;
     }
 
     try {
-      for (const item of ingresos) {
-        await sumarCantidadStock(item.id, item.cantidad);
-      }
+      // Convertir array a objeto { id: cantidad }
+      const ingresosMap = {};
+      ingresos.forEach(item => {
+        if (ingresosMap[item.id]) {
+          ingresosMap[item.id] += item.cantidad;
+        } else {
+          ingresosMap[item.id] = item.cantidad;
+        }
+      });
+
+      // Llamar a función optimizada
+      await sumarMultiplesCantidades(ingresosMap);
 
       Swal.fire("Éxito", "Stock actualizado correctamente", "success");
       if (onGuardar) onGuardar();
@@ -71,6 +80,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
       Swal.fire("Error", "Ocurrió un error al guardar", "error");
     }
   };
+
 
   return (
     <div className="form">
@@ -138,6 +148,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
                       </div>
                       <div className="item-actions">
                         <span className="list-cant">+ {item.cantidad} {item.unidad.toUpperCase()}</span>
+                        
                         <button
                           className="delete-btn"
                           type="button"
@@ -153,7 +164,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
             </div>
 
             <div className="form-buttons">
-                <button type="submit" disabled={loading}>
+                <button type="submit" disabled={loading} onClick={handleGuardar}>
                     {loading ? "Guardando..." : "Guardar"}
                 </button>
                 <button type="button" onClick={onClose} disabled={loading}>
