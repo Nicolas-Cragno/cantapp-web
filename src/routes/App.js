@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './Login.jsx';
 import Denied from './Denied.jsx';
 import Page404 from './404.jsx';
-import { rutasProtegidas } from './RutasProtegidas.jsx';
+import { rutasProtegidas } from './access/RutasProtegidas.jsx';
 
 function App() {
   return (

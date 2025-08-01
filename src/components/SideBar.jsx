@@ -6,7 +6,7 @@ import {
   FaBars,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { VscDebugBreakpointLog } from "react-icons/vsc";
+import { Link } from "react-router-dom";
 import { RiListSettingsLine } from "react-icons/ri";
 import { GiAutoRepair } from "react-icons/gi";
 import { IoCalendarSharp } from "react-icons/io5";
@@ -95,10 +95,10 @@ const SideBar = () => {
         {linksAll.map(
           ({ to, icon, label, roles }) =>
             tieneAcceso(roles) && (
-              <a key={to} href={to} className="nav-link">
+              <Link key={to} to={to} className="nav-link">
                 {icon}
                 {!collapsed && <span>{label}</span>}
-              </a>
+              </Link>
             )
         )}
       </nav>
@@ -106,10 +106,10 @@ const SideBar = () => {
         {linksManagement.map(
           ({ to, icon, label, roles }) =>
             tieneAcceso(roles) && (
-              <a key={to} href={to} className="nav-link">
+              <Link key={to} to={to} className="nav-link">
                 {icon}
                 {!collapsed && <span>{label}</span>}
-              </a>
+              </Link>
             )
         )}
       </nav>
@@ -117,10 +117,10 @@ const SideBar = () => {
         {linksEvents.map(
           ({ to, icon, label, roles }) =>
             tieneAcceso(roles) && (
-              <a key={to} href={to} className="nav-link">
+              <Link key={to} to={to} className="nav-link">
                 {icon}
                 {!collapsed && <span>{label}</span>}
-              </a>
+              </Link>
             )
         )}
       </nav>
