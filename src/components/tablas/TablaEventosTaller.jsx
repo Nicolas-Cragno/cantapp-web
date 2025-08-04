@@ -236,6 +236,7 @@ const TablaEventosTaller = ({
         <FormularioEventoTaller
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
+          tipoVehiculo={subarea}
           area={typeof area === "string" ? area.toUpperCase() : ""}
           tipoPorArea={tipoPorArea}
         />

@@ -120,3 +120,23 @@ export const formatearFechaHoraInput = (fecha) => {
 export const obtenerNombreUnidad = (abreviacion) => {
   return Object.entries(unidades).find(([, abrev]) => abrev === abreviacion)?.[0] || "";
 };
+
+export const singularTipoVehiculo = (tipo) => {
+  let tipoSingular;
+  switch(tipo.toUpperCase()){
+    case "TRACTORES":
+      tipoSingular = "Tractor";
+      break;
+    case "FURGONES":
+      tipoSingular = "Furgon";
+      break;
+      case "UTILITARIOS":
+        tipoSingular = "Utilitario";
+        break;
+    default:
+      tipoSingular = "Vehiculo";
+      break;
+  }
+  return tipoSingular;
+  
+}

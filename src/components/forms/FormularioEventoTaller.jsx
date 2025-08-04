@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
+import { singularTipoVehiculo } from "../../functions/data-functions";
 import Swal from "sweetalert2";
 import {
   formatearFecha,
@@ -13,6 +14,7 @@ import { FaPray } from "react-icons/fa";
 
 const FormularioEventoTaller = ({
   evento = {},
+  tipoVehiculo = null,
   area = null,
   tipoPorArea = null,
   onClose,
@@ -37,7 +39,6 @@ const FormularioEventoTaller = ({
   const [unidad, setUnidad] = useState("");
   const [ingresos, setIngresos] = useState([]); // para el listado de repuestos a usar
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const cargarMecanicos = async () => {
       try {
@@ -51,12 +52,21 @@ const FormularioEventoTaller = ({
     const cargarVehiculos = async () => {
       try {
         let data = [];
-        if (evento.tractor) {
-          data = await listarColeccion("tractores");
-        } else if (evento.furgon) {
-          data = await listarColeccion("furgones");
-        } else {
-          data = await listarColeccion("utilitarios");
+
+        const subarea = evento.subarea
+          ? evento.subarea.toUpperCase()
+          : tipoVehiculo.toUpperCase();
+
+        switch (subarea) {
+          case "TRACTORES":
+            data = await listarColeccion("tractores");
+            break;
+          case "FURGONES":
+            data = await listarColeccion("furgones");
+            break;
+          default:
+            data = await listarColeccion("utilitarios");
+            break;
         }
 
         setVehiculos(data);
@@ -120,6 +130,7 @@ const FormularioEventoTaller = ({
       <div className="doble-form-content">
         <div className="form-header">
           <h2>{evento.id ? "Editar Trabajo" : "Nuevo Trabajo"}</h2>
+
           <h2 className="black-txt">
             {evento.id
               ? formatearFecha(evento.fecha) +
@@ -173,10 +184,10 @@ const FormularioEventoTaller = ({
             </label>
 
             <label>
-              {evento.tractor
-                ? "Tractor"
-                : evento.furgon
-                ? "Furgon"
+              {evento.subarea
+                ? singularTipoVehiculo(evento.subarea)
+                : tipoVehiculo
+                ? singularTipoVehiculo(tipoVehiculo)
                 : "Vehiculo"}
               <select
                 type="number"
