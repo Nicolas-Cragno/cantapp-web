@@ -2,7 +2,7 @@ import "../css/Fichas.css";
 import { FaSpinner } from "react-icons/fa";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import { useEffect, useState } from "react";
-import FormularioEvento from "../forms/FormularioEvento";
+import FormularioEventoTaller from "../forms/FormularioEventoTaller";
 import { buscarNombrePorDni, listarColeccion, buscarRepuestoPorID } from "../../functions/db-functions";
 
 const FichaEventoTaller = ({ evento, tipoVehiculo="Vehiculo", onClose, onGuardar }) => {
@@ -115,7 +115,8 @@ const FichaEventoTaller = ({ evento, tipoVehiculo="Vehiculo", onClose, onGuardar
           </div>
         </div>
       ) : (
-        <FormularioEvento
+        <FormularioEventoTaller
+          
           evento={evento}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}

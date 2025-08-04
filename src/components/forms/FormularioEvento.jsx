@@ -149,8 +149,6 @@ const FormularioEvento = ({ evento = {}, area=null, tipoPorArea = null, onClose,
               required
             >
               <option value="">Seleccione subtipo</option>
-
-              {/* Si es un array de strings */}
               {typeof subtiposDisponibles[0] === "string"
                 ? subtiposDisponibles.map((sub, i) => (
                     <option key={i} value={sub}>

@@ -25,6 +25,17 @@
   list-style:decimal;
 }
 
+.black-txt{
+  background-color: black;
+  color: white;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  border-radius: 5rem;
+  opacity: .5;
+}
+
 .page-title{
     margin: 2rem;
     display: flex;

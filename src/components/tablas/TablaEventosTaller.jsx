@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
-import { listarColeccion, buscarNombrePorDni } from "../../functions/db-functions"; 
+import {
+  listarColeccion,
+  buscarNombrePorDni,
+} from "../../functions/db-functions";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEventoTaller from "../fichas/FichaEventoTaller";
-import FormularioEvento from "../forms/FormularioEvento";
+import FormularioEventoTaller from "../forms/FormularioEventoTaller";
 import "../css/Tables.css";
 
-const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorArea = null}) => {
+const TablaEventosTaller = ({
+  tipo = null,
+  area = null,
+  subarea = null,
+  tipoPorArea = null,
+}) => {
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
   const [filtro, setFiltro] = useState("");
@@ -17,13 +25,13 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
   const [dominioFurgones, setDominioFurgones] = useState({});
   const [dominioVehiculos, setDominioVehiculos] = useState({});
 
-
   // Evita error si 'area' es null
-  const title = tipo != null && typeof area === "string" && typeof subarea === "string"
-  ? area.toUpperCase() + " " + subarea.toUpperCase()
-  : (typeof area === "string" 
-      ? area.toUpperCase() 
-      : "EVENTOS");
+  const title =
+    tipo != null && typeof area === "string" && typeof subarea === "string"
+      ? area.toUpperCase() + " " + subarea.toUpperCase()
+      : typeof area === "string"
+      ? area.toUpperCase()
+      : "EVENTOS";
 
   const cargarEventos = async (usarCache = true) => {
     setLoading(true);
@@ -31,15 +39,15 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
       const datos = await listarColeccion("eventos", usarCache);
 
       const eventosFiltrados =
-      area && typeof area === "string"
-        ? datos
-            .filter((e) => e.area?.toUpperCase() === area.toUpperCase())
-            .filter((e) =>
-              subarea && typeof subarea === "string"
-                ? e.subarea?.toUpperCase() === subarea.toUpperCase()
-                : true
-            )
-        : datos;
+        area && typeof area === "string"
+          ? datos
+              .filter((e) => e.area?.toUpperCase() === area.toUpperCase())
+              .filter((e) =>
+                subarea && typeof subarea === "string"
+                  ? e.subarea?.toUpperCase() === subarea.toUpperCase()
+                  : true
+              )
+          : datos;
 
       // Ordenar de más nuevo a más viejo
       const eventosOrdenados = [...eventosFiltrados].sort((a, b) => {
@@ -50,7 +58,9 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
 
       setEventos(eventosOrdenados);
 
-      const dnisUnicos = [...new Set(eventosOrdenados.map(e => e.persona).filter(Boolean))];
+      const dnisUnicos = [
+        ...new Set(eventosOrdenados.map((e) => e.persona).filter(Boolean)),
+      ];
       const nombresMap = {};
 
       await Promise.all(
@@ -60,12 +70,11 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
         })
       );
 
-      
-      switch(subarea){
+      switch (subarea) {
         case "tractores":
           const dTractores = await listarColeccion("tractores");
           const dominioT = {};
-          dTractores.forEach(t => {
+          dTractores.forEach((t) => {
             dominioT[t.interno] = t.dominio;
           });
           setDominioTractores(dominioT);
@@ -74,7 +83,7 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
         case "furgones":
           const dFurgones = await listarColeccion("furgones");
           const dominioF = {};
-          dFurgones.forEach(f => {
+          dFurgones.forEach((f) => {
             dominioF[f.interno] = f.dominio;
           });
           setDominioFurgones(dominioF);
@@ -82,16 +91,14 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
         default:
           const dVehiculos = await listarColeccion("utilitarios");
           const dominioV = {};
-          dVehiculos.forEach(v => {
+          dVehiculos.forEach((v) => {
             dominioV[v.interno] = v.dominio;
           });
           setDominioVehiculos(dominioV);
           break;
       }
-      
 
       setNombresPorDni(nombresMap);
-
     } catch (error) {
       console.error("Error al obtener eventos o nombres:", error);
     } finally {
@@ -126,23 +133,24 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
     const nombre = nombresPorDni[e.persona] || e.persona || "";
     let dominioFiltro;
     let internoFiltro;
-    switch(subarea){
-        case "tractores":
-          internoFiltro = e.tractor;
-          dominioFiltro = dominioTractores[e.tractor];
-          break;
-        case "furgones":
-          internoFiltro = e.furgon;
-          dominioFiltro = dominioFurgones[e.furgon];
-          break;
-        default:
-          internoFiltro = e.vehiculo;
-          dominioFiltro = dominioVehiculos[e.vehiculo];
-          break;
-      }
+    switch (subarea) {
+      case "tractores":
+        internoFiltro = e.tractor;
+        dominioFiltro = dominioTractores[e.tractor];
+        break;
+      case "furgones":
+        internoFiltro = e.furgon;
+        dominioFiltro = dominioFurgones[e.furgon];
+        break;
+      default:
+        internoFiltro = e.vehiculo;
+        dominioFiltro = dominioVehiculos[e.vehiculo];
+        break;
+    }
 
-
-    const textoFiltro = `${e.subtipo || ""} ${nombre} ${internoFiltro || ""} ${dominioFiltro || ""} ${fechaTxt} ${horaTxt} ${e.parte}`;
+    const textoFiltro = `${e.subtipo || ""} ${nombre} ${internoFiltro || ""} ${
+      dominioFiltro || ""
+    } ${fechaTxt} ${horaTxt} ${e.parte}`;
     return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
   });
 
@@ -160,46 +168,60 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
       </div>
 
       {loading ? (
-          <div className="loading-item">
-            <FaSpinner className="spinner" />
-          </div>
-        ) : (
-          <div className="table-scroll-wrapper">
+        <div className="loading-item">
+          <FaSpinner className="spinner" />
+        </div>
+      ) : (
+        <div className="table-scroll-wrapper">
+          <table className="table-lista">
+            <thead className="table-titles">
+              <tr>
+                <th>FECHA</th>
+                <th>INTERNO</th>
+                <th>MECANICO</th>
+                <th>TIPO</th>
+                <th>AREA DE TRABAJO</th>
+              </tr>
+            </thead>
+          </table>
+          <div className="table-body-wrapper">
             <table className="table-lista">
-              <thead className="table-titles">
-                <tr>
-                  <th>FECHA</th>
-                  <th>INTERNO</th>
-                  <th>MECANICO</th>
-                  <th>TIPO</th>
-                  <th>AREA DE TRABAJO</th>
-                </tr>
-              </thead>
+              <tbody className="table-body">
+                {eventosFiltrados.map((evento) => (
+                  <tr
+                    key={evento.id}
+                    onClick={() => handleClickEvento(evento)}
+                    className="table-item"
+                  >
+                    <td>
+                      {formatearFecha(evento.fecha)} -{" "}
+                      {formatearHora(evento.fecha)} HS
+                    </td>
+                    <td>
+                      {evento.subarea === "TRACTORES" && evento.tractor
+                        ? evento.tractor +
+                          " - " +
+                          `${dominioTractores[evento.tractor]}`
+                        : evento.subarea === "FURGONES" && evento.furgon
+                        ? evento.furgon +
+                          " - " +
+                          `${dominioFurgones[evento.furgon]}`
+                        : `${dominioVehiculos[evento.vehiculo]}`}
+                    </td>
+                    <td>
+                      {evento.persona
+                        ? nombresPorDni[evento.persona] || evento.persona
+                        : ""}
+                    </td>
+                    <td>{evento.subtipo}</td>
+                    <td>{evento.parte}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
-            <div className="table-body-wrapper">
-              <table className="table-lista">
-                <tbody className="table-body">
-                  {eventosFiltrados.map((evento) => (
-                    <tr key={evento.id} onClick={() => handleClickEvento(evento)} className="table-item">
-                      <td>{formatearFecha(evento.fecha)} - {formatearHora(evento.fecha)} HS</td>
-                        <td>
-                        {evento.subarea === "TRACTORES" && evento.tractor
-                            ? evento.tractor + " - " + `${dominioTractores[evento.tractor]}`
-                            : evento.subarea === "FURGONES" && evento.furgon
-                            ? evento.furgon + " - " + `${dominioFurgones[evento.furgon]}`
-                            : `${dominioVehiculos[evento.vehiculo]}`}
-                        </td>                      
-                        <td>{evento.persona ? (nombresPorDni[evento.persona] || evento.persona) : ""}</td>
-                        <td>{evento.subtipo}</td>
-                      <td>{evento.parte}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
-        )
-      }
+        </div>
+      )}
 
       {eventoSeleccionado && (
         <FichaEventoTaller
@@ -211,7 +233,7 @@ const TablaEventosTaller = ({ tipo = null, area = null, subarea=null, tipoPorAre
       )}
 
       {modalAgregarVisible && (
-        <FormularioEvento
+        <FormularioEventoTaller
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
           area={typeof area === "string" ? area.toUpperCase() : ""}
