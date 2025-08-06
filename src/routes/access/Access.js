@@ -15,8 +15,9 @@ export const Access = {
     "/utilitarios": ["admin"],
 
     // Usuarios
-    "/actividad": ["user", "admin"],   // satelital
+    "/actividad": ["user", "admin"],   // todos
     "/porteria": ["user", "admin"],    // seguridad / porteria
+    "/satelital" : ["user", "admin"], // satelital
 
     // Todos
     "/": ["user", "admin", "dev"],

@@ -17,6 +17,7 @@ import TallerTractores from "../../containers/TallerTractores";
 import Utilitarios from "../../containers/sub-containers/Utilitarios";
 import ControlCombustible from "../../containers/ControlCombustilbe";
 import Stock from "../../containers/Stock";
+import Satelital from "../../containers/Satelital";
 
 export const rutasProtegidas = (
   <>
@@ -30,18 +31,147 @@ export const rutasProtegidas = (
         </RutaProtegida>
       }
     />
-    <Route path="/personal" element={<RutaProtegida><Layout><Personal /></Layout></RutaProtegida>} />
-    <Route path="/mecanicos" element={<RutaProtegida><Layout><Mecanicos /></Layout></RutaProtegida>} />
-    <Route path="/choferes-larga" element={<RutaProtegida><Layout><ChoferesLarga /></Layout></RutaProtegida>} />
-    <Route path="/choferes-movimiento" element={<RutaProtegida><Layout><ChoferesMovimiento /></Layout></RutaProtegida>} />
-    <Route path="/flota" element={<RutaProtegida><Layout><Flota /></Layout></RutaProtegida>} />
-    <Route path="/tractores" element={<RutaProtegida><Layout><Tractores /></Layout></RutaProtegida>} />
-    <Route path="/furgones" element={<RutaProtegida><Layout><Furgones /></Layout></RutaProtegida>} />
-    <Route path="/utilitarios" element={<RutaProtegida><Layout><Utilitarios /></Layout></RutaProtegida>} />
-    <Route path="/actividad" element={<RutaProtegida><Layout><Actividad /></Layout></RutaProtegida>} />
-    <Route path="/porteria" element={<RutaProtegida><Layout><Porteria /></Layout></RutaProtegida>} />
-    <Route path="/taller-tractores" element={<RutaProtegida><Layout><TallerTractores /></Layout></RutaProtegida>} />
-    <Route path="/control-combustible" element={<RutaProtegida><Layout><ControlCombustible /></Layout></RutaProtegida>} />
-    <Route path="/stock" element={<RutaProtegida><Layout><Stock /></Layout></RutaProtegida>} />
+    {/* Gestores */}
+    <Route
+      path="/personal"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Personal />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/mecanicos"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Mecanicos />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/choferes-larga"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <ChoferesLarga />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/choferes-movimiento"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <ChoferesMovimiento />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/flota"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Flota />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/tractores"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Tractores />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/furgones"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Furgones />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/utilitarios"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Utilitarios />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/stock"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Stock />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    {/* Informacion general del sector*/}
+    <Route
+      path="/actividad"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Actividad />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/satelital"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Satelital />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/porteria"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Porteria />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/taller-tractores"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <TallerTractores />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/control-combustible"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <ControlCombustible />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
   </>
 );

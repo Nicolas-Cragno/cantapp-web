@@ -1,8 +1,8 @@
-import "./css/CardButton.css";
+import "../css/CardButton.css";
 import { GiAutoRepair } from "react-icons/gi";
 import Swal from "sweetalert2";
 import { useState } from "react";
-import FormularioMovimientoStock from "./forms/FormularioMovimientoStock";
+import FormularioMovimientoStock from "../forms/FormularioMovimientoStock";
 
 const CardButton = ({ title, backColor, state = true }) => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -15,7 +15,7 @@ const CardButton = ({ title, backColor, state = true }) => {
         text: "Es posible que se encuentre en reparación y/o producción",
         icon: "warning",
         confirmButtonText: "Entendido",
-        confirmButtonColor: "#4161bd"
+        confirmButtonColor: "#4161bd",
       });
     } else {
       setMostrarFormulario(true);
@@ -39,9 +39,7 @@ const CardButton = ({ title, backColor, state = true }) => {
         </div>
       </div>
 
-      {mostrarFormulario && (
-        <FormularioMovimientoStock onClose={handleClose} />
-      )}
+      {mostrarFormulario && <FormularioMovimientoStock onClose={handleClose} />}
     </>
   );
 };

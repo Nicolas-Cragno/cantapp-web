@@ -1,10 +1,10 @@
-import "./css/CardInfo.css";
+import "../css/CardInfo.css";
 import { GiAutoRepair } from "react-icons/gi";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import { IoEnterSharp } from "react-icons/io5";
 
-const CardInfo = ({ title, route, backColor, state = true }) => {
-
+const CardInfo = ({ title, route, backColor, img, state = true }) => {
   const handleClick = (e) => {
     if (!state) {
       e.preventDefault();
@@ -28,10 +28,13 @@ const CardInfo = ({ title, route, backColor, state = true }) => {
     >
       <div className="card-info" style={{ backgroundColor: backColor }}>
         <h1 className="card-info-title2">{title}</h1>
-        {!state && (
+
+        {!state ? (
           <span className="card-info-alert">
             no disponible <GiAutoRepair className="card-info-alert-logo" />
           </span>
+        ) : (
+          <img src={img} alt="" className="card-info-img"></img>
         )}
       </div>
     </Link>

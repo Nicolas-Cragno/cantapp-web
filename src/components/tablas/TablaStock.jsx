@@ -16,10 +16,10 @@ const TablaStock = () => {
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
 
   // Cargar personas filtradas por puesto && cant de personas por empresa
-  const cargarArticulos = async (usarCache=true) => {
+  const cargarArticulos = async (usarCache = true) => {
     setLoading(true);
     try {
-      const data = await listarColeccion("stock", usarCache);   
+      const data = await listarColeccion("stock", usarCache);
 
       setArticulos(data);
     } catch (error) {
@@ -49,7 +49,7 @@ const TablaStock = () => {
 
   const cerrarModalMovimiento = () => {
     setModalMovimientoVisible(false);
-  }
+  };
 
   // Guardar nuevo articulo o editar existente y recargar lista
   const handleGuardar = async () => {
@@ -60,14 +60,18 @@ const TablaStock = () => {
   };
 
   // Filtrado simple
-  const articulosFiltrados = articulos.filter((a) => {
-    const nombreCompleto = `${a.id || ""} ${a.codigoProveedor || ""} ${a.descripcion || ""} ${a.marca} ${a.cantidad} ${a.unidad}`;
-    return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
-  }).sort((a,b) => {
-    const aA = (a.id || "").toLowerCase();
-    const aB = (b.id || "").toLowerCase();
-    return aA.localeCompare(aB);
-  });
+  const articulosFiltrados = articulos
+    .filter((a) => {
+      const nombreCompleto = `${a.id || ""} ${a.codigoProveedor || ""} ${
+        a.descripcion || ""
+      } ${a.marca} ${a.cantidad} ${a.unidad}`;
+      return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+    })
+    .sort((a, b) => {
+      const aA = (a.id || "").toLowerCase();
+      const aB = (b.id || "").toLowerCase();
+      return aA.localeCompare(aB);
+    });
 
   return (
     <section className="table-container">
@@ -84,7 +88,7 @@ const TablaStock = () => {
 
       {loading ? (
         <div className="loading-item">
-          <FaSpinner className="spinner"/>
+          <FaSpinner className="spinner" />
         </div>
       ) : (
         <div className="table-scroll-wrapper">
@@ -104,19 +108,25 @@ const TablaStock = () => {
             <table className="table-lista">
               <tbody className="table-body">
                 {articulosFiltrados.map((articulo) => (
-                  <tr key={articulo.id} onClick={() => handleClickArticulo(articulo)} className="table-item">
+                  <tr
+                    key={articulo.id}
+                    onClick={() => handleClickArticulo(articulo)}
+                    className="table-item"
+                  >
                     <td>{articulo.id}</td>
                     <td>{articulo.descripcion}</td>
                     <td>{articulo.marca}</td>
                     <td>{articulo.codigoProveedor}</td>
-                    <td>{articulo.cantidad} {obtenerNombreUnidad(articulo.unidad).toUpperCase()}</td>
+                    <td>
+                      {articulo.cantidad}{" "}
+                      {obtenerNombreUnidad(articulo.unidad).toUpperCase()}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
-
       )}
 
       {articulosSeleccionado && (
@@ -146,7 +156,7 @@ const TablaStock = () => {
           className="table-agregar"
           onClick={() => setModalMovimientoVisible(true)}
         >
-          ↓↑ ALTA STOCK
+          ↓↑ MOVIMIENTO
         </button>
         <button
           className="table-agregar"

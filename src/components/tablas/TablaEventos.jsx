@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
-import { listarColeccion, buscarNombrePorDni } from "../../functions/db-functions"; 
+import {
+  listarColeccion,
+  buscarNombrePorDni,
+} from "../../functions/db-functions";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEvento from "../fichas/FichaEvento";
 import FormularioEvento from "../forms/FormularioEvento";
 import "../css/Tables.css";
 
-const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = null }) => {
+const TablaEventos = ({
+  tipo = null,
+  area = null,
+  subarea = null,
+  tipoPorArea = null,
+}) => {
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
   const [filtro, setFiltro] = useState("");
@@ -15,11 +23,12 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
 
   // Evita error si 'area' es null
-  const title = tipo != null && typeof area === "string"
-  ? area.toUpperCase()
-  : (typeof area === "string" && typeof subarea === "string"
+  const title =
+    tipo != null && typeof area === "string"
+      ? area.toUpperCase()
+      : typeof area === "string" && typeof subarea === "string"
       ? area.toUpperCase() + subarea.toUpperCase()
-      : "EVENTOS");
+      : "EVENTOS";
 
   const cargarEventos = async (usarCache = true) => {
     setLoading(true);
@@ -27,15 +36,15 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
       const datos = await listarColeccion("eventos", usarCache);
 
       const eventosFiltrados =
-      area && typeof area === "string"
-        ? datos
-            .filter((e) => e.area?.toUpperCase() === area.toUpperCase())
-            .filter((e) =>
-              subarea && typeof subarea === "string"
-                ? e.subarea?.toUpperCase() === subarea.toUpperCase()
-                : true
-            )
-        : datos;
+        area && typeof area === "string"
+          ? datos
+              .filter((e) => e.area?.toUpperCase() === area.toUpperCase())
+              .filter((e) =>
+                subarea && typeof subarea === "string"
+                  ? e.subarea?.toUpperCase() === subarea.toUpperCase()
+                  : true
+              )
+          : datos;
 
       // Ordenar de más nuevo a más viejo
       const eventosOrdenados = [...eventosFiltrados].sort((a, b) => {
@@ -46,7 +55,9 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
 
       setEventos(eventosOrdenados);
 
-      const dnisUnicos = [...new Set(eventosOrdenados.map(e => e.persona).filter(Boolean))];
+      const dnisUnicos = [
+        ...new Set(eventosOrdenados.map((e) => e.persona).filter(Boolean)),
+      ];
       const nombresMap = {};
 
       await Promise.all(
@@ -57,7 +68,6 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
       );
 
       setNombresPorDni(nombresMap);
-
     } catch (error) {
       console.error("Error al obtener eventos o nombres:", error);
     } finally {
@@ -90,7 +100,9 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
     const fechaTxt = formatearFecha(e.fecha);
     const horaTxt = formatearHora(e.fecha);
     const nombre = nombresPorDni[e.persona] || e.persona || "";
-    const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${e.furgon || ""} ${fechaTxt} ${horaTxt}`;
+    const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
+      e.furgon || ""
+    } ${fechaTxt} ${horaTxt}`;
     return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
   });
 
@@ -108,42 +120,52 @@ const TablaEventos = ({ tipo = null, area = null, subarea=null, tipoPorArea = nu
       </div>
 
       {loading ? (
-          <div className="loading-item">
-            <FaSpinner className="spinner" />
-          </div>
-        ) : (
-          <div className="table-scroll-wrapper">
+        <div className="loading-item">
+          <FaSpinner className="spinner" />
+        </div>
+      ) : (
+        <div className="table-scroll-wrapper">
+          <table className="table-lista">
+            <thead className="table-titles">
+              <tr>
+                <th>FECHA</th>
+                <th>SECTOR</th>
+                <th>EVENTO</th>
+                <th>EMPLEADO</th>
+                <th>TRACTOR</th>
+                <th>FURGÓN</th>
+              </tr>
+            </thead>
+          </table>
+          <div className="table-body-wrapper">
             <table className="table-lista">
-              <thead className="table-titles">
-                <tr>
-                  <th>FECHA</th>
-                  <th>SECTOR</th>
-                  <th>EVENTO</th>
-                  <th>EMPLEADO</th>
-                  <th>TRACTOR</th>
-                  <th>FURGÓN</th>
-                </tr>
-              </thead>
+              <tbody className="table-body">
+                {eventosFiltrados.map((evento) => (
+                  <tr
+                    key={evento.id}
+                    onClick={() => handleClickEvento(evento)}
+                    className="table-item"
+                  >
+                    <td>
+                      {formatearFecha(evento.fecha)} -{" "}
+                      {formatearHora(evento.fecha)} HS
+                    </td>
+                    <td>{evento.area}</td>
+                    <td>{evento.subtipo}</td>
+                    <td>
+                      {evento.persona
+                        ? nombresPorDni[evento.persona] || evento.persona
+                        : ""}
+                    </td>
+                    <td>{evento.tractor ? evento.tractor : ""}</td>
+                    <td>{evento.furgon ? evento.furgon : ""}</td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
-            <div className="table-body-wrapper">
-              <table className="table-lista">
-                <tbody className="table-body">
-                  {eventosFiltrados.map((evento) => (
-                    <tr key={evento.id} onClick={() => handleClickEvento(evento)} className="table-item">
-                      <td>{formatearFecha(evento.fecha)} - {formatearHora(evento.fecha)} HS</td>
-                      <td>{evento.area}</td>
-                      <td>{evento.subtipo}</td>
-                      <td>{evento.persona ? (nombresPorDni[evento.persona] || evento.persona) : ""}</td>
-                      <td>{evento.tractor ? evento.tractor : ""}</td>
-                      <td>{evento.furgon ? evento.furgon : ""}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
-        )
-      }
+        </div>
+      )}
 
       {eventoSeleccionado && (
         <FichaEvento

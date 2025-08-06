@@ -1,17 +1,12 @@
 import { useState } from "react";
-import {
-  FaHome,
-  FaUser,
-  FaTruck,
-  FaBars,
-  FaSignOutAlt,
-} from "react-icons/fa";
+import { FaHome, FaUser, FaTruck, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { RiListSettingsLine } from "react-icons/ri";
 import { GiAutoRepair } from "react-icons/gi";
 import { IoCalendarSharp } from "react-icons/io5";
 import "./css/SideBar.css";
 import { BsFillFuelPumpFill } from "react-icons/bs";
+import { FaMapLocationDot } from "react-icons/fa6";
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -31,7 +26,7 @@ const SideBar = () => {
       label: "Inicio",
       roles: ["dev", "admin", "user"],
     },
-  ]
+  ];
   const linksManagement = [
     {
       to: "/personal",
@@ -50,7 +45,7 @@ const SideBar = () => {
       icon: <RiListSettingsLine className="nav-icon dev" />,
       label: "Stock",
       roles: ["dev"],
-    }
+    },
   ];
 
   const linksEvents = [
@@ -58,6 +53,12 @@ const SideBar = () => {
       to: "/actividad",
       icon: <IoCalendarSharp className="nav-icon" />,
       label: "Actividad",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/satelital",
+      icon: <FaMapLocationDot />,
+      label: "Satelital",
       roles: ["dev", "admin", "user"],
     },
     {
@@ -76,9 +77,9 @@ const SideBar = () => {
       to: "/control-combustible",
       icon: <BsFillFuelPumpFill className="nav-icon dev" />,
       label: "Consumo",
-      roles: ["dev"], 
-    }
-  ]
+      roles: ["dev"],
+    },
+  ];
   // Toggle de colapsado
   const toggleSidebar = () => {
     setCollapsed(!collapsed);

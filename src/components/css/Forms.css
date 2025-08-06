@@ -168,6 +168,34 @@
   min-width: 120px;
 }
 
+/* Boton de alta-baja */
+
+.type-container{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.type-btn{
+  flex: 1;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: 0.3s;
+  opacity: 0.2;
+}
+
+.type-btn.active{
+  background-color: #007bff; /* Verde para ALTA */
+  color: white;
+
+  opacity: 1;
+}
+
 /* Botón guardar */
 .form-buttons button[type="submit"] {
   background-color: #007bff;
@@ -192,6 +220,14 @@
   background-color: #f0f0f0;
   color: #555;
   cursor: not-allowed;
+}
+
+.item-rojo{
+  color:#c0392b;
+}
+
+.item-verde{
+  color:#2e8b57;
 }
 
 /* Doble form */
