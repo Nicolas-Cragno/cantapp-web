@@ -63,7 +63,6 @@ const Header = () => {
     };
   }, []);
 
-
   // Cerrar el menú si se hace clic fuera
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -80,7 +79,7 @@ const Header = () => {
     await signOut(auth);
     localStorage.clear();
     sessionStorage.clear();
-    if('caches' in window){
+    if ("caches" in window) {
       caches.keys().then((names) => {
         names.forEach((name) => caches.delete(name));
       });
@@ -90,7 +89,11 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="header-user" ref={menuRef} onClick={() => setMenuAbierto(!menuAbierto)}>
+      <div
+        className="header-user"
+        ref={menuRef}
+        onClick={() => setMenuAbierto(!menuAbierto)}
+      >
         {userName} <FaCircleUser />
         {menuAbierto && (
           <div className="user-dropdown">

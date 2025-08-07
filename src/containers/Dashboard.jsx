@@ -19,7 +19,7 @@ const Dashboard = () => {
   const sections = [
     {
       title: "Satelital",
-      route: "/actividad",
+      route: "/satelital",
       color: colors.azul,
       img: LogoSatelital,
       state: true,
@@ -73,7 +73,7 @@ const Dashboard = () => {
       img: LogoUtilitario,
       state: true,
     },
-    { title: "Stock", route: "/stock", color: colors.amarillo, state: false },
+    { title: "Stock", route: "/stock", color: colors.amarillo, state: true },
   ];
 
   return (

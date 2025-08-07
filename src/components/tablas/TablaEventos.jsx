@@ -26,7 +26,7 @@ const TablaEventos = ({
   const { hayActualizacion, marcarComoActualizado } =
     useDetectarActualizaciones("eventos", {
       campo: "area",
-      valor: area.toUpperCase(),
+      valor: area ? area.toUpperCase() : null,
     });
 
   // Evita error si 'area' es null

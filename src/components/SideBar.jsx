@@ -44,7 +44,7 @@ const SideBar = () => {
       to: "/stock",
       icon: <RiListSettingsLine className="nav-icon dev" />,
       label: "Stock",
-      roles: ["dev"],
+      roles: ["dev", "admin"],
     },
   ];
 
