@@ -49,12 +49,14 @@ const SideBar = () => {
   ];
 
   const linksEvents = [
+    /* ACTIVIDAD OCULTA, QUEDA DIRECTAMENTE SATELITAL
     {
       to: "/actividad",
       icon: <IoCalendarSharp className="nav-icon" />,
       label: "Actividad",
       roles: ["dev", "admin", "user"],
     },
+    */
     {
       to: "/satelital",
       icon: <FaMapLocationDot />,

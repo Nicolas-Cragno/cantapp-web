@@ -5,11 +5,11 @@ import {
   buscarNombrePorDni,
 } from "../../functions/db-functions";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
-import FichaEvento from "../fichas/FichaEvento";
-import FormularioEvento from "../forms/FormularioEvento";
+import FichaEventoPorteria from "../fichas/FichaEventoPorteria";
+import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
 import "../css/Tables.css";
 
-const TablaEventos = ({
+const TablaEventosPorteria = ({
   tipo = null,
   area = null,
   subarea = null,
@@ -168,21 +168,18 @@ const TablaEventos = ({
       )}
 
       {eventoSeleccionado && (
-        <FichaEvento
+        <FichaEventoPorteria
           evento={eventoSeleccionado}
-          area={typeof area === "string" ? area.toUpperCase() : null}
-          subarea={typeof subarea === "string" ? subarea.toUpperCase() : null}
           onClose={cerrarModal}
           onGuardar={handleGuardar}
         />
       )}
 
       {modalAgregarVisible && (
-        <FormularioEvento
+        <FormularioEventoPorteria
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
-          area={typeof area === "string" ? area.toUpperCase() : null}
-          subarea={typeof subarea === "string" ? subarea.toUpperCase() : null}
+          area={typeof area === "string" ? area.toUpperCase() : ""}
           tipoPorArea={tipoPorArea}
         />
       )}
@@ -199,4 +196,4 @@ const TablaEventos = ({
   );
 };
 
-export default TablaEventos;
+export default TablaEventosPorteria;

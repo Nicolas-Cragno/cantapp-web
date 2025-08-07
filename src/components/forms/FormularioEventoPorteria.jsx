@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
+import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import Swal from "sweetalert2";
 import {
   formatearFecha,
@@ -9,29 +10,41 @@ import {
 } from "../../functions/data-functions"; // la función que formatea fecha+hora
 import tiposEventos from "../../functions/data/eventos.json";
 
-const FormularioEvento = ({
+const FormularioEventoPorteria = ({
   evento = {},
   area = null,
-  subarea = null,
+  tipoPorArea = null,
   onClose,
   onGuardar,
 }) => {
   const [formData, setFormData] = useState({
-    fecha: formatearFecha(evento.fecha),
-    hora: formatearHora(evento.fecha),
+    fecha: formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha),
     subtipo: evento.subtipo || "",
     persona: evento.persona ? String(evento.persona) : "",
     tractor: evento.tractor || "",
     furgon: evento.furgon || "",
     detalle: evento.detalle || "",
     area: evento.area || area || "",
+    chequeos: chequeosPorteria.map(
+      ({ key }) => evento?.chequeos?.[key] || false
+    ),
   });
 
-  const subtiposDisponibles = area
-    ? tiposEventos[area] || []
-    : Object.entries(tiposEventos).flatMap(([area, subtipos]) =>
-        subtipos.map((sub) => ({ area, subtipo: sub }))
-      );
+  const subtiposDisponibles = (() => {
+    if (tipoPorArea && tiposEventos[tipoPorArea]) {
+      return tiposEventos[tipoPorArea].map((subtipo) => ({
+        area: tipoPorArea,
+        subtipo,
+      }));
+    } else if (formData.area && tiposEventos[formData.area]) {
+      return tiposEventos[formData.area].map((subtipo) => ({
+        area: formData.area,
+        subtipo,
+      }));
+    } else {
+      return [{ area: "GENERAL", subtipo: "OTRO" }];
+    }
+  })();
 
   const [personas, setPersonas] = useState([]);
   const [sectores, setSectores] = useState([]);
@@ -39,6 +52,23 @@ const FormularioEvento = ({
   const [furgones, setFurgones] = useState([]);
 
   useEffect(() => {
+    const fechaEvento = evento.fecha
+      ? formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha)
+      : formatearFecha(new Date()) + " " + formatearHora(new Date());
+
+    setFormData({
+      fecha: fechaEvento,
+      subtipo: evento.subtipo || "",
+      persona: evento.persona ? String(evento.persona) : "",
+      tractor: evento.tractor || "",
+      furgon: evento.furgon || "",
+      detalle: evento.detalle || "",
+      area: evento.area || area || "",
+      chequeos: chequeosPorteria.map(({ key }) => {
+        const valor = evento?.chequeos?.[key];
+        return typeof valor === "boolean" ? valor : false;
+      }),
+    });
     const cargarPersonas = async () => {
       try {
         const data = await listarColeccion("personas");
@@ -79,7 +109,7 @@ const FormularioEvento = ({
     cargarSectores();
     cargarTractores();
     cargarFurgones();
-  }, []);
+  }, [evento]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,10 +121,21 @@ const FormularioEvento = ({
 
     try {
       const fechaParaGuardar = evento.id ? evento.fecha : new Date();
+      const usuarioParaGuardar = localStorage.usuario
+        ? JSON.parse(localStorage.usuario)
+        : null;
 
       if (isNaN(new Date(fechaParaGuardar).getTime())) {
         throw new Error("La fecha es inválida");
       }
+
+      const chequeosObjeto = chequeosPorteria.reduce(
+        (checkList, item, index) => {
+          checkList[item.key] = formData.chequeos[index] || false;
+          return checkList;
+        },
+        {}
+      );
 
       const datosAGuardar = {
         ...formData,
@@ -102,8 +143,12 @@ const FormularioEvento = ({
         persona: formData.persona ? Number(formData.persona) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
-        area: area ? area : null, //El area la recibe desde la tabla/ficha
+        area: formData.area ? formData.area : null,
         detalle: formData.area ? formData.detalle.toUpperCase() : null,
+        usuario: usuarioParaGuardar
+          ? `${usuarioParaGuardar.apellido} ${usuarioParaGuardar.nombres}`
+          : "Desconocido",
+        chequeos: chequeosObjeto,
       };
 
       if (evento.id) {
@@ -138,32 +183,28 @@ const FormularioEvento = ({
           <h2>{evento.id ? "Editar Evento" : "Nuevo Evento"}</h2>
           <p>* campo obligatorio</p>
         </div>
-        <hr />
-        <div className="hora">
-          <span>
-            {evento.id ? formData.fecha : new Date().toLocaleDateString()}
-          </span>
-          <span>{evento.id ? formData.hora + " HS" : ""}</span>
-        </div>
-        <form onSubmit={handleSubmit} className="form-submit">
+        <form onSubmit={handleSubmit}>
           <label>
             Tipo *
-            <input
-              list="subtipos-list"
+            <select
               name="subtipo"
               value={formData.subtipo}
               onChange={handleChange}
               required
-            />
-            <datalist id="subtipos-list">
+            >
+              <option value="">Seleccione subtipo</option>
               {typeof subtiposDisponibles[0] === "string"
                 ? subtiposDisponibles.map((sub, i) => (
-                    <option key={i} value={sub} />
+                    <option key={i} value={sub}>
+                      {sub}
+                    </option>
                   ))
                 : subtiposDisponibles.map((item, i) => (
-                    <option key={i} value={`${item.area} - ${item.subtipo}`} />
+                    <option key={i} value={item.subtipo}>
+                      {item.subtipo} ({item.area})
+                    </option>
                   ))}
-            </datalist>
+            </select>
           </label>
 
           <label>
@@ -184,7 +225,7 @@ const FormularioEvento = ({
           </label>
 
           <label>
-            Tractor
+            Tractora
             <select
               type="number"
               name="tractor"
@@ -216,6 +257,33 @@ const FormularioEvento = ({
               ))}
             </select>
           </label>
+          <div>
+            <label>Chequeos</label>
+            <div className="checkbox-list">
+              {chequeosPorteria.map((nombre, i) => (
+                <label
+                  key={i}
+                  className={`item-check ${
+                    formData.chequeos[i] ? "activo" : "inactivo"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.chequeos[i]}
+                    onChange={(e) => {
+                      const nuevasMarcas = [...formData.chequeos];
+                      nuevasMarcas[i] = e.target.checked;
+                      setFormData((prev) => ({
+                        ...prev,
+                        chequeos: nuevasMarcas,
+                      }));
+                    }}
+                  />
+                  {nombre.label}
+                </label>
+              ))}
+            </div>
+          </div>
 
           <label>
             Detalle
@@ -238,4 +306,4 @@ const FormularioEvento = ({
   );
 };
 
-export default FormularioEvento;
+export default FormularioEventoPorteria;

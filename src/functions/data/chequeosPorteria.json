@@ -1,0 +1,9 @@
+[
+  { "key": "ckPanico", "label": "PANICO" },
+  { "key": "ckCorte", "label": "CORTE" },
+  { "key": "ckReporte", "label": "REPORTE" },
+  { "key": "ckDesenganche", "label": "DESENGANCHE" },
+  { "key": "ckPuertaCabina", "label": "PUERTA CABINA" },
+  { "key": "ckAntivandalico", "label": "ANTIVANDALICO" },
+  { "key": "ckPuertaFurgon", "label": "PUERTA FURGON" }
+]
