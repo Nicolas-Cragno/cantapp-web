@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
+import AlertButton from "../buttons/AlertButton";
 import {
   listarColeccion,
   buscarNombrePorDni,
+  useDetectarActualizaciones,
 } from "../../functions/db-functions";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEvento from "../fichas/FichaEvento";
@@ -21,6 +23,11 @@ const TablaEventos = ({
   const [loading, setLoading] = useState(true);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const { hayActualizacion, marcarComoActualizado } =
+    useDetectarActualizaciones("eventos", {
+      campo: "area",
+      valor: area.toUpperCase(),
+    });
 
   // Evita error si 'area' es null
   const title =
@@ -83,6 +90,11 @@ const TablaEventos = ({
     setEventoSeleccionado(evento);
   };
 
+  const actualizarDatos = async () => {
+    await cargarEventos(false);
+    marcarComoActualizado();
+  };
+
   const cerrarModal = () => {
     setEventoSeleccionado(null);
   };
@@ -110,6 +122,7 @@ const TablaEventos = ({
     <section className="table-container">
       <div className="table-header">
         <h1 className="table-title">{title}</h1>
+        {hayActualizacion && <AlertButton onClick={actualizarDatos} />}
         <input
           type="text"
           placeholder="Buscar..."

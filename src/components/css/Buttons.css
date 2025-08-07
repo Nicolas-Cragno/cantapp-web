@@ -1,0 +1,58 @@
+.alert-btn {
+  background-color: #fff3cd;
+  color: hsla(45, 95%, 29%, 0.527);
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-weight: bold;
+  margin-left: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  height: 40px; /* Altura fija opcional */
+  min-width: 200px; /* ✅ Fuerza un ancho mínimo fijo (ajustable según tu contenido más largo) */
+}
+
+/* Elementos de texto dentro del botón */
+.btn-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /*transition: opacity 0.2s ease-in-out;*/
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.alert-btn:hover .visible {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.alert-btn:hover{
+    background-color: transparent;
+    color: black;
+    border-color: black;
+}
+.alert-btn:hover .hidden {
+  opacity: 1;
+  pointer-events: auto;
+  
+}
+

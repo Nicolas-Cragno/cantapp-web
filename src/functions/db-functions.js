@@ -1,6 +1,7 @@
-import { collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
+import { useState, useEffect } from "react";
 
 // Limpiar cache
 
@@ -10,6 +11,65 @@ export const limpiarCache = (...claves) => {
   } else {
     claves.forEach(clave => localStorage.removeItem(clave));
   }
+};
+
+// para detectar actualizaciones en coleciones
+export function useDetectarActualizaciones(collectionName, filtro = null) {
+  const [hayActualizacion, setHayActualizacion] = useState(false);
+
+  useEffect(() => {
+    const LS_ULTIMA_ACTUALIZACION = `${collectionName}_ultima_actualizacion`;
+    const LS_ULTIMA_CARGA = `${collectionName}_ultima_carga`;
+
+    let coleccionRef = collection(db, collectionName);
+    if (filtro?.campo && filtro?.valor != null) {
+      coleccionRef = query(coleccionRef, where(filtro.campo, "==", filtro.valor));
+    }
+
+    const unsubscribe = onSnapshot(coleccionRef, (snapshot) => {
+  const ultimaCarga = localStorage.getItem(LS_ULTIMA_CARGA);
+  const ultimaCargaTime = ultimaCarga ? Number(ultimaCarga) : 0;
+
+  const hayNuevos = snapshot.docs.some((doc) => {
+    const data = doc.data();
+    const fechaDoc = data?.fecha?.toMillis?.() || 0;
+    return fechaDoc > ultimaCargaTime;
+  });
+
+  if (hayNuevos) {
+    const ahora = Date.now();
+    localStorage.setItem(LS_ULTIMA_ACTUALIZACION, ahora.toString());
+    setHayActualizacion(true);
+  }
+});
+    localStorage.setItem(LS_ULTIMA_CARGA, Date.now().toString());
+
+    return () => unsubscribe();
+  }, [collectionName, filtro?.campo, filtro?.valor]);
+
+  const marcarComoActualizado = () => {
+    const LS_ULTIMA_CARGA = `${collectionName}_ultima_carga`;
+    setHayActualizacion(false);
+    localStorage.setItem(LS_ULTIMA_CARGA, Date.now().toString());
+  };
+
+  return { hayActualizacion, marcarComoActualizado };
+}
+
+export const actualizacionColeccion = (nombreColeccion, onUpdate, filtros) => {
+  let coleccionRef = collection(db, nombreColeccion);
+
+  if (filtros?.campo && filtros?.valor !== undefined) {
+    coleccionRef = query(coleccionRef, where(filtros.campo, "==", filtros.valor));
+  }
+
+  const unsubscribe = onSnapshot(coleccionRef, (snapshot) => {
+    if (!snapshot.empty) {
+      onUpdate(); // Mostrar alerta, cartel, etc.
+    }
+  });
+
+  return unsubscribe;
 };
 
 // Listar dnis (si hay cache y no hay modificaciones se lista desde ahi) 5 minutos y se recarga
@@ -31,11 +91,27 @@ export const listarColeccion = async (nombreColeccion, usarCache = true, tiempoC
     const querySnapshot = await getDocs(collection(db, nombreColeccion));
     const datos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    const datosOrdenados = [...datos].sort((a, b) => {
-      const fechaA = a.fecha?.toDate?.() || new Date(a.fecha) || new Date(0);
-      const fechaB = b.fecha?.toDate?.() || new Date(b.fecha) || new Date(0);
-      return fechaA - fechaB;
-    });
+    let datosOrdenados;
+
+    const tieneFecha = datos.some((doc) => doc.fecha !== undefined);
+
+    if (tieneFecha) {
+      datosOrdenados = [...datos].sort((a, b) => {
+        const fechaA = a.fecha?.toDate?.() ? a.fecha.toDate() : new Date(a.fecha);
+        const fechaB = b.fecha?.toDate?.() ? b.fecha.toDate() : new Date(b.fecha);
+        const timeA = fechaA ? fechaA.getTime() : 0;
+        const timeB = fechaB ? fechaB.getTime() : 0;
+        return timeB - timeA; 
+      });
+    } else {
+      datosOrdenados = [...datos].sort((a, b) => {
+        const campoA = (a.nombre || a.id).toString().toLowerCase();
+        const campoB = (b.nombre || b.id).toString().toLowerCase();
+        if (campoA < campoB) return -1;
+        if (campoA > campoB) return 1;
+        return 0;
+      });
+    }
 
     localStorage.setItem(cacheKey, JSON.stringify(datosOrdenados));
     localStorage.setItem(timestampKey, ahora.toString());
@@ -167,9 +243,6 @@ export const verificarDni = async (dni) => {
     return false;
   }
 };
-
-// (los demás métodos se mantienen igual)
-
 
 // buscar interno, patente, nombre...
 export const verificarDominio = async (dominio, coleccion) => {

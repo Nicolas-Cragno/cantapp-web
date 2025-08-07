@@ -50,6 +50,24 @@
   background-color: transparent;
 }
 
+/* aviso */
+
+.actual-btn{
+  background-color: #ffcc00; /* amarillo dorado */
+  border: none;
+  color: #444;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+}
+
 /* Logo de cargas */
 .spinner {
   animation: spin 1s linear infinite;
