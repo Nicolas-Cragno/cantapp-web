@@ -14,6 +14,49 @@
   box-sizing: border-box;
 }
 
+/* check boxs */
+
+.checkbox-group {
+}
+
+.checkbox-list {
+  margin: 0.2rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #999;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: max-content;
+  /* overflow-y: auto; SCROLL*/
+  padding: 0.5rem;
+}
+
+.item-check {
+  flex: 1 1 25%;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item-check input[type="checkbox"] {
+  display: none;
+}
+
+.item-check.activo {
+  background-color: #4caf50; 
+  color: white;
+}
+
+.item-check.inactivo {
+  background-color: #999; 
+  color: white;
+  opacity: 0.7;
+}
+
 /* Contenedor Modal */
 .form-content {
   

@@ -18,17 +18,17 @@ const Dashboard = () => {
   };
   const sections = [
     {
-      title: "Porteria",
-      route: "/porteria",
-      color: colors.rojo,
-      img: LogoPorteria,
-      state: true,
-    },
-    {
       title: "Satelital",
       route: "/actividad",
       color: colors.azul,
       img: LogoSatelital,
+      state: true,
+    },
+    {
+      title: "Porteria",
+      route: "/porteria",
+      color: colors.rojo,
+      img: LogoPorteria,
       state: true,
     },
     {

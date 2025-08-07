@@ -17,6 +17,7 @@ const FormularioEventoPorteria = ({
   onClose,
   onGuardar,
 }) => {
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     fecha: formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha),
     subtipo: evento.subtipo || "",
@@ -45,71 +46,74 @@ const FormularioEventoPorteria = ({
       return [{ area: "GENERAL", subtipo: "OTRO" }];
     }
   })();
-
   const [personas, setPersonas] = useState([]);
   const [sectores, setSectores] = useState([]);
   const [tractores, setTractores] = useState([]);
   const [furgones, setFurgones] = useState([]);
 
   useEffect(() => {
-    const fechaEvento = evento.fecha
-      ? formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha)
-      : formatearFecha(new Date()) + " " + formatearHora(new Date());
+    const cargarDatos = async () => {
+      const fechaEvento = evento.fecha
+        ? formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha)
+        : formatearFecha(new Date()) + " " + formatearHora(new Date());
 
-    setFormData({
-      fecha: fechaEvento,
-      subtipo: evento.subtipo || "",
-      persona: evento.persona ? String(evento.persona) : "",
-      tractor: evento.tractor || "",
-      furgon: evento.furgon || "",
-      detalle: evento.detalle || "",
-      area: evento.area || area || "",
-      chequeos: chequeosPorteria.map(({ key }) => {
-        const valor = evento?.chequeos?.[key];
-        return typeof valor === "boolean" ? valor : false;
-      }),
-    });
-    const cargarPersonas = async () => {
-      try {
-        const data = await listarColeccion("personas");
-        setPersonas(data);
-      } catch (error) {
-        console.error("Error cargando personas:", error);
-      }
+      setFormData({
+        fecha: fechaEvento,
+        subtipo: evento.subtipo || "",
+        persona: evento.persona ? String(evento.persona) : "",
+        tractor: evento.tractor || "",
+        furgon: evento.furgon || "",
+        detalle: evento.detalle || "",
+        area: evento.area || area || "",
+        chequeos: chequeosPorteria.map(({ key }) => {
+          const valor = evento?.chequeos?.[key];
+          return typeof valor === "boolean" ? valor : false;
+        }),
+      });
+      const cargarPersonas = async () => {
+        try {
+          const data = await listarColeccion("personas");
+          setPersonas(data);
+        } catch (error) {
+          console.error("Error cargando personas:", error);
+        }
+      };
+
+      const cargarSectores = async () => {
+        try {
+          const data = await listarColeccion("sectores");
+          setSectores(data);
+        } catch (error) {
+          console.error("Error cargando sectores:", error);
+        }
+      };
+
+      const cargarTractores = async () => {
+        try {
+          const data = await listarColeccion("tractores");
+          setTractores(data);
+        } catch (error) {
+          console.error("Error al cargar tractores: ", error);
+        }
+      };
+
+      const cargarFurgones = async () => {
+        try {
+          const data = await listarColeccion("furgones");
+          setFurgones(data);
+        } catch (error) {
+          console.error("Error al cargar furgones:", error);
+        }
+      };
+
+      cargarPersonas();
+      cargarSectores();
+      cargarTractores();
+      cargarFurgones();
     };
 
-    const cargarSectores = async () => {
-      try {
-        const data = await listarColeccion("sectores");
-        setSectores(data);
-      } catch (error) {
-        console.error("Error cargando sectores:", error);
-      }
-    };
-
-    const cargarTractores = async () => {
-      try {
-        const data = await listarColeccion("tractores");
-        setTractores(data);
-      } catch (error) {
-        console.error("Error al cargar tractores: ", error);
-      }
-    };
-
-    const cargarFurgones = async () => {
-      try {
-        const data = await listarColeccion("furgones");
-        setFurgones(data);
-      } catch (error) {
-        console.error("Error al cargar furgones:", error);
-      }
-    };
-
-    cargarPersonas();
-    cargarSectores();
-    cargarTractores();
-    cargarFurgones();
-  }, [evento]);
+    cargarDatos();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -120,7 +124,18 @@ const FormularioEventoPorteria = ({
     e.preventDefault();
 
     try {
-      const fechaParaGuardar = evento.id ? evento.fecha : new Date();
+      let fechaParaGuardar;
+
+      if (evento.id) {
+        // evento.fecha es un Timestamp de Firebase
+        if (evento.fecha.toDate) {
+          fechaParaGuardar = evento.fecha.toDate(); // ✅ convierte a Date
+        } else {
+          fechaParaGuardar = new Date(evento.fecha); // por si ya era Date
+        }
+      } else {
+        fechaParaGuardar = new Date(); // fecha nueva
+      }
       const usuarioParaGuardar = localStorage.usuario
         ? JSON.parse(localStorage.usuario)
         : null;
@@ -144,7 +159,7 @@ const FormularioEventoPorteria = ({
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
         area: formData.area ? formData.area : null,
-        detalle: formData.area ? formData.detalle.toUpperCase() : null,
+        detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
         usuario: usuarioParaGuardar
           ? `${usuarioParaGuardar.apellido} ${usuarioParaGuardar.nombres}`
           : "Desconocido",
@@ -161,7 +176,7 @@ const FormularioEventoPorteria = ({
       Swal.fire({
         title: "Evento guardado",
         text: "Se ha completado el registro exitosamente.",
-        icon: "succes",
+        icon: "success",
         confirmButtonText: "Entendido",
         confirmButtonColor: "#4161bd",
       });
@@ -180,7 +195,11 @@ const FormularioEventoPorteria = ({
     <div className="form">
       <div className="form-content">
         <div className="form-header">
-          <h2>{evento.id ? "Editar Evento" : "Nuevo Evento"}</h2>
+          <h2>
+            {evento.id
+              ? "Editar " + evento.subtipo.toLowerCase()
+              : "Nuevo Evento"}
+          </h2>
           <p>* campo obligatorio</p>
         </div>
         <form onSubmit={handleSubmit}>
@@ -201,7 +220,7 @@ const FormularioEventoPorteria = ({
                   ))
                 : subtiposDisponibles.map((item, i) => (
                     <option key={i} value={item.subtipo}>
-                      {item.subtipo} ({item.area})
+                      {item.subtipo}
                     </option>
                   ))}
             </select>
@@ -225,7 +244,7 @@ const FormularioEventoPorteria = ({
           </label>
 
           <label>
-            Tractora
+            Tractor
             <select
               type="number"
               name="tractor"

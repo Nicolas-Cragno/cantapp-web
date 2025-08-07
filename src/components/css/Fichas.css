@@ -142,6 +142,52 @@
   justify-content: center;
   align-items: center;
 }
+/* chequeos */
+
+.chequeos-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chequeo-item {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+  color: white;
+}
+
+.chequeo-ok {
+  background-color: #2ecc71;
+}
+
+.chequeo-fail {
+  background-color: #999; 
+  opacity: 0.5;
+}
+
+.checkbox-list {
+  margin: 0.2rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #999;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: max-content;
+  /* overflow-y: auto; SCROLL*/
+  padding: 0.5rem;
+}
+/* Botón guardar */
+.ficha-buttons button {
+  background-color: #007bff;
+  color: white;
+}
+
+.ficha-buttons button:hover {
+  background-color: #0056b3;
+}
 /* Botón guardar */
 .ficha-buttons button {
   background-color: #007bff;
