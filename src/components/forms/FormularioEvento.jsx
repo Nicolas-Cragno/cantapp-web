@@ -90,20 +90,41 @@ const FormularioEvento = ({
     e.preventDefault();
 
     try {
-      const fechaParaGuardar = evento.id ? evento.fecha : new Date();
+      let fechaParaGuardar;
 
-      if (isNaN(new Date(fechaParaGuardar).getTime())) {
+      if (evento.id) {
+        // evento.fecha es un Timestamp de Firebase
+        if (evento.fecha.toDate) {
+          fechaParaGuardar = evento.fecha.toDate(); // ✅ convierte a Date
+        } else {
+          fechaParaGuardar = new Date(evento.fecha); // por si ya era Date
+        }
+      } else {
+        fechaParaGuardar = new Date(); // fecha nueva
+      }
+
+      if (isNaN(fechaParaGuardar.getTime())) {
         throw new Error("La fecha es inválida");
       }
+
+      const usuarioJSON = JSON.parse(localStorage.usuario);
+      const usuarioDeCarga =
+        usuarioJSON["apellido"] + " " + usuarioJSON["nombres"];
 
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
+        subtipo: formData.subtipo ? formData.subtipo.toUpperCase() : null,
         persona: formData.persona ? Number(formData.persona) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
         area: area ? area : null, //El area la recibe desde la tabla/ficha
         detalle: formData.area ? formData.detalle.toUpperCase() : null,
+        usuario: evento.id
+          ? evento.usuario
+            ? evento.usuario
+            : usuarioDeCarga
+          : null,
       };
 
       if (evento.id) {
@@ -225,6 +246,16 @@ const FormularioEvento = ({
               onChange={handleChange}
             />
           </label>
+
+          <div className="form-data">
+            {evento.usuario ? (
+              <p>
+                Cargado por <strong>{evento.usuario}</strong>{" "}
+              </p>
+            ) : (
+              " "
+            )}
+          </div>
 
           <div className="form-buttons">
             <button type="submit">Guardar</button>

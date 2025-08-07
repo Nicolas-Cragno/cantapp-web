@@ -66,7 +66,7 @@ const FichaEvento = ({
               ✕
             </button>
             <h1 className="event-subtipo">
-              {evento.area ? "EVENTO " + evento.area : "EVENTO"}
+              {evento.subtipo ? evento.subtipo : "EVENTO"}
             </h1>
             <hr />
             <div className="hora">
@@ -88,6 +88,15 @@ const FichaEvento = ({
               <p>
                 <strong>Detalle: </strong> {evento.detalle || "-"}
               </p>
+            </div>
+            <div className="ficha-data">
+              {evento.usuario ? (
+                <p>
+                  Cargado por <strong>{evento.usuario}</strong>{" "}
+                </p>
+              ) : (
+                " "
+              )}
             </div>
             <div className="ficha-buttons">
               <button onClick={() => setModoEdicion(true)}>Editar</button>
