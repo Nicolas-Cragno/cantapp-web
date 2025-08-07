@@ -6,6 +6,7 @@ import LogoPersonal from "../assets/logos/logopersonal.png";
 import LogoTractor from "../assets/logos/logotractor.png";
 import LogoFurgon from "../assets/logos/logofurgon.png";
 import LogoUtilitario from "../assets/logos/logoutilitario.png";
+import LogoStock from "../assets/logos/logostock.png";
 
 const Dashboard = () => {
   const colors = {
@@ -73,7 +74,13 @@ const Dashboard = () => {
       img: LogoUtilitario,
       state: true,
     },
-    { title: "Stock", route: "/stock", color: colors.amarillo, state: true },
+    {
+      title: "Stock",
+      route: "/stock",
+      color: colors.amarillo,
+      img: LogoStock,
+      state: true,
+    },
   ];
 
   return (
