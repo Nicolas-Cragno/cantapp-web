@@ -42,7 +42,7 @@ const SideBar = () => {
     },
     {
       to: "/stock",
-      icon: <RiListSettingsLine className="nav-icon dev" />,
+      icon: <RiListSettingsLine className="nav-icon" />,
       label: "Stock",
       roles: ["dev", "admin"],
     },
@@ -73,6 +73,12 @@ const SideBar = () => {
       to: "/taller-tractores",
       icon: <GiAutoRepair className="nav-icon dev" />,
       label: "Taller",
+      roles: ["dev"],
+    },
+    {
+      to: "/taller-furgones",
+      icon: <GiAutoRepair className="nav-icon dev" />,
+      label: "Taller Furgones",
       roles: ["dev"],
     },
     {
