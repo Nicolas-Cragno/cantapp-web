@@ -9,6 +9,7 @@ import {
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEvento from "../fichas/FichaEvento";
 import FormularioEvento from "../forms/FormularioEvento";
+import LogoDefault from "../../assets/logos/logotruck-back.png";
 import "../css/Tables.css";
 
 const TablaEventos = ({
@@ -16,6 +17,8 @@ const TablaEventos = ({
   area = null,
   subarea = null,
   tipoPorArea = null,
+  title = "REGISTRO",
+  logo = null,
 }) => {
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
@@ -30,7 +33,9 @@ const TablaEventos = ({
     });
 
   // Evita error si 'area' es null
-  const title =
+  logo = logo ? logo : LogoDefault;
+
+  const subtitle =
     tipo != null && typeof area === "string"
       ? area.toUpperCase()
       : typeof area === "string" && typeof subarea === "string"
@@ -120,8 +125,14 @@ const TablaEventos = ({
 
   return (
     <section className="table-container">
+      <div className="table-topheader">
+        <h1 className="table-logo-box">
+          <img src={logo} alt="" className="table-logo" />
+          {title}
+        </h1>
+      </div>
       <div className="table-header">
-        <h1 className="table-title">{title}</h1>
+        <h1 className="table-title">{subtitle}</h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}
         <input
           type="text"

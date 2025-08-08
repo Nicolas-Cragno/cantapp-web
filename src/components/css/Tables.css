@@ -51,6 +51,33 @@
   margin-right: 0.3rem;
 }
 
+.table-topheader{
+  display: flex;
+  justify-content: center;
+}
+
+.table-logo-box{
+  background-color: black;
+  width: max-content;
+  padding-right: 1rem;
+  display: flex;
+  align-items: center;
+  border-top-left-radius: 2.2rem;
+  border-bottom-left-radius: 2.2rem;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  color: white;
+}
+
+.table-logo{
+  max-width: 4rem;
+  margin-right: 1rem;
+  border-style: solid;
+  border-color: black;
+  border-radius: 5rem;
+  border-width: 0.25rem;
+}
+
 .table-busqueda {
   padding: 0.5rem 1rem;
   font-size: 1rem;

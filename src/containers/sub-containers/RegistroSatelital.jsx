@@ -1,4 +1,5 @@
 import TablaEventos from "../../components/tablas/TablaEventos";
+import LogoSatelital from "../../assets/logos/logosatelital.png";
 
 const RegistroSatelital = () => {
   return (
@@ -7,6 +8,8 @@ const RegistroSatelital = () => {
         tipo={null}
         area="trafico"
         tipoPorArea="SATELITAL"
+        title="SATELITAL"
+        logo={LogoSatelital}
       ></TablaEventos>
     </div>
   );

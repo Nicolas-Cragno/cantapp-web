@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
-import {nombreEmpresa} from "../../functions/data-functions";
+import { nombreEmpresa } from "../../functions/data-functions";
 import { obtenerCuitPorNombre } from "../../functions/data-functions";
 import LogoEmpresaTxt from "../LogoEmpresaTxt";
 import FichaVehiculo from "../fichas/FichaVehiculo";
@@ -17,9 +17,11 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
   const [cantVehiculosTC, setCantVehiculosTC] = useState(0);
   const [cantVehiculosEX, setCantVehiculosEX] = useState(0);
   const [cantVehiculosTA, setCantVehiculosTA] = useState(0);
+  const [cantVehiculosX, setCantVehiculosX] = useState(0);
   const [filtroTC, setFiltroTC] = useState(true);
   const [filtroEX, setFiltroEX] = useState(true);
   const [filtroTA, setFiltroTA] = useState(true);
+  const [filtroX, setFiltroX] = useState(true);
 
   const title = tipoVehiculo.toUpperCase();
 
@@ -29,11 +31,24 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
       const data = await listarColeccion(tipoVehiculo, usarCache);
       const empresaTC = Number(obtenerCuitPorNombre("TRANSPORTES CANTARINI"));
       const empresaEX = Number(obtenerCuitPorNombre("EXPRESO CANTARINI"));
-      const empresaTA = Number(obtenerCuitPorNombre("TRANSAMERICA TRANSPORTES"));      
-      const listadoVehiculos = data.filter((v) => v.estado === 1 || v.estado === true);
-      setCantVehiculosTC(data.filter(v => v.empresa === empresaTC).length);
-      setCantVehiculosEX(data.filter(v => v.empresa === empresaEX).length);
-      setCantVehiculosTA(data.filter(v => v.empresa === empresaTA).length);
+      const empresaTA = Number(
+        obtenerCuitPorNombre("TRANSAMERICA TRANSPORTES")
+      );
+      const listadoVehiculos = data.filter(
+        (v) => v.estado === 1 || v.estado === true
+      );
+      setCantVehiculosTC(data.filter((v) => v.empresa === empresaTC).length);
+      setCantVehiculosEX(data.filter((v) => v.empresa === empresaEX).length);
+      setCantVehiculosTA(data.filter((v) => v.empresa === empresaTA).length);
+      setCantVehiculosX(
+        data.filter(
+          (v) =>
+            v.empresa !== empresaTC &&
+            v.empresa !== empresaEX &&
+            v.empresa !== empresaTA &&
+            (v.empresa === null || v.empresa === "")
+        ).length
+      );
       setVehiculos(listadoVehiculos);
     } catch (error) {
       console.error("Error al obtener información desde db: ", error);
@@ -64,16 +79,34 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
     cerrarModalAgregar();
   };
 
-  const vehiculosFiltrados = vehiculos.filter((v) => {
-    const texto = `${v.interno || ""} ${v.dominio || ""} ${v.marca} ${v.modelo}`;
-    return texto.toLowerCase().includes(filtro.toLowerCase());
-  }).filter((v) => {
-    if(filtroTC && v.empresa===30610890403 || v.empresa==="30610890403") return true;
-    if(filtroTA && v.empresa===30683612916 || v.empresa==="30683612916") return true;
-    if(filtroEX && v.empresa===30644511304 || v.empresa==="30644511304") return true;
-  }).sort((a,b) => {
-    return (a.interno || 0) - (b.interno || 0);
-  });
+  const vehiculosFiltrados = vehiculos
+    .filter((v) => {
+      const texto = `${v.interno || ""} ${v.dominio || ""} ${v.marca} ${
+        v.modelo
+      }`;
+      return texto.toLowerCase().includes(filtro.toLowerCase());
+    })
+    .filter((v) => {
+      if (
+        (filtroTC && v.empresa === 30610890403) ||
+        v.empresa === "30610890403"
+      )
+        return true;
+      if (
+        (filtroTA && v.empresa === 30683612916) ||
+        v.empresa === "30683612916"
+      )
+        return true;
+      if (
+        (filtroEX && v.empresa === 30644511304) ||
+        v.empresa === "30644511304"
+      )
+        return true;
+      if ((filtroX && v.empresa === null) || v.empresa === "") return true;
+    })
+    .sort((a, b) => {
+      return (a.interno || 0) - (b.interno || 0);
+    });
 
   return (
     <section className="table-container">
@@ -88,23 +121,47 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
         />
         <div className="table-checked">
           <label className="table-check">
-            <input type="checkbox" checked={filtroTC} onChange={(e) => setFiltroTC(e.target.checked)} className="check-input"/>
+            <input
+              type="checkbox"
+              checked={filtroTC}
+              onChange={(e) => setFiltroTC(e.target.checked)}
+              className="check-input"
+            />
             TC ({cantVehiculosTC})
           </label>
           <label className="table-check">
-            <input type="checkbox" checked={filtroEX} onChange={(e) => setFiltroEX(e.target.checked)} className="check-input"/>
+            <input
+              type="checkbox"
+              checked={filtroEX}
+              onChange={(e) => setFiltroEX(e.target.checked)}
+              className="check-input"
+            />
             EX ({cantVehiculosEX})
           </label>
           <label className="table-check">
-            <input type="checkbox" checked={filtroTA} onChange={(e) => setFiltroTA(e.target.checked)} className="check-input"/>
+            <input
+              type="checkbox"
+              checked={filtroTA}
+              onChange={(e) => setFiltroTA(e.target.checked)}
+              className="check-input"
+            />
             TA ({cantVehiculosTA})
+          </label>
+          <label className="table-check">
+            <input
+              type="checkbox"
+              checked={filtroX}
+              onChange={(e) => setFiltroX(e.target.checked)}
+              className="check-input"
+            />
+            Innactivos ({cantVehiculosX})
           </label>
         </div>
       </div>
 
       {loading ? (
         <div className="loading-item">
-          <FaSpinner className="spinner"/>
+          <FaSpinner className="spinner" />
         </div>
       ) : (
         <div className="table-scroll-wrapper">
@@ -124,12 +181,18 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
             <table className="table-lista">
               <tbody className="table-body">
                 {vehiculosFiltrados.map((vehiculo) => (
-                  <tr key={vehiculo.id} onClick={() => handleClickVehiculo(vehiculo)} className="table-item">
+                  <tr
+                    key={vehiculo.id}
+                    onClick={() => handleClickVehiculo(vehiculo)}
+                    className="table-item"
+                  >
                     <td>{vehiculo.interno}</td>
                     <td>{vehiculo.dominio}</td>
                     <td>{vehiculo.marca}</td>
-                    <td>{vehiculo.modelo === 0 ? ("") : (vehiculo.modelo)}</td>
-                    <td><LogoEmpresaTxt cuitEmpresa={vehiculo.empresa}/></td>
+                    <td>{vehiculo.modelo === 0 ? "" : vehiculo.modelo}</td>
+                    <td>
+                      <LogoEmpresaTxt cuitEmpresa={vehiculo.empresa} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -137,7 +200,6 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
           </div>
         </div>
       )}
-      
 
       {vehiculoSeleccionado && (
         <FichaVehiculo
@@ -157,7 +219,10 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
       )}
 
       <div className="table-options">
-        <button className="table-agregar" onClick={() => setModalAgregarVisible(true)}>
+        <button
+          className="table-agregar"
+          onClick={() => setModalAgregarVisible(true)}
+        >
           + AGREGAR
         </button>
       </div>

@@ -10,12 +10,15 @@ import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEventoPorteria from "../fichas/FichaEventoPorteria";
 import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
 import "../css/Tables.css";
+import LogoDefault from "../../assets/logos/logotruck-back.png";
 
 const TablaEventosPorteria = ({
   tipo = null,
   area = null,
   subarea = null,
   tipoPorArea = null,
+  logo = null,
+  title = "REGISTRO",
 }) => {
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
@@ -30,7 +33,8 @@ const TablaEventosPorteria = ({
     });
 
   // Evita error si 'area' es null
-  const title =
+  logo = logo ? logo : LogoDefault;
+  const subtitle =
     tipo != null && typeof area === "string"
       ? area.toUpperCase()
       : typeof area === "string" && typeof subarea === "string"
@@ -120,8 +124,14 @@ const TablaEventosPorteria = ({
 
   return (
     <section className="table-container">
+      <div className="table-topheader">
+        <h1 className="table-logo-box">
+          <img src={logo} alt="" className="table-logo" />
+          {title}
+        </h1>
+      </div>
       <div className="table-header">
-        <h1 className="table-title">{title}</h1>
+        <h1 className="table-title">{subtitle}</h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}
         <input
           type="text"

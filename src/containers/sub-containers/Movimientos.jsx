@@ -1,4 +1,5 @@
 import TablaEventosPorteria from "../../components/tablas/TablaEventosPorteria";
+import LogoPorteria from "../../assets/logos/logoporteria.png";
 
 const Movimientos = () => {
   return (
@@ -7,6 +8,8 @@ const Movimientos = () => {
         tipo="movimiento"
         area="porteria"
         tipoPorArea="PORTERIA"
+        logo={LogoPorteria}
+        title="PORTERIA"
       ></TablaEventosPorteria>
     </section>
   );

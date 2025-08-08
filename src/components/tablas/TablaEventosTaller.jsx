@@ -8,12 +8,14 @@ import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEventoTaller from "../fichas/FichaEventoTaller";
 import FormularioEventoTaller from "../forms/FormularioEventoTaller";
 import "../css/Tables.css";
+import LogoDefault from "../../assets/logos/logotruck-back.png";
 
 const TablaEventosTaller = ({
   tipo = null,
   area = null,
   subarea = null,
   tipoPorArea = null,
+  logo = null,
 }) => {
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
@@ -26,12 +28,14 @@ const TablaEventosTaller = ({
   const [dominioVehiculos, setDominioVehiculos] = useState({});
 
   // Evita error si 'area' es null
+  logo = logo ? logo : LogoDefault;
   const title =
     tipo != null && typeof area === "string" && typeof subarea === "string"
       ? area.toUpperCase() + " " + subarea.toUpperCase()
       : typeof area === "string"
       ? area.toUpperCase()
-      : "EVENTOS";
+      : "REGISTRO TALLER";
+  const subtitle = "HISTORIAL DE TRABAJOS";
 
   const cargarEventos = async (usarCache = true) => {
     setLoading(true);
@@ -156,8 +160,14 @@ const TablaEventosTaller = ({
 
   return (
     <section className="table-container">
+      <div className="table-topheader">
+        <h1 className="table-logo-box">
+          <img src={logo} alt="" className="table-logo" />
+          {title}
+        </h1>
+      </div>
       <div className="table-header">
-        <h1 className="table-title">{title}</h1>
+        <h1 className="table-title">{subtitle}</h1>
         <input
           type="text"
           placeholder="Buscar..."

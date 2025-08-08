@@ -1,76 +1,134 @@
+/* NO AUTORIZADO */
+
 .no-autorizado-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80vh;
+  height: 100vh;
   text-align: center;
   padding: 1rem;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  position: relative;
+  border: 4px dashed #cc0000;
+  animation: pulse 2s infinite;
 }
 
 .no-autorizado-titulo {
-  font-size: 2rem;
-  color: #cc0000;
+  font-size: 3rem;
+  color: #ff4444;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
 }
 
 .no-autorizado-texto {
   margin-top: 1rem;
   font-size: 1.2rem;
+  max-width: 500px;
+  color: #cccccc;
 }
 
 .no-autorizado-boton {
   margin-top: 2rem;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
+  background-color: #cc0000;
+  color: white;
+  border: 2px solid white;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px red;
 }
 
 .no-autorizado-boton:hover {
-  background-color: #0056b3;
+  background-color: #990000;
+  box-shadow: 0 0 20px #ff0000;
 }
 
+/* ERROR 404 */
+
 .pagina404-container {
-  height: 80vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 1rem;
+  background-image: url("../images/404back.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: 'Courier New', Courier, monospace;
+  overflow: hidden;
+  position: relative;
+  background-color: black;
+  color: white;
+}
+
+.pagina404-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  z-index: 9999;
+  pointer-events: none;
+  animation: scanlines 2s linear infinite;
 }
 
 .pagina404-titulo {
   font-size: 6rem;
   font-weight: bold;
   color: #ff4444;
+  position: relative;
+  animation: glitch 1s infinite;
+  text-shadow: 2px 2px #fff, -2px -2px #00f;
+  z-index: 2;
 }
 
 .pagina404-subtitulo {
   font-size: 2rem;
   margin-top: -1rem;
+  color: #ddd;
+  z-index: 2;
 }
 
 .pagina404-texto {
   margin-top: 1rem;
   font-size: 1.2rem;
   max-width: 500px;
+  color: #bbb;
+  z-index: 2;
 }
 
 .pagina404-boton {
   margin-top: 2rem;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  background-color: #007bff;
+  background-color: #ff4444;
   color: white;
-  border: none;
+  border: 2px solid white;
   border-radius: 6px;
   cursor: pointer;
+  box-shadow: 0 0 8px red;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  z-index: 2;
 }
 
 .pagina404-boton:hover {
-  background-color: #0056b3;
+  background-color: #990000;
+  box-shadow: 0 0 15px #ff0000;
 }
+
