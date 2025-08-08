@@ -67,10 +67,11 @@
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
   color: white;
+  font-size: x-large;
 }
 
 .table-logo{
-  max-width: 4rem;
+  max-width: 3rem;
   margin-right: 1rem;
   border-style: solid;
   border-color: black;

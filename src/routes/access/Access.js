@@ -1,6 +1,7 @@
 export const Access = {
     // En desarrollo
     "/taller-tractores": ["dev"],      // taller tractores
+    "/taller-furgones": ["dev"],       // taller furgones
     "/control-combustible": ["dev"],   // trafico / combustible
     
     // Solo administradores

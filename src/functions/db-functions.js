@@ -1,4 +1,4 @@
-import { collection, onSnapshot, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
+import { collection, writeBatch, onSnapshot, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
 import { useState, useEffect } from "react";
@@ -186,6 +186,66 @@ export const agregarEvento = async (nuevoEvento, idPersonalizado = null) => {
     throw error;
   }
 };
+
+export async function agregarEventoTaller(evento, articulos, idEvento = null) {
+  try {
+    const eventoGuardado = await agregarEvento(evento, idEvento);
+    const eventoId = eventoGuardado.id;
+
+    const usoStockRef = collection(db, "usoStock");
+
+    // Buscar usoStock actual relacionado a este evento
+    const q = query(usoStockRef, where("reparacion", "==", eventoId));
+    const snapshot = await getDocs(q);
+    const usoStockActual = snapshot.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    }));
+
+    // Función para comparar si hay cambios
+    const esIgual = (arr1, arr2) => {
+      if (arr1.length !== arr2.length) return false;
+      return arr1.every((a) =>
+        arr2.some(
+          (b) =>
+            a.repuesto === b.repuesto &&
+            a.cantidad === b.cantidad &&
+            a.unidad === b.unidad
+        )
+      );
+    };
+
+    // Si no hay cambios, salir
+    if (esIgual(articulos, usoStockActual)) {
+      console.log("No hay cambios en usoStock, no se actualiza.");
+      return eventoId;
+    }
+
+    // Batch para borrar los registros viejos y agregar los nuevos
+    const batch = writeBatch(db);
+
+    usoStockActual.forEach((registro) => {
+      batch.delete(doc(db, "usoStock", registro.id));
+    });
+
+    articulos.forEach((art) => {
+      const nuevoDoc = doc(collection(db, "usoStock"));
+      batch.set(nuevoDoc, {
+        ...art,
+        reparacion: eventoId,
+      });
+    });
+
+    await batch.commit();
+
+    console.log("Evento y usoStock actualizados correctamente.");
+    return eventoId;
+  } catch (error) {
+    console.error("Error en agregarEventoTaller:", error);
+    throw error;
+  }
+}
+
 
 // Modificar dni y cache
 export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {

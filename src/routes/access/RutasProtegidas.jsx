@@ -18,6 +18,7 @@ import Utilitarios from "../../containers/sub-containers/Utilitarios";
 import ControlCombustible from "../../containers/ControlCombustilbe";
 import Stock from "../../containers/Stock";
 import Satelital from "../../containers/Satelital";
+import TallerFurgones from "../../containers/TallerFurgones";
 
 export const rutasProtegidas = (
   <>
@@ -159,6 +160,16 @@ export const rutasProtegidas = (
         <RutaProtegida>
           <Layout>
             <TallerTractores />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/taller-furgones"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <TallerFurgones />
           </Layout>
         </RutaProtegida>
       }

@@ -125,14 +125,11 @@ const TablaEventos = ({
 
   return (
     <section className="table-container">
-      <div className="table-topheader">
+      <div className="table-header">
         <h1 className="table-logo-box">
           <img src={logo} alt="" className="table-logo" />
           {title}
         </h1>
-      </div>
-      <div className="table-header">
-        <h1 className="table-title">{subtitle}</h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}
         <input
           type="text"

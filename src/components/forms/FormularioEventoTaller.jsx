@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import "../css/Forms.css";
-import { agregarEvento, listarColeccion } from "../../functions/db-functions";
+import {
+  agregarEventoTaller,
+  listarColeccion,
+} from "../../functions/db-functions";
 import { singularTipoVehiculo } from "../../functions/data-functions";
 import Swal from "sweetalert2";
 import {
@@ -9,13 +12,16 @@ import {
   obtenerNombreUnidad,
 } from "../../functions/data-functions";
 import tiposEventos from "../../functions/data/eventos.json";
-import { FaCirclePlus } from "react-icons/fa6";
-import { FaPray } from "react-icons/fa";
+
+import PlusLogo from "../../assets/logos/pluslogo.png";
+import RefreshLogo from "../../assets/logos/refreshlogo.png";
+import DropLogo from "../../assets/logos/droplogo.png";
 
 const FormularioEventoTaller = ({
   evento = {},
   tipoVehiculo = null,
   area = null,
+  subarea = null,
   tipoPorArea = null,
   onClose,
   onGuardar,
@@ -23,10 +29,15 @@ const FormularioEventoTaller = ({
   const [formData, setFormData] = useState({
     subtipo: evento.subtipo || "",
     persona: evento.persona ? String(evento.persona) : "",
-    tractor: evento.tractor || "",
-    furgon: evento.furgon || "",
+    vehiculo:
+      evento.tractor ||
+      evento.furgon ||
+      evento.utilitario ||
+      evento.vehiculo ||
+      "",
     detalle: evento.detalle || "",
     area: evento.area || "",
+    subarea: evento.subarea || "",
   });
 
   const subtiposDisponibles = tiposEventos["TALLER"];
@@ -35,6 +46,8 @@ const FormularioEventoTaller = ({
   const [vehiculos, setVehiculos] = useState([]);
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
+  const [articulosUsados, setArticulosUsados] = useState([]);
+  const [articulosUsadosBackUp, setArticulosUsadosBackUp] = useState([]);
   const [cantidad, setCantidad] = useState("");
   const [unidad, setUnidad] = useState("");
   const [ingresos, setIngresos] = useState([]); // para el listado de repuestos a usar
@@ -53,11 +66,11 @@ const FormularioEventoTaller = ({
       try {
         let data = [];
 
-        const subarea = evento.subarea
+        const subareaEnUso = evento.subarea
           ? evento.subarea.toUpperCase()
           : tipoVehiculo.toUpperCase();
 
-        switch (subarea) {
+        switch (subareaEnUso) {
           case "TRACTORES":
             data = await listarColeccion("tractores");
             break;
@@ -81,14 +94,129 @@ const FormularioEventoTaller = ({
       setLoading(false);
     };
 
+    const cargarUsoStock = async () => {
+      if (evento.id) {
+        const listaArticulos = await listarColeccion("stock", true);
+        const data = await listarColeccion("usoStock", true);
+
+        const articulosUsados = data
+          .filter((uso) => uso.reparacion === evento.id)
+          .map((uso) => {
+            const articulo = listaArticulos.find(
+              (art) => String(art.id) === String(uso.repuesto)
+            );
+
+            listaArticulos.forEach((a) => {
+              console.log("Artículo ID:", `"${a.id}"`);
+            });
+            console.log("Buscando repuesto ID:", `"${uso.repuesto}"`);
+
+            return {
+              id: uso.repuesto,
+              descripcion: articulo?.descripcion || "Artículo no encontrado",
+              cantidad: uso.cantidad,
+              unidad: articulo?.unidad || "",
+            };
+          });
+
+        setArticulosUsados(articulosUsados);
+        setArticulosUsadosBackUp(articulosUsados); // para restablecer
+        setLoading(false);
+      }
+    };
     cargarMecanicos();
     cargarVehiculos();
     cargarArticulos();
+    cargarUsoStock();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleRestore = () => {
+    setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
+    setIngresos([]); // limpiar ingresos agregados manualmente
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    Swal.fire("Agregar");
+    let idGuardado;
+
+    try {
+      let fechaParaGuardar;
+
+      if (evento.id) {
+        // evento.fecha es un Timestamp de Firebase
+        if (evento.fecha.toDate) {
+          fechaParaGuardar = evento.fecha.toDate(); // ✅ convierte a Date
+        } else {
+          fechaParaGuardar = new Date(evento.fecha); // por si ya era Date
+        }
+      } else {
+        fechaParaGuardar = new Date(); // fecha nueva
+      }
+
+      if (isNaN(fechaParaGuardar.getTime())) {
+        throw new Error("La fecha es inválida");
+      }
+
+      const usuarioJSON = JSON.parse(localStorage.usuario);
+      const usuarioDeCarga =
+        usuarioJSON["apellido"] + " " + usuarioJSON["nombres"];
+
+      const datosAGuardar = {
+        ...formData,
+        fecha: fechaParaGuardar,
+        subtipo: formData.subtipo ? formData.subtipo.toUpperCase() : null,
+        persona: formData.persona ? Number(formData.persona) : null,
+        vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
+        area: formData.area ? formData.area : area, //El area la recibe desde la tabla/ficha
+        subarea: formData.subarea ? formData.subarea : subarea,
+        detalle: formData.area ? formData.detalle.toUpperCase() : null,
+        usuario: evento.id
+          ? evento.usuario
+            ? evento.usuario
+            : usuarioDeCarga
+          : null,
+      };
+
+      // Lista final de articulos/repuestos
+      const listaArticulosFinal = [...articulosUsados, ...ingresos];
+
+      // Uso de stock: cada elemento será un documento en la colección
+      const usoStockAGuardar = listaArticulosFinal.map((item) => ({
+        reparacion: evento.id, // Para saber a qué evento pertenece
+        repuesto: item.id, // ID del artículo
+        cantidad: item.cantidad,
+        unidad: item.unidad,
+      }));
+
+      if (evento.id) {
+        idGuardado = await agregarEventoTaller(
+          datosAGuardar,
+          usoStockAGuardar,
+          evento.id
+        );
+      } else {
+        idGuardado = await agregarEventoTaller(datosAGuardar, usoStockAGuardar);
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "No hemos podido procesar la solicitud.",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#4161bd",
+      });
+      console.error("Error al guardar evento:", error);
+      onClose();
+    }
+
+    Swal.fire({
+      title: "Evento guardado  " + idGuardado,
+      text: "Se ha completado el registro exitosamente.",
+      icon: "success",
+      confirmButtonText: "Entendido",
+      confirmButtonColor: "#4161bd",
+    });
+    onClose();
   };
 
   const handleChange = (e) => {
@@ -122,7 +250,16 @@ const FormularioEventoTaller = ({
   };
 
   const handleDelete = (indexEliminar) => {
-    setIngresos((ing) => ing.filter((_, i) => i != indexEliminar));
+    const totalUsados = articulosUsados.length;
+
+    if (indexEliminar < totalUsados) {
+      // Está en el array de artículos ya usados (venían de Firestore)
+      setArticulosUsados((prev) => prev.filter((_, i) => i !== indexEliminar));
+    } else {
+      // Está en el array de ingresos nuevos
+      const ingresoIndex = indexEliminar - totalUsados;
+      setIngresos((prev) => prev.filter((_, i) => i !== ingresoIndex));
+    }
   };
 
   return (
@@ -169,10 +306,10 @@ const FormularioEventoTaller = ({
             <label>
               Mecanico
               <select
-                name="mecanico"
+                name="persona"
                 value={formData.persona}
                 onChange={handleChange}
-                //required
+                required
               >
                 <option value=""></option>
                 {mecanicos.map((p) => (
@@ -192,13 +329,7 @@ const FormularioEventoTaller = ({
               <select
                 type="number"
                 name="vehiculo"
-                value={
-                  formData.tractor
-                    ? formData.tractor
-                    : formData.furgon
-                    ? formData.furgon
-                    : formData.vehiculo
-                }
+                value={formData.vehiculo}
                 onChange={handleChange}
               >
                 <option value=""></option>
@@ -245,7 +376,7 @@ const FormularioEventoTaller = ({
               </label>
               <div className="input-inline">
                 <label>
-                  Cantidad
+                  Cantidad {area}
                   <input
                     type="number"
                     value={cantidad}
@@ -259,43 +390,55 @@ const FormularioEventoTaller = ({
                     value={obtenerNombreUnidad(unidad).toUpperCase()}
                     disabled
                   />
-                  <button
-                    className="plus-btn"
-                    type="button"
+                  <img
+                    src={PlusLogo}
+                    alt=""
                     onClick={handleAdd}
-                  >
-                    <FaCirclePlus className="plus-logo" />
-                  </button>
+                    className="plus-logo"
+                  ></img>
                 </div>
               </div>
             </div>
             <div className="form-box">
-              {ingresos.length === 0 ? (
-                <p>...</p>
-              ) : (
-                <ul className="list">
-                  {ingresos.map((item, index) => (
-                    <li key={index} className="list-item">
-                      <div className="item-info">
-                        <strong>{item.id}</strong>
-                      </div>
-                      <div className="item-info">{item.descripcion}</div>
-                      <div className="item-actions">
-                        <span className="list-cant">
-                          + {item.cantidad} {item.unidad.toUpperCase()}
-                        </span>
+              <ul className="list">
+                {[...articulosUsados, ...ingresos].map((item, index) => (
+                  <li key={index} className="list-item">
+                    <div className="item-info">
+                      <strong>{item.id}</strong>
+                    </div>
+                    <div className="item-info">{item.descripcion}</div>
+                    <div className="item-actions">
+                      <span className="list-cant">
+                        + {item.cantidad} {item.unidad.toUpperCase()}
+                      </span>
 
-                        <button
-                          className="delete-btn"
-                          type="button"
-                          onClick={() => handleDelete(index)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                      <button
+                        className="delete-btn"
+                        type="button"
+                        onClick={() => handleDelete(index)}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="form-box-footer">
+              {evento.id ? (
+                <img
+                  src={RefreshLogo}
+                  alt=""
+                  onClick={handleRestore}
+                  className="plus-logo"
+                ></img>
+              ) : (
+                <img
+                  src={DropLogo}
+                  alt=""
+                  onClick={handleRestore}
+                  className="plus-logo"
+                ></img>
               )}
             </div>
             <div className="form-buttons">

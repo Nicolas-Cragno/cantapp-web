@@ -160,14 +160,11 @@ const TablaEventosTaller = ({
 
   return (
     <section className="table-container">
-      <div className="table-topheader">
+      <div className="table-header">
         <h1 className="table-logo-box">
           <img src={logo} alt="" className="table-logo" />
           {title}
         </h1>
-      </div>
-      <div className="table-header">
-        <h1 className="table-title">{subtitle}</h1>
         <input
           type="text"
           placeholder="Buscar..."
@@ -248,6 +245,7 @@ const TablaEventosTaller = ({
           onGuardar={handleGuardar}
           tipoVehiculo={subarea}
           area={typeof area === "string" ? area.toUpperCase() : ""}
+          subarea={typeof subarea === "string" ? subarea.toUpperCase() : ""}
           tipoPorArea={tipoPorArea}
         />
       )}
