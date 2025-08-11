@@ -137,7 +137,6 @@ const FichaEventoTaller = ({
             </div>
             <p className="ficha-info-title">
               <strong>Detalle</strong>
-              {evento.area} {evento.subarea}
             </p>
             <div className="ficha-info">
               <p>

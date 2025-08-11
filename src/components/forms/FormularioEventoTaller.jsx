@@ -169,7 +169,7 @@ const FormularioEventoTaller = ({
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
         area: formData.area ? formData.area : area, //El area la recibe desde la tabla/ficha
         subarea: formData.subarea ? formData.subarea : subarea,
-        detalle: formData.area ? formData.detalle.toUpperCase() : null,
+        detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
         usuario: evento.id
           ? evento.usuario
             ? evento.usuario

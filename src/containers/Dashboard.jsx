@@ -7,8 +7,16 @@ import LogoTractor from "../assets/logos/logotractor.png";
 import LogoFurgon from "../assets/logos/logofurgon.png";
 import LogoUtilitario from "../assets/logos/logoutilitario.png";
 import LogoStock from "../assets/logos/logostock.png";
+import { Access } from "../routes/access/Access";
 
 const Dashboard = () => {
+  let rolUsuario = null;
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  try {
+    rolUsuario = usuario?.rol || null;
+  } catch {
+    rolUsuario = null;
+  }
   const colors = {
     rojo: "#c93242",
     azul: "#4161bd",
@@ -52,6 +60,7 @@ const Dashboard = () => {
       color: colors.verde,
       img: LogoPersonal,
       state: true,
+      access: Access["/personal"].includes(rolUsuario),
     },
     {
       title: "Tractores",
@@ -59,6 +68,7 @@ const Dashboard = () => {
       color: colors.violeta,
       img: LogoTractor,
       state: true,
+      access: Access["/tractores"].includes(rolUsuario),
     },
     {
       title: "Furgones",
@@ -66,6 +76,7 @@ const Dashboard = () => {
       color: colors.naranja,
       img: LogoFurgon,
       state: true,
+      access: Access["/furgones"].includes(rolUsuario),
     },
     {
       title: "Utilitarios",
@@ -73,6 +84,7 @@ const Dashboard = () => {
       color: colors.azul,
       img: LogoUtilitario,
       state: true,
+      access: Access["/utilitarios"].includes(rolUsuario),
     },
     {
       title: "Stock",
@@ -80,6 +92,7 @@ const Dashboard = () => {
       color: colors.amarillo,
       img: LogoStock,
       state: true,
+      access: Access["/stock"].includes(rolUsuario),
     },
   ];
 
@@ -87,34 +100,42 @@ const Dashboard = () => {
     <div className="dashboard page">
       <div className="container">
         <div className="row">
-          {sections.map((s) => (
-            <div className="col-md-4" key={s.title}>
-              <CardInfo
-                title={s.title}
-                route={s.route}
-                backColor={s.color}
-                img={s.img}
-                state={s.state}
-              />
+          <div className="col-md-5 dashboard-box">
+            <div className="row">
+              <h1 className="page-subtitle">Registros por area {rolUsuario}</h1>
+              <hr />
+              {sections.map((s) => (
+                <div className="col-md-4" key={s.title}>
+                  <CardInfo
+                    title={s.title}
+                    route={s.route}
+                    backColor={s.color}
+                    img={s.img}
+                    state={s.state}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-      <hr className="divisor" />
-      <h1 className="page-title">Gestionar recursos</h1>
-      <div className="container">
-        <div className="row">
-          {gestioners.map((g) => (
-            <div className="col-md-4" key={g.title}>
-              <CardInfo
-                title={g.title}
-                route={g.route}
-                backColor={g.color}
-                img={g.img}
-                state={g.state}
-              />
+          </div>
+          <div className="col"></div>
+          <div className="col-md-5 dashboard-box">
+            <div className="row">
+              <h1 className="page-subtitle">Gestión de recursos</h1>
+              <hr />
+              {gestioners.map((g) => (
+                <div className="col-md-4" key={g.title}>
+                  <CardInfo
+                    title={g.title}
+                    route={g.route}
+                    backColor={g.color}
+                    img={g.img}
+                    state={g.state}
+                    access={g.access}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </div>

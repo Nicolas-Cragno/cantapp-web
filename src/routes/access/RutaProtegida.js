@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { Navigate, useLocation } from "react-router-dom";
 import { Access } from "./Access";
+import Swal from "sweetalert2";
 
 const jerarquia = ["user", "admin", "dev"];
 
@@ -41,7 +42,16 @@ const RutaProtegida = ({ children }) => {
   const rutaActual = location.pathname;
   const rolesPermitidos = Access[rutaActual];
 
-  if (!rolesPermitidos) return <Navigate to="/no-autorizado" replace />;
+  //if (!rolesPermitidos) return <Navigate to="/no-autorizado" replace />;
+  if (!rolesPermitidos) {
+        Swal.fire({
+          title: "Recurso no disponible",
+          text: "Es posible que se encuentre en reparación y/o producción",
+          icon: "warning",
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#4161bd",
+        });
+      }
 
   const usuarioStr = localStorage.getItem("usuario");
   if (!usuarioStr) return <Navigate to="/login" replace />;
@@ -53,7 +63,20 @@ const RutaProtegida = ({ children }) => {
     rolesPermitidos.includes(rol) ||
     rolesPermitidos.some((r) => jerarquia.indexOf(rol) > jerarquia.indexOf(r));
 
-  if (!tieneAcceso) return <Navigate to="/no-autorizado" replace />;
+    if (!tieneAcceso){
+      Swal.fire({
+        title: "Acceso restringido",
+        theme: "dark",
+        color: "white",
+        text: "No tienes permiso en esta sección.",
+        icon: "error",
+        iconColor: "#cc0000",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#cc0000",
+      });
+      return <Navigate to="/" replace />;
+    }
+
 
   return children;
 };

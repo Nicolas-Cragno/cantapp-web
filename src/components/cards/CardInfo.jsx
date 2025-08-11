@@ -1,10 +1,17 @@
 import "../css/CardInfo.css";
-import { GiAutoRepair } from "react-icons/gi";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { IoEnterSharp } from "react-icons/io5";
+import RepairLogo from "../../assets/logos/repairLogo.png";
+import DeniedLogo from "../../assets/logos/deniedLogo.png";
 
-const CardInfo = ({ title, route, backColor, img, state = true }) => {
+const CardInfo = ({
+  title,
+  route,
+  backColor,
+  img,
+  state = true,
+  access = true,
+}) => {
   const handleClick = (e) => {
     if (!state) {
       e.preventDefault();
@@ -26,15 +33,20 @@ const CardInfo = ({ title, route, backColor, img, state = true }) => {
       tabIndex={state ? 0 : -1} // opcional: evita foco si no disponible
       aria-disabled={!state}
     >
-      <div className="card-info" style={{ backgroundColor: backColor }}>
+      <div
+        className="card-info"
+        style={{ backgroundColor: !state ? "#b4b4b4" : backColor }}
+      >
         <h1 className="card-info-title2">{title}</h1>
 
-        {!state ? (
-          <span className="card-info-alert">
-            no disponible <GiAutoRepair className="card-info-alert-logo" />
-          </span>
+        {access ? (
+          !state ? (
+            <img src={RepairLogo} alt="" className="card-info-img"></img>
+          ) : (
+            <img src={img} alt="" className="card-info-img"></img>
+          )
         ) : (
-          <img src={img} alt="" className="card-info-img"></img>
+          <img src={DeniedLogo} alt="" className="card-info-img"></img>
         )}
       </div>
     </Link>

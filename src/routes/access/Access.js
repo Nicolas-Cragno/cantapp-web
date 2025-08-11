@@ -5,20 +5,20 @@ export const Access = {
     "/control-combustible": ["dev"],   // trafico / combustible
     
     // Solo administradores
-    "/personal": ["admin"],
-    "/mecanicos": ["admin"],
-    "/choferes-larga": ["admin"],
-    "/choferes-movimiento": ["admin"],
-    "/flota": ["admin"],
-    "/tractores": ["admin"],
-    "/furgones": ["admin"],
-    "/utilitarios": ["admin"],
-    "/stock": ["admin"],                 // talleres
+    "/personal": ["admin","dev"],
+    "/mecanicos": ["admin","dev"],
+    "/choferes-larga": ["admin","dev"],
+    "/choferes-movimiento": ["admin","dev"],
+    "/flota": ["admin","dev"],
+    "/tractores": ["admin","dev"],
+    "/furgones": ["admin","dev"],
+    "/utilitarios": ["admin","dev"],
+    "/stock": ["admin","dev"],                 // talleres
 
-    // Usuarios
-    "/actividad": ["user", "admin"],   // todos
-    "/porteria": ["user", "admin"],    // seguridad / porteria
-    "/satelital" : ["user", "admin"], // satelital
+    // Usuarios / administradores
+    "/actividad": ["user", "admin","dev"],   // todos
+    "/porteria": ["user", "admin","dev"],    // seguridad / porteria
+    "/satelital" : ["user", "admin","dev"], // satelital
 
     // Todos
     "/": ["user", "admin", "dev"],

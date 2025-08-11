@@ -1,3 +1,16 @@
 .dashboard{
     display: block;
 }
+
+.dashboard-box{
+   margin: 1rem;
+    background-color:white;
+    box-shadow: 3px 5px 16px -2px #000000;
+    border-radius: 1rem;
+    padding: 1rem;
+    opacity: 0.8;
+}
+
+.dashboard-box:hover{
+    opacity: 1;
+}
