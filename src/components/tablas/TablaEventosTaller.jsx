@@ -9,6 +9,9 @@ import FichaEventoTaller from "../fichas/FichaEventoTaller";
 import FormularioEventoTaller from "../forms/FormularioEventoTaller";
 import "../css/Tables.css";
 import LogoDefault from "../../assets/logos/logotruck-back.png";
+import LogoTractor from "../../assets/logos/logotractor-w.png";
+import LogoFurgon from "../../assets/logos/logofurgon-w.png";
+import LogoUtilitario from "../../assets/logos/logoutilitario-w.png";
 
 const TablaEventosTaller = ({
   tipo = null,
@@ -162,7 +165,17 @@ const TablaEventosTaller = ({
     <section className="table-container">
       <div className="table-header">
         <h1 className="table-logo-box">
-          <img src={logo} alt="" className="table-logo" />
+          <img
+            src={
+              title === "TALLER TRACTORES"
+                ? LogoTractor
+                : title === "TALLER FURGONES"
+                ? LogoFurgon
+                : LogoUtilitario
+            }
+            alt=""
+            className="table-logo"
+          />
           {title}
         </h1>
         <input

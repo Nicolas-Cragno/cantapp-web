@@ -6,6 +6,7 @@ import "../css/Tables.css";
 import FichaStock from "../fichas/FichaStock";
 import FormularioStock from "../forms/FormularioStock";
 import FormularioMovimientoStock from "../forms/FormularioMovimientoStock";
+import LogoStock from "../../assets/logos/logostock-w.png";
 
 const TablaStock = () => {
   const [filtro, setFiltro] = useState("");
@@ -76,7 +77,10 @@ const TablaStock = () => {
   return (
     <section className="table-container">
       <div className="table-header">
-        <h1 className="table-title">STOCK</h1>
+        <h1 className="table-logo-box">
+          <img src={LogoStock} alt="" className="table-logo" />
+          REGISTRO DE STOCK
+        </h1>
         <input
           type="text"
           placeholder="Buscar ..."

@@ -10,6 +10,7 @@ import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEvento from "../fichas/FichaEvento";
 import FormularioEvento from "../forms/FormularioEvento";
 import LogoDefault from "../../assets/logos/logotruck-back.png";
+import LogoSatelital from "../../assets/logos/logosatelital-w.png";
 import "../css/Tables.css";
 
 const TablaEventos = ({
@@ -127,7 +128,7 @@ const TablaEventos = ({
     <section className="table-container">
       <div className="table-header">
         <h1 className="table-logo-box">
-          <img src={logo} alt="" className="table-logo" />
+          <img src={LogoSatelital} alt="" className="table-logo" />
           {title}
         </h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}

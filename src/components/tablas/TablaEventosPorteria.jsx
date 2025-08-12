@@ -11,6 +11,7 @@ import FichaEventoPorteria from "../fichas/FichaEventoPorteria";
 import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
 import "../css/Tables.css";
 import LogoDefault from "../../assets/logos/logotruck-back.png";
+import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 
 const TablaEventosPorteria = ({
   tipo = null,
@@ -126,7 +127,7 @@ const TablaEventosPorteria = ({
     <section className="table-container">
       <div className="table-header">
         <h1 className="table-logo-box">
-          <img src={logo} alt="" className="table-logo" />
+          <img src={LogoPorteria} alt="" className="table-logo" />
           {title}
         </h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}

@@ -1,19 +1,23 @@
 import "./css/Dashboard.css";
 import CardInfo from "../components/cards/CardInfo";
-import LogoPorteria from "../assets/logos/logoporteria.png";
-import LogoSatelital from "../assets/logos/logosatelital.png";
-import LogoPersonal from "../assets/logos/logopersonal.png";
-import LogoTractor from "../assets/logos/logotractor.png";
-import LogoFurgon from "../assets/logos/logofurgon.png";
-import LogoUtilitario from "../assets/logos/logoutilitario.png";
-import LogoStock from "../assets/logos/logostock.png";
+import LogoPorteria from "../assets/logos/logoporteria-w.png";
+import LogoSatelital from "../assets/logos/logosatelital-w.png";
+import LogoPersonal from "../assets/logos/logopersonal-w.png";
+import LogoTractor from "../assets/logos/logotractor-w.png";
+import LogoFurgon from "../assets/logos/logofurgon-w.png";
+import LogoUtilitario from "../assets/logos/logoutilitario-w.png";
+import LogoStock from "../assets/logos/logostock-w.png";
 import { Access } from "../routes/access/Access";
 
 const Dashboard = () => {
   let rolUsuario = null;
+  let gestionersView = false;
   const usuario = JSON.parse(localStorage.getItem("usuario"));
   try {
     rolUsuario = usuario?.rol || null;
+    if (rolUsuario === "dev" || rolUsuario === "admin") {
+      gestionersView = true;
+    }
   } catch {
     rolUsuario = null;
   }
@@ -118,24 +122,26 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="col"></div>
-          <div className="col-md-5 dashboard-box">
-            <div className="row">
-              <h1 className="page-subtitle">Gestión de recursos</h1>
-              <hr />
-              {gestioners.map((g) => (
-                <div className="col-md-4" key={g.title}>
-                  <CardInfo
-                    title={g.title}
-                    route={g.route}
-                    backColor={g.color}
-                    img={g.img}
-                    state={g.state}
-                    access={g.access}
-                  />
-                </div>
-              ))}
+          {gestionersView ? (
+            <div className="col-md-5 dashboard-box">
+              <div className="row">
+                <h1 className="page-subtitle">Gestión de recursos</h1>
+                <hr />
+                {gestioners.map((g) => (
+                  <div className="col-md-4" key={g.title}>
+                    <CardInfo
+                      title={g.title}
+                      route={g.route}
+                      backColor={g.color}
+                      img={g.img}
+                      state={g.state}
+                      access={g.access}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </div>

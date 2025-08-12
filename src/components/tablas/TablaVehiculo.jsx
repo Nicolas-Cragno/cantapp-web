@@ -6,6 +6,9 @@ import { obtenerCuitPorNombre } from "../../functions/data-functions";
 import LogoEmpresaTxt from "../LogoEmpresaTxt";
 import FichaVehiculo from "../fichas/FichaVehiculo";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
+import LogoTractor from "../../assets/logos/logotractor-w.png";
+import LogoFurgon from "../../assets/logos/logofurgon-w.png";
+import LogoUtilitario from "../../assets/logos/logoutilitario-w.png";
 import "../css/Tables.css";
 
 const TablaVehiculo = ({ tipoVehiculo }) => {
@@ -111,7 +114,20 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
   return (
     <section className="table-container">
       <div className="table-header">
-        <h1 className="table-title">{title}</h1>
+        <h1 className="table-logo-box">
+          <img
+            src={
+              title === "TRACTORES"
+                ? LogoTractor
+                : title === "FURGONES"
+                ? LogoFurgon
+                : LogoUtilitario
+            }
+            alt=""
+            className="table-logo"
+          />
+          {title}
+        </h1>
         <input
           type="text"
           placeholder="Buscar..."

@@ -6,6 +6,7 @@ import FormularioPersona from "../forms/FormularioPersona";
 import "../css/Tables.css";
 import { obtenerCuitPorNombre } from "../../functions/data-functions";
 import { nombreEmpresa } from "../../functions/data-functions";
+import LogoPersonal from "../../assets/logos/logopersonal-w.png";
 import LogoEmpresaTxt from "../LogoEmpresaTxt";
 
 const TablaPersonal = ({ tipoPuesto }) => {
@@ -123,7 +124,10 @@ const TablaPersonal = ({ tipoPuesto }) => {
   return (
     <section className="table-container">
       <div className="table-header">
-        <h1 className="table-title">{tipoPuesto}</h1>
+        <h1 className="table-logo-box">
+          <img src={LogoPersonal} alt="" className="table-logo" />
+          {tipoPuesto}
+        </h1>
         <input
           type="text"
           placeholder="Buscar por nombre..."
