@@ -3,7 +3,8 @@ import { FaHome, FaUser, FaTruck, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { RiListSettingsLine } from "react-icons/ri";
 import { GiAutoRepair } from "react-icons/gi";
-import { IoCalendarSharp } from "react-icons/io5";
+import { IoSettingsSharp } from "react-icons/io5";
+
 import "./css/SideBar.css";
 import { BsFillFuelPumpFill } from "react-icons/bs";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -24,6 +25,12 @@ const SideBar = () => {
       to: "/",
       icon: <FaHome className="nav-icon" />,
       label: "Inicio",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/perfil",
+      icon: <IoSettingsSharp className="nav-icon" />,
+      label: "Perfil",
       roles: ["dev", "admin", "user"],
     },
   ];
@@ -72,13 +79,13 @@ const SideBar = () => {
     {
       to: "/taller-tractores",
       icon: <GiAutoRepair className="nav-icon dev" />,
-      label: "Taller",
+      label: "Tractores",
       roles: ["dev"],
     },
     {
       to: "/taller-furgones",
       icon: <GiAutoRepair className="nav-icon dev" />,
-      label: "Taller Furgones",
+      label: "Furgones",
       roles: ["dev"],
     },
     {
@@ -111,7 +118,7 @@ const SideBar = () => {
             )
         )}
       </nav>
-      <nav className="nav">
+      <nav className="nav oculto">
         {linksManagement.map(
           ({ to, icon, label, roles }) =>
             tieneAcceso(roles) && (

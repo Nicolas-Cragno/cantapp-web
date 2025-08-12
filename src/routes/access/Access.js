@@ -22,4 +22,5 @@ export const Access = {
 
     // Todos
     "/": ["user", "admin", "dev"],
+    "/perfil": ["user", "admin", "dev"],
 }

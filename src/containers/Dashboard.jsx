@@ -104,12 +104,12 @@ const Dashboard = () => {
     <div className="dashboard page">
       <div className="container">
         <div className="row">
-          <div className="col-md-5 dashboard-box">
+          <div className="col-xs-12 dashboard-box">
             <div className="row">
-              <h1 className="page-subtitle">Registros por area {rolUsuario}</h1>
+              <h1 className="page-subtitle">Registros por area</h1>
               <hr />
               {sections.map((s) => (
-                <div className="col-md-4" key={s.title}>
+                <div className="col-md-3" key={s.title}>
                   <CardInfo
                     title={s.title}
                     route={s.route}
@@ -123,12 +123,12 @@ const Dashboard = () => {
           </div>
           <div className="col"></div>
           {gestionersView ? (
-            <div className="col-md-5 dashboard-box">
+            <div className="col-xs-12 dashboard-box">
               <div className="row">
                 <h1 className="page-subtitle">Gestión de recursos</h1>
                 <hr />
                 {gestioners.map((g) => (
-                  <div className="col-md-4" key={g.title}>
+                  <div className="col-md-3" key={g.title}>
                     <CardInfo
                       title={g.title}
                       route={g.route}

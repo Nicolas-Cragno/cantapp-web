@@ -131,6 +131,12 @@ export const listarPorEmpresa = async (nombreColeccion, empresa, usarCache = tru
   return datosFiltrados;
 };
 
+export const eventosPersona = async (dni) => {
+  const eventos = await listarColeccion("eventos", false);
+  const eventosFiltrados = eventos.filter((e) => e.persona === dni);
+  return eventosFiltrados;
+};
+
 // Agregar dni y actualizar cache
 export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
   try {
