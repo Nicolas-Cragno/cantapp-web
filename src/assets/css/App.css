@@ -50,12 +50,20 @@
 }
 
 .page-subtitle{
-    
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 2.1rem;
     font-weight: 600;
+}
+
+.page-subtitle2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
 }
 
 .page::-webkit-scrollbar{ /* para chrome, safari y edge*/

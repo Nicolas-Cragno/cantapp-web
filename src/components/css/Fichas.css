@@ -179,6 +179,39 @@
   /* overflow-y: auto; SCROLL*/
   padding: 0.5rem;
 }
+
+/* perfil */
+.perfil-box{
+  background-color: red;
+  border-style: solid;
+  border-width: 1px;
+  margin-bottom: 1rem;
+}
+.perfil-image{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+.perfil-img{
+    max-width: 350px;
+    background-color: #888;
+}
+
+.perfil-header{
+  display: block;
+}
+
+.perfil-persona{
+  display: block;
+}
+
+.perfil-apellido{
+  font-size: 3rem;
+}
+.perfil-nombre{
+  font-size: 1.5rem;
+}
 /* Botón guardar */
 .ficha-buttons button {
   background-color: #007bff;

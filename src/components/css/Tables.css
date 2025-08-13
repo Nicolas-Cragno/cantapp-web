@@ -44,7 +44,9 @@
 .table-check{
   margin-right: 1rem;
   margin-top: -1rem;
-  font-weight: 500;
+  font-weight:800;
+  color: white;
+  font-size: large;
 }
 
 .check-input{

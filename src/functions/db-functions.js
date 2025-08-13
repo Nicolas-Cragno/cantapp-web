@@ -137,6 +137,17 @@ export const eventosPersona = async (dni) => {
   return eventosFiltrados;
 };
 
+export const buscarPersona = async (dni) => {
+    const listado = await listarColeccion("personas", false);
+    const persona = listado.find((p) => String(p.id) === String(dni)) || null;
+    return persona;
+};
+
+export const buscarUsuario = async(dni) => {
+  const listado = await listarColeccion("users", false);
+  const persona = listado.find((u) => String(u.dni) === String(dni)) || null;
+  return persona;
+};
 // Agregar dni y actualizar cache
 export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
   try {
@@ -363,6 +374,8 @@ export const buscarNombreUsuario = async (uid) => {
     return "Error";
   }
 };
+
+
 
 // stock
 

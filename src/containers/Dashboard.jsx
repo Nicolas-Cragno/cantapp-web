@@ -1,5 +1,6 @@
 import "./css/Dashboard.css";
 import CardInfo from "../components/cards/CardInfo";
+import Card from "../components/cards/Card";
 import LogoPorteria from "../assets/logos/logoporteria-w.png";
 import LogoSatelital from "../assets/logos/logosatelital-w.png";
 import LogoPersonal from "../assets/logos/logopersonal-w.png";
@@ -22,12 +23,12 @@ const Dashboard = () => {
     rolUsuario = null;
   }
   const colors = {
-    rojo: "#c93242",
-    azul: "#4161bd",
-    amarillo: "#ebda50",
-    naranja: "#f9bc86",
-    violeta: "#b39ddb",
-    verde: "#a5d6a7",
+    rojo: "#82181A",
+    azul: "#1447E6",
+    amarillo: "#F0B13B",
+    naranja: "#CA3519",
+    violeta: "#59168B",
+    verde: "#1F7A55",
   };
   const sections = [
     {
@@ -57,15 +58,7 @@ const Dashboard = () => {
       state: false,
     },
   ];
-  const gestioners = [
-    {
-      title: "Personal",
-      route: "/personal",
-      color: colors.verde,
-      img: LogoPersonal,
-      state: true,
-      access: Access["/personal"].includes(rolUsuario),
-    },
+  const gestionersVehiculos = [
     {
       title: "Tractores",
       route: "/tractores",
@@ -77,7 +70,7 @@ const Dashboard = () => {
     {
       title: "Furgones",
       route: "/furgones",
-      color: colors.naranja,
+      color: colors.violeta,
       img: LogoFurgon,
       state: true,
       access: Access["/furgones"].includes(rolUsuario),
@@ -85,15 +78,43 @@ const Dashboard = () => {
     {
       title: "Utilitarios",
       route: "/utilitarios",
-      color: colors.azul,
+      color: colors.violeta,
       img: LogoUtilitario,
       state: true,
       access: Access["/utilitarios"].includes(rolUsuario),
     },
+  ];
+  const gestionersPersonal = [
+    {
+      title: "Mecánicos",
+      route: "/mecanicos",
+      color: colors.verde,
+      img: LogoPersonal,
+      state: true,
+      access: Access["/personal"].includes(rolUsuario),
+    },
+    {
+      title: "Choferes (larga)",
+      route: "/choferes-larga",
+      color: colors.verde,
+      img: LogoPersonal,
+      state: true,
+      access: Access["/personal"].includes(rolUsuario),
+    },
+    {
+      title: "Choferes (mov.)",
+      route: "/choferes-movimiento",
+      color: colors.verde,
+      img: LogoPersonal,
+      state: true,
+      access: Access["/personal"].includes(rolUsuario),
+    },
+  ];
+  const gestionersElementos = [
     {
       title: "Stock",
       route: "/stock",
-      color: colors.amarillo,
+      color: colors.naranja,
       img: LogoStock,
       state: true,
       access: Access["/stock"].includes(rolUsuario),
@@ -127,18 +148,56 @@ const Dashboard = () => {
               <div className="row">
                 <h1 className="page-subtitle">Gestión de recursos</h1>
                 <hr />
-                {gestioners.map((g) => (
-                  <div className="col-md-3" key={g.title}>
-                    <CardInfo
-                      title={g.title}
-                      route={g.route}
-                      backColor={g.color}
-                      img={g.img}
-                      state={g.state}
-                      access={g.access}
-                    />
-                  </div>
-                ))}
+                <div className="col-md-4">
+                  <h1 className="page-subtitle2">Personal</h1>
+                  {gestionersPersonal.map((g) => (
+                    <div key={g.title}>
+                      <CardInfo
+                        title={g.title}
+                        route={g.route}
+                        backColor={g.color}
+                        img={g.img}
+                        state={g.state}
+                        access={g.access}
+                        small={true}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="col-md-4">
+                  <h1 className="page-subtitle2">Flota</h1>
+
+                  {gestionersVehiculos.map((g) => (
+                    <div key={g.title}>
+                      <CardInfo
+                        title={g.title}
+                        route={g.route}
+                        backColor={g.color}
+                        img={g.img}
+                        state={g.state}
+                        access={g.access}
+                        small={true}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="col-md-4">
+                  <h1 className="page-subtitle2">Inventario</h1>
+
+                  {gestionersElementos.map((g) => (
+                    <div key={g.title}>
+                      <CardInfo
+                        title={g.title}
+                        route={g.route}
+                        backColor={g.color}
+                        img={g.img}
+                        state={g.state}
+                        access={g.access}
+                        small={true}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ) : null}

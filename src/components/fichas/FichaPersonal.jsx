@@ -2,6 +2,7 @@ import "../css/Fichas.css";
 import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
 import { listarColeccion } from "../../functions/db-functions";
 import { useEffect, useState } from "react";
+
 import FormularioPersona from "../forms/FormularioPersona";
 import LogoEmpresa from "../LogoEmpresa";
 
@@ -95,7 +96,15 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
             {eventos.length > 0 ? (
               <div className="ficha-info">
                 {eventos.map((evento, index) => (
-                  <h6 key={index}>{evento.persona}</h6>
+                  <div key={index} className="eventopersona-item">
+                    <strong>
+                      <span key={index}>{formatearFecha(evento.fecha)}</span>
+                    </strong>
+                    <span>{evento.subtipo}</span>
+                    {evento.tractor ? (
+                      <span>(tractor {evento.tractor})</span>
+                    ) : null}
+                  </div>
                 ))}
               </div>
             ) : null}

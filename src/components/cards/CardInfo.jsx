@@ -11,6 +11,7 @@ const CardInfo = ({
   img,
   state = true,
   access = true,
+  small = false,
 }) => {
   const handleClick = (e) => {
     if (!state) {
@@ -34,20 +35,22 @@ const CardInfo = ({
       aria-disabled={!state}
     >
       <div
-        className="card-info"
+        className={!small ? "card-info" : "card-info-small"}
         style={{ backgroundColor: !state ? "#b4b4b4" : backColor }}
       >
         <h1 className="card-info-title2">{title}</h1>
 
-        {access ? (
-          !state ? (
-            <img src={RepairLogo} alt="" className="card-info-img"></img>
+        {!small ? (
+          access ? (
+            !state ? (
+              <img src={RepairLogo} alt="" className="card-info-img"></img>
+            ) : (
+              <img src={img} alt="" className="card-info-img"></img>
+            )
           ) : (
-            <img src={img} alt="" className="card-info-img"></img>
+            <img src={DeniedLogo} alt="" className="card-info-img"></img>
           )
-        ) : (
-          <img src={DeniedLogo} alt="" className="card-info-img"></img>
-        )}
+        ) : null}
       </div>
     </Link>
   );
