@@ -11,6 +11,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
     fecha: formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha),
     subtipo: evento.subtipo || "",
     persona: evento.persona ? String(evento.persona) : "",
+    operador: evento.operador ? String(evento.operador) : "",
     tractor: evento.tractor || "",
     detalle: evento.detalle || "",
   });
@@ -35,11 +36,13 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
       const cargarPersonas = async () => {
         try {
           const data = await listarColeccion("personas");
-          const dataFiltrada = data.filter(
-            (p) =>
-              p.puesto === "CHOFER LARGA DISTANCIA" ||
-              p.puesto === "CHOFER MOVIMIENTO"
-          );
+          const dataFiltrada = data
+            .filter(
+              (p) =>
+                p.puesto === "CHOFER LARGA DISTANCIA" ||
+                p.puesto === "CHOFER MOVIMIENTO"
+            )
+            .sort((a, b) => a.apellido.localeCompare(b.apellido));
           setPersonas(dataFiltrada);
         } catch (error) {
           console.error("Error cargando personas:", error);
@@ -48,9 +51,11 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
       const cargarOperadores = async () => {
         try {
           const data = await listarColeccion("personas");
-          const dataFiltrada = data.filter(
-            (p) => p.puesto === "VIGILANCIA" || p.puesto === "SEGURIDAD"
-          );
+          const dataFiltrada = data
+            .filter(
+              (p) => p.puesto === "VIGILANCIA" || p.puesto === "SEGURIDAD"
+            )
+            .sort((a, b) => a.apellido.localeCompare(b.apellido));
           setOperadores(dataFiltrada);
         } catch (error) {
           console.error("Error cargando operadores: ", error);
@@ -105,6 +110,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         ...formData,
         fecha: fechaParaGuardar,
         persona: formData.persona ? Number(formData.persona) : null,
+        operador: formData.operador ? Number(formData.operador) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         area: formData.area ? formData.area : "PORTERIA",
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
@@ -155,10 +161,10 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
               required
             >
               <option key="" value=""></option>
-              <option key="1" value="Deja llaver">
+              <option key="1" value="LLAVE-DEJA">
                 DEJA
               </option>
-              <option key="2" value="Retira llaves">
+              <option key="2" value="LLAVE-RETIRA">
                 RETIRA
               </option>
             </select>
@@ -210,7 +216,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
               <option value=""></option>
               {tractores.map((t) => (
                 <option key={t.interno} value={t.interno}>
-                  {t.dominio} ({t.interno})
+                  {t.interno} ({t.dominio})
                 </option>
               ))}
             </select>
