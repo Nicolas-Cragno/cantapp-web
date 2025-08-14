@@ -27,12 +27,14 @@ const SideBar = () => {
       label: "Inicio",
       roles: ["dev", "admin", "user"],
     },
+    /*
     {
       to: "/perfil",
       icon: <IoSettingsSharp className="nav-icon" />,
       label: "Perfil",
       roles: ["dev", "admin", "user"],
     },
+    */
   ];
   const linksManagement = [
     {

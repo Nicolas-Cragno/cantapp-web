@@ -149,7 +149,6 @@ const Dashboard = () => {
                 <h1 className="page-subtitle">Gestión de recursos</h1>
                 <hr />
                 <div className="col-md-4">
-                  <h1 className="page-subtitle2">Personal</h1>
                   {gestionersPersonal.map((g) => (
                     <div key={g.title}>
                       <CardInfo
@@ -165,8 +164,6 @@ const Dashboard = () => {
                   ))}
                 </div>
                 <div className="col-md-4">
-                  <h1 className="page-subtitle2">Flota</h1>
-
                   {gestionersVehiculos.map((g) => (
                     <div key={g.title}>
                       <CardInfo
@@ -182,8 +179,6 @@ const Dashboard = () => {
                   ))}
                 </div>
                 <div className="col-md-4">
-                  <h1 className="page-subtitle2">Inventario</h1>
-
                   {gestionersElementos.map((g) => (
                     <div key={g.title}>
                       <CardInfo

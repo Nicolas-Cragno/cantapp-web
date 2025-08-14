@@ -8,6 +8,7 @@
   transition: width 0.3s ease;
   display: flex;
   align-items: center;
+  justify-items: left;
   flex-direction: column;
 }
 

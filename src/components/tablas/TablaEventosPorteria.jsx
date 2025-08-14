@@ -6,9 +6,11 @@ import {
   buscarNombrePorDni,
   useDetectarActualizaciones,
 } from "../../functions/db-functions";
+import { IoKeySharp } from "react-icons/io5";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEventoPorteria from "../fichas/FichaEventoPorteria";
 import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
+import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
 import "../css/Tables.css";
 import LogoDefault from "../../assets/logos/logotruck-back.png";
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
@@ -27,6 +29,7 @@ const TablaEventosPorteria = ({
   const [loading, setLoading] = useState(true);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [modalKeyVisible, setModalKeyVisible] = useState(false);
   const { hayActualizacion, marcarComoActualizado } =
     useDetectarActualizaciones("eventos", {
       campo: "area",
@@ -105,6 +108,9 @@ const TablaEventosPorteria = ({
   };
   const cerrarModalAgregar = () => {
     setModalAgregarVisible(false);
+  };
+  const cerrarModalKey = () => {
+    setModalKeyVisible(false);
   };
 
   const handleGuardar = async () => {
@@ -205,7 +211,21 @@ const TablaEventosPorteria = ({
         />
       )}
 
+      {modalKeyVisible && (
+        <FormularioLlavePorteria
+          onClose={cerrarModalKey}
+          onGuardar={handleGuardar}
+          area={typeof area === "string" ? area.toUpperCase() : ""}
+        />
+      )}
+
       <div className="table-options">
+        <button
+          className="table-agregar"
+          onClick={() => setModalKeyVisible(true)}
+        >
+          <IoKeySharp className="button-logo" />
+        </button>
         <button
           className="table-agregar"
           onClick={() => setModalAgregarVisible(true)}
