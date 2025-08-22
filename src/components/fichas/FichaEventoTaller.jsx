@@ -1,4 +1,4 @@
-import "../css/Fichas.css";
+import "./css/Fichas.css";
 import { FaSpinner } from "react-icons/fa";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import { useEffect, useState } from "react";

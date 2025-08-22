@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../css/Forms.css";
+import "./css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
 import Swal from "sweetalert2";
 import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
@@ -89,14 +89,13 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
       let fechaParaGuardar;
 
       if (evento.id) {
-        // evento.fecha es un Timestamp de Firebase
         if (evento.fecha.toDate) {
-          fechaParaGuardar = evento.fecha.toDate(); // ✅ convierte a Date
+          fechaParaGuardar = evento.fecha.toDate();
         } else {
-          fechaParaGuardar = new Date(evento.fecha); // por si ya era Date
+          fechaParaGuardar = new Date(evento.fecha);
         }
       } else {
-        fechaParaGuardar = new Date(); // fecha nueva
+        fechaParaGuardar = new Date();
       }
       const usuarioParaGuardar = localStorage.usuario
         ? JSON.parse(localStorage.usuario)
@@ -188,7 +187,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Recibe / entrega
+            Operador
             <select
               name="persona"
               value={formData.operador}

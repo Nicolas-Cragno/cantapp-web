@@ -7,7 +7,7 @@ import {
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEventoTaller from "../fichas/FichaEventoTaller";
 import FormularioEventoTaller from "../forms/FormularioEventoTaller";
-import "../css/Tables.css";
+import "./css/Tables.css";
 import LogoDefault from "../../assets/logos/logotruck-back.png";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logofurgon-w.png";

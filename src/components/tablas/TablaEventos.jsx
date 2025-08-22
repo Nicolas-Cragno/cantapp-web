@@ -11,7 +11,7 @@ import FichaEvento from "../fichas/FichaEvento";
 import FormularioEvento from "../forms/FormularioEvento";
 import LogoDefault from "../../assets/logos/logotruck-back.png";
 import LogoSatelital from "../../assets/logos/logosatelital-w.png";
-import "../css/Tables.css";
+import "./css/Tables.css";
 
 const TablaEventos = ({
   tipo = null,

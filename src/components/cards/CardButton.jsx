@@ -1,4 +1,4 @@
-import "../css/CardButton.css";
+import "./css/CardButton.css";
 import { GiAutoRepair } from "react-icons/gi";
 import Swal from "sweetalert2";
 import { useState } from "react";

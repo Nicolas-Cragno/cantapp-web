@@ -1,4 +1,4 @@
-import "../css/CardInfo.css";
+import "./css/CardInfo.css";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import RepairLogo from "../../assets/logos/repairLogo.png";

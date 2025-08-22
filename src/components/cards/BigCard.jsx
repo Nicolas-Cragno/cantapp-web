@@ -1,4 +1,4 @@
-import "../css/BigCard.css";
+import "./css/BigCard.css";
 import { FaUser } from "react-icons/fa";
 import { FaTruckFront } from "react-icons/fa6";
 import { PiShippingContainerFill } from "react-icons/pi";

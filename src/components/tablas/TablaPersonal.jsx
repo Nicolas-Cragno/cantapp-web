@@ -3,11 +3,11 @@ import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
 import FichaPersonal from "../fichas/FichaPersonal";
 import FormularioPersona from "../forms/FormularioPersona";
-import "../css/Tables.css";
+import "./css/Tables.css";
 import { obtenerCuitPorNombre } from "../../functions/data-functions";
 import { nombreEmpresa } from "../../functions/data-functions";
 import LogoPersonal from "../../assets/logos/logopersonal-w.png";
-import LogoEmpresaTxt from "../LogoEmpresaTxt";
+import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 
 const TablaPersonal = ({ tipoPuesto }) => {
   const [personas, setPersonas] = useState([]);

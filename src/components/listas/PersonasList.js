@@ -1,6 +1,6 @@
 // src/components/PersonasList.js
 import { useEffect, useState } from "react";
-import { listarColeccion } from "../functions/db-functions"; // o el path correcto
+import { listarColeccion } from "../../functions/db-functions"; // o el path correcto
 
 const PersonasList = () => {
   const [personas, setPersonas] = useState([]);

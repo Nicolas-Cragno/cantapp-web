@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../css/Forms.css";
+import "./css/Forms.css";
 import {
   agregarEventoTaller,
   listarColeccion,

@@ -2,7 +2,7 @@ import { useState, useEffect, use } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
 import { obtenerNombreUnidad } from "../../functions/data-functions";
-import "../css/Tables.css";
+import "./css/Tables.css";
 import FichaStock from "../fichas/FichaStock";
 import FormularioStock from "../forms/FormularioStock";
 import FormularioMovimientoStock from "../forms/FormularioMovimientoStock";

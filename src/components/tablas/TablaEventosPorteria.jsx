@@ -9,9 +9,10 @@ import {
 import { IoKeySharp } from "react-icons/io5";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEventoPorteria from "../fichas/FichaEventoPorteria";
+import FichaLlavePorteria from "../fichas/FichaLlavePorteria";
 import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
 import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
-import "../css/Tables.css";
+import "./css/Tables.css";
 import LogoDefault from "../../assets/logos/logotruck-back.png";
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 
@@ -194,13 +195,21 @@ const TablaEventosPorteria = ({
         </div>
       )}
 
-      {eventoSeleccionado && (
-        <FichaEventoPorteria
-          evento={eventoSeleccionado}
-          onClose={cerrarModal}
-          onGuardar={handleGuardar}
-        />
-      )}
+      {eventoSeleccionado &&
+        (eventoSeleccionado.subtipo === "LLAVE-RETIRA" ||
+        eventoSeleccionado.subtipo === "LLAVE-DEJA" ? (
+          <FichaLlavePorteria
+            evento={eventoSeleccionado}
+            onClose={cerrarModal}
+            onGuardar={handleGuardar}
+          />
+        ) : (
+          <FichaEventoPorteria
+            evento={eventoSeleccionado}
+            onClose={cerrarModal}
+            onGuardar={handleGuardar}
+          />
+        ))}
 
       {modalAgregarVisible && (
         <FormularioEventoPorteria

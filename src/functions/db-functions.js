@@ -263,6 +263,68 @@ export async function agregarEventoTaller(evento, articulos, idEvento = null) {
   }
 }
 
+export const agregarViaje = async (viaje, idPersonalizado = null) => {
+  try {
+    let docRef;
+
+    // 🔹 Referencia al documento
+    if (idPersonalizado) {
+      const idStr = String(idPersonalizado);
+      docRef = doc(db, "viajes", idStr);
+    } else {
+      const colRef = collection(db, "viajes");
+      docRef = doc(colRef); // nuevo id automático
+    }
+
+    const viajeId = docRef.id;
+
+    // 🔹 Obtenemos tramos existentes
+    const snap = await getDoc(docRef);
+    let tramosActuales = [];
+    if (snap.exists()) {
+      const data = snap.data();
+      tramosActuales = Array.isArray(data.tramos) ? data.tramos : [];
+    }
+
+    // 🔹 Nuevos tramos
+    const nuevosTramos = Array.isArray(viaje.tramos) ? viaje.tramos : [];
+
+    const tramosFinal = nuevosTramos.map((t, i) => ({
+      ...t,
+      id: t.id ? String(t.id) : String(i + 1), // fallback para id
+    }));
+
+    // 🔹 Guardamos viaje actualizado
+    await setDoc(docRef, {
+      ...viaje,
+      tramos: tramosFinal,
+    });
+
+    // 🔹 Actualizamos cache local
+    let cacheActual = [];
+    try {
+      const cache = localStorage.getItem("viajes");
+      cacheActual = Array.isArray(cache ? JSON.parse(cache) : []) ? JSON.parse(cache) : [];
+    } catch {
+      cacheActual = [];
+    }
+
+    const indiceExistente = cacheActual.findIndex((item) => item.id === viajeId);
+
+    if (indiceExistente >= 0) {
+      cacheActual[indiceExistente] = { id: viajeId, ...viaje, tramos: tramosFinal };
+    } else {
+      cacheActual.push({ id: viajeId, ...viaje, tramos: tramosFinal });
+    }
+
+    localStorage.setItem("viajes", JSON.stringify(cacheActual));
+
+    return { id: viajeId, ...viaje, tramos: tramosFinal };
+  } catch (error) {
+    console.error("Error al agregar o modificar viaje:", error);
+    throw error;
+  }
+};
 
 // Modificar dni y cache
 export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
@@ -353,6 +415,23 @@ export const buscarNombrePorDni = async (dni) => {
     }
 
     return `${persona.apellido} ${persona.nombres}`;
+  } catch (error) {
+    console.error("Error en la búsqueda: ", error);
+    return "Error";
+  }
+};
+
+export const buscarDniPorNombre = async (nombreCompleto) => {
+  try {
+    const personas = await listarColeccion("personas", true);
+    const persona = personas.find(p => (p.apellido + ", " + p.nombres) === nombreCompleto);
+
+    if (!persona) {
+      console.warn(`No se encontró DNI asignado a este nombre (${nombreCompleto})`);
+      return "Desconocido";
+    }
+
+    return persona.dni;
   } catch (error) {
     console.error("Error en la búsqueda: ", error);
     return "Error";

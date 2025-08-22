@@ -1,8 +1,8 @@
-import "../css/Fichas.css";
+import "./css/Fichas.css";
 import { useEffect, useState } from "react";
 import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
 import { buscarPersona, buscarUsuario } from "../../functions/db-functions";
-import LogoEmpresa from "../LogoEmpresa";
+import LogoEmpresa from "../logos/LogoEmpresa";
 import ImgDefault from "../../assets/logos/noimage.png";
 
 const FichaPerfil = ({ persona, onClose }) => {

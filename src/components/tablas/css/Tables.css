@@ -132,6 +132,7 @@
   overflow-y: auto;     /* Muestra scroll vertical si es necesario */
 }
 
+
 .table-item {
   color: #555;
   font-style: italic;

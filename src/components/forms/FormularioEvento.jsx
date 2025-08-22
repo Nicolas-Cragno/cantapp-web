@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../css/Forms.css";
+import "./css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
 import Swal from "sweetalert2";
 import {
@@ -93,14 +93,13 @@ const FormularioEvento = ({
       let fechaParaGuardar;
 
       if (evento.id) {
-        // evento.fecha es un Timestamp de Firebase
         if (evento.fecha.toDate) {
-          fechaParaGuardar = evento.fecha.toDate(); // ✅ convierte a Date
+          fechaParaGuardar = evento.fecha.toDate();
         } else {
-          fechaParaGuardar = new Date(evento.fecha); // por si ya era Date
+          fechaParaGuardar = new Date(evento.fecha);
         }
       } else {
-        fechaParaGuardar = new Date(); // fecha nueva
+        fechaParaGuardar = new Date();
       }
 
       if (isNaN(fechaParaGuardar.getTime())) {

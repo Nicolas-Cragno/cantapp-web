@@ -3,13 +3,13 @@ import { FaSpinner } from "react-icons/fa";
 import { listarColeccion } from "../../functions/db-functions";
 import { nombreEmpresa } from "../../functions/data-functions";
 import { obtenerCuitPorNombre } from "../../functions/data-functions";
-import LogoEmpresaTxt from "../LogoEmpresaTxt";
+import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import FichaVehiculo from "../fichas/FichaVehiculo";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logofurgon-w.png";
 import LogoUtilitario from "../../assets/logos/logoutilitario-w.png";
-import "../css/Tables.css";
+import "./css/Tables.css";
 
 const TablaVehiculo = ({ tipoVehiculo }) => {
   const [vehiculos, setVehiculos] = useState([]);

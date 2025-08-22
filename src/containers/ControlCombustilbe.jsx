@@ -1,9 +1,12 @@
+import "./css/Sections.css";
+import Viajes from "./sub-containers/Viajes";
+
 const controlCombustible = () => {
-    return(
-        <div className="control-combustible">
-            <h1>Control combustible</h1>
-        </div>
-    );
+  return (
+    <div className="control-combustible">
+      <Viajes></Viajes>
+    </div>
+  );
 };
 
 export default controlCombustible;

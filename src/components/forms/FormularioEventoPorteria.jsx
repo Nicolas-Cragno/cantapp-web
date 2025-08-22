@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../css/Forms.css";
+import "./css/Forms.css";
 import { agregarEvento, listarColeccion } from "../../functions/db-functions";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import Swal from "sweetalert2";

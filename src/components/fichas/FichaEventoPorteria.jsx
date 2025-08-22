@@ -1,4 +1,4 @@
-import "../css/Fichas.css";
+import "./css/Fichas.css";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import { useEffect, useState } from "react";
 import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
@@ -84,7 +84,6 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
                 <strong>Detalle: </strong> {evento.detalle || "-"}
               </p>
             </div>
-
             <label>
               <strong>Chequeos</strong>
             </label>
@@ -103,7 +102,6 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
                 );
               })}
             </div>
-
             <div className="ficha-data">
               {evento.usuario ? (
                 <p>

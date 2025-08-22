@@ -1,10 +1,10 @@
-import "../css/Fichas.css";
+import "./css/Fichas.css";
 import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
 import { listarColeccion } from "../../functions/db-functions";
 import { useEffect, useState } from "react";
 
 import FormularioPersona from "../forms/FormularioPersona";
-import LogoEmpresa from "../LogoEmpresa";
+import LogoEmpresa from "../logos/LogoEmpresa";
 
 const FichaPersonal = ({ persona, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);

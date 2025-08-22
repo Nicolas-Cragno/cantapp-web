@@ -1,4 +1,4 @@
-import "../css/Buttons.css";
+import "./css/Buttons.css";
 import { IoMdAlert } from "react-icons/io";
 import { IoRefreshCircle } from "react-icons/io5";
 

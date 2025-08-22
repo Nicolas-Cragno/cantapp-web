@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-import '../css/Forms.css';
+import "./css/Forms.css";
 import empresas from "../../functions/data/empresas.json";
 import Swal from "sweetalert2";
 import { verificarDni, agregar, modificar } from "../../functions/db-functions";
-import { nombreEmpresa, obtenerCuitPorNombre } from "../../functions/data-functions";
+import {
+  nombreEmpresa,
+  obtenerCuitPorNombre,
+} from "../../functions/data-functions";
 
-const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) => {
+const FormularioPersona = ({
+  tipoPuesto,
+  persona = null,
+  onClose,
+  onGuardar,
+}) => {
   const [dni, setDni] = useState("");
   const [apellido, setApellido] = useState("");
   const [nombres, setNombres] = useState("");
@@ -30,11 +38,11 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
 
     if (!apellido.trim() || !nombres.trim() || !String(dni).trim()) {
       Swal.fire({
-        title:"Faltan datos",
-        text:"Complete los campos obligatorios.",
+        title: "Faltan datos",
+        text: "Complete los campos obligatorios.",
         icon: "question",
         confirmButtonText: "Entendido",
-        confirmButtonColor: "#4161bd"
+        confirmButtonColor: "#4161bd",
       });
       return;
     }
@@ -50,23 +58,22 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
           empresa: obtenerCuitPorNombre(empresa?.toUpperCase() || "") || "",
           puesto,
           detalle: detalle.toUpperCase(),
-          ingreso: persona.ingreso || new Date()
+          ingreso: persona.ingreso || new Date(),
         };
 
         await modificar("personas", persona.dni, personaEditada);
         if (onGuardar) onGuardar(personaEditada);
-
       } else {
         const existeDni = await verificarDni(dni);
 
         if (existeDni) {
           Swal.fire({
-            title:"Duplicado",
-            text:"Ya existe una persona con ese DNI.",
+            title: "Duplicado",
+            text: "Ya existe una persona con ese DNI.",
             icon: "warning",
             confirmButtonText: "Entendido",
-            confirmButtonColor: "#4161bd"
-          })
+            confirmButtonColor: "#4161bd",
+          });
           setLoading(false);
           return;
         }
@@ -78,7 +85,7 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
           empresa: obtenerCuitPorNombre(empresa),
           puesto,
           detalle: detalle.toUpperCase(),
-          ingreso: new Date()
+          ingreso: new Date(),
         };
 
         const personaAgregada = await agregar("personas", nuevaPersona, dni);
@@ -86,15 +93,14 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
       }
 
       onClose();
-
     } catch (error) {
       Swal.fire({
-        title:"Error",
-        text:"No hemos podido procesar la solicitud.",
+        title: "Error",
+        text: "No hemos podido procesar la solicitud.",
         icon: "error",
         confirmButtonText: "Entendido",
-        confirmButtonColor: "#4161bd"
-      })
+        confirmButtonColor: "#4161bd",
+      });
       console.error("Error al guardar persona:", error);
     } finally {
       setLoading(false);
@@ -104,7 +110,9 @@ const FormularioPersona = ({ tipoPuesto, persona = null, onClose, onGuardar }) =
   return (
     <div className="form">
       <div className="form-content">
-        <h2>{modoEdicion ? "MODIFICAR" : "NUEVO"} {tipoPuesto}</h2>
+        <h2>
+          {modoEdicion ? "MODIFICAR" : "NUEVO"} {tipoPuesto}
+        </h2>
         <form onSubmit={handleSubmit}>
           <label>
             DNI
