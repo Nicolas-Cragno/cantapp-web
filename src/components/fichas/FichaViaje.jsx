@@ -1,10 +1,47 @@
 import "./css/Fichas.css";
-import { formatearFecha } from "../../functions/data-functions";
-import { useState } from "react";
+import {
+  formatearFecha,
+  buscarDominioT,
+  colorSatelital,
+  colorBatman,
+  colorPromedio,
+} from "../../functions/data-functions";
+import CardInfo from "../cards/CardInfo";
+import { useState, useEffect } from "react";
 import FormularioViaje from "../forms/FormularioViaje";
 
 const FichaViaje = ({ viaje, onGuardar, onClose }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [formData, setFormData] = useState(null);
+  const [vacio, setVacio] = useState(true); // viaje con/sin furgon
+  const [dominioTractor, setDominioTractor] = useState(null);
+  //const [dominioFurgon, setDominioFurgon] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const cargarFicha = async () => {
+    setLoading(true);
+
+    try {
+      const dominioT = await buscarDominioT(viaje.tractor);
+
+      setFormData({
+        ...viaje,
+        dominioTractor: dominioT,
+        //dominioFurgon: dominioF,
+        fechaFormateada: viaje.fecha ? formatearFecha(viaje.fecha) : "-",
+      });
+
+      if (formData.furgon) setVacio(false);
+    } catch (error) {
+      console.error("Error al cargar datos del viaje: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarFicha();
+  }, [viaje]);
 
   if (!viaje) return null;
 
@@ -30,17 +67,34 @@ const FichaViaje = ({ viaje, onGuardar, onClose }) => {
             </div>
             <div className="ficha-info">
               <p>
-                <strong>Chofer: </strong> {viaje.chofer || "-"}
+                <strong>Chofer: </strong> {formData?.chofer || "-"}
               </p>
               <p>
-                <strong>Tractor: </strong> {viaje.tractor || "-"}
+                <strong>Tractor: </strong>{" "}
+                {formData?.tractor + " - " + formData?.dominioTractor || "-"}
               </p>
-              <p>
-                <strong>Satelital: </strong> {viaje.satelital || "-"}
-              </p>
-              <p>
-                <strong>Detalle: </strong> {viaje.detalle || "-"}
-              </p>
+              {!vacio ? (
+                <p>
+                  <strong>Furgon: </strong>{" "}
+                  {formData?.furgon + " - " + formData?.dominioFurgon || "-"}
+                </p>
+              ) : null}
+            </div>
+            <div className="ficha-subtitle">
+              <h6>
+                <strong>Control combustible</strong>
+              </h6>
+              <h6
+                style={{
+                  backgroundColor: colorSatelital(viaje.satelital),
+                  color: "#fff",
+                  padding: "0.2rem",
+                }}
+              >
+                {viaje.satelital || "-"}
+              </h6>
+            </div>
+            <div className="ficha-info">
               <p>
                 <strong>Litros Ticket: </strong> {viaje.litrosticket || 0}
               </p>
@@ -50,12 +104,30 @@ const FichaViaje = ({ viaje, onGuardar, onClose }) => {
               <p>
                 <strong>Kilómetros: </strong> {viaje.km || 0}
               </p>
-              <p>
-                <strong>Diferencia: </strong> {viaje.diferencia || 0}
-              </p>
-              <p>
-                <strong>Promedio: </strong> {viaje.promedio || 0}
-              </p>
+            </div>
+            <div className="ficha-card-info">
+              <div
+                className="ficha-card-info-item"
+                style={{
+                  borderColor: colorBatman(formData?.diferencia),
+                  color: colorBatman(formData?.diferencia),
+                }}
+              >
+                <span>DIFERENCIA</span>
+                <h1>{formData?.diferencia.toFixed(2)}</h1>
+                <span>LITROS</span>
+              </div>
+              <div
+                className="ficha-card-info-item"
+                style={{
+                  borderColor: colorPromedio(formData?.promedio),
+                  color: colorPromedio(formData?.promedio),
+                }}
+              >
+                <span>PROMEDIO</span>
+                <h1>{formData?.promedio.toFixed(2)}</h1>
+                <span>LTS CADA 100 KM</span>
+              </div>
             </div>
             <div className="ficha-data">
               {viaje.usuario && (

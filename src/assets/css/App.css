@@ -175,6 +175,10 @@
   margin-bottom: 2rem;
 }
 
+.txt-white{
+  color: #fff;
+}
+
 
 /* Tablets */
 @media (min-width: 768px) and (max-width: 991.9px){

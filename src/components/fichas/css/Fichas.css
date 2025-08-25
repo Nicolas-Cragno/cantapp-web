@@ -14,6 +14,31 @@
   box-sizing: border-box;
 }
 
+.ficha-subtitle{
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin-bottom: -2rem;
+  max-height: max-content;
+}
+
+.ficha-card-info {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between; 
+  align-items: center;
+  width: 100%;
+}
+
+.ficha-card-info-item {
+  flex: 1;            
+  text-align: center;      
+  padding: 0.2rem;           
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
+}
+
 .ficha-content {
   background: #fff;
   padding: 2rem;

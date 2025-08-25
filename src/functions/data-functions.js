@@ -42,6 +42,14 @@ export const buscarPersona = async (dni) => {
   return persona ? `${persona.apellido}, ${persona.nombres}` : null;
 };
 
+export const buscarDominioT = async (interno) => {
+  const tractores = await listarColeccion("tractores");
+
+  const tractor = tractores.find(t => t.interno === interno);
+
+  return tractor ? `${tractor.dominio}` : null;
+}
+
 // Dar formato de fecha DD/MM/AAAA al dato desde db
 export const formatearFecha = (fechaInput) => {
   if (!fechaInput) return "";
@@ -138,5 +146,43 @@ export const singularTipoVehiculo = (tipo) => {
       break;
   }
   return tipoSingular;
+  
+};
+
+/* colores y estilos */
+
+export const colorSatelital = (satelital) => {
+    let color;
+    switch (satelital) {
+      case "SCANIA":
+        color = "#1014c5";
+        break;
+      case "MICHELIN":
+        color = "#efb810";
+        break;
+      default:
+        color = "#000";
+        break;
+    }
+
+    return color;
+  };
+
+export const colorBatman = (nro) => {
+    if (nro >= 90) return "#cb3234";
+    if (nro >= 30) return "#efb810";
+    if (nro >= 0) return "#008f39";
+    return "#000";
+  };
+
+export const colorPromedio = (nro) => {
+  // Promedio +/- ideal 36 p/abajo
+  const minimo = 20;
+  const promedioIdeal = 36;
+  const margen = promedioIdeal + 3;
+  if (nro <= promedioIdeal && nro >= minimo) return "#008f39";
+  if (nro > promedioIdeal && nro <= margen) return "#efb810";
+  if (nro > margen) return "#cb3234";
+  return "#000";
   
 }

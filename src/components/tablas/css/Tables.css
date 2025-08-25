@@ -5,6 +5,10 @@
   gap: 1.5rem;
 }
 
+.ok-logo{
+  color: #008000;
+}
+
 .table-scroll-wrapper {
   width: 100%;
   overflow: hidden;
@@ -114,9 +118,13 @@
 
 .table-lista th,
 .table-lista td {
-  padding: 8px;
-  
-  text-align: left;
+  padding: 8px; 
+  text-align: center;
+}
+
+.txt-satelital{
+  color: #fff;
+  font-weight: bolder;
 }
 
 .table-titles{
@@ -131,7 +139,6 @@
   min-height: 50vh;     /* Altura mínima: también 50% => altura fija */
   overflow-y: auto;     /* Muestra scroll vertical si es necesario */
 }
-
 
 .table-item {
   color: #555;

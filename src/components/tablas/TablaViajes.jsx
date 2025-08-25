@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { FaCheckSquare as OkLogo } from "react-icons/fa";
+import {
+  colorSatelital,
+  colorBatman,
+  colorPromedio,
+} from "../../functions/data-functions";
 import { ImFileEmpty as EmptyLogo } from "react-icons/im";
 
 import {
@@ -19,6 +24,7 @@ const TablaViajes = () => {
   const [viajes, setViajes] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
+  const [viajeSeleccionado, setViajeSeleccionado] = useState(null);
   const title = "CONTROL COMBUSTIBLE";
 
   const cargarViajes = async (usarCache = true) => {
@@ -36,6 +42,20 @@ const TablaViajes = () => {
   useEffect(() => {
     cargarViajes();
   }, []);
+
+  const handleClickViaje = (viaje) => {
+    setViajeSeleccionado(viaje);
+  };
+
+  const cerrarModalFicha = () => {
+    setViajeSeleccionado(null);
+  };
+
+  const handleGuardar = async () => {
+    await cargarViajes(false);
+    // setModalAgregarVisible(false);
+    setViajeSeleccionado(null);
+  };
 
   return (
     <section className="table-container">
@@ -82,21 +102,39 @@ const TablaViajes = () => {
                   {viajes?.map((viaje) => (
                     <tr
                       key={viaje.id}
-                      /* onClick={() => handleClickViaje(viaje)} */
+                      onClick={() => handleClickViaje(viaje)}
                       className="table-item"
                     >
                       <td>{formatearFecha(viaje.fecha)}</td>
                       <td>{viaje.id}</td>
                       <td>{viaje.chofer || "SIN ASIGNAR"}</td>
                       <td>{viaje.tractor || "SIN ASIGNAR"}</td>
-                      <td>{viaje.satelital || "N/F"}</td>
-                      <td>{viaje.litrosticket || 0}</td>
-                      <td>{viaje.litrosreales || 0}</td>
-                      <td>{viaje.km || 0}</td>
-                      <td>{viaje.diferencia || 0}</td>
-                      <td>{viaje.promedio || 0}</td>
+                      <td
+                        className="txt-satelital"
+                        style={{
+                          backgroundColor: colorSatelital(viaje.satelital),
+                        }}
+                      >
+                        {viaje.satelital || "N/F"}
+                      </td>
+                      <td>{Number(viaje.litrosticket || 0).toFixed(2)}</td>
+                      <td>{Number(viaje.litrosreales || 0).toFixed(2)}</td>
+                      <td>{Number(viaje.km || 0).toFixed(2)}</td>
+                      <td
+                        style={{
+                          color: colorBatman(viaje.diferencia),
+                          fontWeight: "bolder",
+                        }}
+                      >
+                        {Number(viaje.diferencia || 0).toFixed(2)}
+                      </td>
+                      <td style={{ color: colorPromedio(viaje.promedio) }}>
+                        {Number(viaje.promedio || 0).toFixed(2)}
+                      </td>
                       <td>
-                        {viaje.estado === true ? <OkLogo /> : <EmptyLogo />}
+                        {viaje.estado === true ? (
+                          <OkLogo className="ok-logo" />
+                        ) : null}
                       </td>
                     </tr>
                   ))}
@@ -104,6 +142,14 @@ const TablaViajes = () => {
               </table>
             </div>
           </div>
+        )}
+
+        {viajeSeleccionado && (
+          <FichaViaje
+            viaje={viajeSeleccionado}
+            onGuardar={handleGuardar}
+            onClose={cerrarModalFicha}
+          />
         )}
 
         <div className="table-options">
