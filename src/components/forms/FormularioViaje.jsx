@@ -24,6 +24,8 @@ export default function FormularioViaje({ viaje = {}, onClose, onGuardar }) {
     detalle: viaje.detalle || "",
   });
 
+  const fechaFormateada = viaje.fecha ? formatearFecha(viaje.fecha) : "-";
+
   const [choferes, setChoferes] = useState([]);
   const [tractores, setTractores] = useState([]);
   const [satelitales, setSatelitales] = useState([]);

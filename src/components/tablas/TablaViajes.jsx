@@ -25,6 +25,7 @@ const TablaViajes = () => {
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const [viajeSeleccionado, setViajeSeleccionado] = useState(null);
+  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const title = "CONTROL COMBUSTIBLE";
 
   const cargarViajes = async (usarCache = true) => {
@@ -49,6 +50,10 @@ const TablaViajes = () => {
 
   const cerrarModalFicha = () => {
     setViajeSeleccionado(null);
+  };
+
+  const cerrarModalAgregar = () => {
+    setModalAgregarVisible(false);
   };
 
   const handleGuardar = async () => {
@@ -152,10 +157,17 @@ const TablaViajes = () => {
           />
         )}
 
+        {modalAgregarVisible && (
+          <FormularioViaje
+            onClose={cerrarModalAgregar}
+            onGuardar={handleGuardar}
+          />
+        )}
+
         <div className="table-options">
           <button
             className="table-agregar"
-            /* onClick={() => setModalAgregarVisible(true)} */
+            onClick={() => setModalAgregarVisible(true)}
           >
             + AGREGAR
           </button>
