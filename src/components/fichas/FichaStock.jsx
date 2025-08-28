@@ -25,22 +25,41 @@ const FichaStock = ({ articulo, onClose, onGuardar }) => {
             <hr />
             <div className="ficha-info">
               <p>
-                <strong>Descripcion: </strong>
+                <strong>Tipo </strong>
+                <br />
+                {articulo.tipo}
+              </p>
+              <p>
+                <strong>Descripcion </strong>
+                <br />
                 {articulo.descripcion}
               </p>
               <p>
-                <strong>Marca: </strong>
-                {articulo.marca}
+                <strong>Marca </strong>
+                <br />
+                {articulo.marca ? articulo.marca : "GENERICO"}
               </p>
-              <p>
-                <strong>Codigo: </strong>
-                {articulo.codigoProveedor}
-              </p>
+              {articulo.codigoProveedor ? (
+                <p>
+                  <strong>Proveedor</strong>
+                  <br />
+                  {articulo.proveedor}
+                </p>
+              ) : null}
+              {articulo.codigoProveedor ? (
+                <p>
+                  <strong>Codigo Proveedor</strong>
+                  <br />
+                  {articulo.codigoProveedor}
+                </p>
+              ) : null}
             </div>
             <div className="ficha-info">
               <p>
                 <strong>Disponible: </strong>
-                {articulo.cantidad} {articulo.unidad}
+                {articulo.cantidad === 0
+                  ? "SIN STOCK"
+                  : articulo.cantidad + " " + articulo.unidad}
               </p>
             </div>
             <div className="ficha-buttons">

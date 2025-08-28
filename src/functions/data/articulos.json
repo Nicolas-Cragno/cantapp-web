@@ -1,6 +1,9 @@
 {
-    "repuesto" : "RP",
-    "cubierta" : "CB",
     "accesorio" : "AC",
-    "insumo" : "IN"
+    "balancin" : "BL",
+    "buje" : "BJ",
+    "fuelle" : "FL",
+    "perno" : "PN",
+    "valvula" : "VL",
+    "vejiga" : "VJ"
 }

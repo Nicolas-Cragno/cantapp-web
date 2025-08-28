@@ -1,13 +1,13 @@
 {
-  "unidade/s": "UN",
-  "litro/s": "LT",
-  "metro/s": "MT",
-  "kilogramo/s": "KG",
-  "gramo/s": "GR",
-  "mililitro/s": "ML",
-  "centímetro/s": "CM",
-  "milímetro/s": "MM",
-  "rollo/s": "RLL",
-  "metro/s cúbico/s": "M3",
-  "tonelada/s": "TN"
+  "UNIDADES": "UN",
+  "LITROS": "LT",
+  "METROS": "MT",
+  "KILOGRAMOS": "KG",
+  "GRAMOS": "GR",
+  "METROS LINEALES": "ML",
+  "CENTIMETROS": "CM",
+  "MILIMETROS": "MM",
+  "ROLLOS": "RLL",
+  "METROS CUBICOS": "M3",
+  "TONELADAS": "TN"
 }

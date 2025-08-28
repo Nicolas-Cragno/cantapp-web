@@ -156,11 +156,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
               />
             </label>
             <div className="unidad-display">
-              <input
-                type="text"
-                value={obtenerNombreUnidad(unidad).toUpperCase()}
-                disabled
-              />
+              <input type="text" value={unidad.toUpperCase()} disabled />
               <button
                 className="plus-btn"
                 type="button"

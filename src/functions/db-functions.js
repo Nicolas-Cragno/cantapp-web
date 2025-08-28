@@ -475,7 +475,7 @@ export const buscarRepuestoPorID = async (id) => {
   }
 }
 
-export const codigoStock = async (tipo, prefijo) => {
+export const codigoStock = async (tipo, prefijo, proveedor="01") => {
   const articulos = await listarColeccion("stock", true);
 
   const articulosTipo = articulos.filter(
@@ -489,7 +489,7 @@ export const codigoStock = async (tipo, prefijo) => {
   }, 0);
 
   const nuevoNumero = maxNum + 1;
-  return `${prefijo}${String(nuevoNumero).padStart(4, "0")}`;
+  return `${prefijo}${proveedor}${String(nuevoNumero).padStart(4, "0")}`;
 };
 
 export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {

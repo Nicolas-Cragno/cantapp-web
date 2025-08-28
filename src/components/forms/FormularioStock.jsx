@@ -4,25 +4,38 @@ import Swal from "sweetalert2";
 import { agregar, modificar, codigoStock } from "../../functions/db-functions";
 import { obtenerNombreUnidad } from "../../functions/data-functions";
 import Codigos from "../../functions/data/articulos.json";
+import Proveedores from "../../functions/data/proveedores.json";
 import Medidas from "../../functions/data/unidades.json";
 
 const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
+  const [cantidad, setCantidad] = useState(0);
+  const [proveedor, setProveedor] = useState("");
+  const [codigoProveedor, setCodigoProveedor] = useState("");
+  const [descripcion, setDescripcion] = useState("");
   const [marca, setMarca] = useState("");
   const [codigo, setCodigo] = useState("");
   const [tipo, setTipo] = useState("");
-  const [unidad, setUnidad] = useState("UN");
-  const [descripcion, setDescripcion] = useState("");
+  const [unidad, setUnidad] = useState("Unidades");
   const [loading, setLoading] = useState(false);
 
   const modoEdicion = !!articulo;
 
   useEffect(() => {
     if (modoEdicion && articulo) {
-      setMarca(articulo.marca);
-      setCodigo(articulo.codigo);
-      setTipo(articulo.tipo);
-      setUnidad(obtenerNombreUnidad(articulo.unidad));
-      setDescripcion(articulo.descripcion);
+      setCodigo(articulo.id);
+      setCantidad(articulo.cantidad ? articulo.cantidad : 0);
+      setCodigoProveedor(
+        articulo.codigoProveedor ? articulo.codigoProveedor : ""
+      );
+      setDescripcion(
+        articulo.descripcion ? articulo.descripcion.toUpperCase() : ""
+      );
+      setMarca(articulo.marca ? articulo.marca.toUpperCase() : "");
+      setProveedor(
+        articulo.proveedor ? articulo.proveedor.toUpperCase() : "SIN ASIGNAR"
+      );
+      setTipo(articulo.tipo.toUpperCase());
+      setUnidad(articulo.unidad ? articulo.unidad.toUpperCase() : "UNIDADES");
     }
   }, [modoEdicion, articulo]);
 
@@ -45,12 +58,13 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
     try {
       if (modoEdicion) {
         const articuloEditado = {
-          tipo: tipo.toUpperCase(),
+          // cantidad : 0 // se le da stock en otro lado
+          codigoProveedor: codigoProveedor.toUpperCase(),
           descripcion: descripcion.toUpperCase(),
           marca: marca.toUpperCase(),
-          unidad: Medidas[unidad.toLowerCase()],
-          codigo: codigo || "",
-          // cantidad : 0 // se le da stock en otro lado
+          proveedor: proveedor.toUpperCase(),
+          tipo: tipo.toUpperCase(),
+          unidad: unidad.toUpperCase(),
         };
 
         await modificar("stock", articulo.id, articuloEditado);
@@ -58,15 +72,17 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
         if (onGuardar) onGuardar(articuloEditado);
       } else {
         const prefijo = Codigos[tipo.toLowerCase()];
+        const codProv = Proveedores[proveedor.toLowerCase()];
 
         const nuevoArticulo = {
-          tipo: tipo.toUpperCase(),
-          id: await codigoStock(tipo, prefijo),
-          descripcion: descripcion.toUpperCase(),
-          marca: marca.toUpperCase(),
-          unidad: Medidas[unidad.toLowerCase()],
-          codigo: codigo || "",
           cantidad: 0, // se le da stock en otro lado
+          codigoProveedor: codigoProveedor,
+          descripcion: descripcion.toUpperCase(), // siempre en mayusculas
+          marca: marca.toUpperCase(),
+          proveedor: proveedor.toUpperCase(),
+          tipo: tipo.toUpperCase(),
+          id: await codigoStock(tipo, prefijo, codProv),
+          unidad: Medidas[unidad.toLowerCase()],
         };
 
         const articuloAgregado = await agregar(
@@ -132,10 +148,25 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
             />
           </label>
           <label>
+            Proveedor
+            <select
+              value={proveedor}
+              onChange={(e) => setProveedor(e.target.value)}
+              disabled={loading}
+            >
+              <option value="">Seleccionar...</option>
+              {Object.entries(Proveedores).map(([nombre]) => (
+                <option key={nombre} value={nombre}>
+                  {nombre.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
             Código Proveedor
             <input
               type="text"
-              value={codigo}
+              value={codigoProveedor}
               onChange={(e) => setCodigo(e.target.value)}
               disabled={loading}
             />
