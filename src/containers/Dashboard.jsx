@@ -1,6 +1,7 @@
 import "./css/Dashboard.css";
 import CardInfo from "../components/cards/CardInfo";
 import Card from "../components/cards/Card";
+import LogoTallerF from "../assets/logos/logotallerfurgones.png";
 import LogoPorteria from "../assets/logos/logoporteria-w.png";
 import LogoSatelital from "../assets/logos/logosatelital-w.png";
 import LogoPersonal from "../assets/logos/logopersonal-w.png";
@@ -46,16 +47,11 @@ const Dashboard = () => {
       state: true,
     },
     {
-      title: "Taller Tractores",
-      route: "/taller-camiones",
+      title: "Taller Furgones",
+      route: "/taller-furgones",
       color: colors.amarillo,
-      state: false,
-    },
-    {
-      title: "Combustible",
-      route: "/control-combustible",
-      color: colors.naranja,
-      state: false,
+      img: LogoTallerF,
+      state: true,
     },
   ];
   const gestionersVehiculos = [
@@ -110,16 +106,6 @@ const Dashboard = () => {
       access: Access["/personal"].includes(rolUsuario),
     },
   ];
-  const gestionersElementos = [
-    {
-      title: "Stock",
-      route: "/stock",
-      color: colors.naranja,
-      img: LogoStock,
-      state: true,
-      access: Access["/stock"].includes(rolUsuario),
-    },
-  ];
 
   return (
     <div className="dashboard page">
@@ -130,7 +116,7 @@ const Dashboard = () => {
               <h1 className="page-subtitle">Registros por area</h1>
               <hr />
               {sections.map((s) => (
-                <div className="col-md-3" key={s.title}>
+                <div className="col-md-4" key={s.title}>
                   <CardInfo
                     title={s.title}
                     route={s.route}
@@ -148,7 +134,7 @@ const Dashboard = () => {
               <div className="row">
                 <h1 className="page-subtitle">Gestión de recursos</h1>
                 <hr />
-                <div className="col-md-4">
+                <div className="col-md-6">
                   {gestionersPersonal.map((g) => (
                     <div key={g.title}>
                       <CardInfo
@@ -163,23 +149,8 @@ const Dashboard = () => {
                     </div>
                   ))}
                 </div>
-                <div className="col-md-4">
+                <div className="col-md-6">
                   {gestionersVehiculos.map((g) => (
-                    <div key={g.title}>
-                      <CardInfo
-                        title={g.title}
-                        route={g.route}
-                        backColor={g.color}
-                        img={g.img}
-                        state={g.state}
-                        access={g.access}
-                        small={true}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className="col-md-4">
-                  {gestionersElementos.map((g) => (
                     <div key={g.title}>
                       <CardInfo
                         title={g.title}

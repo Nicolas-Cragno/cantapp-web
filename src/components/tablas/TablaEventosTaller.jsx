@@ -4,6 +4,7 @@ import {
   listarColeccion,
   buscarNombrePorDni,
 } from "../../functions/db-functions";
+import { Link } from "react-router-dom";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FichaEventoTaller from "../fichas/FichaEventoTaller";
 import FormularioEventoTaller from "../forms/FormularioEventoTaller";
@@ -12,6 +13,7 @@ import LogoDefault from "../../assets/logos/logotruck-back.png";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logofurgon-w.png";
 import LogoUtilitario from "../../assets/logos/logoutilitario-w.png";
+import LogoStock from "../../assets/logos/logostock-w.png";
 
 const TablaEventosTaller = ({
   tipo = null,
@@ -178,6 +180,10 @@ const TablaEventosTaller = ({
           />
           {title}
         </h1>
+        <Link to="/stock" className="table-linkto">
+          <img src={LogoStock} alt="" className="table-linkto-logo"></img>
+          <span className="table-linkto-txt">Ver stock</span>
+        </Link>
         <input
           type="text"
           placeholder="Buscar..."

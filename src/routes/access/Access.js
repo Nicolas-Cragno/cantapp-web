@@ -1,7 +1,6 @@
 export const Access = {
     // En desarrollo
     "/taller-tractores": ["dev"],      // taller tractores
-    "/taller-furgones": ["dev"],       // taller furgones
     "/control-combustible": ["dev"],   // trafico / combustible
     
     // Solo administradores
@@ -19,7 +18,8 @@ export const Access = {
     "/actividad": ["user", "admin","dev"],   // todos
     "/porteria": ["user", "admin","dev"],    // seguridad / porteria
     "/satelital" : ["user", "admin","dev"], // satelital
-
+    "/taller-furgones": ["user", "admin", "dev"],       // taller furgones
+    
     // Todos
     "/": ["user", "admin", "dev"],
     "/perfil": ["user", "admin", "dev"],

@@ -32,6 +32,26 @@
   font-size: 1.7rem;
 }
 
+.table-linkto{
+  background-color: #F0B13B;
+  padding: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 1rem;
+  text-decoration: none;
+}
+
+.table-linkto-logo{
+  width: 1.8rem;
+}
+
+.table-linkto-txt{
+  margin-left: .5rem;
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 500;
+}
+
 .table-options {
   display: flex;
   justify-content: flex-end;
