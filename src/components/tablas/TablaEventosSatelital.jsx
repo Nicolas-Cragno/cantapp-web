@@ -1,26 +1,20 @@
 import { useState, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import AlertButton from "../buttons/AlertButton";
+import areas from "../../functions/data/areas.json";
 import {
   listarColeccion,
   buscarNombrePorDni,
   useDetectarActualizaciones,
 } from "../../functions/db-functions";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
-import FichaEvento from "../fichas/FichaEvento";
-import FormularioEvento from "../forms/FormularioEvento";
-import LogoDefault from "../../assets/logos/logotruck-back.png";
+import FichaEvento from "../fichas/FichaEventoSatelital";
+import FormularioEvento from "../forms/FormularioEventoSatelital";
 import LogoSatelital from "../../assets/logos/logosatelital-w.png";
 import "./css/Tables.css";
 
-const TablaEventos = ({
-  tipo = null,
-  area = null,
-  subarea = null,
-  tipoPorArea = null,
-  title = "REGISTRO",
-  logo = null,
-}) => {
+const TablaEventosSatelital = () => {
+  const area = "satelital";
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
   const [filtro, setFiltro] = useState("");
@@ -30,18 +24,8 @@ const TablaEventos = ({
   const { hayActualizacion, marcarComoActualizado } =
     useDetectarActualizaciones("eventos", {
       campo: "area",
-      valor: area ? area.toUpperCase() : null,
+      valor: area ? area.toLowerCase() : null,
     });
-
-  // Evita error si 'area' es null
-  logo = logo ? logo : LogoDefault;
-
-  const subtitle =
-    tipo != null && typeof area === "string"
-      ? area.toUpperCase()
-      : typeof area === "string" && typeof subarea === "string"
-      ? area.toUpperCase() + subarea.toUpperCase()
-      : "EVENTOS";
 
   const cargarEventos = async (usarCache = true) => {
     setLoading(true);
@@ -50,13 +34,7 @@ const TablaEventos = ({
 
       const eventosFiltrados =
         area && typeof area === "string"
-          ? datos
-              .filter((e) => e.area?.toUpperCase() === area.toUpperCase())
-              .filter((e) =>
-                subarea && typeof subarea === "string"
-                  ? e.subarea?.toUpperCase() === subarea.toUpperCase()
-                  : true
-              )
+          ? datos.filter((e) => e.area?.toLowerCase() === area.toLowerCase())
           : datos;
 
       // Ordenar de más nuevo a más viejo
@@ -90,7 +68,7 @@ const TablaEventos = ({
 
   useEffect(() => {
     cargarEventos();
-  }, [tipo, area]);
+  }, [area]);
 
   const handleClickEvento = (evento) => {
     setEventoSeleccionado(evento);
@@ -120,7 +98,7 @@ const TablaEventos = ({
     const nombre = nombresPorDni[e.persona] || e.persona || "";
     const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
       e.furgon || ""
-    } ${fechaTxt} ${horaTxt}`;
+    } ${fechaTxt} ${horaTxt} ${e.usuario || ""}`;
     return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
   });
 
@@ -129,7 +107,7 @@ const TablaEventos = ({
       <div className="table-header">
         <h1 className="table-logo-box">
           <img src={LogoSatelital} alt="" className="table-logo" />
-          {title}
+          Satelital
         </h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}
         <input
@@ -150,12 +128,13 @@ const TablaEventos = ({
           <table className="table-lista">
             <thead className="table-titles">
               <tr>
+                <th>#</th>
                 <th>FECHA</th>
-                <th>SECTOR</th>
-                <th>EVENTO</th>
+                <th>TIPO</th>
                 <th>EMPLEADO</th>
                 <th>TRACTOR</th>
                 <th>FURGÓN</th>
+                <th>CARGA</th>
               </tr>
             </thead>
           </table>
@@ -168,12 +147,12 @@ const TablaEventos = ({
                     onClick={() => handleClickEvento(evento)}
                     className="table-item"
                   >
+                    <td>{evento.id}</td>
                     <td>
                       {formatearFecha(evento.fecha)} -{" "}
                       {formatearHora(evento.fecha)} HS
                     </td>
-                    <td>{evento.area}</td>
-                    <td>{evento.subtipo}</td>
+                    <td>{evento.tipo}</td>
                     <td>
                       {evento.persona
                         ? nombresPorDni[evento.persona] || evento.persona
@@ -181,6 +160,7 @@ const TablaEventos = ({
                     </td>
                     <td>{evento.tractor ? evento.tractor : ""}</td>
                     <td>{evento.furgon ? evento.furgon : ""}</td>
+                    <td>{evento.usuario ? evento.usuario : ""}</td>
                   </tr>
                 ))}
               </tbody>
@@ -192,8 +172,6 @@ const TablaEventos = ({
       {eventoSeleccionado && (
         <FichaEvento
           evento={eventoSeleccionado}
-          area={typeof area === "string" ? area.toUpperCase() : null}
-          subarea={typeof subarea === "string" ? subarea.toUpperCase() : null}
           onClose={cerrarModal}
           onGuardar={handleGuardar}
         />
@@ -203,9 +181,7 @@ const TablaEventos = ({
         <FormularioEvento
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
-          area={typeof area === "string" ? area.toUpperCase() : null}
-          subarea={typeof subarea === "string" ? subarea.toUpperCase() : null}
-          tipoPorArea={tipoPorArea}
+          area={typeof area === "string" ? area.toLowerCase() : null}
         />
       )}
 
@@ -221,4 +197,4 @@ const TablaEventos = ({
   );
 };
 
-export default TablaEventos;
+export default TablaEventosSatelital;

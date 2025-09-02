@@ -1,16 +1,10 @@
-import TablaEventos from "../../components/tablas/TablaEventos";
+import TablaEventosSatelital from "../../components/tablas/TablaEventosSatelital";
 import LogoSatelital from "../../assets/logos/logosatelital.png";
 
 const RegistroSatelital = () => {
   return (
     <div className="registro-satelital">
-      <TablaEventos
-        tipo={null}
-        area="trafico"
-        tipoPorArea="SATELITAL"
-        title="SATELITAL"
-        logo={LogoSatelital}
-      ></TablaEventos>
+      <TablaEventosSatelital></TablaEventosSatelital>
     </div>
   );
 };

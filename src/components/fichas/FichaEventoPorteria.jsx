@@ -10,9 +10,9 @@ import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 
 const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [nombre, setNombre] = useState("SIN ASIGNAR");
-  const [tractor, setTractor] = useState("SIN ASIGNAR");
-  const [furgon, setFurgon] = useState("SIN ASIGNAR");
+  const [nombre, setNombre] = useState("");
+  const [tractor, setTractor] = useState("");
+  const [furgon, setFurgon] = useState("");
 
   const fechaFormateada = formatearFecha(evento.fecha);
   const horaFormateada = formatearHora(evento.fecha);
@@ -61,7 +61,7 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
               ✕
             </button>
             <h1 className="event-subtipo">
-              {evento.subtipo ? evento.subtipo : "EVENTO"}
+              {evento.id ? evento.id : "EVENTO"}
             </h1>
             <hr />
             <div className="hora">
@@ -69,6 +69,9 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
               <spam>{horaFormateada} HS</spam>
             </div>
             <div className="ficha-info">
+              <p>
+                <strong>Tipo: </strong> {evento.tipo}
+              </p>
               <p>
                 <strong>Persona: </strong> {nombre}
               </p>

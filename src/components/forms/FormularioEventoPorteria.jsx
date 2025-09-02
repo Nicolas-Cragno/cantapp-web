@@ -1,53 +1,35 @@
 import { useState, useEffect } from "react";
 import "./css/Forms.css";
-import { agregarEvento, listarColeccion } from "../../functions/db-functions";
+import { listarColeccion } from "../../functions/db-functions";
+import { agregarEvento } from "../../functions/event-functions";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import Swal from "sweetalert2";
-import {
-  formatearFecha,
-  formatearFechaHoraInput,
-  formatearHora,
-} from "../../functions/data-functions"; // la función que formatea fecha+hora
+import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
 import tiposEventos from "../../functions/data/eventos.json";
 
-const FormularioEventoPorteria = ({
-  evento = {},
-  area = null,
-  tipoPorArea = null,
-  onClose,
-  onGuardar,
-}) => {
-  const [loading, setLoading] = useState(true);
+const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
+  const area = "porteria";
+
   const [formData, setFormData] = useState({
+    tipo: evento.tipo || "",
     fecha: formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha),
-    subtipo: evento.subtipo || "",
     persona: evento.persona ? String(evento.persona) : "",
     tractor: evento.tractor || "",
     furgon: evento.furgon || "",
     detalle: evento.detalle || "",
-    area: evento.area || area || "",
+    area: area,
     chequeos: chequeosPorteria.map(
       ({ key }) => evento?.chequeos?.[key] || false
     ),
   });
 
-  const subtiposDisponibles = (() => {
-    if (tipoPorArea && tiposEventos[tipoPorArea]) {
-      return tiposEventos[tipoPorArea].map((subtipo) => ({
-        area: tipoPorArea,
-        subtipo,
-      }));
-    } else if (formData.area && tiposEventos[formData.area]) {
-      return tiposEventos[formData.area].map((subtipo) => ({
-        area: formData.area,
-        subtipo,
-      }));
-    } else {
-      return [{ area: "GENERAL", subtipo: "OTRO" }];
-    }
-  })();
+  const subtiposDisponibles = area
+    ? tiposEventos[area.toUpperCase()] || []
+    : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
+        subtipos.map((sub) => ({ nArea, subtipo: sub }))
+      );
+
   const [personas, setPersonas] = useState([]);
-  const [sectores, setSectores] = useState([]);
   const [tractores, setTractores] = useState([]);
   const [furgones, setFurgones] = useState([]);
 
@@ -59,12 +41,11 @@ const FormularioEventoPorteria = ({
 
       setFormData({
         fecha: fechaEvento,
-        subtipo: evento.subtipo || "",
+        tipo: evento.tipo || "",
         persona: evento.persona ? String(evento.persona) : "",
         tractor: evento.tractor || "",
         furgon: evento.furgon || "",
         detalle: evento.detalle || "",
-        area: evento.area || area || "",
         chequeos: chequeosPorteria.map(({ key }) => {
           const valor = evento?.chequeos?.[key];
           return typeof valor === "boolean" ? valor : false;
@@ -76,15 +57,6 @@ const FormularioEventoPorteria = ({
           setPersonas(data);
         } catch (error) {
           console.error("Error cargando personas:", error);
-        }
-      };
-
-      const cargarSectores = async () => {
-        try {
-          const data = await listarColeccion("sectores");
-          setSectores(data);
-        } catch (error) {
-          console.error("Error cargando sectores:", error);
         }
       };
 
@@ -107,7 +79,6 @@ const FormularioEventoPorteria = ({
       };
 
       cargarPersonas();
-      cargarSectores();
       cargarTractores();
       cargarFurgones();
     };
@@ -127,20 +98,16 @@ const FormularioEventoPorteria = ({
       let fechaParaGuardar;
 
       if (evento.id) {
-        // evento.fecha es un Timestamp de Firebase
         if (evento.fecha.toDate) {
-          fechaParaGuardar = evento.fecha.toDate(); // ✅ convierte a Date
+          fechaParaGuardar = evento.fecha.toDate();
         } else {
-          fechaParaGuardar = new Date(evento.fecha); // por si ya era Date
+          fechaParaGuardar = new Date(evento.fecha);
         }
       } else {
-        fechaParaGuardar = new Date(); // fecha nueva
+        fechaParaGuardar = new Date();
       }
-      const usuarioParaGuardar = localStorage.usuario
-        ? JSON.parse(localStorage.usuario)
-        : null;
 
-      if (isNaN(new Date(fechaParaGuardar).getTime())) {
+      if (isNaN(fechaParaGuardar.getTime())) {
         throw new Error("La fecha es inválida");
       }
 
@@ -155,21 +122,19 @@ const FormularioEventoPorteria = ({
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
+        tipo: formData.tipo ? formData.tipo : null,
         persona: formData.persona ? Number(formData.persona) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
-        area: formData.area ? formData.area : null,
+        area: area,
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
-        usuario: usuarioParaGuardar
-          ? `${usuarioParaGuardar.apellido} ${usuarioParaGuardar.nombres}`
-          : "Desconocido",
         chequeos: chequeosObjeto,
       };
 
       if (evento.id) {
-        await agregarEvento(datosAGuardar, evento.id);
+        await agregarEvento(datosAGuardar, area);
       } else {
-        await agregarEvento(datosAGuardar);
+        await agregarEvento(datosAGuardar, area);
       }
 
       if (onGuardar) onGuardar();
@@ -195,23 +160,19 @@ const FormularioEventoPorteria = ({
     <div className="form">
       <div className="form-content">
         <div className="form-header">
-          <h2>
-            {evento.id
-              ? "Editar " + evento.subtipo.toLowerCase()
-              : "Nuevo Evento"}
-          </h2>
+          <h2>{evento.id ? evento.id : "Nuevo Evento"}</h2>
           <p>* campo obligatorio</p>
         </div>
         <form onSubmit={handleSubmit}>
           <label>
             Tipo *
             <select
-              name="subtipo"
-              value={formData.subtipo}
+              name="tipo"
+              value={formData.tipo}
               onChange={handleChange}
               required
             >
-              <option value="">Seleccione subtipo</option>
+              <option value=""></option>
               {typeof subtiposDisponibles[0] === "string"
                 ? subtiposDisponibles.map((sub, i) => (
                     <option key={i} value={sub}>
@@ -219,8 +180,8 @@ const FormularioEventoPorteria = ({
                     </option>
                   ))
                 : subtiposDisponibles.map((item, i) => (
-                    <option key={i} value={item.subtipo}>
-                      {item.subtipo}
+                    <option key={i} value={item.tipo}>
+                      {item.tipo}
                     </option>
                   ))}
             </select>

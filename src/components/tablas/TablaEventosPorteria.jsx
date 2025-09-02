@@ -13,17 +13,10 @@ import FichaLlavePorteria from "../fichas/FichaLlavePorteria";
 import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
 import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
 import "./css/Tables.css";
-import LogoDefault from "../../assets/logos/logotruck-back.png";
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 
-const TablaEventosPorteria = ({
-  tipo = null,
-  area = null,
-  subarea = null,
-  tipoPorArea = null,
-  logo = null,
-  title = "REGISTRO",
-}) => {
+const TablaEventosPorteria = () => {
+  const area = "porteria";
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
   const [filtro, setFiltro] = useState("");
@@ -37,15 +30,6 @@ const TablaEventosPorteria = ({
       valor: area ? area.toUpperCase() : null,
     });
 
-  // Evita error si 'area' es null
-  logo = logo ? logo : LogoDefault;
-  const subtitle =
-    tipo != null && typeof area === "string"
-      ? area.toUpperCase()
-      : typeof area === "string" && typeof subarea === "string"
-      ? area.toUpperCase() + subarea.toUpperCase()
-      : "EVENTOS";
-
   const cargarEventos = async (usarCache = true) => {
     setLoading(true);
     try {
@@ -53,13 +37,7 @@ const TablaEventosPorteria = ({
 
       const eventosFiltrados =
         area && typeof area === "string"
-          ? datos
-              .filter((e) => e.area?.toUpperCase() === area.toUpperCase())
-              .filter((e) =>
-                subarea && typeof subarea === "string"
-                  ? e.subarea?.toUpperCase() === subarea.toUpperCase()
-                  : true
-              )
+          ? datos.filter((e) => e.area?.toUpperCase() === area.toUpperCase())
           : datos;
 
       // Ordenar de más nuevo a más viejo
@@ -93,7 +71,7 @@ const TablaEventosPorteria = ({
 
   useEffect(() => {
     cargarEventos();
-  }, [tipo, area]);
+  }, [area]);
 
   const actualizarDatos = async () => {
     await cargarEventos(false);
@@ -135,7 +113,7 @@ const TablaEventosPorteria = ({
       <div className="table-header">
         <h1 className="table-logo-box">
           <img src={LogoPorteria} alt="" className="table-logo" />
-          {title}
+          Porteria
         </h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}
         <input
@@ -156,12 +134,13 @@ const TablaEventosPorteria = ({
           <table className="table-lista">
             <thead className="table-titles">
               <tr>
+                <th>#</th>
                 <th>FECHA</th>
-                <th>SECTOR</th>
-                <th>EVENTO</th>
+                <th>TIPO</th>
                 <th>EMPLEADO</th>
                 <th>TRACTOR</th>
                 <th>FURGÓN</th>
+                <th>CARGA</th>
               </tr>
             </thead>
           </table>
@@ -174,12 +153,12 @@ const TablaEventosPorteria = ({
                     onClick={() => handleClickEvento(evento)}
                     className="table-item"
                   >
+                    <td>{evento.id}</td>
                     <td>
                       {formatearFecha(evento.fecha)} -{" "}
                       {formatearHora(evento.fecha)} HS
                     </td>
-                    <td>{evento.area}</td>
-                    <td>{evento.subtipo}</td>
+                    <td>{evento.tipo}</td>
                     <td>
                       {evento.persona
                         ? nombresPorDni[evento.persona] || evento.persona
@@ -187,6 +166,7 @@ const TablaEventosPorteria = ({
                     </td>
                     <td>{evento.tractor ? evento.tractor : ""}</td>
                     <td>{evento.furgon ? evento.furgon : ""}</td>
+                    <td>{evento.usuario ? evento.usuario : ""} </td>
                   </tr>
                 ))}
               </tbody>
@@ -215,8 +195,6 @@ const TablaEventosPorteria = ({
         <FormularioEventoPorteria
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
-          area={typeof area === "string" ? area.toUpperCase() : ""}
-          tipoPorArea={tipoPorArea}
         />
       )}
 
@@ -224,7 +202,6 @@ const TablaEventosPorteria = ({
         <FormularioLlavePorteria
           onClose={cerrarModalKey}
           onGuardar={handleGuardar}
-          area={typeof area === "string" ? area.toUpperCase() : ""}
         />
       )}
 

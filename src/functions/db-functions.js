@@ -171,6 +171,7 @@ export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
 };
 
 export const agregarEvento = async (nuevoEvento, idPersonalizado = null) => {
+  /* Lo maneja ahora event.functions.js
   try {
     let docRef;
 
@@ -202,6 +203,7 @@ export const agregarEvento = async (nuevoEvento, idPersonalizado = null) => {
     console.error("Error al agregar o modificar evento:", error);
     throw error;
   }
+  */
 };
 
 export async function agregarEventoTaller(evento, articulos, idEvento = null) {

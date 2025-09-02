@@ -1,7 +1,7 @@
 {
-    "PORTERIA": ["ENTRADA", "SALIDA"],
-    "TALLER": ["SERVICE", "CAMBIO", "REPARACION", "REVISION"],
-    "TRAFICO": ["CHOQUE", "VUELCO", "CAMBIO", "ENGANCHE", "DESENGANCHE"],
-    "ADMINISTRACION": ["ALTA", "BAJA", "SANCION", "APERCIBIMIENTO"],
-    "OTRO" : ["OTRO"]
+    "SATELITAL": ["Corte", "Alarma", "Accidente", "Robo", "Otro"],
+    "PORTERIA": ["Entrada", "Salida", "Otro"],
+    "TALLERFURGONES": ["Reparación", "Cambio", "Revisión", "Otro"],
+    "TALLERTRACTORES" : ["Reparación", "Cambio", "Revisión", "Service", "Otro"],
+    "ADMINISTRACION": ["Alta", "Baja", "Sanción", "Apercibimiento", "Otro"]
 }

@@ -1,24 +1,17 @@
 import "./css/Fichas.css";
 import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import { useEffect, useState } from "react";
-import FormularioEvento from "../forms/FormularioEvento";
+import FormularioEvento from "../forms/FormularioEventoSatelital";
 import {
   buscarNombrePorDni,
   listarColeccion,
 } from "../../functions/db-functions";
 
-const FichaEvento = ({
-  evento,
-  area = null,
-  subarea = null,
-  onClose,
-  onGuardar,
-}) => {
+const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [nombre, setNombre] = useState("SIN ASIGNAR");
   const [tractor, setTractor] = useState("SIN ASIGNAR");
   const [furgon, setFurgon] = useState("SIN ASIGNAR");
-
   const fechaFormateada = formatearFecha(evento.fecha);
   const horaFormateada = formatearHora(evento.fecha);
 
@@ -66,7 +59,7 @@ const FichaEvento = ({
               ✕
             </button>
             <h1 className="event-subtipo">
-              {evento.subtipo ? evento.subtipo : "EVENTO"}
+              {evento.id ? evento.id : "EVENTO"}
             </h1>
             <hr />
             <div className="hora">
@@ -74,6 +67,9 @@ const FichaEvento = ({
               <spam>{horaFormateada} HS</spam>
             </div>
             <div className="ficha-info">
+              <p>
+                <strong>Tipo: </strong> {evento.tipo}
+              </p>
               <p>
                 <strong>Persona: </strong> {nombre}
               </p>
@@ -106,8 +102,6 @@ const FichaEvento = ({
       ) : (
         <FormularioEvento
           evento={evento}
-          area={area}
-          subarea={subarea}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}
         />
@@ -116,4 +110,4 @@ const FichaEvento = ({
   );
 };
 
-export default FichaEvento;
+export default FichaEventoSatelital;
