@@ -91,7 +91,7 @@ const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
 
       const datosAGuardar = {
         ...formData,
-        fecha: fechaParaGuardar,
+        fecha: evento.id ? evento.fecha : fechaParaGuardar,
         persona: formData.persona ? Number(formData.persona) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
@@ -99,11 +99,7 @@ const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
         detalle: formData.detalle ? formData.detalle : null,
       };
 
-      if (evento.id) {
-        await agregarEvento(datosAGuardar, area);
-      } else {
-        await agregarEvento(datosAGuardar, area);
-      }
+      await agregarEvento(datosAGuardar, area, evento.id);
 
       if (onGuardar) onGuardar();
       Swal.fire({

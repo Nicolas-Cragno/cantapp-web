@@ -95,15 +95,18 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
     e.preventDefault();
 
     try {
+      // Construir la fecha a partir de los campos de formulario
       let fechaParaGuardar;
-
-      if (evento.id) {
-        if (evento.fecha.toDate) {
-          fechaParaGuardar = evento.fecha.toDate();
-        } else {
-          fechaParaGuardar = new Date(evento.fecha);
-        }
+      if (formData.fecha && formData.hora) {
+        // Crear un string ISO "YYYY-MM-DDTHH:MM" y convertir a Date
+        fechaParaGuardar = new Date(`${formData.fecha}T${formData.hora}`);
+      } else if (evento.fecha) {
+        // Si no hay datos nuevos, usar la fecha del evento existente
+        fechaParaGuardar = evento.fecha.toDate
+          ? evento.fecha.toDate()
+          : new Date(evento.fecha);
       } else {
+        // Si es nuevo evento y no hay fecha/hora, usar la actual
         fechaParaGuardar = new Date();
       }
 
@@ -122,7 +125,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
-        tipo: formData.tipo ? formData.tipo : null,
+        tipo: formData.tipo || null,
         persona: formData.persona ? Number(formData.persona) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
@@ -131,11 +134,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         chequeos: chequeosObjeto,
       };
 
-      if (evento.id) {
-        await agregarEvento(datosAGuardar, area);
-      } else {
-        await agregarEvento(datosAGuardar, area);
-      }
+      await agregarEvento(datosAGuardar, area, evento.id);
 
       if (onGuardar) onGuardar();
       Swal.fire({
@@ -156,6 +155,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
       console.error("Error al guardar evento:", error);
     }
   };
+
   return (
     <div className="form">
       <div className="form-content">
