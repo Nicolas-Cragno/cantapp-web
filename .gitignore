@@ -23,4 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # Firebase
+src/firebase
 src/firebase/clave-firebase.json

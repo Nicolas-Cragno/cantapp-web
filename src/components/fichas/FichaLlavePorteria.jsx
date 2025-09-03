@@ -55,7 +55,9 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
             <button className="ficha-close" onClick={onClose}>
               ✕
             </button>
-            <h1 className="event-subtipo">Registro de llaves</h1>
+            <h1 className="event-subtipo">
+              {evento.id ? evento.id : "REGISTRO DE LLAVES"}
+            </h1>
             <hr />
             <div className="hora">
               <spam>{fechaFormateada}</spam>

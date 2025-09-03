@@ -1,7 +1,8 @@
 {
-    "SATELITAL": ["Corte", "Alarma", "Accidente", "Robo", "Otro"],
-    "PORTERIA": ["Entrada", "Salida", "Otro"],
-    "TALLERFURGONES": ["Reparación", "Cambio", "Revisión", "Otro"],
-    "TALLERTRACTORES" : ["Reparación", "Cambio", "Revisión", "Service", "Otro"],
-    "ADMINISTRACION": ["Alta", "Baja", "Sanción", "Apercibimiento", "Otro"]
+    "SATELITAL": ["CORTE", "ALARMA", "ACCIDENTE", "ROBO", "OTRO"],
+    "PORTERIA": ["ENTRADA", "SALIDA", "OTRO"],
+    "LLAVEPORTERIA" : ["DEJA", "RETIRA"],
+    "TALLERFURGONES": ["REPARACIÓN", "CAMBIO", "REVISIÓN", "OTRO"],
+    "TALLERTRACTORES" : ["REPARACIÓN", "CAMBIO", "REVISIÓN", "SERVICE", "OTRO"],
+    "ADMINISTRACION": ["ALTA", "BAJA", "SANCIÓN", "APERCIBIMIENTO", "OTRO"]
 }

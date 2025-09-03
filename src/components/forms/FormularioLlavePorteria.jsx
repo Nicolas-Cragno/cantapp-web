@@ -1,20 +1,28 @@
 import { useState, useEffect } from "react";
 import "./css/Forms.css";
-import { agregarEvento, listarColeccion } from "../../functions/db-functions";
+import { listarColeccion } from "../../functions/db-functions";
+import { agregarEvento } from "../../functions/event-functions";
 import Swal from "sweetalert2";
 import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
 import tiposEventos from "../../functions/data/eventos.json";
 
 const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
+  const area = "porteria";
+  const subarea = "llaveporteria"; // para listar tipos de eventos únicament
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    fecha: formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha),
-    subtipo: evento.subtipo || "",
+    tipo: evento.tipo || "",
     persona: evento.persona ? String(evento.persona) : "",
     operador: evento.operador ? String(evento.operador) : "",
     tractor: evento.tractor || "",
     detalle: evento.detalle || "",
   });
+
+  const subtiposDisponibles = subarea
+    ? tiposEventos[subarea.toUpperCase()] || []
+    : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
+        subtipos.map((sub) => ({ nArea, subtipo: sub }))
+      );
 
   const [personas, setPersonas] = useState([]);
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
@@ -28,8 +36,9 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
 
       setFormData({
         fecha: fechaEvento,
-        subtipo: evento.subtipo || "",
+        tipo: evento.tipo || "",
         persona: evento.persona ? String(evento.persona) : "",
+        operador: evento.operador ? String(evento.operador) : "",
         tractor: evento.tractor || "",
         detalle: evento.detalle || "",
       });
@@ -87,42 +96,26 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
 
     try {
       let fechaParaGuardar;
-
-      if (evento.id) {
-        if (evento.fecha.toDate) {
-          fechaParaGuardar = evento.fecha.toDate();
-        } else {
-          fechaParaGuardar = new Date(evento.fecha);
-        }
+      if (evento?.id && evento.fecha) {
+        fechaParaGuardar = evento.fecha.toDate
+          ? evento.fecha.toDate()
+          : new Date(evento.fecha);
       } else {
         fechaParaGuardar = new Date();
-      }
-      const usuarioParaGuardar = localStorage.usuario
-        ? JSON.parse(localStorage.usuario)
-        : null;
-
-      if (isNaN(new Date(fechaParaGuardar).getTime())) {
-        throw new Error("La fecha es inválida");
       }
 
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
+        tipo: formData.tipo ? formData.tipo.toUpperCase() : null,
         persona: formData.persona ? Number(formData.persona) : null,
         operador: formData.operador ? Number(formData.operador) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
-        area: formData.area ? formData.area : "PORTERIA",
+        area: formData.area ? formData.area : area,
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
-        usuario: usuarioParaGuardar
-          ? `${usuarioParaGuardar.apellido} ${usuarioParaGuardar.nombres}`
-          : "Desconocido",
       };
 
-      if (evento.id) {
-        await agregarEvento(datosAGuardar, evento.id);
-      } else {
-        await agregarEvento(datosAGuardar);
-      }
+      await agregarEvento(datosAGuardar, area, evento.id);
 
       if (onGuardar) onGuardar();
       Swal.fire({
@@ -147,30 +140,36 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <div className="form-header">
-          <h2>Registro de llaves</h2>
+          <h2>{evento.id ? evento.id : "REGISTRO DE LLAVES"}</h2>
           <p>* campo obligatorio</p>
+          <hr />
         </div>
         <form onSubmit={handleSubmit}>
           <label>
             Tipo *
             <select
-              name="subtipo"
-              value={formData.subtipo}
+              name="tipo"
+              value={formData.tipo}
               onChange={handleChange}
               required
             >
-              <option key="" value=""></option>
-              <option key="1" value="LLAVE-DEJA">
-                DEJA
-              </option>
-              <option key="2" value="LLAVE-RETIRA">
-                RETIRA
-              </option>
+              <option value=""></option>
+              {typeof subtiposDisponibles[0] === "string"
+                ? subtiposDisponibles.map((sub, i) => (
+                    <option key={i} value={sub}>
+                      {sub}
+                    </option>
+                  ))
+                : subtiposDisponibles.map((item, i) => (
+                    <option key={i} value={item.tipo}>
+                      {item.tipo}
+                    </option>
+                  ))}
             </select>
           </label>
 
           <label>
-            Chofer
+            Chofer *
             <select
               name="persona"
               value={formData.persona}
@@ -187,9 +186,9 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Operador
+            Operador *
             <select
-              name="persona"
+              name="operador"
               value={formData.operador}
               onChange={handleChange}
               required
@@ -204,7 +203,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Tractor
+            Tractor *
             <select
               type="number"
               name="tractor"

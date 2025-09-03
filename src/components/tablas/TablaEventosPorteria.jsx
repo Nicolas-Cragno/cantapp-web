@@ -176,8 +176,8 @@ const TablaEventosPorteria = () => {
       )}
 
       {eventoSeleccionado &&
-        (eventoSeleccionado.subtipo === "LLAVE-RETIRA" ||
-        eventoSeleccionado.subtipo === "LLAVE-DEJA" ? (
+        (eventoSeleccionado.tipo === "RETIRA" ||
+        eventoSeleccionado.tipo === "DEJA" ? (
           <FichaLlavePorteria
             evento={eventoSeleccionado}
             onClose={cerrarModal}

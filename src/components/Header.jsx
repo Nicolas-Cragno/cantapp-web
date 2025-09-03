@@ -20,15 +20,22 @@ const Header = () => {
 
     const obtenerNombre = async () => {
       if (user) {
+        let datos = null;
         const usuarioGuardado = localStorage.getItem("usuario");
+
         if (usuarioGuardado) {
-          const datos = JSON.parse(usuarioGuardado);
-          setUserName(datos.nombres);
-          setUsuario(datos);
+          datos = JSON.parse(usuarioGuardado);
         } else {
           const nombre = await buscarNombreUsuario(user.uid);
-          setUserName(nombre || user.email);
+          datos = {
+            uid: user.uid,
+            nombres: nombre || user.email,
+            dni: user.dni || null,
+          };
         }
+
+        setUserName(datos.nombres);
+        setUsuario(datos);
       } else {
         setUserName("Invitado");
       }
@@ -69,7 +76,7 @@ const Header = () => {
           {menuAbierto && (
             <div className="user-dropdown">
               <button onClick={handleLogout}>Cerrar sesión</button>
-              <button onClick={handlePerfil}>Perfil</button>
+              {/* <button onClick={handlePerfil}>Perfil</button> */}
             </div>
           )}
         </div>

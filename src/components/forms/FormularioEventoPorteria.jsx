@@ -12,7 +12,6 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
 
   const [formData, setFormData] = useState({
     tipo: evento.tipo || "",
-    fecha: formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha),
     persona: evento.persona ? String(evento.persona) : "",
     tractor: evento.tractor || "",
     furgon: evento.furgon || "",
@@ -35,12 +34,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
 
   useEffect(() => {
     const cargarDatos = async () => {
-      const fechaEvento = evento.fecha
-        ? formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha)
-        : formatearFecha(new Date()) + " " + formatearHora(new Date());
-
       setFormData({
-        fecha: fechaEvento,
         tipo: evento.tipo || "",
         persona: evento.persona ? String(evento.persona) : "",
         tractor: evento.tractor || "",
@@ -95,24 +89,20 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
     e.preventDefault();
 
     try {
-      // Construir la fecha a partir de los campos de formulario
       let fechaParaGuardar;
-      if (formData.fecha && formData.hora) {
-        // Crear un string ISO "YYYY-MM-DDTHH:MM" y convertir a Date
-        fechaParaGuardar = new Date(`${formData.fecha}T${formData.hora}`);
-      } else if (evento.fecha) {
-        // Si no hay datos nuevos, usar la fecha del evento existente
+      if (evento?.id && evento.fecha) {
         fechaParaGuardar = evento.fecha.toDate
           ? evento.fecha.toDate()
           : new Date(evento.fecha);
       } else {
-        // Si es nuevo evento y no hay fecha/hora, usar la actual
         fechaParaGuardar = new Date();
       }
 
+      /*
       if (isNaN(fechaParaGuardar.getTime())) {
         throw new Error("La fecha es inválida");
       }
+     */
 
       const chequeosObjeto = chequeosPorteria.reduce(
         (checkList, item, index) => {
@@ -162,6 +152,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         <div className="form-header">
           <h2>{evento.id ? evento.id : "Nuevo Evento"}</h2>
           <p>* campo obligatorio</p>
+          <hr />
         </div>
         <form onSubmit={handleSubmit}>
           <label>
