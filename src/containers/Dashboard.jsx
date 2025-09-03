@@ -1,19 +1,18 @@
 import "./css/Dashboard.css";
 import CardInfo from "../components/cards/CardInfo";
-import Card from "../components/cards/Card";
-import LogoTallerF from "../assets/logos/logotallerfurgones.png";
+import Clock from "../components/Clock";
 import LogoPorteria from "../assets/logos/logoporteria-w.png";
 import LogoSatelital from "../assets/logos/logosatelital-w.png";
 import LogoPersonal from "../assets/logos/logopersonal-w.png";
 import LogoTractor from "../assets/logos/logotractor-w.png";
 import LogoFurgon from "../assets/logos/logofurgon-w.png";
 import LogoUtilitario from "../assets/logos/logoutilitario-w.png";
-import LogoStock from "../assets/logos/logostock-w.png";
 import { Access } from "../routes/access/Access";
 
 const Dashboard = () => {
   let rolUsuario = null;
   let gestionersView = false;
+  const catalogView = false; // para ver las cards de inicio o dejar el fondo vacio
   const usuario = JSON.parse(localStorage.getItem("usuario"));
   try {
     rolUsuario = usuario?.rol || null;
@@ -44,13 +43,6 @@ const Dashboard = () => {
       route: "/porteria",
       color: colors.rojo,
       img: LogoPorteria,
-      state: true,
-    },
-    {
-      title: "Taller Furgones",
-      route: "/taller-furgones",
-      color: colors.amarillo,
-      img: LogoTallerF,
       state: true,
     },
   ];
@@ -110,64 +102,68 @@ const Dashboard = () => {
   return (
     <div className="dashboard page">
       <div className="container">
-        <div className="row">
-          <div className="col-xs-12 dashboard-box">
-            <div className="row">
-              <h1 className="page-subtitle">Registros por area</h1>
-              <hr />
-              {sections.map((s) => (
-                <div className="col-md-4" key={s.title}>
-                  <CardInfo
-                    title={s.title}
-                    route={s.route}
-                    backColor={s.color}
-                    img={s.img}
-                    state={s.state}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="col"></div>
-          {gestionersView ? (
+        {catalogView ? (
+          <div className="row">
             <div className="col-xs-12 dashboard-box">
               <div className="row">
-                <h1 className="page-subtitle">Gestión de recursos</h1>
+                <h1 className="page-subtitle">Registros por area</h1>
                 <hr />
-                <div className="col-md-6">
-                  {gestionersPersonal.map((g) => (
-                    <div key={g.title}>
-                      <CardInfo
-                        title={g.title}
-                        route={g.route}
-                        backColor={g.color}
-                        img={g.img}
-                        state={g.state}
-                        access={g.access}
-                        small={true}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className="col-md-6">
-                  {gestionersVehiculos.map((g) => (
-                    <div key={g.title}>
-                      <CardInfo
-                        title={g.title}
-                        route={g.route}
-                        backColor={g.color}
-                        img={g.img}
-                        state={g.state}
-                        access={g.access}
-                        small={true}
-                      />
-                    </div>
-                  ))}
-                </div>
+                {sections.map((s) => (
+                  <div className="col-md-4" key={s.title}>
+                    <CardInfo
+                      title={s.title}
+                      route={s.route}
+                      backColor={s.color}
+                      img={s.img}
+                      state={s.state}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
-          ) : null}
-        </div>
+            <div className="col"></div>
+            {gestionersView ? (
+              <div className="col-xs-12 dashboard-box">
+                <div className="row">
+                  <h1 className="page-subtitle">Gestión de recursos</h1>
+                  <hr />
+                  <div className="col-md-6">
+                    {gestionersPersonal.map((g) => (
+                      <div key={g.title}>
+                        <CardInfo
+                          title={g.title}
+                          route={g.route}
+                          backColor={g.color}
+                          img={g.img}
+                          state={g.state}
+                          access={g.access}
+                          small={true}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="col-md-6">
+                    {gestionersVehiculos.map((g) => (
+                      <div key={g.title}>
+                        <CardInfo
+                          title={g.title}
+                          route={g.route}
+                          backColor={g.color}
+                          img={g.img}
+                          state={g.state}
+                          access={g.access}
+                          small={true}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <Clock />
+        )}
       </div>
     </div>
   );

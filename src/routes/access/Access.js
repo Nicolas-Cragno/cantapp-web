@@ -1,9 +1,12 @@
 export const Access = {
-    // En desarrollo
+    // En desarrollo ["dev"]
     "/taller-tractores": ["dev"],      // taller tractores
     "/control-combustible": ["dev"],   // trafico / combustible
+    "/actividad": ["dev"],   // todos
+    "/taller-furgones": ["dev"],       // taller furgones
     
-    // Solo administradores
+    
+    // Solo administradores ["admin", "dev"]
     "/personal": ["admin","dev"],
     "/mecanicos": ["admin","dev"],
     "/choferes-larga": ["admin","dev"],
@@ -13,12 +16,10 @@ export const Access = {
     "/furgones": ["admin","dev"],
     "/utilitarios": ["admin","dev"],
     "/stock": ["admin","dev"],                 // talleres
-
-    // Usuarios / administradores
-    "/actividad": ["user", "admin","dev"],   // todos
+    
+    // Usuarios / administradores ["user", "admin","dev"]
     "/porteria": ["user", "admin","dev"],    // seguridad / porteria
     "/satelital" : ["user", "admin","dev"], // satelital
-    "/taller-furgones": ["user", "admin", "dev"],       // taller furgones
     
     // Todos
     "/": ["user", "admin", "dev"],

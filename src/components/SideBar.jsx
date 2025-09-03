@@ -88,7 +88,7 @@ const SideBar = () => {
       to: "/taller-furgones",
       icon: <GiAutoRepair className="nav-icon" />,
       label: "Furgones",
-      roles: ["dev", "admin", "user"],
+      roles: ["dev"],
     },
     {
       to: "/control-combustible",
