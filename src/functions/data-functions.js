@@ -1,4 +1,5 @@
 import empresas from "./data/empresas.json";
+import proveedores from "./data/proveedores.json";
 import unidades from "./data/unidades.json";
 import { listarColeccion } from "./db-functions";
 
@@ -7,6 +8,11 @@ import { listarColeccion } from "./db-functions";
 export function nombreEmpresa(cuit) {
     if (cuit === null || cuit === undefined) return "SIN ASIGNAR";
     return empresas[String(cuit)] || "SIN ASIGNAR";
+}
+
+export function nombreProveedor(cuit){
+    if (cuit === null || cuit === undefined) return "SIN ASIGNAR";
+    return proveedores[String(cuit) || "SIN ASIGNAR"];
 }
 
 // Cuit de empresas

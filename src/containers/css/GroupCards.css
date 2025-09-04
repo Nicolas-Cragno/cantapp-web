@@ -1,0 +1,68 @@
+.group-card {
+  background: rgba(31, 41, 55, 0.7); /* gris oscuro al 50% de opacidad */
+  border-style: solid;
+  border-width: 0.1rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+.group-card:hover{
+  opacity: 1;
+}
+
+
+.group-card .row {
+  flex-wrap: nowrap; 
+}
+
+.group-card .gtitle {
+  writing-mode: vertical-rl;   
+  transform: rotate(180deg);  
+  text-align: center;
+  font-weight: 600;
+  background: #f3f4f6;  
+  
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    width: 3rem;
+  padding: 0.5rem;
+}
+
+.group-card .gtitle h1{
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.group-card .gcard {
+  display: flex;
+  flex-direction: row; 
+  flex-wrap: nowrap;   
+  gap: 1.5rem;      
+  overflow-x: auto;         
+  padding-left: 2.5rem;   
+  padding-right: 2.5rem;   
+  scrollbar-width: thin;       
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+.group-card .gcard > * {
+  flex: 0 0 auto;
+  width: 220px;
+  box-sizing: border-box;
+}
+
+.group-card .spinner {
+  animation: spin 1s linear infinite;
+  font-size: 1.2rem;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

@@ -1,11 +1,10 @@
-/*
 .section-container {
   padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
+  
   gap: 2rem;
+  width: 100%;
 }
-*/
+
 
 .section-title {
   font-size: 2rem;
@@ -15,10 +14,13 @@
 }
 
 .section-cards {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 1.5rem;
+width: 100%;
 }
+
 
 
 @media (min-width: 640px) {

@@ -1,4 +1,4 @@
-import "./css/Sections.css";
+import "./css/GroupCards.css";
 import Card from "../components/cards/Card";
 import { useEffect, useState } from "react";
 import { listarColeccion } from "../functions/db-functions";
@@ -41,25 +41,37 @@ const Flota = () => {
   }, []);
 
   return (
-    <>
-      <Card
-        title="Tractores"
-        value={loading ? <FaSpinner className="spinner" /> : `${cantTractores}`}
-        route="/tractores"
-      />
-      <Card
-        title="Furgones"
-        value={loading ? <FaSpinner className="spinner" /> : `${cantFurgones}`}
-        route="/furgones"
-      />
-      <Card
-        title="Utilitarios"
-        value={
-          loading ? <FaSpinner className="spinner" /> : `${cantUtilitarios}`
-        }
-        route="/utilitarios"
-      />
-    </>
+    <div className="container group-card">
+      <div className="row">
+        <div className="col-md-2 gtitle">
+          <h1>FLOTA</h1>
+        </div>
+        <div className="col-auto gcard">
+          <Card
+            title="Tractores"
+            value={
+              loading ? <FaSpinner className="spinner" /> : `${cantTractores}`
+            }
+            route="/tractores"
+          />
+
+          <Card
+            title="Furgones"
+            value={
+              loading ? <FaSpinner className="spinner" /> : `${cantFurgones}`
+            }
+            route="/furgones"
+          />
+          <Card
+            title="Utilitarios"
+            value={
+              loading ? <FaSpinner className="spinner" /> : `${cantUtilitarios}`
+            }
+            route="/utilitarios"
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

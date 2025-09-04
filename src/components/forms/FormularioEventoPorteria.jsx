@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Select from "react-select";
 import "./css/Forms.css";
 import { listarColeccion } from "../../functions/db-functions";
 import { agregarEvento } from "../../functions/event-functions";
@@ -157,76 +158,77 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         <form onSubmit={handleSubmit}>
           <label>
             Tipo *
-            <select
-              name="tipo"
-              value={formData.tipo}
-              onChange={handleChange}
+            <Select
+              options={subtiposDisponibles.map((sub) =>
+                typeof sub === "string"
+                  ? { value: sub, label: sub }
+                  : { value: sub.tipo, label: sub.tipo }
+              )}
+              value={
+                formData.tipo
+                  ? {
+                      value: formData.tipo,
+                      label: formData.tipo,
+                    }
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: { name: "tipo", value: opt ? opt.value : "" },
+                })
+              }
+              placeholder=""
+              isClearable
               required
-            >
-              <option value=""></option>
-              {typeof subtiposDisponibles[0] === "string"
-                ? subtiposDisponibles.map((sub, i) => (
-                    <option key={i} value={sub}>
-                      {sub}
-                    </option>
-                  ))
-                : subtiposDisponibles.map((item, i) => (
-                    <option key={i} value={item.tipo}>
-                      {item.tipo}
-                    </option>
-                  ))}
-            </select>
+            />
           </label>
 
           <label>
-            Persona / Empleado
-            <select
-              name="persona"
-              value={formData.persona}
-              onChange={handleChange}
-              //required
-            >
-              <option value=""></option>
-              {personas.map((p) => (
-                <option key={p.dni} value={p.dni}>
-                  {p.apellido} {p.nombres} (DNI: {p.dni})
-                </option>
-              ))}
-            </select>
+            Chofer
+            <Select
+              options={personas.map((p) => ({
+                value: p.dni,
+                label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+              }))}
+              onChange={(opt) =>
+                setFormData({ ...formData, persona: opt.value })
+              }
+              placeholder=""
+              isClearable
+              required
+            />
           </label>
 
           <label>
             Tractor
-            <select
-              type="number"
-              name="tractor"
-              value={formData.tractor}
-              onChange={handleChange}
-            >
-              <option value=""></option>
-              {tractores.map((t) => (
-                <option key={t.interno} value={t.interno}>
-                  {t.dominio} ({t.interno})
-                </option>
-              ))}
-            </select>
+            <Select
+              options={tractores.map((t) => ({
+                value: t.interno,
+                label: `${t.dominio} (${t.interno})`,
+              }))}
+              onChange={(opt) =>
+                setFormData({ ...formData, tractor: opt.value })
+              }
+              placeholder=""
+              isClearable
+              required
+            />
           </label>
 
           <label>
             Furgón
-            <select
-              type="number"
-              name="furgon"
-              value={formData.furgon}
-              onChange={handleChange}
-            >
-              <option value=""></option>
-              {furgones.map((f) => (
-                <option key={f.interno} value={f.interno}>
-                  {f.dominio} ({f.interno})
-                </option>
-              ))}
-            </select>
+            <Select
+              options={furgones.map((f) => ({
+                value: f.interno,
+                label: `${f.dominio} (${f.interno})`,
+              }))}
+              onChange={(opt) =>
+                setFormData({ ...formData, furgon: opt.value })
+              }
+              placeholder=""
+              isClearable
+              required
+            />
           </label>
           <div>
             <label>Chequeos</label>

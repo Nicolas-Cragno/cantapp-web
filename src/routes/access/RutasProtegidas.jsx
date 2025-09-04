@@ -13,11 +13,14 @@ import Porteria from "../../containers/Porteria";
 import Mecanicos from "../../containers/sub-containers/Mecanicos";
 import ChoferesLarga from "../../containers/sub-containers/ChoferesLarga";
 import ChoferesMovimiento from "../../containers/sub-containers/ChoferesMovimiento";
+import Administrativos from "../../containers/sub-containers/Administrativos";
 import Tractores from "../../containers/sub-containers/Tractores";
 import Furgones from "../../containers/sub-containers/Furgones";
 import TallerTractores from "../../containers/TallerTractores";
 import Utilitarios from "../../containers/sub-containers/Utilitarios";
 import ControlCombustible from "../../containers/ControlCombustilbe";
+import Vigilantes from "../../containers/sub-containers/Vigilantes";
+import Fleteros from "../../containers/sub-containers/Fleteros";
 import Stock from "../../containers/Stock";
 import Satelital from "../../containers/Satelital";
 import TallerFurgones from "../../containers/TallerFurgones";
@@ -96,6 +99,16 @@ export const rutasProtegidas = (
       }
     />
     <Route
+      path="/administrativos"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Administrativos />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
       path="/flota"
       element={
         <RutaProtegida>
@@ -131,6 +144,26 @@ export const rutasProtegidas = (
         <RutaProtegida>
           <Layout>
             <Utilitarios />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/seguridad"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Vigilantes />
+          </Layout>
+        </RutaProtegida>
+      }
+    />
+    <Route
+      path="/fleteros"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Fleteros />
           </Layout>
         </RutaProtegida>
       }

@@ -12,10 +12,13 @@ export const Access = {
     "/mecanicos": ["admin","dev"],
     "/choferes-larga": ["admin","dev"],
     "/choferes-movimiento": ["admin","dev"],
+    "/administrativos": ["admin", "dev"],
     "/flota": ["admin","dev"],
     "/tractores": ["admin","dev"],
     "/furgones": ["admin","dev"],
     "/utilitarios": ["admin","dev"],
+    "/seguridad": ["admin", "dev"],
+    "/fleteros": ["admin", "dev"],
     "/stock": ["admin","dev"],                 // talleres
     
     // Usuarios / administradores ["user", "admin","dev"]

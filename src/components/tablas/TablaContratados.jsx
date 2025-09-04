@@ -7,61 +7,22 @@ import "./css/Tables.css";
 import { obtenerCuitPorNombre } from "../../functions/data-functions";
 import { nombreEmpresa } from "../../functions/data-functions";
 import LogoPersonal from "../../assets/logos/logopersonal-w.png";
-import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
+import LogoProveedorTxt from "../logos/LogoProveedorTxt";
 
-const TablaPersonal = ({ tipoPuesto }) => {
+const TablaContratados = ({ tipoPuesto }) => {
   const [personas, setPersonas] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
-  const [cantPersonasTC, setCantPersonasTC] = useState(0);
-  const [cantPersonasEX, setCantPersonasEX] = useState(0);
-  const [cantPersonasTA, setCantPersonasTA] = useState(0);
-  const [cantPersonasX, setCantPersonasX] = useState(0);
-  const [filtroTC, setFiltroTC] = useState(true);
-  const [filtroEX, setFiltroEX] = useState(true);
-  const [filtroTA, setFiltroTA] = useState(true);
-  const [filtroX, setFiltroX] = useState(true);
 
   // Cargar personas filtradas por puesto && cant de personas por empresa
   const cargarPersonas = async (usarCache = true) => {
     setLoading(true);
     try {
       const data = await listarColeccion("personas", usarCache);
-      const empresaTC = Number(obtenerCuitPorNombre("TRANSPORTES CANTARINI"));
-      const empresaEX = Number(obtenerCuitPorNombre("EXPRESO CANTARINI"));
-      const empresaTA = Number(
-        obtenerCuitPorNombre("TRANSAMERICA TRANSPORTES")
-      );
+
       const listadoPersonas = data.filter((p) => p.puesto === tipoPuesto);
-      setCantPersonasTC(
-        data.filter(
-          (p) =>
-            p.empresa === empresaTC &&
-            p.puesto === tipoPuesto &&
-            p.estado === true
-        ).length
-      );
-      setCantPersonasEX(
-        data.filter(
-          (p) =>
-            p.empresa === empresaEX &&
-            p.puesto === tipoPuesto &&
-            p.estado === true
-        ).length
-      );
-      setCantPersonasTA(
-        data.filter(
-          (p) =>
-            p.empresa === empresaTA &&
-            p.puesto === tipoPuesto &&
-            p.estado === true
-        ).length
-      );
-      setCantPersonasX(
-        data.filter((p) => p.puesto === tipoPuesto && p.estado === false).length
-      );
       setPersonas(listadoPersonas);
     } catch (error) {
       console.error("Error al obtener información desde db: ", error);
@@ -103,24 +64,6 @@ const TablaPersonal = ({ tipoPuesto }) => {
       }`;
       return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
     })
-    .filter((p) => {
-      if (
-        (filtroTC && p.empresa === 30610890403) ||
-        p.empresa === "30610890403"
-      )
-        return true;
-      if (
-        (filtroTA && p.empresa === 30683612916) ||
-        p.empresa === "30683612916"
-      )
-        return true;
-      if (
-        (filtroEX && p.empresa === 30644511304) ||
-        p.empresa === "30644511304"
-      )
-        return true;
-      if ((filtroX && p.empresa === null) || p.empresa === "") return true;
-    })
     .sort((a, b) => {
       const pA = (a.apellido || "").toLowerCase();
       const pB = (b.apellido || "").toLowerCase();
@@ -141,44 +84,6 @@ const TablaPersonal = ({ tipoPuesto }) => {
           onChange={(e) => setFiltro(e.target.value)}
           className="table-busqueda"
         />
-        <div className="table-checked">
-          <label className="table-check">
-            <input
-              type="checkbox"
-              checked={filtroTC}
-              onChange={(e) => setFiltroTC(e.target.checked)}
-              className="check-input"
-            />
-            TC ({cantPersonasTC})
-          </label>
-          <label className="table-check">
-            <input
-              type="checkbox"
-              checked={filtroEX}
-              onChange={(e) => setFiltroEX(e.target.checked)}
-              className="check-input"
-            />
-            EX ({cantPersonasEX})
-          </label>
-          <label className="table-check">
-            <input
-              type="checkbox"
-              checked={filtroTA}
-              onChange={(e) => setFiltroTA(e.target.checked)}
-              className="check-input"
-            />
-            TA ({cantPersonasTA})
-          </label>
-          <label className="table-check">
-            <input
-              type="checkbox"
-              checked={filtroX}
-              onChange={(e) => setFiltroX(e.target.checked)}
-              className="check-input"
-            />
-            Innactivos ({cantPersonasX})
-          </label>
-        </div>
       </div>
 
       {loading ? (
@@ -213,7 +118,7 @@ const TablaPersonal = ({ tipoPuesto }) => {
                     </td>
                     <td>{persona.nombres}</td>
                     <td>
-                      <LogoEmpresaTxt cuitEmpresa={persona.empresa} />
+                      <LogoProveedorTxt cuitEmpresa={persona.empresa} />
                     </td>
                   </tr>
                 ))}
@@ -251,4 +156,4 @@ const TablaPersonal = ({ tipoPuesto }) => {
   );
 };
 
-export default TablaPersonal;
+export default TablaContratados;
