@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Select from "react-select";
 import "./css/Forms.css";
 import { listarColeccion } from "../../functions/db-functions";
 import { agregarEvento } from "../../functions/event-functions";
@@ -125,6 +126,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         confirmButtonText: "Entendido",
         confirmButtonColor: "#4161bd",
       });
+      onClose();
     } catch (error) {
       Swal.fire({
         title: "Error",
@@ -145,81 +147,117 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           <hr />
         </div>
         <form onSubmit={handleSubmit}>
+          {/* Tipo */}
           <label>
             Tipo *
-            <select
-              name="tipo"
-              value={formData.tipo}
-              onChange={handleChange}
+            <Select
+              options={subtiposDisponibles.map((sub) =>
+                typeof sub === "string"
+                  ? { value: sub, label: sub }
+                  : { value: sub.tipo, label: sub.tipo }
+              )}
+              value={
+                formData.tipo
+                  ? { value: formData.tipo, label: formData.tipo }
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: { name: "tipo", value: opt ? opt.value : "" },
+                })
+              }
+              placeholder=""
+              isClearable
               required
-            >
-              <option value=""></option>
-              {typeof subtiposDisponibles[0] === "string"
-                ? subtiposDisponibles.map((sub, i) => (
-                    <option key={i} value={sub}>
-                      {sub}
-                    </option>
-                  ))
-                : subtiposDisponibles.map((item, i) => (
-                    <option key={i} value={item.tipo}>
-                      {item.tipo}
-                    </option>
-                  ))}
-            </select>
+            />
           </label>
 
+          {/* Chofer */}
           <label>
             Chofer *
-            <select
-              name="persona"
-              value={formData.persona}
-              onChange={handleChange}
+            <Select
+              options={personas.map((p) => ({
+                value: p.dni,
+                label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+              }))}
+              value={
+                formData.persona
+                  ? personas
+                      .map((p) => ({
+                        value: p.dni,
+                        label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                      }))
+                      .find((opt) => opt.value === formData.persona)
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: { name: "persona", value: opt ? opt.value : "" },
+                })
+              }
+              placeholder=""
+              isClearable
               required
-            >
-              <option value=""></option>
-              {personas.map((p) => (
-                <option key={p.dni} value={p.dni}>
-                  {p.apellido} {p.nombres} (DNI: {p.dni})
-                </option>
-              ))}
-            </select>
+            />
           </label>
 
+          {/* Operador */}
           <label>
             Operador *
-            <select
-              name="operador"
-              value={formData.operador}
-              onChange={handleChange}
+            <Select
+              options={operadores.map((o) => ({
+                value: o.dni,
+                label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+              }))}
+              value={
+                formData.operador
+                  ? operadores
+                      .map((o) => ({
+                        value: o.dni,
+                        label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+                      }))
+                      .find((opt) => opt.value === formData.operador)
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: { name: "operador", value: opt ? opt.value : "" },
+                })
+              }
+              placeholder=""
+              isClearable
               required
-            >
-              <option value=""></option>
-              {operadores.map((o) => (
-                <option key={o.dni} value={o.dni}>
-                  {o.apellido} {o.nombres} (DNI: {o.dni})
-                </option>
-              ))}
-            </select>
+            />
           </label>
 
+          {/* Tractor */}
           <label>
             Tractor *
-            <select
-              type="number"
-              name="tractor"
-              value={formData.tractor}
-              onChange={handleChange}
+            <Select
+              options={tractores.map((t) => ({
+                value: t.interno,
+                label: `${t.interno} (${t.dominio})`,
+              }))}
+              value={
+                formData.tractor
+                  ? tractores
+                      .map((t) => ({
+                        value: t.interno,
+                        label: `${t.interno} (${t.dominio})`,
+                      }))
+                      .find((opt) => opt.value === formData.tractor)
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: { name: "tractor", value: opt ? opt.value : "" },
+                })
+              }
+              placeholder=""
+              isClearable
               required
-            >
-              <option value=""></option>
-              {tractores.map((t) => (
-                <option key={t.interno} value={t.interno}>
-                  {t.interno} ({t.dominio})
-                </option>
-              ))}
-            </select>
+            />
           </label>
-
           <label>
             Detalle
             <textarea

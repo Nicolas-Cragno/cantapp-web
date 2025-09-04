@@ -14,6 +14,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [formData, setFormData] = useState({
     tipo: evento.tipo || "",
     persona: evento.persona ? String(evento.persona) : "",
+    operador: evento.operador ? String(evento.operador) : "",
     tractor: evento.tractor || "",
     furgon: evento.furgon || "",
     detalle: evento.detalle || "",
@@ -32,6 +33,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [personas, setPersonas] = useState([]);
   const [tractores, setTractores] = useState([]);
   const [furgones, setFurgones] = useState([]);
+  const [operadores, setOperadores] = useState([]);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -55,6 +57,20 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         }
       };
 
+      const cargarOperadores = async () => {
+        try {
+          const data = await listarColeccion("personas");
+          const dataFiltrada = data
+            .filter(
+              (p) => p.puesto === "VIGILANCIA" || p.puesto === "SEGURIDAD"
+            )
+            .sort((a, b) => a.apellido.localeCompare(b.apellido));
+          setOperadores(dataFiltrada);
+        } catch (error) {
+          console.error("Error cargando operadores: ", error);
+        }
+      };
+
       const cargarTractores = async () => {
         try {
           const data = await listarColeccion("tractores");
@@ -74,6 +90,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
       };
 
       cargarPersonas();
+      cargarOperadores();
       cargarTractores();
       cargarFurgones();
     };
@@ -118,6 +135,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         fecha: fechaParaGuardar,
         tipo: formData.tipo || null,
         persona: formData.persona ? Number(formData.persona) : null,
+        operador: formData.operador ? Number(formData.operador) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
         area: area,
@@ -135,6 +153,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         confirmButtonText: "Entendido",
         confirmButtonColor: "#4161bd",
       });
+      onClose();
     } catch (error) {
       Swal.fire({
         title: "Error",
@@ -257,6 +276,21 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
               ))}
             </div>
           </div>
+          <label>
+            Operador
+            <Select
+              options={operadores.map((o) => ({
+                value: o.dni,
+                label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+              }))}
+              onChange={(opt) =>
+                setFormData({ ...formData, operador: opt.value })
+              }
+              placeholder=""
+              isClearable
+              required
+            />
+          </label>
 
           <label>
             Detalle
