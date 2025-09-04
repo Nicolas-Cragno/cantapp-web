@@ -185,10 +185,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
               )}
               value={
                 formData.tipo
-                  ? {
-                      value: formData.tipo,
-                      label: formData.tipo,
-                    }
+                  ? { value: formData.tipo, label: formData.tipo }
                   : null
               }
               onChange={(opt) =>
@@ -209,8 +206,52 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
                 value: p.dni,
                 label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
               }))}
+              value={
+                formData.persona
+                  ? {
+                      value: formData.persona,
+                      label:
+                        personas.find((p) => p.dni === formData.persona)
+                          ?.apellido +
+                        " " +
+                        personas.find((p) => p.dni === formData.persona)
+                          ?.nombres +
+                        ` (DNI: ${formData.persona})`,
+                    }
+                  : null
+              }
               onChange={(opt) =>
-                setFormData({ ...formData, persona: opt.value })
+                setFormData({ ...formData, persona: opt ? opt.value : "" })
+              }
+              placeholder=""
+              isClearable
+              required
+            />
+          </label>
+
+          <label>
+            Operador
+            <Select
+              options={operadores.map((o) => ({
+                value: o.dni,
+                label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+              }))}
+              value={
+                formData.operador
+                  ? {
+                      value: formData.operador,
+                      label:
+                        operadores.find((o) => o.dni === formData.operador)
+                          ?.apellido +
+                        " " +
+                        operadores.find((o) => o.dni === formData.operador)
+                          ?.nombres +
+                        ` (DNI: ${formData.operador})`,
+                    }
+                  : null
+              }
+              onChange={(opt) =>
+                setFormData({ ...formData, operador: opt ? opt.value : "" })
               }
               placeholder=""
               isClearable
@@ -225,8 +266,18 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
                 value: t.interno,
                 label: `${t.dominio} (${t.interno})`,
               }))}
+              value={
+                formData.tractor
+                  ? {
+                      value: formData.tractor,
+                      label:
+                        tractores.find((t) => t.interno === formData.tractor)
+                          ?.dominio + ` (${formData.tractor})`,
+                    }
+                  : null
+              }
               onChange={(opt) =>
-                setFormData({ ...formData, tractor: opt.value })
+                setFormData({ ...formData, tractor: opt ? opt.value : "" })
               }
               placeholder=""
               isClearable
@@ -241,14 +292,24 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
                 value: f.interno,
                 label: `${f.dominio} (${f.interno})`,
               }))}
+              value={
+                formData.furgon
+                  ? {
+                      value: formData.furgon,
+                      label:
+                        furgones.find((f) => f.interno === formData.furgon)
+                          ?.dominio + ` (${formData.furgon})`,
+                    }
+                  : null
+              }
               onChange={(opt) =>
-                setFormData({ ...formData, furgon: opt.value })
+                setFormData({ ...formData, furgon: opt ? opt.value : "" })
               }
               placeholder=""
               isClearable
-              required
             />
           </label>
+
           <div>
             <label>Chequeos</label>
             <div className="checkbox-list">
@@ -276,21 +337,6 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
               ))}
             </div>
           </div>
-          <label>
-            Operador
-            <Select
-              options={operadores.map((o) => ({
-                value: o.dni,
-                label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-              }))}
-              onChange={(opt) =>
-                setFormData({ ...formData, operador: opt.value })
-              }
-              placeholder=""
-              isClearable
-              required
-            />
-          </label>
 
           <label>
             Detalle

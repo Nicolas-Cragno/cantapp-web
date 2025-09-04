@@ -258,6 +258,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
               required
             />
           </label>
+
           <label>
             Detalle
             <textarea
