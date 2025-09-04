@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "site": "cantarini-control",
     "public": "build",
     "ignore": [
       "firebase.json",

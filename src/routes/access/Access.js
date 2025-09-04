@@ -7,6 +7,7 @@ export const Access = {
     
     
     // Solo administradores ["admin", "dev"]
+    "/recursos": ["admin", "dev"],
     "/personal": ["admin","dev"],
     "/mecanicos": ["admin","dev"],
     "/choferes-larga": ["admin","dev"],

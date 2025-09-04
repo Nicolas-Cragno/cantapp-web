@@ -36,35 +36,31 @@ const Personal = () => {
   }, []);
 
   return (
-    <section className="section-container page">
-      <div className="section-cards">
-        <Card
-          title="Mecánicos"
-          value={
-            loading ? <FaSpinner className="spinner" /> : `${cantMecanicos}`
-          }
-          route="/mecanicos"
-        />
-        <Card
-          title="Choferes larga dist."
-          value={
-            loading ? <FaSpinner className="spinner" /> : `${cantChoferesLarga}`
-          }
-          route="/choferes-larga"
-        />
-        <Card
-          title="Choferes movimiento"
-          value={
-            loading ? (
-              <FaSpinner className="spinner" />
-            ) : (
-              `${cantChoferesMovimiento}`
-            )
-          }
-          route="/choferes-movimiento"
-        />
-      </div>
-    </section>
+    <>
+      <Card
+        title="Mecánicos"
+        value={loading ? <FaSpinner className="spinner" /> : `${cantMecanicos}`}
+        route="/mecanicos"
+      />
+      <Card
+        title="Choferes larga dist."
+        value={
+          loading ? <FaSpinner className="spinner" /> : `${cantChoferesLarga}`
+        }
+        route="/choferes-larga"
+      />
+      <Card
+        title="Choferes movimiento"
+        value={
+          loading ? (
+            <FaSpinner className="spinner" />
+          ) : (
+            `${cantChoferesMovimiento}`
+          )
+        }
+        route="/choferes-movimiento"
+      />
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { Route } from "react-router-dom";
 // Contenedores protegidos
 import Dashboard from "../../containers/Dashboard";
 import Settings from "../../containers/Settings";
+import Resources from "../../containers/Resources";
 import Personal from "../../containers/Personal";
 import Flota from "../../containers/Flota";
 import Actividad from "../../containers/Actividad";
@@ -44,6 +45,16 @@ export const rutasProtegidas = (
       }
     />
     {/* Gestores */}
+    <Route
+      path="/recursos"
+      element={
+        <RutaProtegida>
+          <Layout>
+            <Resources />
+          </Layout>
+        </RutaProtegida>
+      }
+    ></Route>
     <Route
       path="/personal"
       element={

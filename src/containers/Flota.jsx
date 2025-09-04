@@ -41,31 +41,25 @@ const Flota = () => {
   }, []);
 
   return (
-    <section className="section-container page">
-      <div className="section-cards">
-        <Card
-          title="Tractores"
-          value={
-            loading ? <FaSpinner className="spinner" /> : `${cantTractores}`
-          }
-          route="/tractores"
-        />
-        <Card
-          title="Furgones"
-          value={
-            loading ? <FaSpinner className="spinner" /> : `${cantFurgones}`
-          }
-          route="/furgones"
-        />
-        <Card
-          title="Utilitarios"
-          value={
-            loading ? <FaSpinner className="spinner" /> : `${cantUtilitarios}`
-          }
-          route="/utilitarios"
-        />
-      </div>
-    </section>
+    <>
+      <Card
+        title="Tractores"
+        value={loading ? <FaSpinner className="spinner" /> : `${cantTractores}`}
+        route="/tractores"
+      />
+      <Card
+        title="Furgones"
+        value={loading ? <FaSpinner className="spinner" /> : `${cantFurgones}`}
+        route="/furgones"
+      />
+      <Card
+        title="Utilitarios"
+        value={
+          loading ? <FaSpinner className="spinner" /> : `${cantUtilitarios}`
+        }
+        route="/utilitarios"
+      />
+    </>
   );
 };
 

@@ -3,8 +3,7 @@ import { FaHome, FaUser, FaTruck, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { RiListSettingsLine } from "react-icons/ri";
 import { GiAutoRepair } from "react-icons/gi";
-import { IoSettingsSharp } from "react-icons/io5";
-
+import { GrResources } from "react-icons/gr";
 import "./css/SideBar.css";
 import { BsFillFuelPumpFill } from "react-icons/bs";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -38,15 +37,9 @@ const SideBar = () => {
   ];
   const linksManagement = [
     {
-      to: "/personal",
-      icon: <FaUser className="nav-icon" />,
-      label: "Personal",
-      roles: ["dev", "admin"],
-    },
-    {
-      to: "/flota",
-      icon: <FaTruck className="nav-icon" />,
-      label: "Flota",
+      to: "/recursos",
+      icon: <GrResources className="nav-icon" />,
+      label: "Recursos",
       roles: ["dev", "admin"],
     },
     {
@@ -120,7 +113,7 @@ const SideBar = () => {
             )
         )}
       </nav>
-      <nav className="nav oculto">
+      <nav className="nav">
         {linksManagement.map(
           ({ to, icon, label, roles }) =>
             tieneAcceso(roles) && (

@@ -1,5 +1,12 @@
 {
   "projects": {
     "default": "bess-b914c"
+  },
+  "targets": {
+    "bess-b914c": {
+      "hosting": {
+        "bess-cantarini": ["bess-cantarini"]
+      }
+    }
   }
 }
