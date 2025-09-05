@@ -1,9 +1,12 @@
 import SideBar from "./SideBar";
 import Header from "./Header";
+import usePageTitle from "./UsePageTitle";
 import "./css/Layout.css";
 
 export default function Layout(props) {
   const { children } = props;
+
+  usePageTitle();
 
   return (
     <div className="layout">
