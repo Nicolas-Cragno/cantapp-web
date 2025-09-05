@@ -17,6 +17,7 @@ const Personal = () => {
       setLoading(true);
       try {
         const personas = await listarColeccion("personas");
+        console.log("Personas:", personas);
 
         setCantMecanicos(
           personas.filter((p) => p.puesto === "MECANICO" && p.estado === true)

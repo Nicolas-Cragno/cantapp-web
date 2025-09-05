@@ -7,9 +7,11 @@ import { GrResources } from "react-icons/gr";
 import "./css/SideBar.css";
 import { BsFillFuelPumpFill } from "react-icons/bs";
 import { FaMapLocationDot } from "react-icons/fa6";
+import Logo from "../assets/logos/logotruck.svg";
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(true);
+  const [rotation, setRotation] = useState(0); // para el logo toggle
 
   // Obtener el rol desde localStorage
   const usuario = JSON.parse(localStorage.getItem("usuario"));
@@ -93,13 +95,28 @@ const SideBar = () => {
   // Toggle de colapsado
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
+    setRotation(rotation + 360);
   };
 
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
         <button className="toggle-btn" onClick={toggleSidebar}>
-          <FaBars />
+          {/* <FaBars /> */}
+          <div className="logo-container">
+            <img
+              src={Logo}
+              alt=""
+              className={`toggle-logo ${!collapsed ? "collapsed-logo" : ""}`}
+              style={{ transform: `rotate(${rotation}deg)` }}
+            />
+            {!collapsed && (
+              <span className="logo-text">
+                CANT
+                <span className="logo-text-bold">APP</span>
+              </span>
+            )}
+          </div>
         </button>
       </div>
       <nav className="nav">

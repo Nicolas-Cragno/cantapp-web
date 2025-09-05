@@ -11,32 +11,47 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [nombrePersona, setNombrePersona] = useState("SIN ASIGNAR");
   const [nombreOperador, setNombreOperador] = useState("SIN ASIGNAR");
-  const [tractor, setTractor] = useState("SIN ASIGNAR");
+  const [tractoresNombres, setTractoresNombres] = useState([]);
 
-  const fechaFormateada = formatearFecha(evento.fecha);
-  const horaFormateada = formatearHora(evento.fecha);
+  const fechaFormateada = formatearFecha(evento?.fecha);
+  const horaFormateada = formatearHora(evento?.fecha);
 
   useEffect(() => {
     const cargarDatos = async () => {
-      if (!evento) return null;
+      if (!evento) return;
 
+      // Persona
       if (evento.persona) {
         const nombre = await buscarNombrePorDni(evento.persona);
         setNombrePersona(nombre);
       }
 
+      // Operador
       if (evento.operador) {
         const nombre = await buscarNombrePorDni(evento.operador);
         setNombreOperador(nombre);
       }
-      if (evento.tractor) {
+
+      // Tractores (normalizamos a array aunque venga un solo valor)
+      let tractoresArray = [];
+      if (evento.tractor !== undefined && evento.tractor !== null) {
+        tractoresArray = Array.isArray(evento.tractor)
+          ? evento.tractor
+          : [evento.tractor]; // si es un solo valor, lo convertimos a array
+      }
+
+      if (tractoresArray.length > 0) {
         const tractores = await listarColeccion("tractores");
-        const dTractor = tractores.find((t) => t.interno === evento.tractor);
-        if (dTractor) {
-          setTractor(`${dTractor.dominio} (${dTractor.interno})`);
-        }
+        const nombresTractores = tractoresArray
+          .map((int) => {
+            const t = tractores.find((tr) => tr.interno === int);
+            return t ? `${t.dominio} (${t.interno})` : null;
+          })
+          .filter(Boolean);
+        setTractoresNombres(nombresTractores);
       }
     };
+
     cargarDatos();
   }, [evento]);
 
@@ -60,8 +75,8 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
             </h1>
             <hr />
             <div className="hora">
-              <spam>{fechaFormateada}</spam>
-              <spam>{horaFormateada} HS</spam>
+              <span>{fechaFormateada}</span>
+              <span>{horaFormateada} HS</span>
             </div>
             <div className="ficha-info">
               <p>
@@ -71,8 +86,10 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
                 <strong>Operador: </strong> {nombreOperador}
               </p>
               <p>
-                <strong>Tractor: </strong>
-                {tractor}
+                <strong>Tractor: </strong>{" "}
+                {tractoresNombres.length > 0
+                  ? tractoresNombres.join(", ")
+                  : "SIN ASIGNAR"}
               </p>
               <p>
                 <strong>Detalle: </strong> {evento.detalle || "-"}
@@ -82,7 +99,7 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
             <div className="ficha-data">
               {evento.usuario ? (
                 <p>
-                  Cargado por <strong>{evento.usuario}</strong>{" "}
+                  Cargado por <strong>{evento.usuario}</strong>
                 </p>
               ) : (
                 " "

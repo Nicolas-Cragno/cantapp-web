@@ -15,8 +15,11 @@ const Contratados = () => {
         const personas = await listarColeccion("personas");
 
         setCantFleteros(
-          personas.filter((p) => p.puesto === "FLETERO" && p.estado === true)
-            .length
+          personas.filter(
+            (p) =>
+              (p.puesto === "CHOFER FLETERO" || p.puesto === "FLETERO ") &&
+              p.estado === true
+          ).length
         );
       } catch (error) {
         console.error("Error al obtener datos con caché: ", error);

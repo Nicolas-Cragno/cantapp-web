@@ -28,6 +28,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [personas, setPersonas] = useState([]);
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
   const [tractores, setTractores] = useState([]);
+  const [multiTractor, setMultiTractor] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -40,18 +41,24 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         tipo: evento.tipo || "",
         persona: evento.persona ? String(evento.persona) : "",
         operador: evento.operador ? String(evento.operador) : "",
-        tractor: evento.tractor || "",
+        tractor: evento.tractor
+          ? Array.isArray(evento.tractor)
+            ? evento.tractor
+            : [evento.tractor]
+          : [],
         detalle: evento.detalle || "",
       });
       const cargarPersonas = async () => {
         try {
           const data = await listarColeccion("personas");
           const dataFiltrada = data
+            /*
             .filter(
               (p) =>
                 p.puesto === "CHOFER LARGA DISTANCIA" ||
                 p.puesto === "CHOFER MOVIMIENTO"
             )
+            */
             .sort((a, b) => a.apellido.localeCompare(b.apellido));
           setPersonas(dataFiltrada);
         } catch (error) {
@@ -111,7 +118,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         tipo: formData.tipo ? formData.tipo.toUpperCase() : null,
         persona: formData.persona ? Number(formData.persona) : null,
         operador: formData.operador ? Number(formData.operador) : null,
-        tractor: formData.tractor ? Number(formData.tractor) : null,
+        tractor: formData.tractor ? formData.tractor.map(Number) : [], // array de internos
         area: formData.area ? formData.area : area,
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
       };
@@ -146,6 +153,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           <p>* campo obligatorio</p>
           <hr />
         </div>
+
         <form onSubmit={handleSubmit}>
           {/* Tipo */}
           <label>
@@ -238,23 +246,23 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
                 value: t.interno,
                 label: `${t.interno} (${t.dominio})`,
               }))}
-              value={
-                formData.tractor
-                  ? tractores
-                      .map((t) => ({
-                        value: t.interno,
-                        label: `${t.interno} (${t.dominio})`,
-                      }))
-                      .find((opt) => opt.value === formData.tractor)
-                  : null
-              }
-              onChange={(opt) =>
+              value={tractores
+                .map((t) => ({
+                  value: t.interno,
+                  label: `${t.interno} (${t.dominio})`,
+                }))
+                .filter((opt) => formData.tractor.includes(opt.value))}
+              onChange={(opts) =>
                 handleChange({
-                  target: { name: "tractor", value: opt ? opt.value : "" },
+                  target: {
+                    name: "tractor",
+                    value: opts ? opts.map((o) => o.value) : [],
+                  },
                 })
               }
               placeholder=""
               isClearable
+              isMulti
               required
             />
           </label>
