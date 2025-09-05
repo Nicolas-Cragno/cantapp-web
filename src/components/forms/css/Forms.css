@@ -239,6 +239,7 @@
 }
 
 .type-btn{
+  position: relative;
   flex: 1;
   padding: 4px 16px;
   border: 1px solid #ccc;
@@ -249,6 +250,10 @@
   font-weight: bold;
   transition: 0.3s;
   opacity: 0.2;
+  display: flex;            
+  align-items: center;       
+  justify-content: center;   
+  gap: 6px;    
 }
 
 .type-btn.active{
@@ -259,17 +264,26 @@
 }
 
 .type-btn.positive-active{
- background-color: #058516; /* Verde para ALTA */
+ background-color: #d8252a; /* Rojo para cargado por pedido de Guille */
   color: white;
   opacity: 1;
 }
 
 .type-btn.negative-active{
-  background-color: #000; /* Verde para ALTA */
+  background-color: #058516; /* Verde para vacio por pedido de Guille */
   color: white;
   opacity: 1;
 }
 
+.check-logo{
+  position: absolute;
+  left: 10px;          
+  top: 50%;
+  transform: translateY(-50%); /* centrado vertical */
+  width: 1em;
+  height: 1em;
+  font-size: larger;
+}
 
 /* Botón guardar */
 .form-buttons button[type="submit"] {

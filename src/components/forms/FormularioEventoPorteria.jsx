@@ -5,6 +5,10 @@ import { listarColeccion } from "../../functions/db-functions";
 import { agregarEvento } from "../../functions/event-functions";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import Swal from "sweetalert2";
+import { FaCheck as OkLogo } from "react-icons/fa";
+
+import { GiCancel as XLogo } from "react-icons/gi";
+
 import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
 import tiposEventos from "../../functions/data/eventos.json";
 
@@ -330,6 +334,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
               }
               onClick={() => handleCarga(true)}
             >
+              <XLogo className="check-logo" />
               CARGADO
             </button>
             <button
@@ -339,6 +344,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
               }
               onClick={() => handleCarga(false)}
             >
+              <OkLogo className="check-logo" />
               VACIO
             </button>
           </div>
