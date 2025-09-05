@@ -240,7 +240,7 @@
 
 .type-btn{
   flex: 1;
-  padding: 8px 16px;
+  padding: 4px 16px;
   border: 1px solid #ccc;
   background-color: white;
   color: #333;
@@ -257,6 +257,19 @@
 
   opacity: 1;
 }
+
+.type-btn.positive-active{
+ background-color: #058516; /* Verde para ALTA */
+  color: white;
+  opacity: 1;
+}
+
+.type-btn.negative-active{
+  background-color: #000; /* Verde para ALTA */
+  color: white;
+  opacity: 1;
+}
+
 
 /* Botón guardar */
 .form-buttons button[type="submit"] {

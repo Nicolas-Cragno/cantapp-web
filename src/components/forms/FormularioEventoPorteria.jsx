@@ -17,6 +17,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
     operador: evento.operador ? String(evento.operador) : "",
     tractor: evento.tractor || "",
     furgon: evento.furgon || "",
+    cargado: evento.cargado || false,
     detalle: evento.detalle || "",
     area: area,
     chequeos: chequeosPorteria.map(
@@ -34,6 +35,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [tractores, setTractores] = useState([]);
   const [furgones, setFurgones] = useState([]);
   const [operadores, setOperadores] = useState([]);
+  const [furgonCargado, setFuegonCargado] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -42,6 +44,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         persona: evento.persona ? String(evento.persona) : "",
         tractor: evento.tractor || "",
         furgon: evento.furgon || "",
+        cargado: evento.cargado || false,
         detalle: evento.detalle || "",
         chequeos: chequeosPorteria.map(({ key }) => {
           const valor = evento?.chequeos?.[key];
@@ -103,6 +106,14 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCarga = (state) => {
+    if (state) {
+      setFuegonCargado(true);
+    } else {
+      setFuegonCargado(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -138,6 +149,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         operador: formData.operador ? Number(formData.operador) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
+        cargado: furgonCargado,
         area: area,
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
         chequeos: chequeosObjeto,
@@ -309,6 +321,27 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
               isClearable
             />
           </label>
+
+          <div className="type-container">
+            <button
+              type="button"
+              className={
+                furgonCargado ? "type-btn positive-active" : "type-btn"
+              }
+              onClick={() => handleCarga(true)}
+            >
+              CARGADO
+            </button>
+            <button
+              type="button"
+              className={
+                !furgonCargado ? "type-btn negative-active" : "type-btn"
+              }
+              onClick={() => handleCarga(false)}
+            >
+              VACIO
+            </button>
+          </div>
 
           <div>
             <label>Chequeos</label>
