@@ -61,7 +61,9 @@ const TablaContratados = ({ tipoPuesto }) => {
     .filter((p) => {
       const nombreCompleto = `${p.dni || ""} ${p.apellido || ""} ${
         p.nombres || ""
-      }`;
+      } ${p.detalle} ${p.tractor.dominio} ${p.tractor.marca} ${
+        p.tractor.modelo
+      } ${p.furgonPropio}`;
       return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
     })
     .sort((a, b) => {
@@ -98,7 +100,16 @@ const TablaContratados = ({ tipoPuesto }) => {
                 <th>DOCUMENTO</th>
                 <th>APELLIDO/S</th>
                 <th>NOMBRE/S</th>
+                {/*
                 <th>EMPRESA</th>
+                */}
+                <th>DETALLE</th>
+                {tipoPuesto === "FLETERO" && (
+                  <>
+                    <th>TRACTOR</th>
+                    <th>FURGON</th>
+                  </>
+                )}
               </tr>
             </thead>
           </table>
@@ -117,9 +128,35 @@ const TablaContratados = ({ tipoPuesto }) => {
                       <strong>{persona.apellido}</strong>
                     </td>
                     <td>{persona.nombres}</td>
+                    {/*
                     <td>
                       <LogoProveedorTxt cuitEmpresa={persona.empresa} />
                     </td>
+                    */}
+
+                    <td>
+                      {persona.flete ? persona.flete : null}{" "}
+                      {persona.detalle
+                        ? persona.flete
+                          ? " (" + persona.detalle + ")"
+                          : persona.detalle
+                        : null}
+                    </td>
+                    {tipoPuesto === "FLETERO" && (
+                      <>
+                        <td>
+                          {persona.tractor.marca
+                            ? persona.tractor.marca +
+                              " " +
+                              (persona.tractor.modelo > 0
+                                ? persona.tractor.modelo
+                                : " - ")
+                            : ""}
+                          <strong>{persona.tractor.dominio}</strong>
+                        </td>
+                        <td>{persona.furgonPropio}</td>
+                      </>
+                    )}
                   </tr>
                 ))}
               </tbody>

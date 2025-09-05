@@ -10,6 +10,7 @@
   align-items: center;
   justify-items: left;
   flex-direction: column;
+  z-index: 9999;
 }
 
 .sidebar.collapsed {

@@ -4,11 +4,13 @@
 
 .dashboard-box{
    margin: 1rem;
-    background-color:white;
-    box-shadow: 3px 5px 16px -2px #000000;
-    border-radius: 1rem;
-    padding: 1rem;
-    opacity: 0.8;
+  background-color: white;
+  box-shadow: 3px 5px 16px -2px #000000;
+  border-radius: 1rem;
+  padding: 1rem;
+  opacity: 0.8;
+  width: 100%; /* default para mobile */
+  max-width: 500px; /* opcional, limita tamaño en desktop */
 }
 
 .dashboard-box:hover{
