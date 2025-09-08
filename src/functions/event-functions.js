@@ -1,5 +1,5 @@
 import { db } from "../firebase/firebaseConfig";
-import { doc, setDoc, getDocs, collection, query, where } from "firebase/firestore";
+import { doc, setDoc, getDocs, collection, query, where, Timestamp } from "firebase/firestore";
 import codigosArea from "./data/areas.json";
 
 export const agregarEvento = async (evento, area, idExistente = null) => {
@@ -11,6 +11,26 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       throw new Error(`Área no válida: ${area}`);
     }
     const codigoArea = codigosArea[area];
+
+    // --- Normalizar fecha ---
+    let fecha = evento.fecha;
+    if (fecha) {
+      if (fecha.toDate) {
+        // Firestore Timestamp
+        fecha = fecha.toDate();
+      } else if (typeof fecha === "string") {
+        fecha = new Date(fecha);
+      }
+      if (!(fecha instanceof Date) || isNaN(fecha.getTime())) {
+        console.warn("⚠ Fecha inválida detectada, usando fecha actual:", evento.fecha);
+        fecha = new Date();
+      }
+    } else {
+      fecha = new Date();
+    }
+
+    // Convertir siempre a Timestamp antes de guardar
+    evento.fecha = Timestamp.fromDate(fecha);
 
     // Si no hay ID existente, generar uno nuevo
     let idEvento = idExistente;
