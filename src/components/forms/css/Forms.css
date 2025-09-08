@@ -238,6 +238,12 @@
   margin-bottom: 1rem;
 }
 
+.type-container-small{
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
 .type-btn{
   position: relative;
   flex: 1;
@@ -272,6 +278,12 @@
 .positive-active-yellow{
   background-color: #fceb05;
   color: #000;
+  opacity: 1;
+}
+
+.positive-active-black{
+  background-color: #000;
+  color: #fff;
   opacity: 1;
 }
 

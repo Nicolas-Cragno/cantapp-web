@@ -15,6 +15,7 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
   const [tractor, setTractor] = useState("");
   const [furgon, setFurgon] = useState("");
   const [cargado, setCargado] = useState(false);
+  const [modificaciones, setModificaciones] = useState([]);
 
   const fechaFormateada = formatearFecha(evento.fecha);
   const horaFormateada = formatearHora(evento.fecha);
@@ -52,6 +53,19 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
       if (evento.cargado) {
         setCargado(true);
       }
+
+      // Modificaciones
+      let modificacionesArray = [];
+      if (
+        evento.modificaciones != undefined &&
+        evento.modificaciones !== null
+      ) {
+        modificacionesArray = Array.isArray(evento.modificaciones)
+          ? evento.modificaciones
+          : [evento.modificaciones];
+      }
+
+      setModificaciones(modificacionesArray);
     };
     cargarDatos();
   }, [evento]);
@@ -136,6 +150,23 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
                 " "
               )}
             </div>
+            {modificaciones.length > 0 && (
+              <>
+                <p className="ficha-info-title">
+                  <strong>Modificaciones</strong>
+                </p>
+                <div className="ficha-info container">
+                  {modificaciones.map((mod, index) => (
+                    <p key={index} className="item-list">
+                      <strong>{mod.usuario}</strong>
+                      {" ("}
+                      {formatearFecha(mod.fecha)} {formatearHora(mod.fecha)}
+                      {" hs)"}
+                    </p>
+                  ))}
+                </div>
+              </>
+            )}
             <div className="ficha-buttons">
               <button onClick={() => setModoEdicion(true)}>Editar</button>
             </div>

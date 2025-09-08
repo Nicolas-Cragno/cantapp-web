@@ -5,6 +5,7 @@ import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
 import {
   buscarNombrePorDni,
   listarColeccion,
+  modificar,
 } from "../../functions/db-functions";
 
 const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
@@ -12,6 +13,7 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
   const [nombrePersona, setNombrePersona] = useState("SIN ASIGNAR");
   const [nombreOperador, setNombreOperador] = useState("SIN ASIGNAR");
   const [tractoresNombres, setTractoresNombres] = useState([]);
+  const [modificaciones, setModificaciones] = useState([]);
 
   const fechaFormateada = formatearFecha(evento?.fecha);
   const horaFormateada = formatearHora(evento?.fecha);
@@ -31,6 +33,19 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
         const nombre = await buscarNombrePorDni(evento.operador);
         setNombreOperador(nombre);
       }
+
+      // Modificaciones
+      let modificacionesArray = [];
+      if (
+        evento.modificaciones != undefined &&
+        evento.modificaciones !== null
+      ) {
+        modificacionesArray = Array.isArray(evento.modificaciones)
+          ? evento.modificaciones
+          : [evento.modificaciones];
+      }
+
+      setModificaciones(modificacionesArray);
 
       // Tractores (normalizamos a array aunque venga un solo valor)
       let tractoresArray = [];
@@ -100,7 +115,6 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
                 <strong>Detalle: </strong> {evento.detalle || "-"}
               </p>
             </div>
-
             <div className="ficha-data">
               {evento.usuario ? (
                 <p>
@@ -110,6 +124,24 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
                 " "
               )}
             </div>
+            {modificaciones.length > 0 && (
+              <>
+                <p className="ficha-info-title">
+                  <strong>Modificaciones</strong>
+                </p>
+                <div className="ficha-info container">
+                  {modificaciones.map((mod, index) => (
+                    <p key={index} className="item-list">
+                      <strong>{mod.usuario}</strong>
+                      {" ("}
+                      {formatearFecha(mod.fecha)} {formatearHora(mod.fecha)}
+                      {" hs)"}
+                    </p>
+                  ))}
+                </div>
+              </>
+            )}
+
             <div className="ficha-buttons">
               <button onClick={() => setModoEdicion(true)}>Editar</button>
             </div>

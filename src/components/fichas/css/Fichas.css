@@ -96,6 +96,10 @@
   font-weight: 600;
 }
 
+.item-list{
+  list-style: none;
+}
+
 .greenbox{
 background-color: #058516;
 }

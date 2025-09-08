@@ -1,10 +1,20 @@
 import { db } from "../firebase/firebaseConfig";
-import { doc, setDoc, getDocs, collection, query, where, Timestamp } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  Timestamp,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import codigosArea from "./data/areas.json";
 
 export const agregarEvento = async (evento, area, idExistente = null) => {
   const usuarioJson = JSON.parse(localStorage.getItem("usuario"));
-  const usuarioCarga = usuarioJson.apellido + ", " + usuarioJson.nombres;
+  let usuarioCarga = usuarioJson.apellido + ", " + usuarioJson.nombres;
 
   try {
     if (!codigosArea[area]) {
@@ -16,7 +26,6 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
     let fecha = evento.fecha;
     if (fecha) {
       if (fecha.toDate) {
-        // Firestore Timestamp
         fecha = fecha.toDate();
       } else if (typeof fecha === "string") {
         fecha = new Date(fecha);
@@ -51,30 +60,63 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       idEvento = `${codigoArea}-${correlativoStr}`;
     }
 
-    
     const docRef = doc(db, "eventos", idEvento);
 
-    let dataAGuardar = {
-      ...evento,
-      area,
-      usuario: usuarioCarga,
-    };
+    if (!idExistente) {
+      // 👉 Evento nuevo
+      const dataAGuardar = {
+        ...evento,
+        area,
+        fecha: Timestamp.fromDate(fecha),
+        usuario: usuarioCarga, // creador
+        modificaciones: [],    // historial vacío
+      };
 
-    if (idExistente) {
-      // Si es modificación, no sobrescribo la fecha
+      await setDoc(docRef, dataAGuardar);
+    } else {
+      // 👉 Evento existente → actualizar sin tocar usuario ni fecha
+      let dataAGuardar = {
+        ...evento,
+        area,
+      };
+
       delete dataAGuardar.fecha;
-    }
-    await setDoc(docRef, { ...evento, area, usuario: usuarioCarga });
+      delete dataAGuardar.usuario;
 
-    // Actualizar cache local
+      await updateDoc(docRef, {
+        ...dataAGuardar,
+        modificaciones: arrayUnion({
+          usuario: usuarioCarga,
+          fecha: Timestamp.fromDate(new Date()),
+        }),
+      });
+    }
+
+    // --- Actualizar cache local ---
     const cache = localStorage.getItem("eventos");
     const cacheActual = cache ? JSON.parse(cache) : [];
 
     const indiceExistente = cacheActual.findIndex((item) => item.id === idEvento);
     if (indiceExistente >= 0) {
-      cacheActual[indiceExistente] = { id: idEvento, ...evento, area };
+      // ya existe → lo actualizo y agrego mod
+      cacheActual[indiceExistente] = {
+        ...cacheActual[indiceExistente],
+        ...evento,
+        area,
+        modificaciones: [
+          ...(cacheActual[indiceExistente].modificaciones || []),
+          { usuario: usuarioCarga, fecha: new Date().toISOString() },
+        ],
+      };
     } else {
-      cacheActual.push({ id: idEvento, ...evento, area });
+      // nuevo → lo agrego
+      cacheActual.push({
+        id: idEvento,
+        ...evento,
+        area,
+        usuario: usuarioCarga,
+        modificaciones: [],
+      });
     }
 
     localStorage.setItem("eventos", JSON.stringify(cacheActual));

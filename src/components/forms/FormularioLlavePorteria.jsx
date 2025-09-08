@@ -27,6 +27,8 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
       );
 
   const [personas, setPersonas] = useState([]);
+  const [servicios, setServicios] = useState([]);
+  const [tipoSeleccionado, setTipoSeleccionado] = useState("chofer"); // si deja/recibe llave una persona o un proveedor
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
   const [tractores, setTractores] = useState([]);
   const [dejaParteTr, setDejaParteTr] = useState(false); // para partes de taller de tractores
@@ -41,6 +43,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         fecha: fechaEvento,
         tipo: evento.tipo || "",
         persona: evento.persona ? String(evento.persona) : "",
+        servicio: evento.servicio ? String(evento.servicio) : "",
         operador: evento.operador ? String(evento.operador) : "",
         tractor: evento.tractor
           ? Array.isArray(evento.tractor)
@@ -67,6 +70,17 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           console.error("Error cargando personas:", error);
         }
       };
+      const cargarServicios = async () => {
+        try {
+          const data = await listarColeccion("empresas");
+          const dataFiltrada = data
+            .filter((e) => e.tipo.toLowerCase() === "proveedor")
+            .sort((a, b) => a.nombre.localeCompare(b.nombre));
+          setServicios(dataFiltrada);
+        } catch (error) {
+          console.error("Error al cargar empresas servicio: ", error);
+        }
+      };
       const cargarOperadores = async () => {
         try {
           const data = await listarColeccion("personas");
@@ -89,6 +103,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         }
       };
       cargarPersonas();
+      cargarServicios();
       cargarTractores();
       cargarOperadores();
     };
@@ -199,33 +214,83 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
             />
           </label>
 
-          {/* Chofer */}
+          {/* Chofer o Servicio */}
+          <div className="type-container-small">
+            <button
+              type="button"
+              className={
+                tipoSeleccionado === "chofer"
+                  ? "type-btn positive-active-black"
+                  : "type-btn"
+              }
+              onClick={() => setTipoSeleccionado("chofer")}
+            >
+              CHOFER {tipoSeleccionado === "chofer" ? " *" : null}
+            </button>
+            <button
+              type="button"
+              className={
+                tipoSeleccionado === "servicio"
+                  ? "type-btn positive-active-black"
+                  : "type-btn"
+              }
+              onClick={() => setTipoSeleccionado("servicio")}
+            >
+              SERVICIO {tipoSeleccionado === "servicio" ? " *" : null}
+            </button>
+          </div>
           <label>
-            Chofer *
-            <Select
-              options={personas.map((p) => ({
-                value: p.id,
-                label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-              }))}
-              value={
-                formData.persona
-                  ? personas
-                      .map((p) => ({
-                        value: p.id,
-                        label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                      }))
-                      .find((opt) => opt.value === formData.persona)
-                  : null
-              }
-              onChange={(opt) =>
-                handleChange({
-                  target: { name: "persona", value: opt ? opt.value : "" },
-                })
-              }
-              placeholder=""
-              isClearable
-              required
-            />
+            {tipoSeleccionado === "chofer" ? (
+              <Select
+                options={personas.map((p) => ({
+                  value: p.id,
+                  label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                }))}
+                value={
+                  formData.persona
+                    ? personas
+                        .map((p) => ({
+                          value: p.id,
+                          label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                        }))
+                        .find((opt) => opt.value === formData.persona)
+                    : null
+                }
+                onChange={(opt) =>
+                  handleChange({
+                    target: { name: "persona", value: opt ? opt.value : "" },
+                  })
+                }
+                placeholder=""
+                isClearable
+                required
+              />
+            ) : (
+              <Select
+                options={servicios.map((s) => ({
+                  value: s.id,
+                  label: `${s.nombre}`,
+                }))}
+                value={
+                  formData.servicio
+                    ? servicios
+                        .map((s) => ({
+                          value: s.id,
+                          label: `${s.nombre}`,
+                        }))
+                        .find((opt) => opt.value === formData.servicio)
+                    : null
+                }
+                onChange={(opt) =>
+                  handleChange({
+                    target: { name: "servicio", value: opt ? opt.value : "" },
+                  })
+                }
+                placeholder=""
+                isClearable
+                required
+              />
+            )}
           </label>
 
           {/* Operador */}
