@@ -11,8 +11,10 @@ import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [nombre, setNombre] = useState("");
+  const [operador, setOperador] = useState("");
   const [tractor, setTractor] = useState("");
   const [furgon, setFurgon] = useState("");
+  const [cargado, setCargado] = useState(false);
 
   const fechaFormateada = formatearFecha(evento.fecha);
   const horaFormateada = formatearHora(evento.fecha);
@@ -24,6 +26,11 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
       if (evento.persona) {
         const nombrePersona = await buscarNombrePorDni(evento.persona);
         setNombre(nombrePersona);
+      }
+
+      if (evento.operador) {
+        const nombrePersona = await buscarNombrePorDni(evento.operador);
+        setOperador(nombrePersona);
       }
 
       if (evento.tractor) {
@@ -40,6 +47,10 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
         if (dFurgon) {
           setFurgon(`${dFurgon.dominio} (${dFurgon.interno})`);
         }
+      }
+
+      if (evento.cargado) {
+        setCargado(true);
       }
     };
     cargarDatos();
@@ -73,7 +84,10 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
                 <strong>Tipo: </strong> {evento.tipo}
               </p>
               <p>
-                <strong>Persona: </strong> {nombre}
+                <strong>Chofer: </strong> {nombre}
+              </p>
+              <p>
+                <strong>Operador: </strong> {operador}
               </p>
               <p>
                 <strong>Tractor: </strong>
@@ -81,7 +95,15 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
               </p>
               <p>
                 <strong>Furgón: </strong>
-                {furgon}
+                {cargado ? (
+                  <>
+                    {furgon} <span className="infobox redbox">CARGADO</span>{" "}
+                  </>
+                ) : (
+                  <>
+                    {furgon} <span className="infobox greenbox">VACIO</span>{" "}
+                  </>
+                )}
               </p>
               <p>
                 <strong>Detalle: </strong> {evento.detalle || "-"}

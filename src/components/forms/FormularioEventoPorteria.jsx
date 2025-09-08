@@ -219,7 +219,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
             Chofer
             <Select
               options={personas.map((p) => ({
-                value: p.dni,
+                value: p.id,
                 label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
               }))}
               value={
@@ -227,10 +227,10 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
                   ? {
                       value: formData.persona,
                       label:
-                        personas.find((p) => p.dni === formData.persona)
+                        personas.find((p) => p.id === formData.persona)
                           ?.apellido +
                         " " +
-                        personas.find((p) => p.dni === formData.persona)
+                        personas.find((p) => p.id === formData.persona)
                           ?.nombres +
                         ` (DNI: ${formData.persona})`,
                     }
@@ -249,7 +249,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
             Operador
             <Select
               options={operadores.map((o) => ({
-                value: o.dni,
+                value: o.id,
                 label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
               }))}
               value={
@@ -257,10 +257,10 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
                   ? {
                       value: formData.operador,
                       label:
-                        operadores.find((o) => o.dni === formData.operador)
+                        operadores.find((o) => o.id === formData.operador)
                           ?.apellido +
                         " " +
-                        operadores.find((o) => o.dni === formData.operador)
+                        operadores.find((o) => o.id === formData.operador)
                           ?.nombres +
                         ` (DNI: ${formData.operador})`,
                     }

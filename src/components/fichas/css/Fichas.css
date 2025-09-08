@@ -85,6 +85,29 @@
   display: block;
 }
 
+.infobox{
+  
+  border-radius: 1rem;
+  padding: .2rem;
+  padding-right: .5rem;
+  padding-left: .5rem;
+  color: #fff;
+  font-size: small;
+  font-weight: 600;
+}
+
+.greenbox{
+background-color: #058516;
+}
+
+.blackbox{
+background-color: black;
+}
+
+.redbox{
+background-color: #d8252a;
+}
+
 .nombres {
   color: #888; 
   font-size: 1.8rem; 

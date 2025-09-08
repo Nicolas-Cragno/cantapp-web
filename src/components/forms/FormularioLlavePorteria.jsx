@@ -13,8 +13,8 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     tipo: evento.tipo || "",
-    persona: evento.persona ? String(evento.persona) : "",
-    operador: evento.operador ? String(evento.operador) : "",
+    persona: evento.persona ? evento.persona : "",
+    operador: evento.operador ? evento.operador : "",
     tractor: evento.tractor || "",
     detalle: evento.detalle || "",
   });
@@ -195,14 +195,14 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
             Chofer *
             <Select
               options={personas.map((p) => ({
-                value: p.dni,
+                value: p.id,
                 label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
               }))}
               value={
                 formData.persona
                   ? personas
                       .map((p) => ({
-                        value: p.dni,
+                        value: p.id,
                         label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
                       }))
                       .find((opt) => opt.value === formData.persona)
@@ -224,14 +224,14 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
             Operador *
             <Select
               options={operadores.map((o) => ({
-                value: o.dni,
+                value: o.id,
                 label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
               }))}
               value={
                 formData.operador
                   ? operadores
                       .map((o) => ({
-                        value: o.dni,
+                        value: o.id,
                         label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
                       }))
                       .find((opt) => opt.value === formData.operador)
