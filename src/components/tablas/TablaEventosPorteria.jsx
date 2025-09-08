@@ -104,7 +104,7 @@ const TablaEventosPorteria = () => {
     const nombre = nombresPorDni[e.persona] || e.persona || "";
     const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
       e.furgon || ""
-    } ${fechaTxt} ${horaTxt}`;
+    } ${fechaTxt} ${horaTxt} ${e.tipo || ""}`;
     return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
   });
 
