@@ -164,7 +164,12 @@ const TablaEventosPorteria = () => {
                         ? nombresPorDni[evento.persona] || evento.persona
                         : ""}
                     </td>
-                    <td>{evento.tractor ? evento.tractor : ""}</td>
+                    <td>
+                      {Array.isArray(evento.tractor)
+                        ? evento.tractor.join(", ")
+                        : evento.tractor || ""}
+                    </td>
+
                     <td>{evento.furgon ? evento.furgon : ""}</td>
                     <td>{evento.usuario ? evento.usuario : ""} </td>
                   </tr>
