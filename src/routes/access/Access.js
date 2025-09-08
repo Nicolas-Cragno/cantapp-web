@@ -14,7 +14,6 @@ export const Access = {
     "/choferes-movimiento": ["admin","dev"],
     "/administrativos": ["admin", "dev"],
     "/flota": ["admin","dev"],
-    "/tractores": ["admin","dev"],
     "/furgones": ["admin","dev"],
     "/utilitarios": ["admin","dev"],
     "/seguridad": ["admin", "dev"],
@@ -28,4 +27,5 @@ export const Access = {
     // Todos
     "/": ["user", "admin", "dev"],
     "/perfil": ["user", "admin", "dev"],
+    "/tractores": ["admin","dev", "user"], // condicional de editar para dev y admin nada mas
 }

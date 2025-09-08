@@ -41,6 +41,7 @@
   text-decoration: none;
 }
 
+
 .table-linkto-logo{
   width: 1.8rem;
 }
@@ -100,7 +101,11 @@
   padding: 0.5rem;
   max-width: 3rem;
   margin-right: 1rem;
-  
+}
+
+.table-logo2{
+  padding: .1rem;
+  max-width: 2rem;
 }
 
 .table-busqueda {

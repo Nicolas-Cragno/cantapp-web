@@ -1,11 +1,36 @@
 import "./css/Fichas.css";
 import { nombreEmpresa } from "../../functions/data-functions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
+import { listarColeccion } from "../../functions/db-functions";
 
 const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
-  if (!vehiculo) return null;
+  const [eventos, setEventos] = useState([]);
+
+  const cargarEventos = async () => {
+    try {
+      const data = await listarColeccion("eventos");
+      const dataFiltrada = data.filter((e) => {
+        if (Array.isArray(e.tractor)) {
+          return e.tractor.includes(vehiculo.id);
+        }
+        return e.tractor === vehiculo.id;
+      });
+      const dataOrdenada = dataFiltrada.sort((a, b) => {
+        const fechaA = new Date(a.fecha);
+        const fechaB = new Date(b.fecha);
+        return fechaB - fechaA; // más nuevo primero
+      });
+      setEventos(dataOrdenada);
+    } catch (error) {
+      console.log("Error al listar eventos: ", error);
+    }
+  };
+
+  useEffect(() => {
+    cargarEventos();
+  }, []);
 
   const empresa = nombreEmpresa(vehiculo.empresa);
 
@@ -69,6 +94,22 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
                 {vehiculo.detalle || ""}
               </p>
             </div>
+            {/*
+            <div className="ficha-eventos">
+              <h2>Eventos</h2>
+              {eventos.length > 0 ? (
+                <ul>
+                  {eventos.map((e) => (
+                    <li key={e.id}>
+                      {e.fecha} - {e.detalle || "Sin detalle"}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No hay eventos registrados</p>
+              )}
+            </div>
+            */}
             <div className="ficha-buttons">
               <button onClick={() => setModoEdicion(true)}>Editar</button>
             </div>

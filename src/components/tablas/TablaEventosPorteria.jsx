@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
 import AlertButton from "../buttons/AlertButton";
 import {
@@ -14,6 +15,7 @@ import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
 import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
 import "./css/Tables.css";
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
+import LogoTractor from "../../assets/logos/logotractor-w.png";
 
 const TablaEventosPorteria = () => {
   const area = "porteria";
@@ -116,6 +118,7 @@ const TablaEventosPorteria = () => {
           Porteria
         </h1>
         {hayActualizacion && <AlertButton onClick={actualizarDatos} />}
+
         <input
           type="text"
           placeholder="Buscar..."
@@ -211,6 +214,11 @@ const TablaEventosPorteria = () => {
       )}
 
       <div className="table-options">
+        <Link to="/tractores">
+          <button className="table-agregar">
+            <img src={LogoTractor} alt="" className="table-logo2" />
+          </button>
+        </Link>
         <button
           className="table-agregar"
           onClick={() => setModalKeyVisible(true)}

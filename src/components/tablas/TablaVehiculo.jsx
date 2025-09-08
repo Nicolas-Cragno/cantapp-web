@@ -25,6 +25,9 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
   const [filtroEX, setFiltroEX] = useState(true);
   const [filtroTA, setFiltroTA] = useState(true);
   const [filtroX, setFiltroX] = useState(true);
+  const [editar, setEditar] = useState(false); // por defecto no puede editar a menos que sea admin o dev
+  const usuarioJSON = localStorage.getItem("usuario");
+  const usuario = usuarioJSON ? JSON.parse(usuarioJSON) : null;
 
   const title = tipoVehiculo.toUpperCase();
 
@@ -62,7 +65,11 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
 
   useEffect(() => {
     obtenerDatos();
-  }, [tipoVehiculo]);
+
+    if (usuario?.rol === "admin" || usuario?.rol === "dev") {
+      setEditar(true);
+    }
+  }, [tipoVehiculo, usuario]);
 
   const handleClickVehiculo = (vehiculo) => {
     setVehiculoSeleccionado(vehiculo);
@@ -226,7 +233,7 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
         />
       )}
 
-      {modalAgregarVisible && (
+      {modalAgregarVisible && editar && (
         <FormularioVehiculo
           tipoVehiculo={tipoVehiculo}
           onClose={cerrarModalAgregar}
@@ -234,14 +241,16 @@ const TablaVehiculo = ({ tipoVehiculo }) => {
         />
       )}
 
-      <div className="table-options">
-        <button
-          className="table-agregar"
-          onClick={() => setModalAgregarVisible(true)}
-        >
-          + AGREGAR
-        </button>
-      </div>
+      {editar && (
+        <div className="table-options">
+          <button
+            className="table-agregar"
+            onClick={() => setModalAgregarVisible(true)}
+          >
+            + AGREGAR
+          </button>
+        </div>
+      )}
     </section>
   );
 };
