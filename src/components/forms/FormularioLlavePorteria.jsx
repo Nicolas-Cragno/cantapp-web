@@ -16,6 +16,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
     persona: evento.persona ? evento.persona : "",
     operador: evento.operador ? evento.operador : "",
     tractor: evento.tractor || "",
+    parteTr: evento.parteTr || false,
     detalle: evento.detalle || "",
   });
 
@@ -103,8 +104,16 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
   const handleParteTr = (state) => {
     if (state) {
       setDejaParteTr(true);
+      setFormData((prev) => ({
+        ...prev,
+        parteTr: state,
+      }));
     } else {
       setDejaParteTr(false);
+      setFormData((prev) => ({
+        ...prev,
+        parteTr: state,
+      }));
     }
   };
 
@@ -280,7 +289,9 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
             <button
               type="button"
               className={
-                dejaParteTr ? "type-btn positive-active-yellow" : "type-btn"
+                formData.parteTr
+                  ? "type-btn positive-active-yellow"
+                  : "type-btn"
               }
               onClick={() => handleParteTr(!dejaParteTr)}
             >

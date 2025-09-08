@@ -90,6 +90,11 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
                 {tractoresNombres.length > 0
                   ? tractoresNombres.join(", ")
                   : "SIN ASIGNAR"}
+                {evento.parteTr ? (
+                  <>
+                    <span className="infobox blackbox">DEJÓ PARTE</span>{" "}
+                  </>
+                ) : null}
               </p>
               <p>
                 <strong>Detalle: </strong> {evento.detalle || "-"}

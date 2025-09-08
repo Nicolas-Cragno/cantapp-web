@@ -29,9 +29,6 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       fecha = new Date();
     }
 
-    // Convertir siempre a Timestamp antes de guardar
-    evento.fecha = Timestamp.fromDate(fecha);
-
     // Si no hay ID existente, generar uno nuevo
     let idEvento = idExistente;
     if (!idEvento) {
@@ -54,8 +51,19 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       idEvento = `${codigoArea}-${correlativoStr}`;
     }
 
-    // Guardar/actualizar en Firestore
+    
     const docRef = doc(db, "eventos", idEvento);
+
+    let dataAGuardar = {
+      ...evento,
+      area,
+      usuario: usuarioCarga,
+    };
+
+    if (idExistente) {
+      // Si es modificación, no sobrescribo la fecha
+      delete dataAGuardar.fecha;
+    }
     await setDoc(docRef, { ...evento, area, usuario: usuarioCarga });
 
     // Actualizar cache local

@@ -99,11 +99,11 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
                   <>
                     {furgon} <span className="infobox redbox">CARGADO</span>{" "}
                   </>
-                ) : (
+                ) : evento.furgon ? (
                   <>
                     {furgon} <span className="infobox greenbox">VACIO</span>{" "}
                   </>
-                )}
+                ) : null}
               </p>
               <p>
                 <strong>Detalle: </strong> {evento.detalle || "-"}
