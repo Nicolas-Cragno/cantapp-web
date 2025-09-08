@@ -28,7 +28,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [personas, setPersonas] = useState([]);
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
   const [tractores, setTractores] = useState([]);
-  const [multiTractor, setMultiTractor] = useState(false);
+  const [dejaParteTr, setDejaParteTr] = useState(false); // para partes de taller de tractores
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -46,6 +46,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
             ? evento.tractor
             : [evento.tractor]
           : [],
+        parteTr: evento.parteTr || false,
         detalle: evento.detalle || "",
       });
       const cargarPersonas = async () => {
@@ -99,6 +100,14 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleParteTr = (state) => {
+    if (state) {
+      setDejaParteTr(true);
+    } else {
+      setDejaParteTr(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -119,6 +128,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         persona: formData.persona ? Number(formData.persona) : null,
         operador: formData.operador ? Number(formData.operador) : null,
         tractor: formData.tractor ? formData.tractor.map(Number) : [], // array de internos
+        parteTr: formData.parteTr ? formData.parteTr : false,
         area: formData.area ? formData.area : area,
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
       };
@@ -266,6 +276,17 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
               required
             />
           </label>
+          <div className="type-container">
+            <button
+              type="button"
+              className={
+                dejaParteTr ? "type-btn positive-active-yellow" : "type-btn"
+              }
+              onClick={() => handleParteTr(!dejaParteTr)}
+            >
+              PARTE TALLER TRACTORES
+            </button>
+          </div>
 
           <label>
             Detalle

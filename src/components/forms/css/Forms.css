@@ -269,6 +269,12 @@
   opacity: 1;
 }
 
+.positive-active-yellow{
+  background-color: #fceb05;
+  color: #000;
+  opacity: 1;
+}
+
 .type-btn.negative-active{
   background-color: #058516; /* Verde para vacio por pedido de Guille */
   color: white;
