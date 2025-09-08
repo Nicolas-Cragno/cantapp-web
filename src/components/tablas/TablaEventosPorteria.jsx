@@ -177,7 +177,7 @@ const TablaEventosPorteria = () => {
 
       {eventoSeleccionado &&
         (eventoSeleccionado.tipo === "RETIRA" ||
-        eventoSeleccionado.tipo === "DEJA" ? (
+        eventoSeleccionado.tipo === "ENTREGA" ? (
           <FichaLlavePorteria
             evento={eventoSeleccionado}
             onClose={cerrarModal}
