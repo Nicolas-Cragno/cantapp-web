@@ -183,6 +183,20 @@ background-color: #d8252a;
   border-color: #888; 
 }
 
+.ficha-info-box{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
+  max-height: 15rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
 .cant-detail{
   background-color: black;
   color: white;

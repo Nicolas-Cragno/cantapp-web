@@ -156,7 +156,7 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
                 <p className="ficha-info-title">
                   <strong>EVENTOS</strong>
                 </p>
-                <div className="ficha-info">
+                <div className="ficha-info-box">
                   {eventos.map((e) => (
                     <p
                       key={e.id}
