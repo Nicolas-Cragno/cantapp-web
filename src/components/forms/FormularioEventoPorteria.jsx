@@ -216,7 +216,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Chofer
+            Chofer *
             <Select
               options={personas.map((p) => ({
                 value: p.id,
@@ -246,7 +246,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Operador
+            Operador *
             <Select
               options={operadores.map((o) => ({
                 value: o.id,
@@ -276,7 +276,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Tractor
+            Tractor *
             <Select
               options={tractores.map((t) => ({
                 value: t.interno,
@@ -327,26 +327,30 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <div className="type-container">
-            <button
-              type="button"
-              className={
-                furgonCargado ? "type-btn positive-active" : "type-btn"
-              }
-              onClick={() => handleCarga(true)}
-            >
-              <XLogo className="check-logo" />
-              CARGADO
-            </button>
-            <button
-              type="button"
-              className={
-                !furgonCargado ? "type-btn negative-active" : "type-btn"
-              }
-              onClick={() => handleCarga(false)}
-            >
-              <OkLogo className="check-logo" />
-              VACIO
-            </button>
+            {formData.furgon && (
+              <>
+                <button
+                  type="button"
+                  className={
+                    furgonCargado ? "type-btn positive-active" : "type-btn"
+                  }
+                  onClick={() => handleCarga(true)}
+                >
+                  <XLogo className="check-logo" />
+                  CARGADO
+                </button>
+                <button
+                  type="button"
+                  className={
+                    !furgonCargado ? "type-btn negative-active" : "type-btn"
+                  }
+                  onClick={() => handleCarga(false)}
+                >
+                  <OkLogo className="check-logo" />
+                  VACIO
+                </button>{" "}
+              </>
+            )}
           </div>
 
           <div>
