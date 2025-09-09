@@ -16,6 +16,7 @@ import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
 import "./css/Tables.css";
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
+import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 
 const TablaEventosPorteria = () => {
   const area = "porteria";
@@ -214,6 +215,11 @@ const TablaEventosPorteria = () => {
       )}
 
       <div className="table-options">
+        <Link to="/furgones">
+          <button className="table-agregar">
+            <img src={LogoFurgon} alt="" className="table-logo2" />
+          </button>
+        </Link>
         <Link to="/tractores">
           <button className="table-agregar">
             <img src={LogoTractor} alt="" className="table-logo2" />

@@ -23,11 +23,36 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
       const dataFiltrada = data.filter((e) => {
         const idVehiculo = Number(vehiculo.id);
 
-        if (Array.isArray(e.tractor)) {
-          return e.tractor.includes(idVehiculo);
-        }
+        switch (minimizarTipo(tipoVehiculo).toLowerCase()) {
+          case "tractor":
+            if (Array.isArray(e.tractor)) {
+              return e.tractor.includes(idVehiculo);
+            }
 
-        return Number(e.tractor) === idVehiculo;
+            return Number(e.tractor) === idVehiculo;
+            break;
+          case "furgon":
+            if (Array.isArray(e.furgon)) {
+              return e.furgon.includes(idVehiculo);
+            }
+
+            return Number(e.furgon) === idVehiculo;
+            break;
+          case "utilitario":
+            if (Array.isArray(e.utilitario)) {
+              return e.utilitario.includes(idVehiculo);
+            }
+
+            return Number(e.utilitario) === idVehiculo;
+            break;
+          default:
+            if (Array.isArray(e.vehiculo)) {
+              return e.vehiculo.includes(idVehiculo);
+            }
+
+            return Number(e.vehiculo) === idVehiculo;
+            break;
+        }
       });
 
       const dataOrdenada = dataFiltrada.sort((a, b) => {
