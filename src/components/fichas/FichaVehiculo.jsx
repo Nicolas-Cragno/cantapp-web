@@ -11,6 +11,9 @@ import FichaLlavePorteria from "./FichaLlavePorteria";
 import { useState, useEffect } from "react";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
 import { listarColeccion } from "../../functions/db-functions";
+import { FaKey } from "react-icons/fa6";
+import { IoEnterSharp } from "react-icons/io5";
+import { IoLogOutSharp } from "react-icons/io5";
 
 const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -160,10 +163,29 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
                       className="item-list"
                       onClick={() => setEventoSeleccionado(e)}
                     >
-                      {e.tipo || "Sin detalle"}{" "}
-                      {e.tipo === "ENTREGA" || e.tipo === "RETIRA"
-                        ? " LLAVES"
-                        : null}
+                      {e.tipo === "ENTREGA" ||
+                      e.tipo === "RETIRA" ||
+                      e.tipo === "DEJA" ? (
+                        <>
+                          <FaKey /> {e.tipo} LLAVES
+                        </>
+                      ) : null}
+                      {e.tipo === "ENTRADA" && (
+                        <>
+                          <IoEnterSharp /> {e.tipo}
+                          {e.cargado && (
+                            <span className="infobox-mini redbox">Cargado</span>
+                          )}
+                        </>
+                      )}
+                      {e.tipo === "SALIDA" && (
+                        <>
+                          <IoLogOutSharp /> {e.tipo}
+                          {e.cargado && (
+                            <span className="infobox-mini redbox">Cargado</span>
+                          )}
+                        </>
+                      )}
                       <span>
                         {formatearFecha(e.fecha)} | {formatearHora(e.fecha)} hs
                       </span>{" "}

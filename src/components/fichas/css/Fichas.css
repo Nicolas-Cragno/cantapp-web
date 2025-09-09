@@ -96,6 +96,17 @@
   font-weight: 600;
 }
 
+.infobox-mini{
+  border-radius: 1rem;
+  padding: .1rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
+  color: #fff;
+  font-size: small;
+  font-weight: 500;
+  margin-left: -1rem;
+}
+
 .item-list{
   list-style: none;
   display: flex;
