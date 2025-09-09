@@ -98,7 +98,19 @@
 
 .item-list{
   list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: .5rem;
+  padding-right: .5rem;
+  padding-left: .5rem;
 }
+
+.item-list:hover{
+  background-color: #ccc;
+  font-weight: bold;
+}
+
 
 .greenbox{
 background-color: #058516;

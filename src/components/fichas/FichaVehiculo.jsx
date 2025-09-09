@@ -1,5 +1,13 @@
 import "./css/Fichas.css";
-import { nombreEmpresa } from "../../functions/data-functions";
+import {
+  nombreEmpresa,
+  formatearFecha,
+  buscarPersona,
+  formatearHora,
+} from "../../functions/data-functions";
+import { MdEventNote } from "react-icons/md";
+import FichaEventoPorteria from "./FichaEventoPorteria";
+import FichaLlavePorteria from "./FichaLlavePorteria";
 import { useState, useEffect } from "react";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
 import { listarColeccion } from "../../functions/db-functions";
@@ -7,21 +15,41 @@ import { listarColeccion } from "../../functions/db-functions";
 const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventos, setEventos] = useState([]);
+  const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
 
   const cargarEventos = async () => {
     try {
       const data = await listarColeccion("eventos");
       const dataFiltrada = data.filter((e) => {
+        const idVehiculo = Number(vehiculo.id);
+
         if (Array.isArray(e.tractor)) {
-          return e.tractor.includes(vehiculo.id);
+          return e.tractor.includes(idVehiculo);
         }
-        return e.tractor === vehiculo.id;
+
+        return Number(e.tractor) === idVehiculo;
       });
+
       const dataOrdenada = dataFiltrada.sort((a, b) => {
         const fechaA = new Date(a.fecha);
         const fechaB = new Date(b.fecha);
         return fechaB - fechaA; // más nuevo primero
       });
+
+      /*
+      const dataFull = await Promise.all(
+        dataOrdenada.map(async (e) => {
+          if (e.persona) {
+            const personaNombre = await buscarPersona(e.persona);
+            return {
+              ...e,
+              nPersona: personaNombre,
+            };
+          }
+          return e;
+        })
+      ); */
+
       setEventos(dataOrdenada);
     } catch (error) {
       console.log("Error al listar eventos: ", error);
@@ -94,22 +122,31 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
                 {vehiculo.detalle || ""}
               </p>
             </div>
-            {/*
-            <div className="ficha-eventos">
-              <h2>Eventos</h2>
-              {eventos.length > 0 ? (
-                <ul>
+
+            {eventos.length > 0 ? (
+              <>
+                <p className="ficha-info-title">
+                  <strong>EVENTOS</strong>
+                </p>
+                <div className="ficha-info">
                   {eventos.map((e) => (
-                    <li key={e.id}>
-                      {e.fecha} - {e.detalle || "Sin detalle"}
-                    </li>
+                    <p
+                      key={e.id}
+                      className="item-list"
+                      onClick={() => setEventoSeleccionado(e)}
+                    >
+                      {e.tipo || "Sin detalle"}{" "}
+                      {e.tipo === "ENTREGA" || e.tipo === "RETIRA"
+                        ? " LLAVES"
+                        : null}
+                      <span>
+                        {formatearFecha(e.fecha)} | {formatearHora(e.fecha)} hs
+                      </span>{" "}
+                    </p>
                   ))}
-                </ul>
-              ) : (
-                <p>No hay eventos registrados</p>
-              )}
-            </div>
-            */}
+                </div>
+              </>
+            ) : null}
             <div className="ficha-buttons">
               <button onClick={() => setModoEdicion(true)}>Editar</button>
             </div>
@@ -123,6 +160,19 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
           onGuardar={handleGuardado}
         />
       )}
+
+      {eventoSeleccionado &&
+        (["ENTREGA", "DEJA", "RETIRA"].includes(eventoSeleccionado.tipo) ? (
+          <FichaLlavePorteria
+            evento={eventoSeleccionado}
+            onClose={() => setEventoSeleccionado(null)}
+          />
+        ) : (
+          <FichaEventoPorteria
+            evento={eventoSeleccionado}
+            onClose={() => setEventoSeleccionado(null)}
+          />
+        ))}
     </>
   );
 };
