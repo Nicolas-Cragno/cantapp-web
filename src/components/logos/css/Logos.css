@@ -8,6 +8,10 @@
     border-radius: 50%;
 }
 
+.logo-evento{
+    margin-right: 1rem;
+}
+
 .logo-img-only{
     max-width: 6rem;
 }

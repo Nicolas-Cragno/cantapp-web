@@ -49,12 +49,35 @@
   background-color: #f0f0f0;
 }
 
-
-@media screen and (max-width:1200px){
+/* Laptops medianas y tablets horizontales */
+@media (max-width: 1280px) {
   .header-title{
     display: none;
   }
   .header{
     justify-content: right;
   }
+
+  .header {
+  height: 80px;
+  }
+
+  .header-user {
+    font-size: 1.9rem;
+  }
+}
+
+/* Tablets verticales y notebooks chicas */
+@media (max-width: 1024px) {
+  /* SIN CAMBIOS */
+}
+
+/* Tablets chicas / celulares grandes */
+@media (max-width: 768px) {
+  /* SIN CAMBIOS */
+}
+
+/* Celulares comunes */
+@media (max-width: 480px) {
+  /* SIN CAMBIOS */
 }

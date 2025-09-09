@@ -162,7 +162,9 @@ const Dashboard = () => {
             ) : null}
           </div>
         ) : (
-          <Clock />
+          <div className="no-responsive">
+            <Clock />
+          </div>
         )}
       </div>
     </div>

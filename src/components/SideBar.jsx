@@ -63,7 +63,7 @@ const SideBar = () => {
     */
     {
       to: "/satelital",
-      icon: <FaMapLocationDot />,
+      icon: <FaMapLocationDot className="nav-icon" />,
       label: "Satelital",
       roles: ["dev", "admin", "user"],
     },

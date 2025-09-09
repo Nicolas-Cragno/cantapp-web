@@ -114,3 +114,54 @@
 .nav-icon {
   font-size: 1.2rem;
 }
+
+/* Laptops medianas y tablets horizontales */
+@media (max-width: 1280px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar.collapsed {
+    width: 100px;
+  }
+
+  .toggle-logo {
+    width: 4rem; 
+  }
+
+  .logo-text {
+    font-size: 1.3rem;
+    margin-right: 0.2rem;
+    margin-left: -0.2.5rem;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .nav-link {
+    font-size: 1.8rem;
+  }
+
+  .nav-icon {
+    font-size: 2.2rem;
+  }
+}
+
+/* Tablets verticales y notebooks chicas */
+@media (max-width: 1024px) {
+  /* SIN CAMBIOS */
+}
+
+/* Tablets chicas / celulares grandes */
+@media (max-width: 768px) {
+  /* SIN CAMBIOS */
+}
+
+/* Celulares comunes */
+@media (max-width: 480px) {
+  /* SIN CAMBIOS */
+}

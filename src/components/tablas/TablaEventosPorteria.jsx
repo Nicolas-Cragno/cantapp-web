@@ -5,10 +5,16 @@ import AlertButton from "../buttons/AlertButton";
 import {
   listarColeccion,
   buscarNombrePorDni,
+  buscarNombrePorDniAbreviado,
   useDetectarActualizaciones,
 } from "../../functions/db-functions";
 import { IoKeySharp } from "react-icons/io5";
-import { formatearFecha, formatearHora } from "../../functions/data-functions";
+import LogoEvento from "../logos/LogoEvento";
+import {
+  formatearFecha,
+  formatearFechaCorta,
+  formatearHora,
+} from "../../functions/data-functions";
 import FichaEventoPorteria from "../fichas/FichaEventoPorteria";
 import FichaLlavePorteria from "../fichas/FichaLlavePorteria";
 import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
@@ -22,6 +28,7 @@ const TablaEventosPorteria = () => {
   const area = "porteria";
   const [eventos, setEventos] = useState([]);
   const [nombresPorDni, setNombresPorDni] = useState({});
+  const [nombresAbreviados, setNombresAbreviados] = useState({});
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
@@ -56,15 +63,19 @@ const TablaEventosPorteria = () => {
         ...new Set(eventosOrdenados.map((e) => e.persona).filter(Boolean)),
       ];
       const nombresMap = {};
+      const nombresMapAb = {};
 
       await Promise.all(
         dnisUnicos.map(async (dni) => {
           const nombreCompleto = await buscarNombrePorDni(dni);
+          const nombreAbreviado = await buscarNombrePorDniAbreviado(dni);
           nombresMap[dni] = nombreCompleto;
+          nombresMapAb[dni] = nombreAbreviado;
         })
       );
 
       setNombresPorDni(nombresMap);
+      setNombresAbreviados(nombresMapAb);
     } catch (error) {
       console.error("Error al obtener eventos o nombres:", error);
     } finally {
@@ -138,13 +149,14 @@ const TablaEventosPorteria = () => {
           <table className="table-lista">
             <thead className="table-titles">
               <tr>
-                <th>#</th>
-                <th>FECHA</th>
-                <th>TIPO</th>
-                <th>EMPLEADO</th>
-                <th>TRACTOR</th>
-                <th>FURGÓN</th>
-                <th>CARGA</th>
+                <th className="only-desktop">#</th>
+                <th className="only-cel-off">FECHA</th>
+                <th className="only-cel-off">TIPO</th>
+                <th className="only-cel-off">EMPLEADO</th>
+                <th className="only-cel-off">TRACTOR</th>
+                <th className="only-cel-off">FURGÓN</th>
+                <th className="only-desktop">CARGA</th>
+                <th className="only-cel-on">LISTADO DE EVENTOS</th>
               </tr>
             </thead>
           </table>
@@ -157,25 +169,46 @@ const TablaEventosPorteria = () => {
                     onClick={() => handleClickEvento(evento)}
                     className="table-item"
                   >
-                    <td>{evento.id}</td>
-                    <td>
+                    <td className="only-desktop">{evento.id}</td>
+                    <td className="only-cel-off">
                       {formatearFecha(evento.fecha)} -{" "}
                       {formatearHora(evento.fecha)} HS
                     </td>
-                    <td>{evento.tipo}</td>
-                    <td>
+                    <td className="only-cel-off">{evento.tipo}</td>
+
+                    <td className="only-cel-off">
                       {evento.persona
                         ? nombresPorDni[evento.persona] || evento.persona
                         : ""}
                     </td>
-                    <td>
+                    <td className="only-cel-off">
                       {Array.isArray(evento.tractor)
                         ? evento.tractor.join(", ")
                         : evento.tractor || ""}
                     </td>
 
-                    <td>{evento.furgon ? evento.furgon : ""}</td>
-                    <td>{evento.usuario ? evento.usuario : ""} </td>
+                    <td className="only-cel-off">
+                      {evento.furgon ? evento.furgon : ""}
+                    </td>
+                    <td className="only-desktop">
+                      {evento.usuario ? evento.usuario : ""}{" "}
+                    </td>
+                    <td className="only-cel-on">
+                      {/* Figura SOLO en celulares*/}{" "}
+                      {<LogoEvento tipoEvento={evento.tipo} />}
+                      <strong>{formatearFechaCorta(evento.fecha)}</strong>
+                      {"-"}
+                      {evento.persona
+                        ? nombresAbreviados[evento.persona] || evento.persona
+                        : ""}{" "}
+                      (Tr.{" "}
+                      {Array.isArray(evento.tractor)
+                        ? evento.tractor.length > 1
+                          ? `${evento.tractor[0]}...`
+                          : evento.tractor[0] || ""
+                        : evento.tractor || ""}
+                      {evento.furgon ? " - Fg." + evento.furgon : null})
+                    </td>
                   </tr>
                 ))}
               </tbody>

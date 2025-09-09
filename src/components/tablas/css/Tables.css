@@ -5,6 +5,10 @@
   gap: 1.5rem;
 }
 
+.only-cel-on{
+  display: none;
+}
+
 .ok-logo{
   color: #008000;
 }
@@ -179,109 +183,79 @@
   color: black;
   opacity: 1;
 }
-/*
 
-.table-dni{
-  font-weight: 500;
-  color: #111827;
-  flex: 0.5;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.table-nombre {
-  font-weight: 400;
-  color: #111827;
-  flex: 2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.table-info {
-  color: #6b7280;
-  flex: 1;
-  white-space: nowrap;
-}
-
-*/
-
-/* Celulares */
-@media (max-width: 640px) {
-  .table-title {
-    display: none;
+/* Laptops medianas y tablets horizontales */
+@media (max-width: 1280px) {
+  .table-container {
+  padding: .9rem;
   }
-  .table-info {
-    display: none;
+
+  .table-body-wrapper {
+    max-height: 70vh; 
   }
+  
+
+  .table-options {
+    gap: 2rem; /* un poco de espacio para los dedos */
+  }
+
   .table-busqueda {
+    font-size: 1.2rem;
+    width: 70%;
+  }
+
+  .table-agregar {
+    font-size: 1.4rem;
+  }
+
+  .table-lista th,
+  .table-lista td {
+    padding: 5px; 
+  }
+}
+
+/* Tablets verticales y notebooks chicas */
+@media (max-width: 1024px) {
+  /* SIN CAMBIOS */
+}
+
+/* Tablets chicas / celulares grandes */
+@media (max-width: 768px) {
+  /* SIN CAMBIOS */
+}
+
+/* Celulares comunes */
+@media (max-width: 480px) {
+  .only-cel-off{
+    display: none;
+  }
+  .only-cel-on{
+    display: flex;
+  }
+    .table-container {
+  padding: 0.1rem;
+  }
+
+  .table-body-wrapper {
+    max-height: 55vh; 
+  }
+  
+  .table-options {
+    gap: 2.5rem; /* un poco mas de espacio para los dedos */
+    justify-content: center;
+  }
+
+  .table-busqueda {
+    font-size: 1.5rem;
     width: 100%;
   }
-  .table-lista {
-    gap: 0.5rem;
-  }
-  .table-item {
-    padding: 1rem 0.5rem;
-    flex-direction: column;
-    max-height: 80px;
-    height: auto;
-    align-items: flex-start;
-    font-style: normal;
-  }
-  .table-nombre {
-    white-space: normal;
-    font-weight: 600;
-    font-style: normal;
-    margin-bottom: 0.25rem;
-  }
-  .table-dni{
-    display: none;
-  }
-}
 
-/* Tablets */
-@media (min-width: 641px) and (max-width: 991.98px) {
-  .table-title {
-    font-size: 1.5rem;
-  }
-  .table-info {
-    font-size: 0.9rem;
-  }
-  .table-dni{
-    font-size: 1rem;
-  }
-  .table-busqueda {
-    width: 60%;
-    min-width: 250px;
-  }
   .table-agregar {
-    padding: 0.5rem 0.9rem;
-    font-size: 0.95rem;
+    font-size: 1.4rem;
   }
-  .table-item {
-    height: 60px;
-    padding: 0.8rem 1rem;
-  }
-}
 
-/* Escritorio */
-@media (min-width: 992px) {
-  .table-title {
-    font-size: 1.7rem;
-  }
-  .table-info {
-    font-size: 1rem;
-  }
-  .table-busqueda {
-    width: 50%;
-  }
-  .table-agregar {
-    padding: 0.6rem 1rem;
-    font-size: 1rem;
-  }
-  .table-item {
-    height: 50px;
-    padding: 1rem 1.5rem;
+  .table-lista th,
+  .table-lista td {
+    padding: 5px; 
   }
 }

@@ -180,13 +180,30 @@
 }
 
 
-/* Tablets */
-@media (min-width: 768px) and (max-width: 991.9px){
+
+/* Laptops medianas y tablets horizontales */
+@media (max-width: 1280px) {
+  .only-desktop{
+    display: none;
+  }
+}
+
+/* Tablets verticales y notebooks chicas */
+@media (max-width: 1024px) {
   .login-card {
     max-width: 950px;
     min-width: auto;
   }
 }
 
-/* Celulares */
-@media (max-width: 767.98px) {}
+/* Tablets chicas / celulares grandes */
+@media (max-width: 768px) {
+  .no-responsive{
+  display: none;
+}
+}
+
+/* Celulares comunes */
+@media (max-width: 480px) {
+  /* ajustes */
+}

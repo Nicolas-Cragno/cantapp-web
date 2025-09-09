@@ -423,6 +423,23 @@ export const buscarNombrePorDni = async (dni) => {
   }
 };
 
+export const buscarNombrePorDniAbreviado = async (dni) => {
+  try {
+    const personas = await listarColeccion("personas", true);
+    const persona = personas.find(p => p.dni === dni);
+
+    if (!persona) {
+      console.warn(`No se encontró registro del DNI ${dni}`);
+      return "Desconocido";
+    }
+
+    return `${persona.apellido} ${persona.nombres.charAt(0)}.`;
+  } catch (error) {
+    console.error("Error en la búsqueda: ", error);
+    return "Error";
+  }
+};
+
 export const buscarDniPorNombre = async (nombreCompleto) => {
   try {
     const personas = await listarColeccion("personas", true);
