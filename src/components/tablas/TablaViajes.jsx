@@ -5,6 +5,7 @@ import {
   colorSatelital,
   colorBatman,
   colorPromedio,
+  buscarPersona,
 } from "../../functions/data-functions";
 import { ImFileEmpty as EmptyLogo } from "react-icons/im";
 
@@ -21,6 +22,7 @@ import "./css/Tables.css";
 import AlertButton from "../buttons/AlertButton";
 
 const TablaViajes = () => {
+  const area = "trafico";
   const [viajes, setViajes] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [loading, setLoading] = useState(true);
@@ -31,8 +33,12 @@ const TablaViajes = () => {
   const cargarViajes = async (usarCache = true) => {
     setLoading(true);
     try {
-      const datos = await listarColeccion("viajes", usarCache);
-      setViajes(datos);
+      const datos = await listarColeccion("eventos", usarCache);
+      const eventosFiltrados =
+        area && typeof area === "string"
+          ? datos.filter((e) => e.area?.toUpperCase() === area.toUpperCase())
+          : datos;
+      setViajes(eventosFiltrados);
     } catch (error) {
       console.error("Error al obtener listado de viajes:", error);
     } finally {
@@ -88,13 +94,8 @@ const TablaViajes = () => {
               <thead className="table-titles">
                 <tr>
                   <th>FECHA</th>
-                  <th>VIAJE</th>
                   <th>CHOFER</th>
                   <th>TRACTOR</th>
-                  <th>SATELITAL</th>
-                  <th>TICKETS</th>
-                  <th>LITROS REALES</th>
-                  <th>DISTANCIA</th>
                   <th>DIFERENCIA</th>
                   <th>PROMEDIO</th>
                   <th>ESTADO</th>
@@ -111,9 +112,8 @@ const TablaViajes = () => {
                       className="table-item"
                     >
                       <td>{formatearFecha(viaje.fecha)}</td>
-                      <td>{viaje.id}</td>
-                      <td>{viaje.chofer || "SIN ASIGNAR"}</td>
-                      <td>{viaje.tractor || "SIN ASIGNAR"}</td>
+                      <td>{buscarPersona(viaje.chofer) || ""}</td>
+                      <td>{viaje.tractor || ""}</td>
                       <td
                         className="txt-satelital"
                         style={{
@@ -122,9 +122,6 @@ const TablaViajes = () => {
                       >
                         {viaje.satelital || "N/F"}
                       </td>
-                      <td>{Number(viaje.litrosticket || 0).toFixed(2)}</td>
-                      <td>{Number(viaje.litrosreales || 0).toFixed(2)}</td>
-                      <td>{Number(viaje.km || 0).toFixed(2)}</td>
                       <td
                         style={{
                           color: colorBatman(viaje.diferencia),
