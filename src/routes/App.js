@@ -4,13 +4,14 @@ import Login from './Login.jsx';
 import Denied from './Denied.jsx';
 import Page404 from './404.jsx';
 import { rutasProtegidas } from './access/RutasProtegidas.jsx';
-import SideBar from '../components/SideBar.jsx';
+import { DataProvider } from '../context/DataContext.jsx';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
+        <DataProvider>
+          <Routes>
           {/* Ruta pública */}
           <Route path="/login" element={<Login />} />
           <Route path='/no-autorizado' element={<Denied />} />
@@ -19,6 +20,7 @@ function App() {
           {rutasProtegidas}
           <Route path="*" element={<Page404 />} />
         </Routes>
+        </DataProvider>
       </BrowserRouter>
     </div>
   );

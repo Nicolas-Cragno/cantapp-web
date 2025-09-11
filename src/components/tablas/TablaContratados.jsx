@@ -1,39 +1,17 @@
-import { useState, useEffect, use } from "react";
+import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
-import { listarColeccion } from "../../functions/db-functions";
+import { useData } from "../../context/DataContext";
 import FichaPersonal from "../fichas/FichaPersonal";
 import FormularioPersona from "../forms/FormularioPersona";
 import "./css/Tables.css";
-import { obtenerCuitPorNombre } from "../../functions/data-functions";
-import { nombreEmpresa } from "../../functions/data-functions";
 import LogoPersonal from "../../assets/logos/logopersonal-w.png";
-import LogoProveedorTxt from "../logos/LogoProveedorTxt";
 
 const TablaContratados = ({ tipoPuesto }) => {
-  const [personas, setPersonas] = useState([]);
+  const { personas, loading } = useData();
+
   const [filtro, setFiltro] = useState("");
-  const [loading, setLoading] = useState(true);
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
-
-  // Cargar personas filtradas por puesto && cant de personas por empresa
-  const cargarPersonas = async (usarCache = true) => {
-    setLoading(true);
-    try {
-      const data = await listarColeccion("personas", usarCache);
-
-      const listadoPersonas = data.filter((p) => p.puesto === tipoPuesto);
-      setPersonas(listadoPersonas);
-    } catch (error) {
-      console.error("Error al obtener información desde db: ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    cargarPersonas();
-  }, [tipoPuesto]);
 
   // Abrir ficha persona
   const handleClickPersona = (persona) => {
@@ -51,7 +29,6 @@ const TablaContratados = ({ tipoPuesto }) => {
 
   // Guardar nueva persona o editar existente y recargar lista
   const handleGuardar = async () => {
-    await cargarPersonas(false);
     setModalAgregarVisible(false);
     setPersonaSeleccionada(null);
   };
