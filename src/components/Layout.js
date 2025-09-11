@@ -2,9 +2,9 @@ import SideBar from "./SideBar";
 import Header from "./Header";
 import usePageTitle from "./UsePageTitle";
 import "./css/Layout.css";
+import { Outlet } from "react-router-dom";
 
-export default function Layout(props) {
-  const { children } = props;
+export default function Layout() {
 
   usePageTitle();
 
@@ -14,7 +14,7 @@ export default function Layout(props) {
       <div className="main-content">
         <Header />
         <main className="page-content">
-          {children}
+          <Outlet/>
         </main>
       </div>
     </div>
