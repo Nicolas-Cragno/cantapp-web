@@ -7,6 +7,8 @@ import {
   listarColeccion,
 } from "../../functions/db-functions";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
+import { FaSignInAlt } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -94,8 +96,20 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
               <spam>{horaFormateada} HS</spam>
             </div>
             <div className="ficha-info">
-              <p>
-                <strong>Tipo: </strong> {evento.tipo}
+              <p className="ficha-type">
+                <strong>
+                  {evento.tipo === "ENTRADA" ? (
+                    <>
+                      <FaSignInAlt className="ficha-type-logo" /> ENTRADA AL
+                      PREDIO
+                    </>
+                  ) : evento.tipo === "SALIDA" ? (
+                    <>
+                      <FaSignOutAlt className="ficha-type-logo" />
+                      SALIDA DEL PREDIO
+                    </>
+                  ) : null}
+                </strong>
               </p>
               <p>
                 <strong>Chofer: </strong> {nombre}

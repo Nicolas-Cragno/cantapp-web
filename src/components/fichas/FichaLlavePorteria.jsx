@@ -7,6 +7,8 @@ import {
   listarColeccion,
   modificar,
 } from "../../functions/db-functions";
+import { FaKey } from "react-icons/fa";
+import { TbChecklist } from "react-icons/tb";
 
 const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -94,6 +96,25 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
               <span>{horaFormateada} HS</span>
             </div>
             <div className="ficha-info">
+              <p className="ficha-type">
+                <strong>
+                  {evento.tipo === "RETIRA" ? (
+                    <>
+                      <FaKey className="ficha-type-logo" /> RETIRA LLAVES
+                    </>
+                  ) : evento.tipo === "ENTREGA" || evento.tipo === "DEJA" ? (
+                    <>
+                      <FaKey className="ficha-type-logo" />
+                      ENTREGA LLAVES
+                    </>
+                  ) : evento.tipo === "INVENTARIO" ? (
+                    <>
+                      <TbChecklist className="ficha-type-logo" />
+                      INVENTARIO DE LLAVES
+                    </>
+                  ) : null}
+                </strong>
+              </p>
               <p>
                 <strong>Persona: </strong> {nombrePersona}
               </p>

@@ -149,7 +149,11 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         ...formData,
         fecha: fechaParaGuardar,
         tipo: formData.tipo ? formData.tipo.toUpperCase() : null,
-        persona: formData.persona ? Number(formData.persona) : null,
+
+        persona:
+          formData.tipo !== "INVENTARIO" && formData.persona
+            ? Number(formData.persona)
+            : null,
         operador: formData.operador ? Number(formData.operador) : null,
         tractor: formData.tractor ? formData.tractor.map(Number) : [], // array de internos
         parteTr: formData.parteTr ? formData.parteTr : false,
@@ -219,22 +223,28 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
             <button
               type="button"
               className={
-                tipoSeleccionado === "chofer"
+                formData.tipo === "INVENTARIO"
+                  ? "type-btn"
+                  : tipoSeleccionado === "chofer"
                   ? "type-btn positive-active-black"
                   : "type-btn"
               }
               onClick={() => setTipoSeleccionado("chofer")}
+              disabled={formData.tipo === "INVENTARIO"}
             >
               CHOFER {tipoSeleccionado === "chofer" ? " *" : null}
             </button>
             <button
               type="button"
               className={
-                tipoSeleccionado === "servicio"
+                formData.tipo === "INVENTARIO"
+                  ? "type-btn"
+                  : tipoSeleccionado === "servicio"
                   ? "type-btn positive-active-black"
                   : "type-btn"
               }
               onClick={() => setTipoSeleccionado("servicio")}
+              disabled={formData.tipo === "INVENTARIO"}
             >
               SERVICIO {tipoSeleccionado === "servicio" ? " *" : null}
             </button>
@@ -242,6 +252,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           <label>
             {tipoSeleccionado === "chofer" ? (
               <Select
+                isDisabled={formData.tipo === "INVENTARIO"}
                 options={personas.map((p) => ({
                   value: p.id,
                   label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
@@ -267,6 +278,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
               />
             ) : (
               <Select
+                isDisabled={formData.tipo === "INVENTARIO"}
                 options={servicios.map((s) => ({
                   value: s.id,
                   label: `${s.nombre}`,
