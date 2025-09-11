@@ -1,4 +1,4 @@
-import { collection, writeBatch, onSnapshot, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
+import { collection, writeBatch, onSnapshot, doc, getDocs, getDoc, orderBy, limit, addDoc, updateDoc, deleteDoc, query, where, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { obtenerCuitPorNombre } from "./data-functions";
 import { useState, useEffect } from "react";
@@ -120,6 +120,50 @@ export const listarColeccion = async (nombreColeccion, usarCache = true, tiempoC
 
   } catch (error) {
     console.error(`Error al obtener ${nombreColeccion}:`, error);
+    return [];
+  }
+};
+
+export const listarColeccionLimitada = async (
+  nombreColeccion,
+  limite = 100,
+  usarCache = true,
+  tiempoCacheMs = 5 * 60 * 1000
+) => {
+  const cacheKey = `${nombreColeccion}_cache_limit_${limite}`;
+  const timestampKey = `${nombreColeccion}_timestamp_limit_${limite}`;
+  const ahora = Date.now();
+
+  if (usarCache) {
+    const cache = localStorage.getItem(cacheKey);
+    const timestamp = localStorage.getItem(timestampKey);
+
+    if (cache && timestamp && ahora - Number(timestamp) < tiempoCacheMs) {
+      return JSON.parse(cache);
+    }
+  }
+
+  try {
+    // 🚀 Consultamos directamente con orderBy + limit
+    const q = query(
+      collection(db, nombreColeccion),
+      orderBy("fecha", "desc"),
+      limit(limite)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const datos = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Ya vienen ordenados por `fecha desc`, no hace falta reordenar
+    localStorage.setItem(cacheKey, JSON.stringify(datos));
+    localStorage.setItem(timestampKey, ahora.toString());
+
+    return datos;
+  } catch (error) {
+    console.error(`Error al obtener ${nombreColeccion} (limitada):`, error);
     return [];
   }
 };

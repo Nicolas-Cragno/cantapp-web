@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import FormularioViaje from "../forms/FormularioViaje";
 import { FaPray } from "react-icons/fa";
 
-const FichaViaje = ({ viaje, onGuardar, onClose }) => {
+const FichaViaje = ({ viaje, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [formData, setFormData] = useState(null);
   const [vacio, setVacio] = useState(true); // viaje con/sin furgon
@@ -23,6 +23,8 @@ const FichaViaje = ({ viaje, onGuardar, onClose }) => {
     setLoading(true);
 
     try {
+      setLoading(true);
+
       const dominioT = await buscarDominioT(viaje.tractor);
 
       setFormData({

@@ -8,11 +8,14 @@ import {
 import { MdEventNote } from "react-icons/md";
 import FichaEventoPorteria from "./FichaEventoPorteria";
 import FichaLlavePorteria from "./FichaLlavePorteria";
+import FichaViaje from "./FichaViaje";
 import { useState, useEffect } from "react";
 import FormularioVehiculo from "../forms/FormularioVehiculo";
 import { listarColeccion } from "../../functions/db-functions";
 import { FaKey } from "react-icons/fa6";
 import { IoEnterSharp } from "react-icons/io5";
+import { FaRoute } from "react-icons/fa";
+
 import { IoLogOutSharp } from "react-icons/io5";
 
 const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
@@ -163,6 +166,8 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
                       className="item-list"
                       onClick={() => setEventoSeleccionado(e)}
                     >
+                      {/* ---------------------------------------------------------------- TIPOS */}
+                      {/* ----------------------------- PORTERIA */}
                       {e.tipo === "ENTREGA" ||
                       e.tipo === "RETIRA" ||
                       e.tipo === "DEJA" ? (
@@ -186,6 +191,13 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
                           )}
                         </>
                       )}
+                      {/* ----------------------------- COMBUSTIBLE */}
+                      {e.tipo === "VIAJE" ||
+                        (e.tipo === "viaje" && (
+                          <>
+                            <FaRoute /> {e.tipo.toUpperCase()}
+                          </>
+                        ))}
                       <span>
                         {formatearFecha(e.fecha)} | {formatearHora(e.fecha)} hs
                       </span>{" "}
@@ -214,12 +226,18 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
             evento={eventoSeleccionado}
             onClose={() => setEventoSeleccionado(null)}
           />
-        ) : (
+        ) : ["ENTRADA", "SALIDA"].includes(eventoSeleccionado.tipo) ? (
           <FichaEventoPorteria
             evento={eventoSeleccionado}
             onClose={() => setEventoSeleccionado(null)}
           />
-        ))}
+        ) : eventoSeleccionado.tipo === "viaje" ||
+          eventoSeleccionado.tipo === "VIAJE" ? (
+          <FichaViaje
+            evento={eventoSeleccionado}
+            onClose={() => setEventoSeleccionado(null)}
+          />
+        ) : null)}
     </>
   );
 };
