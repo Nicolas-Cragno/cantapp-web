@@ -175,6 +175,27 @@
   margin-bottom: 2rem;
 }
 
+.login-logo-load {
+ 
+  width: 220px;
+  display: block;
+  margin: 0 auto;
+  animation: spin-pulse-random 2s ease-in-out infinite;
+}
+
+@keyframes spin-pulse-random {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(185deg) scale(0.5);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+
 .txt-white{
   color: #fff;
 }

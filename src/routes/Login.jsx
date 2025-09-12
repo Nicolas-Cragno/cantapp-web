@@ -9,9 +9,11 @@ import Swal from "sweetalert2";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
@@ -24,7 +26,7 @@ const Login = () => {
       if (docSnap.exists()) {
         const usuario = docSnap.data();
         localStorage.setItem("usuario", JSON.stringify(usuario)); // guarda nombre y rol
-
+        setLoading(false);
         navigate("/");
       } else {
         Swal.fire({
@@ -48,30 +50,34 @@ const Login = () => {
 
   return (
     <div className="page login">
-      <div className="login-card">
-        <div className="login-header">
-          <img src={Logo} alt="" className="login-logo"></img>
-          <h2>Iniciar sesión</h2>
+      {loading ? (
+        <img src={Logo} alt="" className="login-logo-load"></img>
+      ) : (
+        <div className="login-card">
+          <div className="login-header">
+            <img src={Logo} alt="" className="login-logo"></img>
+            <h2>Iniciar sesión</h2>
+          </div>
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Correo"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <br />
+            <button type="submit">Entrar</button>
+          </form>
         </div>
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Correo"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <br />
-          <button type="submit">Entrar</button>
-        </form>
-      </div>
+      )}
     </div>
   );
 };
