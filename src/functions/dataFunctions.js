@@ -48,6 +48,15 @@ export const useBuscarPersona = (dni, completo=true) => {
   return completo ? nombreCompleto : nombreAbreviado;
 }
 
+export const buscarPersona = (coleccion, dni, completo=true) => {
+  if (!dni) return "";
+  const persona = coleccion.find((p) => p.dni === dni || p.id === dni);
+  if (!persona) return "";
+  const nombreCompleto = `${persona.apellido}, ${persona.nombres}`;
+  const nombreAbreviado = `${persona.apellido}, ${persona.nombres[0]}.`;
+  return completo ? nombreCompleto : nombreAbreviado;
+}
+
 // ----------------------------------------------------------------------- Vehiculos
 
 export const useBuscarDominio = (interno, tipo = "tractor") => {
@@ -65,6 +74,17 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
 
   return vehiculo ? vehiculo.dominio : valorError;
 }
+
+export const buscarDominio = (interno, coleccion = []) => {
+
+
+  if (!interno) return "";
+  let vehiculo = null;
+
+  vehiculo = coleccion.find((v) => v.interno === interno || v.id === interno);
+
+  return vehiculo ? vehiculo.dominio : "";
+};
 
 // ----------------------------------------------------------------------- Formato fecha
 

@@ -1,6 +1,24 @@
 import "./css/Tables.css";
 
 const TablaColeccion = ({ columnas, datos, onRowClick }) => {
+  const datosOrdenados = [...datos].sort((a, b) => {
+    if (a.fecha && b.fecha) {
+      const fechaA = a.fecha.seconds
+        ? new Date(a.fecha.seconds * 1000)
+        : new Date(a.fecha);
+      const fechaB = b.fecha.seconds
+        ? new Date(b.fecha.seconds * 1000)
+        : new Date(b.fecha);
+      return fechaB - fechaA;
+    } else if (a.id && b.id) {
+      return a.id
+        .toString()
+        .localeCompare(b.id.toString(), undefined, { numeric: true });
+    } else {
+      return 0;
+    }
+  });
+
   return (
     <div className="table-scroll-wrapper">
       <table className="table-lista">
@@ -15,7 +33,7 @@ const TablaColeccion = ({ columnas, datos, onRowClick }) => {
       <div className="table-body-wrapper">
         <table className="table-lista">
           <tbody className="table-body">
-            {datos.map((item) => (
+            {datosOrdenados.map((item) => (
               <tr
                 key={item.id}
                 onClick={() => onRowClick && onRowClick(item)}
