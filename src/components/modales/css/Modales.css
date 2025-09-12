@@ -1,0 +1,442 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: right;
+  align-items: top;
+  z-index: 999;
+  text-align: left;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.modal-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-title{
+font-size: 1.8rem;
+}
+
+.modal-subtitle{
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  margin-bottom: -2rem;
+  max-height: max-content;
+}
+
+.modal-label{
+  margin-right: 1rem;
+  font-weight: bolder;
+}
+
+.modal-type-logo{
+  margin-right: .4rem;
+}
+
+.modal-card-info {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between; 
+  align-items: center;
+  width: 100%;
+}
+
+.modal-card-info-item {
+  flex: 1;            
+  text-align: center;      
+  padding: 0.2rem;           
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.modal-content-2 {  /* para modal de personas que necesito mas espacio para los datos */
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 1200px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.8rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.person-name {
+  font-size: 2.3rem;
+  margin: 0; 
+}
+
+.vehiculo-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.apellido {
+  font-weight: 700;
+  display: block;
+}
+
+.interno {
+  color: #888;
+  font-weight: 400;
+  display: block;
+}
+
+.infobox{
+  margin-left: 1rem;
+  border-radius: 1rem;
+  padding: .2rem;
+  padding-right: .5rem;
+  padding-left: .5rem;
+  color: #fff;
+  font-size: small;
+  font-weight: 600;
+}
+
+.infobox-mini{
+  border-radius: 1rem;
+  padding: .1rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
+  color: #fff;
+  font-size: small;
+  font-weight: 500;
+  margin-left: -1rem;
+}
+
+.item-list{
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: .5rem;
+  padding-right: .5rem;
+  padding-left: .5rem;
+}
+
+.item-list:hover{
+  background-color: #ccc;
+  font-weight: bold;
+}
+
+
+.greenbox{
+background-color: #058516;
+}
+
+.blackbox{
+background-color: black;
+}
+
+.redbox{
+background-color: #d8252a;
+}
+
+.nombres {
+  color: #888; 
+  font-size: 1.8rem; 
+  font-weight: 400;
+  display: block;
+}
+
+.dominio {
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.info-right {
+  display: flex;
+  justify-content: right;
+  margin-top: -0.7rem;
+}
+
+.hora {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -0.7rem;
+  font-weight: 600;
+}
+
+.modal-info-title{
+  margin-bottom: -2rem;
+}
+
+.modal-info-item{
+  display: flex;
+  padding-left: 2.3rem;
+}
+
+.modal-info-item-txt{
+  padding-left: 0.8rem;
+}
+.modal-info {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
+}
+
+.modal-info-small {
+max-height: 50;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
+}
+
+.modal-info-box{
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
+  max-height: 15rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.cant-detail{
+  background-color: black;
+  color: white;
+  padding-right: 0.4rem;
+  padding-left: 0.4rem;
+  margin-left: .6rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-size: small;
+}
+
+.modal-buttons {
+  padding-top: 1rem;
+  display: flex;
+  justify-content: right;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.modal-buttons button {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  min-width: 100px;
+}
+.col-img{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* chequeos */
+
+.chequeos-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chequeo-item {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+  color: white;
+}
+
+.chequeo-ok {
+  background-color: #2ecc71;
+}
+
+.chequeo-fail {
+  background-color: #999; 
+  opacity: 0.5;
+}
+
+.checkbox-list {
+  margin: 0.2rem;
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #999;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: max-content;
+  /* overflow-y: auto; SCROLL*/
+  padding: 0.5rem;
+}
+
+/* perfil */
+.perfil-box{
+  background-color: red;
+  border-style: solid;
+  border-width: 1px;
+  margin-bottom: 1rem;
+}
+.perfil-image{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+.perfil-img{
+    max-width: 350px;
+    background-color: #888;
+}
+
+.perfil-header{
+  display: block;
+}
+
+.perfil-persona{
+  display: block;
+}
+
+.perfil-apellido{
+  font-size: 3rem;
+}
+.perfil-nombre{
+  font-size: 1.5rem;
+}
+/* Botón guardar */
+.modal-buttons button {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-buttons button:hover {
+  background-color: #0056b3;
+}
+/* Botón guardar */
+.modal-buttons button {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-buttons button:hover {
+  background-color: #0056b3;
+}
+
+/* Celulares */
+@media (max-width: 640px) {
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    border-radius: 0;
+    height: 100%;
+    max-height: 100%;
+    padding-top: 3rem !important;
+  }
+
+  .person-name {
+    font-size: 1.8rem;
+  }
+
+  .nombres {
+    font-size: 1.4rem;
+  }
+
+  .dominio {
+    font-size: 1.8rem;
+  }
+
+  .modal-buttons {
+    justify-content: center;
+    padding-top: 1rem;
+  }
+
+  .modal-buttons button {
+    flex: 1 1 100%;
+    min-width: unset;
+    font-size: 1rem;
+    padding: 0.75rem 0;
+  }
+}
+
+/* Tablets */
+@media (min-width: 641px) and (max-width: 991.98px) {
+  .modal-content {
+    max-width: 400px;
+    padding: 1.5rem;
+    padding-top: 3rem !important;
+  }
+
+  .person-name {
+    font-size: 2rem;
+  }
+
+  .nombres {
+    font-size: 1.6rem;
+  }
+
+  .dominio {
+    font-size: 2rem;
+  }
+}
+
+/* Desktops */
+@media (min-width: 992px) {
+  .modal-content {
+    max-width: 500px;
+  }
+
+  .person-name {
+    font-size: 2.3rem;
+  }
+
+  .nombres {
+    font-size: 1.8rem;
+  }
+
+  .dominio {
+    font-size: 2.2rem;
+  }
+}

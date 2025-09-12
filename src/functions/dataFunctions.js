@@ -1,6 +1,7 @@
 import unidades from "./data/unidades.json";
 import { useData } from "../context/DataContext";
 
+
 // ----------------------------------------------------------------------- Nombre de empresas
 export const useNombreEmpresa = (cuit) => {
   const { empresas } = useData();
@@ -20,6 +21,15 @@ export const useObtenerCuitPorNombre = (nombreEmpresa) => {
 
   const empresa = empresas.find((e) => e.nombre === nombreEmpresa);
   return empresa ? empresa.cuit : valorError;
+}
+
+export const buscarEmpresa = (coleccion, cuit, completo=true) => {
+  if (!cuit) return "";
+  const empresa = coleccion.find((e) => e.cuit === cuit || e.id === cuit);
+  if (!empresa) return "";
+  const nombreCompleto = `${empresa.nombre}`;
+  const abreviatura = `${empresa.abreviatura}`;
+  return completo ? nombreCompleto : abreviatura;
 }
 
 // ----------------------------------------------------------------------- Personas
@@ -56,6 +66,8 @@ export const buscarPersona = (coleccion, dni, completo=true) => {
   const nombreAbreviado = `${persona.apellido}, ${persona.nombres[0]}.`;
   return completo ? nombreCompleto : nombreAbreviado;
 }
+
+
 
 // ----------------------------------------------------------------------- Vehiculos
 

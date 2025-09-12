@@ -17,20 +17,27 @@ import FichaLlavePorteria from "../../components/fichas/FichaLlavePorteria";
 import FormularioEventoPorteria from "../../components/forms/FormularioEventoPorteria";
 import FormularioLlavePorteria from "../../components/forms/FormularioLlavePorteria";
 
+import ModalVehiculo from "../../components/modales/ModalVehiculo";
+import ModalPersona from "../../components/modales/ModalPersona";
+
 // ----------------------------------------------------------------------- visuales, logos, etc
 import { FaSpinner } from "react-icons/fa";
 import { IoKeySharp } from "react-icons/io5";
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
+import LogoPersona from "../../assets/logos/logopersonal-w.png";
 
 const Movimientos = () => {
   const AREA = "porteria";
-  const { eventos, personas, loading } = useData();
+  const { eventos, personas, tractores, furgones, loading } = useData();
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalKeyVisible, setModalKeyVisible] = useState(false);
+  const [ModalTractorVisible, setModalTractorVisible] = useState(false);
+  const [ModalFurgonVisible, setModalFurgonVisible] = useState(false);
+  const [ModalPersonaVisible, setModalPersonaVisible] = useState(false);
 
   const columnasPorteria = [
     {
@@ -85,6 +92,18 @@ const Movimientos = () => {
   };
   const cerrarModalKey = () => {
     setModalKeyVisible(false);
+  };
+
+  const cerrarModalTractor = () => {
+    setModalTractorVisible(false);
+  };
+
+  const cerrarModalFurgon = () => {
+    setModalFurgonVisible(false);
+  };
+
+  const cerrarModalPersona = () => {
+    setModalPersonaVisible(false);
   };
 
   const handleGuardar = async () => {
@@ -170,17 +189,43 @@ const Movimientos = () => {
         />
       )}
 
+      {ModalTractorVisible && (
+        <ModalVehiculo
+          coleccion={tractores}
+          tipo={"tractores"}
+          onClose={cerrarModalTractor}
+        />
+      )}
+
+      {ModalPersonaVisible && <ModalPersona onClose={cerrarModalPersona} />}
+
+      {ModalFurgonVisible && (
+        <ModalVehiculo
+          coleccion={furgones}
+          tipo={"furgones"}
+          onClose={cerrarModalFurgon}
+        />
+      )}
+
       <div className="table-options">
-        <Link to="/furgones">
-          <button className="table-agregar">
-            <img src={LogoFurgon} alt="" className="table-logo2" />
-          </button>
-        </Link>
-        <Link to="/tractores">
-          <button className="table-agregar">
-            <img src={LogoTractor} alt="" className="table-logo2" />
-          </button>
-        </Link>
+        <button
+          className="table-agregar"
+          onClick={() => setModalFurgonVisible(true)}
+        >
+          <img src={LogoFurgon} alt="" className="table-logo2" />
+        </button>
+        <button
+          className="table-agregar"
+          onClick={() => setModalTractorVisible(true)}
+        >
+          <img src={LogoTractor} alt="" className="table-logo2" />
+        </button>
+        <button
+          className="table-agregar"
+          onClick={() => setModalPersonaVisible(true)}
+        >
+          <img src={LogoPersona} alt="" className="table-logo2" />
+        </button>
         <button
           className="table-agregar"
           onClick={() => setModalKeyVisible(true)}

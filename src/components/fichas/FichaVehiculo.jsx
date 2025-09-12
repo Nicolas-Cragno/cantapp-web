@@ -206,9 +206,11 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
                 </div>
               </>
             ) : null}
-            <div className="ficha-buttons">
-              <button onClick={() => setModoEdicion(true)}>Editar</button>
-            </div>
+            {onGuardar ? (
+              <div className="ficha-buttons">
+                <button onClick={() => setModoEdicion(true)}>Editar</button>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : (

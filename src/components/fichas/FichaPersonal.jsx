@@ -93,6 +93,7 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
             <div className="ficha-info">
               <p>{persona.detalle || ""}</p>
             </div>
+            {/*
             {eventos.length > 0 ? (
               <div className="ficha-info">
                 {eventos.map((evento, index) => (
@@ -108,9 +109,12 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
                 ))}
               </div>
             ) : null}
-            <div className="ficha-buttons">
-              <button onClick={() => setModoEdicion(true)}>Editar</button>
-            </div>
+            */}
+            {onGuardar ? (
+              <div className="ficha-buttons">
+                <button onClick={() => setModoEdicion(true)}>Editar</button>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : (
