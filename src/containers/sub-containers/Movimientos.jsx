@@ -208,36 +208,40 @@ const Movimientos = () => {
       )}
 
       <div className="table-options">
-        <button
-          className="table-agregar"
-          onClick={() => setModalFurgonVisible(true)}
-        >
-          <img src={LogoFurgon} alt="" className="table-logo2" />
-        </button>
-        <button
-          className="table-agregar"
-          onClick={() => setModalTractorVisible(true)}
-        >
-          <img src={LogoTractor} alt="" className="table-logo2" />
-        </button>
-        <button
-          className="table-agregar"
-          onClick={() => setModalPersonaVisible(true)}
-        >
-          <img src={LogoPersona} alt="" className="table-logo2" />
-        </button>
-        <button
-          className="table-agregar"
-          onClick={() => setModalKeyVisible(true)}
-        >
-          <IoKeySharp className="button-logo" />
-        </button>
-        <button
-          className="table-agregar"
-          onClick={() => setModalAgregarVisible(true)}
-        >
-          + AGREGAR
-        </button>
+        <div className="table-options-group">
+          <button
+            className="table-agregar"
+            onClick={() => setModalFurgonVisible(true)}
+          >
+            <img src={LogoFurgon} alt="" className="table-logo2" />
+          </button>
+          <button
+            className="table-agregar"
+            onClick={() => setModalTractorVisible(true)}
+          >
+            <img src={LogoTractor} alt="" className="table-logo2" />
+          </button>
+          <button
+            className="table-agregar"
+            onClick={() => setModalPersonaVisible(true)}
+          >
+            <img src={LogoPersona} alt="" className="table-logo2" />
+          </button>
+        </div>
+        <div className="table-options-group">
+          <button
+            className="table-agregar"
+            onClick={() => setModalKeyVisible(true)}
+          >
+            <IoKeySharp className="button-logo" />
+          </button>
+          <button
+            className="table-agregar"
+            onClick={() => setModalAgregarVisible(true)}
+          >
+            + AGREGAR
+          </button>
+        </div>
       </div>
     </section>
   );
