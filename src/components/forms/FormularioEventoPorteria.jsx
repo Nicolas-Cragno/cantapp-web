@@ -40,6 +40,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [furgones, setFurgones] = useState([]);
   const [operadores, setOperadores] = useState([]);
   const [furgonCargado, setFuegonCargado] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -120,6 +121,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true); // para evitar doble carga/duplicados
 
     try {
       let fechaParaGuardar;
@@ -391,7 +393,9 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <div className="form-buttons">
-            <button type="submit">Guardar</button>
+            <button type="submit" disabled={uploading}>
+              {uploading ? "Guardando..." : "Guardar"}
+            </button>
             <button type="button" onClick={onClose}>
               Cancelar
             </button>

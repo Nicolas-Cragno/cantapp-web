@@ -30,6 +30,7 @@ const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   const [personas, setPersonas] = useState([]);
   const [tractores, setTractores] = useState([]);
   const [furgones, setFurgones] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const cargarPersonas = async () => {
@@ -71,6 +72,7 @@ const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
 
     try {
       let fechaParaGuardar;
@@ -222,7 +224,9 @@ const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
           </div>
 
           <div className="form-buttons">
-            <button type="submit">Guardar</button>
+            <button type="submit" disabled={uploading}>
+              {uploading ? "Guardando..." : "Guardar"}
+            </button>
             <button type="button" onClick={onClose}>
               Cancelar
             </button>

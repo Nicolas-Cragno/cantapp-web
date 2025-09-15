@@ -32,6 +32,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
   const [tractores, setTractores] = useState([]);
   const [dejaParteTr, setDejaParteTr] = useState(false); // para partes de taller de tractores
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -134,6 +135,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
 
     try {
       let fechaParaGuardar;
@@ -386,7 +388,9 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <div className="form-buttons">
-            <button type="submit">Guardar</button>
+            <button type="submit" disabled={uploading}>
+              {uploading ? "Guardando ... " : "Guardar"}
+            </button>
             <button type="button" onClick={onClose}>
               Cancelar
             </button>

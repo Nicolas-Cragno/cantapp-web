@@ -21,6 +21,7 @@ const FormularioPersona = ({
   const [detalle, setDetalle] = useState("");
   const [puesto] = useState(tipoPuesto);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const modoEdicion = !!persona;
 
@@ -35,6 +36,7 @@ const FormularioPersona = ({
   }, [modoEdicion, persona]);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
 
     if (!apellido.trim() || !nombres.trim() || !String(dni).trim()) {
       Swal.fire({
@@ -179,10 +181,10 @@ const FormularioPersona = ({
             />
           </label>
           <div className="form-buttons">
-            <button type="submit" disabled={loading}>
-              {loading ? "Guardando..." : "Guardar"}
+            <button type="submit" disabled={uploading}>
+              {uploading ? "Guardando..." : "Guardar"}
             </button>
-            <button type="button" onClick={onClose} disabled={loading}>
+            <button type="button" onClick={onClose} disabled={uploading}>
               Cancelar
             </button>
           </div>

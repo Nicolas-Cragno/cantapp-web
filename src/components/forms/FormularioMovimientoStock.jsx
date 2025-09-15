@@ -17,6 +17,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
   const [ingresos, setIngresos] = useState([]);
   const [tipoMovimiento, setTipoMovimiento] = useState("ALTA");
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   console.log("Ingresos:", ingresos);
 
@@ -71,6 +72,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
 
   const handleGuardar = async (e) => {
     e.preventDefault();
+    setUploading(true);
 
     if (ingresos.length === 0) {
       Swal.fire("Atención", "No hay artículos cargados", "info");
@@ -208,8 +210,8 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
           </div>
 
           <div className="form-buttons">
-            <button type="submit" disabled={loading} onClick={handleGuardar}>
-              {loading ? "Guardando..." : "Guardar"}
+            <button type="submit" disabled={uploading} onClick={handleGuardar}>
+              {uploading ? "Guardando..." : "Guardar"}
             </button>
             <button type="button" onClick={onClose} disabled={loading}>
               Cancelar

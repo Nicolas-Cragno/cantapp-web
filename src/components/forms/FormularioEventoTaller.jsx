@@ -52,6 +52,8 @@ const FormularioEventoTaller = ({
   const [unidad, setUnidad] = useState("");
   const [ingresos, setIngresos] = useState([]); // para el listado de repuestos a usar
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false); // Para evitar doble cargas
+
   useEffect(() => {
     const cargarMecanicos = async () => {
       try {
@@ -137,6 +139,7 @@ const FormularioEventoTaller = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
     let idGuardado;
 
     try {
@@ -442,7 +445,9 @@ const FormularioEventoTaller = ({
               )}
             </div>
             <div className="form-buttons">
-              <button type="submit">Guardar</button>
+              <button type="submit" disabled={uploading}>
+                {uploading ? "Guardando ..." : "Guardar"}
+              </button>
               <button type="button" onClick={onClose}>
                 Cancelar
               </button>
