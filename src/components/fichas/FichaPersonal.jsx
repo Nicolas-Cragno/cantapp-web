@@ -1,37 +1,17 @@
-import "./css/Fichas.css";
+// ----------------------------------------------------------------------- imports externos
+import { useState } from "react";
+// ----------------------------------------------------------------------- internos
 import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
-import { listarColeccion } from "../../functions/db-functions";
-import { useEffect, useState } from "react";
-
+import TablaEventosReducida from "../tablas/TablaEventosReducida";
 import FormularioPersona from "../forms/FormularioPersona";
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/Fichas.css";
 import LogoEmpresa from "../logos/LogoEmpresa";
 
 const FichaPersonal = ({ persona, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [eventos, setEventos] = useState([]);
-
-  useEffect(() => {
-    const cargarEventos = async () => {
-      try {
-        const listaEventos = await listarColeccion("eventos", true);
-        const listaFiltrada = listaEventos.filter(
-          (e) => e.persona === persona.dni
-        );
-
-        setEventos(listaFiltrada);
-        console.log("Carga de eventos realizada");
-      } catch (error) {
-        console.log("Error al cargar eventos de la persona: ", error);
-      }
-    };
-
-    if (persona?.dni) {
-      cargarEventos();
-    }
-  }, [persona?.dni]);
 
   if (!persona) return null;
-  const empresa = nombreEmpresa(persona.empresa);
   const fechaIngreso = formatearFecha(persona.ingreso);
 
   const handleGuardado = async (personaModificada) => {
@@ -87,29 +67,21 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
                 </div>
               </div>
             </div>
-            <p className="ficha-info-title">
-              <strong>Detalle</strong>
-            </p>
-            <div className="ficha-info">
-              <p>{persona.detalle || ""}</p>
-            </div>
-            {/*
-            {eventos.length > 0 ? (
-              <div className="ficha-info">
-                {eventos.map((evento, index) => (
-                  <div key={index} className="eventopersona-item">
-                    <strong>
-                      <span key={index}>{formatearFecha(evento.fecha)}</span>
-                    </strong>
-                    <span>{evento.subtipo}</span>
-                    {evento.tractor ? (
-                      <span>(tractor {evento.tractor})</span>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
+            {persona.detalle ? (
+              <>
+                <p className="ficha-info-title">
+                  <strong>Detalle</strong>
+                </p>
+                <div className="ficha-info">
+                  <p>{persona.detalle || ""}</p>
+                </div>
+              </>
             ) : null}
-            */}
+            <TablaEventosReducida
+              tipoColeccion={"persona"}
+              identificador={persona.dni}
+            />
+
             {onGuardar ? (
               <div className="ficha-buttons">
                 <button onClick={() => setModoEdicion(true)}>Editar</button>

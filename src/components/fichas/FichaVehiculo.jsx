@@ -1,22 +1,24 @@
-import "./css/Fichas.css";
-import {
-  nombreEmpresa,
-  formatearFecha,
-  buscarPersona,
-  formatearHora,
-} from "../../functions/data-functions";
-import { MdEventNote } from "react-icons/md";
-import FichaEventoPorteria from "./FichaEventoPorteria";
-import FichaLlavePorteria from "./FichaLlavePorteria";
-import FichaViaje from "./FichaViaje";
+// ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
-import FormularioVehiculo from "../forms/FormularioVehiculo";
-import { listarColeccion } from "../../functions/db-functions";
 import { FaKey } from "react-icons/fa6";
 import { IoEnterSharp } from "react-icons/io5";
 import { FaRoute } from "react-icons/fa";
-
 import { IoLogOutSharp } from "react-icons/io5";
+
+// ----------------------------------------------------------------------- internos
+import {
+  nombreEmpresa,
+  formatearFecha,
+  formatearHora,
+} from "../../functions/data-functions";
+import FichaEventoPorteria from "./FichaEventoPorteria";
+import FichaLlavePorteria from "./FichaLlavePorteria";
+import FichaViaje from "./FichaViaje";
+import FormularioVehiculo from "../forms/FormularioVehiculo";
+import { listarColeccion } from "../../functions/db-functions";
+
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/Fichas.css";
 
 const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);

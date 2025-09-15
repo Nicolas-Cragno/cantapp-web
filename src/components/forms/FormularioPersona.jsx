@@ -9,7 +9,7 @@ import {
 } from "../../functions/data-functions";
 
 const FormularioPersona = ({
-  tipoPuesto,
+  tipoPuesto = null,
   persona = null,
   onClose,
   onGuardar,

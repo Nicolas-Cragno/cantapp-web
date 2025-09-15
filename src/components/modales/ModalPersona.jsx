@@ -7,14 +7,19 @@ import { buscarPersona } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import FichaPersonal from "../fichas/FichaPersonal";
+import FormPersona from "../forms/FormPersona";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Modales.css";
+import { BsPersonDash } from "react-icons/bs"; // logo innactiva
+import { BsPersonCheck } from "react-icons/bs"; // logo activa
+import { BsPersonPlusFill } from "react-icons/bs"; // logo agregar
 
 const ModalPersona = ({ puesto = null, onClose }) => {
   const [filtro, setFiltro] = useState("");
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
+  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const { personas } = useData();
 
   const columnasPersona = [
@@ -36,10 +41,24 @@ const ModalPersona = ({ puesto = null, onClose }) => {
       campo: "empresa",
       render: (e) => <LogoEmpresaTxt cuitEmpresa={e} completo={false} />,
     },
+    {
+      titulo: "",
+      campo: "estado",
+      render: (e) =>
+        e === true ? (
+          <BsPersonCheck className="logoestado logo-active" />
+        ) : (
+          <BsPersonDash className="logoestado logo-disabled" />
+        ),
+    },
   ];
 
   const cerrarModalFicha = () => {
     setModalFichaVisible(false);
+  };
+
+  const cerrarModalAgregar = () => {
+    setModalAgregarVisible(false);
   };
 
   const personasFiltradas = useMemo(() => {
@@ -49,8 +68,9 @@ const ModalPersona = ({ puesto = null, onClose }) => {
 
     if (filtro) {
       datos = datos.filter((p) => {
+        const estado = p.estado ? "activo" : "inactivo";
         const texto =
-          `${p.apellido} ${p.nombres} ${p.dni} ${p.puesto}`.toLowerCase();
+          `${p.apellido} ${p.nombres} ${p.dni} ${p.puesto} ${estado}`.toLowerCase();
         return texto.includes(filtro.toLowerCase());
       });
     }
@@ -90,12 +110,20 @@ const ModalPersona = ({ puesto = null, onClose }) => {
           }}
         />
 
+        <div className="ficha-buttons">
+          <button onClick={() => setModalAgregarVisible(true)}>
+            <BsPersonPlusFill size={26} />
+          </button>
+        </div>
+
         {modalFichaVisible && (
           <FichaPersonal
             persona={personaSeleccionada}
             onClose={cerrarModalFicha}
           />
         )}
+
+        {modalAgregarVisible && <FormPersona onClose={cerrarModalAgregar} />}
       </div>
     </div>
   );

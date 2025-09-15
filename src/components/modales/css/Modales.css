@@ -40,6 +40,22 @@ font-size: 1.8rem;
   margin-right: .4rem;
 }
 
+.logoestado {
+  font-size: 24px; 
+}
+
+.logo-active{
+  color: #058516;
+}
+
+.logo-disabled{
+color:#888
+}
+
+.btn-logo{
+  size: 25px;
+}
+
 .modal-card-info {
   display: flex;
   gap: 0.5rem;

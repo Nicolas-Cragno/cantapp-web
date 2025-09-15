@@ -1,5 +1,6 @@
 import unidades from "./data/unidades.json";
 import { useData } from "../context/DataContext";
+import { collection } from "firebase/firestore";
 
 
 // ----------------------------------------------------------------------- Nombre de empresas
@@ -30,6 +31,23 @@ export const buscarEmpresa = (coleccion, cuit, completo=true) => {
   const nombreCompleto = `${empresa.nombre}`;
   const abreviatura = `${empresa.abreviatura}`;
   return completo ? nombreCompleto : abreviatura;
+}
+
+export const buscarCuitEmpresa = (coleccion, nombre) => {
+  if(!nombre) return 0;
+
+  const empresa = coleccion.find((e) => e.nombre.toUpperCase() === nombre.toUpperCase());
+  if(!empresa) return 0;
+  const cuit = empresa.cuit || empresa.id;
+  return cuit;
+}
+
+export const verificarDuplicado = (coleccion, identificador) => {
+  const auxId = coleccion.find((idx) => idx.id === identificador);
+
+  if(auxId === identificador) return true;
+
+  return false;
 }
 
 // ----------------------------------------------------------------------- Personas
@@ -67,6 +85,23 @@ export const buscarPersona = (coleccion, dni, completo=true) => {
   return completo ? nombreCompleto : nombreAbreviado;
 }
 
+export const calcularEdad = (fechaNacimiento) => {
+  if (!fechaNacimiento) return null;
+
+  // Si es Timestamp de Firestore, convertir a Date
+  const fecha = fechaNacimiento.toDate ? fechaNacimiento.toDate() : new Date(fechaNacimiento);
+
+  const hoy = new Date();
+  let edad = hoy.getFullYear() - fecha.getFullYear();
+  const mes = hoy.getMonth() - fecha.getMonth();
+
+  // Si aún no cumplió años este año, restar 1
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
+    edad--;
+  }
+
+  return edad;
+}
 
 
 // ----------------------------------------------------------------------- Vehiculos
