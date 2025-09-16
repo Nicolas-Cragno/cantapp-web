@@ -37,9 +37,10 @@ const Movimientos = () => {
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalKeyVisible, setModalKeyVisible] = useState(false);
-  const [ModalTractorVisible, setModalTractorVisible] = useState(false);
-  const [ModalFurgonVisible, setModalFurgonVisible] = useState(false);
-  const [ModalPersonaVisible, setModalPersonaVisible] = useState(false);
+  const [modalTractorVisible, setModalTractorVisible] = useState(false);
+  const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
+  const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
+  const [modalStockVisible, setModalStockVisible] = useState(false);
 
   const columnasPorteria = [
     {
@@ -111,6 +112,10 @@ const Movimientos = () => {
 
   const cerrarModalPersona = () => {
     setModalPersonaVisible(false);
+  };
+
+  const cerrarModalStock = () => {
+    setModalStockVisible(false);
   };
 
   const handleGuardar = async () => {
@@ -196,7 +201,7 @@ const Movimientos = () => {
         />
       )}
 
-      {ModalTractorVisible && (
+      {modalTractorVisible && (
         <ModalVehiculo
           coleccion={tractores}
           tipo={"tractores"}
@@ -204,9 +209,9 @@ const Movimientos = () => {
         />
       )}
 
-      {ModalPersonaVisible && <ModalPersona onClose={cerrarModalPersona} />}
+      {modalPersonaVisible && <ModalPersona onClose={cerrarModalPersona} />}
 
-      {ModalFurgonVisible && (
+      {modalFurgonVisible && (
         <ModalVehiculo
           coleccion={furgones}
           tipo={"furgones"}

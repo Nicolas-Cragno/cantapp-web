@@ -5,6 +5,7 @@ import { listarColeccion } from "../../functions/db-functions";
 import { agregarEvento } from "../../functions/event-functions";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import Swal from "sweetalert2";
+import { agregarItem, quitarItem } from "../../functions/stockFunctions";
 import { FaCheck as OkLogo } from "react-icons/fa";
 
 import { GiCancel as XLogo } from "react-icons/gi";
@@ -13,6 +14,7 @@ import { formatearFecha, formatearHora } from "../../functions/data-functions"; 
 import tiposEventos from "../../functions/data/eventos.json";
 
 const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
+  const SUCURSAL = "01";
   const area = "porteria";
 
   const [formData, setFormData] = useState({
@@ -162,6 +164,17 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
       };
 
       await agregarEvento(datosAGuardar, area, evento.id);
+      if (datosAGuardar.tipo === "ENTRADA") {
+        agregarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
+        if (datosAGuardar.furgon) {
+          agregarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
+        }
+      } else if (datosAGuardar.tipo === "SALIDA") {
+        quitarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
+        if (datosAGuardar.furgon) {
+          quitarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
+        }
+      }
 
       if (onGuardar) onGuardar();
       Swal.fire({
