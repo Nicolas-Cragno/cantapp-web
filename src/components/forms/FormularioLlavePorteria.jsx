@@ -151,7 +151,10 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         ...formData,
         fecha: fechaParaGuardar,
         tipo: formData.tipo ? formData.tipo.toUpperCase() : null,
-
+        servicio:
+          formData.tipo !== "INVENTARIO" && formData.servicio
+            ? Number(formData.servicio)
+            : null,
         persona:
           formData.tipo !== "INVENTARIO" && formData.persona
             ? Number(formData.persona)
