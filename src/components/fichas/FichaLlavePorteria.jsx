@@ -1,21 +1,29 @@
-import "./css/Fichas.css";
-import { formatearFecha, formatearHora } from "../../functions/data-functions";
+// ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
+import { FaKey } from "react-icons/fa";
+import { TbChecklist } from "react-icons/tb";
+// ----------------------------------------------------------------------- internos
+import { useData } from "../../context/DataContext";
+import { formatearFecha, formatearHora } from "../../functions/data-functions";
 import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
 import {
   buscarNombrePorDni,
   listarColeccion,
   modificar,
 } from "../../functions/db-functions";
-import { FaKey } from "react-icons/fa";
-import { TbChecklist } from "react-icons/tb";
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/Fichas.css";
+import { buscarEmpresa } from "../../functions/dataFunctions";
 
 const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [nombrePersona, setNombrePersona] = useState("SIN ASIGNAR");
+  const [nombreServicio, setNombreServicio] = useState("");
+  const [nombrePersona, setNombrePersona] = useState("");
   const [nombreOperador, setNombreOperador] = useState("SIN ASIGNAR");
   const [tractoresNombres, setTractoresNombres] = useState([]);
   const [modificaciones, setModificaciones] = useState([]);
+
+  const { eventos, personas, empresas, tractores } = useData();
 
   const fechaFormateada = formatearFecha(evento?.fecha);
   const horaFormateada = formatearHora(evento?.fecha);
@@ -30,11 +38,19 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
         setNombrePersona(nombre);
       }
 
+      // Servicio
+      if (evento.servicio) {
+        const nombre = await buscarEmpresa(empresas, evento.servicio);
+        setNombreServicio(nombre);
+      }
+
       // Operador
       if (evento.operador) {
         const nombre = await buscarNombrePorDni(evento.operador);
         setNombreOperador(nombre);
       }
+
+      //
 
       // Modificaciones
       let modificacionesArray = [];
@@ -115,9 +131,20 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
                   ) : null}
                 </strong>
               </p>
-              <p>
-                <strong>Persona: </strong> {nombrePersona}
-              </p>
+              {evento.persona ? (
+                <>
+                  <p>
+                    <strong>Persona: </strong> {nombrePersona}
+                  </p>
+                </>
+              ) : null}
+              {evento.servicio ? (
+                <>
+                  <p>
+                    <strong>Servicio: </strong> {nombreServicio}
+                  </p>
+                </>
+              ) : null}
               <p>
                 <strong>Operador: </strong> {nombreOperador}
               </p>

@@ -9,6 +9,7 @@ import {
   formatearFecha,
   formatearHora,
   buscarPersona,
+  buscarEmpresa,
 } from "../../functions/dataFunctions";
 
 // ----------------------------------------------------------------------- elementos
@@ -30,7 +31,8 @@ import LogoPersona from "../../assets/logos/logopersonal-w.png";
 
 const Movimientos = () => {
   const AREA = "porteria";
-  const { eventos, personas, tractores, furgones, loading } = useData();
+  const { eventos, personas, empresas, tractores, furgones, loading } =
+    useData();
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
@@ -57,6 +59,11 @@ const Movimientos = () => {
       titulo: "PERSONA",
       campo: "persona",
       render: (p) => buscarPersona(personas, p),
+    },
+    {
+      titulo: "EMPRESA",
+      campo: "servicio",
+      render: (s) => buscarEmpresa(empresas, s),
     },
     {
       titulo: "TRACTOR",

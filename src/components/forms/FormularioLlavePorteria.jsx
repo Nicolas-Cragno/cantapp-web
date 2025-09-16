@@ -28,7 +28,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
 
   const [personas, setPersonas] = useState([]);
   const [servicios, setServicios] = useState([]);
-  const [tipoSeleccionado, setTipoSeleccionado] = useState("chofer"); // si deja/recibe llave una persona o un proveedor
+  const [tipoSeleccionado, setTipoSeleccionado] = useState(""); // si deja/recibe llave una persona o un proveedor
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
   const [tractores, setTractores] = useState([]);
   const [dejaParteTr, setDejaParteTr] = useState(false); // para partes de taller de tractores
@@ -40,12 +40,13 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         ? formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha)
         : formatearFecha(new Date()) + " " + formatearHora(new Date());
 
-      setFormData({
+      const oldData = {
         fecha: fechaEvento,
         tipo: evento.tipo || "",
-        persona: evento.persona ? String(evento.persona) : "",
-        servicio: evento.servicio ? String(evento.servicio) : "",
-        operador: evento.operador ? String(evento.operador) : "",
+        persona: evento.persona ? String(evento.persona) : null,
+        servicio: evento.servicio ? String(evento.servicio) : null,
+        recibeServicio: !evento.persona && evento.servicio ? true : false,
+        operador: evento.operador ? String(evento.operador) : null,
         tractor: evento.tractor
           ? Array.isArray(evento.tractor)
             ? evento.tractor
@@ -53,7 +54,18 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
           : [],
         parteTr: evento.parteTr || false,
         detalle: evento.detalle || "",
-      });
+      };
+
+      setFormData(oldData);
+
+      if (oldData.persona) {
+        setTipoSeleccionado("chofer");
+      } else if (!oldData.persona && oldData.servicio) {
+        setTipoSeleccionado("servicio");
+      } else {
+        setTipoSeleccionado("chofer");
+      }
+
       const cargarPersonas = async () => {
         try {
           const data = await listarColeccion("personas");
@@ -237,7 +249,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
               onClick={() => setTipoSeleccionado("chofer")}
               disabled={formData.tipo === "INVENTARIO"}
             >
-              CHOFER {tipoSeleccionado === "chofer" ? " *" : null}
+              CHOFER {tipoSeleccionado === "chofer" ? " *" : null}{" "}
             </button>
             <button
               type="button"
