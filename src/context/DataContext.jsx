@@ -23,6 +23,9 @@ export const DataProvider = ({ children }) => {
   const [eventos, setEventos] = useState([]);
   const [usoStock, setUsoStock] = useState([]);
 
+  // ------- informativos
+  const [ubicaciones, setUbicaciones] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,6 +46,8 @@ export const DataProvider = ({ children }) => {
 
       { name: "eventos", setter: setEventos },
       { name: "usoStock", setter: setUsoStock },
+
+      { name: "ubicaciones", setter: setUbicaciones },
     ];
 
     coleccionesFirestore.forEach(({ name, setter }) => {
@@ -80,6 +85,7 @@ export const DataProvider = ({ children }) => {
         stock,
         eventos,
         usoStock,
+        ubicaciones,
         loading,
       }}
     >

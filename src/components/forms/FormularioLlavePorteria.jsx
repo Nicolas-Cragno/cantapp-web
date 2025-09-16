@@ -3,11 +3,17 @@ import Select from "react-select";
 import "./css/Forms.css";
 import { listarColeccion } from "../../functions/db-functions";
 import { agregarEvento } from "../../functions/event-functions";
+import {
+  quitarItem,
+  agregarItem,
+  reemplazarItems,
+} from "../../functions/stockFunctions";
 import Swal from "sweetalert2";
 import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
 import tiposEventos from "../../functions/data/eventos.json";
 
 const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
+  const SUCURSAL = "01"; // Por defecto DON TORCUATO
   const area = "porteria";
   const subarea = "llaveporteria"; // para listar tipos de eventos únicament
   const [loading, setLoading] = useState(true);
@@ -179,6 +185,13 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
       };
 
       await agregarEvento(datosAGuardar, area, evento.id);
+      if (datosAGuardar.tipo === "ENTREGA" || datosAGuardar === "DEJA") {
+        await agregarItem(SUCURSAL, "llaves", datosAGuardar.tractor);
+      } else if (datosAGuardar.tipo === "RETIRA") {
+        await quitarItem(SUCURSAL, "llaves", datosAGuardar.tractor);
+      } else if (datosAGuardar.tipo === "INVENTARIO") {
+        await reemplazarItems(SUCURSAL, "llaves", datosAGuardar.tractor);
+      }
 
       if (onGuardar) onGuardar();
       Swal.fire({
