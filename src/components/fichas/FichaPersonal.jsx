@@ -15,6 +15,8 @@ import LogoEmpresa from "../logos/LogoEmpresa";
 
 const FichaPersonal = ({ persona, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
+  const [modalEventoVisible, setModalEventoVisible] = useState(false);
   const { empresas } = useData();
 
   if (!persona) return null;
@@ -118,6 +120,7 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
             <TablaEventosReducida
               tipoColeccion={"persona"}
               identificador={persona.dni}
+              onRowClick={(evento) => setEventoSeleccionado(evento)}
             />
 
             {onGuardar ? (

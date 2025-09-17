@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./css/Forms.css";
 import { listarColeccion } from "../../functions/db-functions";
-import { agregarEvento } from "../../functions/event-functions";
+import { agregarEvento } from "../../functions/eventFunctions";
 import areas from "../../functions/data/areas.json";
 import Swal from "sweetalert2";
 import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora

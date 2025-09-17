@@ -4,7 +4,7 @@ import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
 import { buscarPersona, buscarUsuario } from "../../functions/db-functions";
 import LogoEmpresa from "../logos/LogoEmpresa";
 
-const FichaPerfil = ({ persona, onClose }) => {
+const FichaPerfil = ({ persona, onClose, OnGuardar = false }) => {
   const [personaDB, setPersonaDB] = useState(null);
   const [personaUser, setPersonaUser] = useState(null);
   const [rolUser, setRolUser] = useState("");

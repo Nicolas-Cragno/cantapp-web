@@ -6,6 +6,7 @@ import { useData } from "../../context/DataContext";
 import { buscarPersona } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
+import FichaGestor from "../fichas/FichaGestor";
 import FichaPersonal from "../fichas/FichaPersonal";
 import FormPersona from "../forms/FormPersona";
 
@@ -122,7 +123,8 @@ const ModalPersona = ({ puesto = null, onClose }) => {
         </div>
 
         {modalFichaVisible && (
-          <FichaPersonal
+          <FichaGestor
+            tipo="personal"
             persona={personaSeleccionada}
             onClose={cerrarModalFicha}
             onGuardar={handleGuardar}

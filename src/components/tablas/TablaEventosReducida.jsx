@@ -12,8 +12,11 @@ import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Tables.css";
 
-const TablaEventosReducida = ({ tipoColeccion, identificador }) => {
-  const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
+const TablaEventosReducida = ({
+  tipoColeccion,
+  identificador,
+  onRowClick = false,
+}) => {
   const { eventos } = useData();
   let eventosFiltrados;
   switch (tipoColeccion.toLowerCase()) {
@@ -58,7 +61,7 @@ const TablaEventosReducida = ({ tipoColeccion, identificador }) => {
               <p
                 key={e.id}
                 className="item-list"
-                onClick={() => setEventoSeleccionado(e)}
+                onClick={() => onRowClick && onRowClick(e)}
               >
                 {logos[e.tipo.toUpperCase()]}
                 <span>{e.tipo.toUpperCase()}</span>

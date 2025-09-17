@@ -1,29 +1,38 @@
+// ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
 import Select from "react-select";
-import "./css/Forms.css";
-import { listarColeccion } from "../../functions/db-functions";
-import { agregarEvento } from "../../functions/event-functions";
+import Swal from "sweetalert2";
+
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
 import {
   quitarItem,
   agregarItem,
   reemplazarItems,
 } from "../../functions/stockFunctions";
-import Swal from "sweetalert2";
-import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
+import { agregarEvento } from "../../functions/eventFunctions";
+import { formatearFecha, formatearHora } from "../../functions/dataFunctions"; // la función que formatea fecha+hora
+
+// ----------------------------------------------------------------------- info y json
 import tiposEventos from "../../functions/data/eventos.json";
 
-const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/Forms.css";
+
+const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
+  const { personas, tractores } = useData();
+
   const SUCURSAL = "01"; // Por defecto DON TORCUATO
   const area = "porteria";
   const subarea = "llaveporteria"; // para listar tipos de eventos únicament
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    tipo: evento.tipo || "",
-    persona: evento.persona ? evento.persona : "",
-    operador: evento.operador ? evento.operador : "",
-    tractor: evento.tractor || "",
-    parteTr: evento.parteTr || false,
-    detalle: evento.detalle || "",
+    tipo: elemento.tipo || "",
+    persona: elemento.persona ? elemento.persona : "",
+    operador: elemento.operador ? elemento.operador : "",
+    tractor: elemento.tractor || "",
+    parteTr: elemento.parteTr || false,
+    detalle: elemento.detalle || "",
   });
 
   const subtiposDisponibles = subarea
@@ -32,34 +41,32 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         subtipos.map((sub) => ({ nArea, subtipo: sub }))
       );
 
-  const [personas, setPersonas] = useState([]);
   const [servicios, setServicios] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState(""); // si deja/recibe llave una persona o un proveedor
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
-  const [tractores, setTractores] = useState([]);
   const [dejaParteTr, setDejaParteTr] = useState(false); // para partes de taller de tractores
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
-      const fechaEvento = evento.fecha
-        ? formatearFecha(evento.fecha) + " " + formatearHora(evento.fecha)
+      const fechaEvento = elemento.fecha
+        ? formatearFecha(elemento.fecha) + " " + formatearHora(elemento.fecha)
         : formatearFecha(new Date()) + " " + formatearHora(new Date());
 
       const oldData = {
         fecha: fechaEvento,
-        tipo: evento.tipo || "",
-        persona: evento.persona ? String(evento.persona) : null,
-        servicio: evento.servicio ? String(evento.servicio) : null,
-        recibeServicio: !evento.persona && evento.servicio ? true : false,
-        operador: evento.operador ? String(evento.operador) : null,
-        tractor: evento.tractor
-          ? Array.isArray(evento.tractor)
-            ? evento.tractor
-            : [evento.tractor]
+        tipo: elemento.tipo || "",
+        persona: elemento.persona ? String(elemento.persona) : null,
+        servicio: elemento.servicio ? String(elemento.servicio) : null,
+        recibeServicio: !elemento.persona && elemento.servicio ? true : false,
+        operador: elemento.operador ? String(elemento.operador) : null,
+        tractor: elemento.tractor
+          ? Array.isArray(elemento.tractor)
+            ? elemento.tractor
+            : [elemento.tractor]
           : [],
-        parteTr: evento.parteTr || false,
-        detalle: evento.detalle || "",
+        parteTr: elemento.parteTr || false,
+        detalle: elemento.detalle || "",
       };
 
       setFormData(oldData);
@@ -71,60 +78,6 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
       } else {
         setTipoSeleccionado("chofer");
       }
-
-      const cargarPersonas = async () => {
-        try {
-          const data = await listarColeccion("personas");
-          const dataFiltrada = data
-            /*
-            .filter(
-              (p) =>
-                p.puesto === "CHOFER LARGA DISTANCIA" ||
-                p.puesto === "CHOFER MOVIMIENTO"
-            )
-            */
-            .sort((a, b) => a.apellido.localeCompare(b.apellido));
-          setPersonas(dataFiltrada);
-        } catch (error) {
-          console.error("Error cargando personas:", error);
-        }
-      };
-      const cargarServicios = async () => {
-        try {
-          const data = await listarColeccion("empresas");
-          const dataFiltrada = data
-            .filter((e) => e.tipo.toLowerCase() === "proveedor")
-            .sort((a, b) => a.nombre.localeCompare(b.nombre));
-          setServicios(dataFiltrada);
-        } catch (error) {
-          console.error("Error al cargar empresas servicio: ", error);
-        }
-      };
-      const cargarOperadores = async () => {
-        try {
-          const data = await listarColeccion("personas");
-          const dataFiltrada = data
-            .filter(
-              (p) => p.puesto === "VIGILANCIA" || p.puesto === "SEGURIDAD"
-            )
-            .sort((a, b) => a.apellido.localeCompare(b.apellido));
-          setOperadores(dataFiltrada);
-        } catch (error) {
-          console.error("Error cargando operadores: ", error);
-        }
-      };
-      const cargarTractores = async () => {
-        try {
-          const data = await listarColeccion("tractores");
-          setTractores(data);
-        } catch (error) {
-          console.error("Error al cargar tractores: ", error);
-        }
-      };
-      cargarPersonas();
-      cargarServicios();
-      cargarTractores();
-      cargarOperadores();
     };
 
     cargarDatos();
@@ -157,10 +110,10 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
 
     try {
       let fechaParaGuardar;
-      if (evento?.id && evento.fecha) {
-        fechaParaGuardar = evento.fecha.toDate
-          ? evento.fecha.toDate()
-          : new Date(evento.fecha);
+      if (elemento?.id && elemento.fecha) {
+        fechaParaGuardar = elemento.fecha.toDate
+          ? elemento.fecha.toDate()
+          : new Date(elemento.fecha);
       } else {
         fechaParaGuardar = new Date();
       }
@@ -184,7 +137,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
       };
 
-      await agregarEvento(datosAGuardar, area, evento.id);
+      await agregarEvento(datosAGuardar, area, elemento.id);
       if (datosAGuardar.tipo === "ENTREGA" || datosAGuardar === "DEJA") {
         await agregarItem(SUCURSAL, "llaves", datosAGuardar.tractor);
       } else if (datosAGuardar.tipo === "RETIRA") {
@@ -217,7 +170,7 @@ const FormularioLlavePorteria = ({ evento = {}, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <div className="form-header">
-          <h2>{evento.id ? evento.id : "REGISTRO DE LLAVES"}</h2>
+          <h2>{elemento.id ? elemento.id : "REGISTRO DE LLAVES"}</h2>
           <p>* campo obligatorio</p>
           <hr />
         </div>

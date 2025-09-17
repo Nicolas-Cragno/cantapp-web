@@ -181,7 +181,7 @@ const Movimientos = () => {
           />
         ) : (
           <FichaEventoPorteria
-            evento={eventoSeleccionado}
+            elemento={eventoSeleccionado}
             onClose={cerrarModal}
             onGuardar={handleGuardar}
           />

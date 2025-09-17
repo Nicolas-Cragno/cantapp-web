@@ -1,6 +1,5 @@
 import unidades from "./data/unidades.json";
 import { useData } from "../context/DataContext";
-import { collection } from "firebase/firestore";
 
 
 // ----------------------------------------------------------------------- Nombre de empresas

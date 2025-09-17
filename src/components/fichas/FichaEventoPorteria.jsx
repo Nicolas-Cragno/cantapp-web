@@ -1,16 +1,25 @@
-import "./css/Fichas.css";
-import { formatearFecha, formatearHora } from "../../functions/data-functions";
+// ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
-import FormularioEventoPorteria from "../forms/FormularioEventoPorteria";
-import {
-  buscarNombrePorDni,
-  listarColeccion,
-} from "../../functions/db-functions";
-import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import { FaSignInAlt } from "react-icons/fa";
 import { FaSignOutAlt } from "react-icons/fa";
 
-const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
+import {
+  buscarPersona,
+  buscarDominio,
+  formatearFecha,
+  formatearHora,
+} from "../../functions/dataFunctions";
+import FormGestor from "../forms/FormGestor";
+import TextButton from "../buttons/TextButton";
+import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
+
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/Fichas.css";
+
+const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
+  const { personas, tractores, furgones } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
   const [nombre, setNombre] = useState("");
   const [operador, setOperador] = useState("");
@@ -19,64 +28,41 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
   const [cargado, setCargado] = useState(false);
   const [modificaciones, setModificaciones] = useState([]);
 
-  const fechaFormateada = formatearFecha(evento.fecha);
-  const horaFormateada = formatearHora(evento.fecha);
-
   useEffect(() => {
     const cargarDatos = async () => {
-      if (!evento) return null;
+      if (!elemento) return null;
 
-      if (evento.persona) {
-        const nombrePersona = await buscarNombrePorDni(evento.persona);
-        setNombre(nombrePersona);
-      }
-
-      if (evento.operador) {
-        const nombrePersona = await buscarNombrePorDni(evento.operador);
-        setOperador(nombrePersona);
-      }
-
-      if (evento.tractor) {
-        const tractores = await listarColeccion("tractores");
-        const dTractor = tractores.find((t) => t.interno === evento.tractor);
-        if (dTractor) {
-          setTractor(`${dTractor.dominio} (${dTractor.interno})`);
-        }
-      }
-
-      if (evento.furgon) {
-        const furgones = await listarColeccion("furgones");
-        const dFurgon = furgones.find((f) => f.interno === evento.furgon);
-        if (dFurgon) {
-          setFurgon(`${dFurgon.dominio} (${dFurgon.interno})`);
-        }
-      }
-
-      if (evento.cargado) {
+      if (elemento.cargado) {
         setCargado(true);
       }
 
       // Modificaciones
       let modificacionesArray = [];
       if (
-        evento.modificaciones != undefined &&
-        evento.modificaciones !== null
+        elemento.modificaciones !== undefined &&
+        elemento.modificaciones !== null
       ) {
-        modificacionesArray = Array.isArray(evento.modificaciones)
-          ? evento.modificaciones
-          : [evento.modificaciones];
+        modificacionesArray = Array.isArray(elemento.modificaciones)
+          ? elemento.modificaciones
+          : [elemento.modificaciones];
       }
 
       setModificaciones(modificacionesArray);
     };
     cargarDatos();
-  }, [evento]);
+  }, [elemento]);
 
-  if (!evento) return null;
+  if (!elemento) return null;
+  const fechaFormateada = formatearFecha(elemento?.fecha);
+  const horaFormateada = formatearHora(elemento?.fecha);
 
   const handleGuardado = async (eventoModificado) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(eventoModificado);
+  };
+
+  const onCloseFormEdit = () => {
+    setModoEdicion(false);
   };
 
   return (
@@ -88,7 +74,7 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
               ✕
             </button>
             <h1 className="event-subtipo">
-              {evento.id ? evento.id : "EVENTO"}
+              {elemento.id ? elemento.id : "EVENTO"}
             </h1>
             <hr />
             <div className="hora">
@@ -98,12 +84,12 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
             <div className="ficha-info">
               <p className="ficha-type">
                 <strong>
-                  {evento.tipo === "ENTRADA" ? (
+                  {elemento.tipo === "ENTRADA" ? (
                     <>
                       <FaSignInAlt className="ficha-type-logo" /> ENTRADA AL
                       PREDIO
                     </>
-                  ) : evento.tipo === "SALIDA" ? (
+                  ) : elemento.tipo === "SALIDA" ? (
                     <>
                       <FaSignOutAlt className="ficha-type-logo" />
                       SALIDA DEL PREDIO
@@ -112,29 +98,36 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
                 </strong>
               </p>
               <p>
-                <strong>Chofer: </strong> {nombre}
+                <strong>Chofer: </strong>{" "}
+                {buscarPersona(personas, elemento.persona)}
               </p>
               <p>
-                <strong>Operador: </strong> {operador}
+                <strong>Operador: </strong>{" "}
+                {buscarPersona(personas, elemento.operador)}
               </p>
               <p>
                 <strong>Tractor: </strong>
-                {tractor}
+                {elemento.tractor} ({buscarDominio(elemento.tractor, tractores)}
+                )
               </p>
               <p>
                 <strong>Furgón: </strong>
                 {cargado ? (
                   <>
-                    {furgon} <span className="infobox redbox">CARGADO</span>{" "}
+                    {elemento.furgon} (
+                    {buscarDominio(elemento.furgon, furgones)}){" "}
+                    <span className="infobox redbox">CARGADO</span>{" "}
                   </>
-                ) : evento.furgon ? (
+                ) : elemento.furgon ? (
                   <>
-                    {furgon} <span className="infobox greenbox">VACIO</span>{" "}
+                    {elemento.furgon} (
+                    {buscarDominio(elemento.furgon, furgones)}){" "}
+                    <span className="infobox greenbox">VACIO</span>{" "}
                   </>
                 ) : null}
               </p>
               <p>
-                <strong>Detalle: </strong> {evento.detalle || "-"}
+                <strong>Detalle: </strong> {elemento.detalle || "-"}
               </p>
             </div>
             <label>
@@ -142,7 +135,7 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
             </label>
             <div className="checkbox-list">
               {chequeosPorteria.map(({ key, label }) => {
-                const valor = evento.chequeos?.[key];
+                const valor = elemento.chequeos?.[key];
                 return (
                   <span
                     key={key}
@@ -156,13 +149,11 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
               })}
             </div>
             <div className="ficha-data">
-              {evento.usuario ? (
+              {elemento.usuario ? (
                 <p>
-                  Cargado por <strong>{evento.usuario}</strong>{" "}
+                  Cargado por <strong>{elemento.usuario}</strong>{" "}
                 </p>
-              ) : (
-                " "
-              )}
+              ) : null}
             </div>
             {modificaciones.length > 0 && (
               <>
@@ -182,14 +173,15 @@ const FichaEventoPorteria = ({ evento, onClose, onGuardar }) => {
               </>
             )}
             <div className="ficha-buttons">
-              <button onClick={() => setModoEdicion(true)}>Editar</button>
+              <TextButton text="Editar" onClick={() => setModoEdicion(true)} />
             </div>
           </div>
         </div>
       ) : (
-        <FormularioEventoPorteria
-          evento={evento}
-          onClose={() => setModoEdicion(false)}
+        <FormGestor
+          tipo="porteria"
+          elemento={elemento}
+          onClose={onCloseFormEdit}
           onGuardar={handleGuardado}
         />
       )}

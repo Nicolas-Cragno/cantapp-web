@@ -4,77 +4,51 @@ import { FaKey } from "react-icons/fa";
 import { TbChecklist } from "react-icons/tb";
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
-import { formatearFecha, formatearHora } from "../../functions/data-functions";
-import FormularioLlavePorteria from "../forms/FormularioLlavePorteria";
+import FormGestor from "../forms/FormGestor";
 import {
-  buscarNombrePorDni,
-  listarColeccion,
-  modificar,
-} from "../../functions/db-functions";
+  formatearFecha,
+  formatearHora,
+  buscarPersona,
+  buscarEmpresa,
+} from "../../functions/dataFunctions";
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
-import { buscarEmpresa } from "../../functions/dataFunctions";
 
-const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
+const FichaLlavePorteria = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [nombreServicio, setNombreServicio] = useState("");
-  const [nombrePersona, setNombrePersona] = useState("");
-  const [nombreOperador, setNombreOperador] = useState("SIN ASIGNAR");
   const [tractoresNombres, setTractoresNombres] = useState([]);
   const [modificaciones, setModificaciones] = useState([]);
 
-  const { eventos, personas, empresas, tractores } = useData();
-
-  const fechaFormateada = formatearFecha(evento?.fecha);
-  const horaFormateada = formatearHora(evento?.fecha);
+  const { personas, empresas, tractores } = useData();
+  const fechaFormateada = formatearFecha(elemento?.fecha);
+  const horaFormateada = formatearHora(elemento?.fecha);
 
   useEffect(() => {
     const cargarDatos = async () => {
-      if (!evento) return;
-
-      // Persona
-      if (evento.persona) {
-        const nombre = await buscarNombrePorDni(evento.persona);
-        setNombrePersona(nombre);
-      }
-
-      // Servicio
-      if (evento.servicio) {
-        const nombre = await buscarEmpresa(empresas, evento.servicio);
-        setNombreServicio(nombre);
-      }
-
-      // Operador
-      if (evento.operador) {
-        const nombre = await buscarNombrePorDni(evento.operador);
-        setNombreOperador(nombre);
-      }
-
-      //
+      if (!elemento) return;
 
       // Modificaciones
       let modificacionesArray = [];
       if (
-        evento.modificaciones != undefined &&
-        evento.modificaciones !== null
+        elemento.modificaciones != undefined &&
+        elemento.modificaciones !== null
       ) {
-        modificacionesArray = Array.isArray(evento.modificaciones)
-          ? evento.modificaciones
-          : [evento.modificaciones];
+        modificacionesArray = Array.isArray(elemento.modificaciones)
+          ? elemento.modificaciones
+          : [elemento.modificaciones];
       }
 
       setModificaciones(modificacionesArray);
 
       // Tractores (normalizamos a array aunque venga un solo valor)
       let tractoresArray = [];
-      if (evento.tractor !== undefined && evento.tractor !== null) {
-        tractoresArray = Array.isArray(evento.tractor)
-          ? evento.tractor
-          : [evento.tractor]; // si es un solo valor, lo convertimos a array
+      if (elemento.tractor !== undefined && elemento.tractor !== null) {
+        tractoresArray = Array.isArray(elemento.tractor)
+          ? elemento.tractor
+          : [elemento.tractor]; // si es un solo valor, lo convertimos a array
       }
 
       if (tractoresArray.length > 0) {
-        const tractores = await listarColeccion("tractores");
         const nombresTractores = tractoresArray
           .map((int) => {
             const t = tractores.find((tr) => tr.interno === int);
@@ -86,13 +60,17 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
     };
 
     cargarDatos();
-  }, [evento]);
+  }, [elemento]);
 
-  if (!evento) return null;
+  if (!elemento) return null;
 
   const handleGuardado = async (eventoModificado) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(eventoModificado);
+  };
+
+  const onCloseFormEdit = () => {
+    setModoEdicion(false);
   };
 
   return (
@@ -104,7 +82,7 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
               ✕
             </button>
             <h1 className="event-subtipo">
-              {evento.id ? evento.id : "REGISTRO DE LLAVES"}
+              {elemento.id ? elemento.id : "REGISTRO DE LLAVES"}
             </h1>
             <hr />
             <div className="hora">
@@ -114,16 +92,17 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
             <div className="ficha-info">
               <p className="ficha-type">
                 <strong>
-                  {evento.tipo === "RETIRA" ? (
+                  {elemento.tipo === "RETIRA" ? (
                     <>
                       <FaKey className="ficha-type-logo" /> RETIRA LLAVES
                     </>
-                  ) : evento.tipo === "ENTREGA" || evento.tipo === "DEJA" ? (
+                  ) : elemento.tipo === "ENTREGA" ||
+                    elemento.tipo === "DEJA" ? (
                     <>
                       <FaKey className="ficha-type-logo" />
                       ENTREGA LLAVES
                     </>
-                  ) : evento.tipo === "INVENTARIO" ? (
+                  ) : elemento.tipo === "INVENTARIO" ? (
                     <>
                       <TbChecklist className="ficha-type-logo" />
                       INVENTARIO DE LLAVES
@@ -131,42 +110,45 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
                   ) : null}
                 </strong>
               </p>
-              {evento.persona ? (
+              {elemento.persona ? (
                 <>
                   <p>
-                    <strong>Persona: </strong> {nombrePersona}
+                    <strong>Persona: </strong>{" "}
+                    {buscarPersona(personas, elemento.persona)}
                   </p>
                 </>
               ) : null}
-              {evento.servicio ? (
+              {elemento.servicio ? (
                 <>
                   <p>
-                    <strong>Servicio: </strong> {nombreServicio}
+                    <strong>Servicio: </strong>{" "}
+                    {buscarEmpresa(empresas, elemento.servicio)}
                   </p>
                 </>
               ) : null}
               <p>
-                <strong>Operador: </strong> {nombreOperador}
+                <strong>Operador: </strong>{" "}
+                {buscarPersona(personas, elemento.operador)}
               </p>
               <p>
                 <strong>Tractor: </strong>{" "}
                 {tractoresNombres.length > 0
                   ? tractoresNombres.join(", ")
                   : "SIN ASIGNAR"}
-                {evento.parteTr ? (
+                {elemento.parteTr ? (
                   <>
                     <span className="infobox blackbox">DEJÓ PARTE</span>{" "}
                   </>
                 ) : null}
               </p>
               <p>
-                <strong>Detalle: </strong> {evento.detalle || "-"}
+                <strong>Detalle: </strong> {elemento.detalle || "-"}
               </p>
             </div>
             <div className="ficha-data">
-              {evento.usuario ? (
+              {elemento.usuario ? (
                 <p>
-                  Cargado por <strong>{evento.usuario}</strong>
+                  Cargado por <strong>{elemento.usuario}</strong>
                 </p>
               ) : (
                 " "
@@ -196,9 +178,10 @@ const FichaLlavePorteria = ({ evento, onClose, onGuardar }) => {
           </div>
         </div>
       ) : (
-        <FormularioLlavePorteria
-          evento={evento}
-          onClose={() => setModoEdicion(false)}
+        <FormGestor
+          tipo="llave"
+          evento={elemento}
+          onClose={onCloseFormEdit}
           onGuardar={handleGuardado}
         />
       )}

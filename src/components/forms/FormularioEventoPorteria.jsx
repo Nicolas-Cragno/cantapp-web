@@ -1,33 +1,39 @@
+// ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
 import Select from "react-select";
-import "./css/Forms.css";
-import { listarColeccion } from "../../functions/db-functions";
-import { agregarEvento } from "../../functions/event-functions";
-import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import Swal from "sweetalert2";
-import { agregarItem, quitarItem } from "../../functions/stockFunctions";
 import { FaCheck as OkLogo } from "react-icons/fa";
-
 import { GiCancel as XLogo } from "react-icons/gi";
 
-import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
+import { agregarEvento } from "../../functions/eventFunctions";
+import { agregarItem, quitarItem } from "../../functions/stockFunctions";
+
+// ----------------------------------------------------------------------- json e info
+import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import tiposEventos from "../../functions/data/eventos.json";
 
-const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
+// ----------------------------------------------------------------------- visuales, logos, etc
+import TextButton from "../buttons/TextButton";
+import "./css/Forms.css";
+
+const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const SUCURSAL = "01";
   const area = "porteria";
+  const { personas, tractores, furgones } = useData();
 
   const [formData, setFormData] = useState({
-    tipo: evento.tipo || "",
-    persona: evento.persona ? String(evento.persona) : "",
-    operador: evento.operador ? String(evento.operador) : "",
-    tractor: evento.tractor || "",
-    furgon: evento.furgon || "",
-    cargado: evento.cargado || false,
-    detalle: evento.detalle || "",
+    tipo: elemento.tipo || "",
+    persona: elemento.persona ? String(elemento.persona) : "",
+    operador: elemento.operador ? String(elemento.operador) : "",
+    tractor: elemento.tractor || "",
+    furgon: elemento.furgon || "",
+    cargado: elemento.cargado || false,
+    detalle: elemento.detalle || "",
     area: area,
     chequeos: chequeosPorteria.map(
-      ({ key }) => evento?.chequeos?.[key] || false
+      ({ key }) => elemento?.chequeos?.[key] || false
     ),
   });
 
@@ -36,73 +42,23 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
     : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
         subtipos.map((sub) => ({ nArea, subtipo: sub }))
       );
-
-  const [personas, setPersonas] = useState([]);
-  const [tractores, setTractores] = useState([]);
-  const [furgones, setFurgones] = useState([]);
-  const [operadores, setOperadores] = useState([]);
   const [furgonCargado, setFuegonCargado] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
       setFormData({
-        tipo: evento.tipo || "",
-        persona: evento.persona ? String(evento.persona) : "",
-        tractor: evento.tractor || "",
-        furgon: evento.furgon || "",
-        cargado: evento.cargado || false,
-        detalle: evento.detalle || "",
+        tipo: elemento.tipo || "",
+        persona: elemento.persona ? String(elemento.persona) : "",
+        tractor: elemento.tractor || "",
+        furgon: elemento.furgon || "",
+        cargado: elemento.cargado || false,
+        detalle: elemento.detalle || "",
         chequeos: chequeosPorteria.map(({ key }) => {
-          const valor = evento?.chequeos?.[key];
+          const valor = elemento?.chequeos?.[key];
           return typeof valor === "boolean" ? valor : false;
         }),
       });
-      const cargarPersonas = async () => {
-        try {
-          const data = await listarColeccion("personas");
-          setPersonas(data);
-        } catch (error) {
-          console.error("Error cargando personas:", error);
-        }
-      };
-
-      const cargarOperadores = async () => {
-        try {
-          const data = await listarColeccion("personas");
-          const dataFiltrada = data
-            .filter(
-              (p) => p.puesto === "VIGILANCIA" || p.puesto === "SEGURIDAD"
-            )
-            .sort((a, b) => a.apellido.localeCompare(b.apellido));
-          setOperadores(dataFiltrada);
-        } catch (error) {
-          console.error("Error cargando operadores: ", error);
-        }
-      };
-
-      const cargarTractores = async () => {
-        try {
-          const data = await listarColeccion("tractores");
-          setTractores(data);
-        } catch (error) {
-          console.error("Error al cargar tractores: ", error);
-        }
-      };
-
-      const cargarFurgones = async () => {
-        try {
-          const data = await listarColeccion("furgones");
-          setFurgones(data);
-        } catch (error) {
-          console.error("Error al cargar furgones:", error);
-        }
-      };
-
-      cargarPersonas();
-      cargarOperadores();
-      cargarTractores();
-      cargarFurgones();
     };
 
     cargarDatos();
@@ -127,10 +83,10 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
 
     try {
       let fechaParaGuardar;
-      if (evento?.id && evento.fecha) {
-        fechaParaGuardar = evento.fecha.toDate
-          ? evento.fecha.toDate()
-          : new Date(evento.fecha);
+      if (elemento?.id && elemento.fecha) {
+        fechaParaGuardar = elemento.fecha.toDate
+          ? elemento.fecha.toDate()
+          : new Date(elemento.fecha);
       } else {
         fechaParaGuardar = new Date();
       }
@@ -149,6 +105,23 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         {}
       );
 
+      if (
+        !formData.tipo ||
+        !formData.persona ||
+        !formData.operador ||
+        !formData.tractor
+      ) {
+        Swal.fire({
+          title: "Atención",
+          text: "Debes seleccionar un tipo de evento antes de guardar.",
+          icon: "warning",
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#4161bd",
+        });
+        setUploading(false);
+        return;
+      }
+
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
@@ -163,7 +136,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
         chequeos: chequeosObjeto,
       };
 
-      await agregarEvento(datosAGuardar, area, evento.id);
+      await agregarEvento(datosAGuardar, area, elemento.id);
       if (datosAGuardar.tipo === "ENTRADA") {
         agregarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
         if (datosAGuardar.furgon) {
@@ -201,7 +174,7 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <div className="form-header">
-          <h2>{evento.id ? evento.id : "Nuevo Evento"}</h2>
+          <h2>{elemento.id ? elemento.id : "Nuevo Evento"}</h2>
           <p>* campo obligatorio</p>
           <hr />
         </div>
@@ -263,19 +236,23 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
           <label>
             Operador *
             <Select
-              options={operadores.map((o) => ({
-                value: o.id,
-                label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-              }))}
+              options={personas
+                .filter(
+                  (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
+                )
+                .map((o) => ({
+                  value: o.id,
+                  label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+                }))}
               value={
                 formData.operador
                   ? {
                       value: formData.operador,
                       label:
-                        operadores.find((o) => o.id === formData.operador)
+                        personas.find((o) => o.id === formData.operador)
                           ?.apellido +
                         " " +
-                        operadores.find((o) => o.id === formData.operador)
+                        personas.find((o) => o.id === formData.operador)
                           ?.nombres +
                         ` (DNI: ${formData.operador})`,
                     }
@@ -406,12 +383,13 @@ const FormularioEventoPorteria = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <div className="form-buttons">
-            <button type="submit" disabled={uploading}>
-              {uploading ? "Guardando..." : "Guardar"}
-            </button>
-            <button type="button" onClick={onClose}>
-              Cancelar
-            </button>
+            <TextButton
+              text={uploading ? "Guardando..." : "Guardar"}
+              onClick={handleSubmit}
+              type="submit"
+              disabled={uploading}
+            />
+            <TextButton text="Cancelar" onClick={onClose} type="button" />
           </div>
         </form>
       </div>

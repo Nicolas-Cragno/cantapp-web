@@ -1,6 +1,6 @@
 import "./css/Tables.css";
 
-const TablaColeccion = ({ columnas, datos, onRowClick }) => {
+const TablaColeccion = ({ columnas, datos, onRowClick = false }) => {
   const datosOrdenados = [...datos].sort((a, b) => {
     if (a.fecha && b.fecha) {
       const fechaA = a.fecha.seconds
