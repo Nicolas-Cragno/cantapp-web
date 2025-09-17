@@ -175,7 +175,7 @@ const Movimientos = () => {
         (eventoSeleccionado.tipo === "RETIRA" ||
         eventoSeleccionado.tipo === "ENTREGA" ? (
           <FichaLlavePorteria
-            evento={eventoSeleccionado}
+            elemento={eventoSeleccionado}
             onClose={cerrarModal}
             onGuardar={handleGuardar}
           />

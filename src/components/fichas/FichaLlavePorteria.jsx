@@ -13,6 +13,7 @@ import {
 } from "../../functions/dataFunctions";
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
+import TextButton from "../buttons/TextButton";
 
 const FichaLlavePorteria = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -173,14 +174,18 @@ const FichaLlavePorteria = ({ elemento, onClose, onGuardar }) => {
             )}
 
             <div className="ficha-buttons">
-              <button onClick={() => setModoEdicion(true)}>Editar</button>
+              <TextButton
+                text="Editar"
+                type="submit"
+                onClick={() => setModoEdicion(true)}
+              />
             </div>
           </div>
         </div>
       ) : (
         <FormGestor
           tipo="llave"
-          evento={elemento}
+          elemento={elemento}
           onClose={onCloseFormEdit}
           onGuardar={handleGuardado}
         />

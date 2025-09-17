@@ -18,14 +18,14 @@ import tiposEventos from "../../functions/data/eventos.json";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
+import TextButton from "../buttons/TextButton";
 
 const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const { personas, tractores } = useData();
-
+  const [uploading, setUploading] = useState(false);
   const SUCURSAL = "01"; // Por defecto DON TORCUATO
   const area = "porteria";
   const subarea = "llaveporteria"; // para listar tipos de eventos únicament
-  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     tipo: elemento.tipo || "",
     persona: elemento.persona ? elemento.persona : "",
@@ -45,7 +45,6 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const [tipoSeleccionado, setTipoSeleccionado] = useState(""); // si deja/recibe llave una persona o un proveedor
   const [operadores, setOperadores] = useState([]); // empleados de seguridad
   const [dejaParteTr, setDejaParteTr] = useState(false); // para partes de taller de tractores
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -292,13 +291,17 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
           <label>
             Operador *
             <Select
-              options={operadores.map((o) => ({
-                value: o.id,
-                label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-              }))}
+              options={personas
+                .filter(
+                  (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
+                )
+                .map((o) => ({
+                  value: o.id,
+                  label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+                }))}
               value={
                 formData.operador
-                  ? operadores
+                  ? personas
                       .map((o) => ({
                         value: o.id,
                         label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
@@ -369,12 +372,12 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
           </label>
 
           <div className="form-buttons">
-            <button type="submit" disabled={uploading}>
-              {uploading ? "Guardando ... " : "Guardar"}
-            </button>
-            <button type="button" onClick={onClose}>
-              Cancelar
-            </button>
+            <TextButton
+              text={uploading ? "Guardando ... " : "Guardar"}
+              type="submit"
+              disabled={uploading}
+            />
+            <TextButton text="Cancelar" type="button" onClick={onClose} />
           </div>
         </form>
       </div>

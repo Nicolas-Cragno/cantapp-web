@@ -50,6 +50,7 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       setFormData({
         tipo: elemento.tipo || "",
         persona: elemento.persona ? String(elemento.persona) : "",
+        operador: elemento.operador ? String(elemento.operador) : "",
         tractor: elemento.tractor || "",
         furgon: elemento.furgon || "",
         cargado: elemento.cargado || false,
@@ -249,12 +250,12 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                   ? {
                       value: formData.operador,
                       label:
-                        personas.find((o) => o.id === formData.operador)
+                        personas.find((p) => p.id === formData.operador)
                           ?.apellido +
                         " " +
-                        personas.find((o) => o.id === formData.operador)
+                        personas.find((p) => p.id === formData.operador)
                           ?.nombres +
-                        ` (DNI: ${formData.operador})`,
+                        ` (DNI: ${formData.persona})`,
                     }
                   : null
               }
