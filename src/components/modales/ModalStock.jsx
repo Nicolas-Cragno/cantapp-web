@@ -28,6 +28,10 @@ const ModalStock = ({ coleccion, sucursal = "01", lugar = null }) => {
       campo: "dominio",
     },
   ];
+
+  const filtro = useMemo(()=> {
+    
+  })
 };
 
 export default ModalStock;

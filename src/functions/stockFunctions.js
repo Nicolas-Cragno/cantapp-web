@@ -3,15 +3,17 @@ import { db } from "../firebase/firebaseConfig";
 
 export async function agregarItem(idDocumento, tipoCampo, valor) {
   const ref = doc(db, "ubicaciones", idDocumento);
+  const valores = Array.isArray(valor) ? valor : [valor];
   await updateDoc(ref, {
-    [tipoCampo]: arrayUnion(valor),
+    [tipoCampo]: arrayUnion(...valores),
   });
 }
 
 export async function quitarItem(idDocumento, tipoCampo, valor) {
   const ref = doc(db, "ubicaciones", idDocumento);
+  const valores = Array.isArray(valor) ? valor : [valor];
   await updateDoc(ref, {
-    [tipoCampo]: arrayRemove(valor),
+    [tipoCampo]: arrayRemove(...valores),
   });
 }
 
@@ -20,8 +22,8 @@ export async function reemplazarItems(idDocumento, tipoCampo, valor) {
   await setDoc(
     ref,
     {
-      [tipoCampo]: valor,
+      [tipoCampo]: Array.isArray(valor) ? valor : [valor],
     },
-    { merge: true } 
+    { merge: true }
   );
 }
