@@ -61,6 +61,11 @@ const ModalPersona = ({ puesto = null, onClose }) => {
     setModalAgregarVisible(false);
   };
 
+  const handleGuardar = async () => {
+    setModalFichaVisible(false);
+    setPersonaSeleccionada(null);
+  };
+
   const personasFiltradas = useMemo(() => {
     let datos = puesto
       ? personas.filter((p) => p.puesto.toUpperCase() === puesto.toUpperCase())
@@ -120,6 +125,7 @@ const ModalPersona = ({ puesto = null, onClose }) => {
           <FichaPersonal
             persona={personaSeleccionada}
             onClose={cerrarModalFicha}
+            onGuardar={handleGuardar}
           />
         )}
 

@@ -85,23 +85,50 @@ export const buscarPersona = (coleccion, dni, completo=true) => {
   return completo ? nombreCompleto : nombreAbreviado;
 }
 
-export const calcularEdad = (fechaNacimiento) => {
-  if (!fechaNacimiento) return null;
+export const normalizarFecha = (valor) => {
+  if (!valor) return null;
 
-  // Si es Timestamp de Firestore, convertir a Date
-  const fecha = fechaNacimiento.toDate ? fechaNacimiento.toDate() : new Date(fechaNacimiento);
+  if (valor.toDate) {
+    return valor.toDate(); // Timestamp Firestore
+  }
+
+  if (valor instanceof Date) {
+    return valor;
+  }
+
+  if (typeof valor === "string") {
+    const limpio = valor.trim();
+    // ISO string
+    if (!isNaN(Date.parse(limpio))) {
+      return new Date(limpio);
+    }
+    // formato "YYYY-MM-DD"
+    const partes = limpio.split("-");
+    if (partes.length === 3) {
+      const [year, month, day] = partes.map(Number);
+      return new Date(year, month - 1, day);
+    }
+  }
+
+  return null;
+};
+
+
+export const calcularEdad = (fechaNacimiento) => {
+  const fecha = normalizarFecha(fechaNacimiento);
+  if (!fecha) return null;
 
   const hoy = new Date();
   let edad = hoy.getFullYear() - fecha.getFullYear();
   const mes = hoy.getMonth() - fecha.getMonth();
 
-  // Si aún no cumplió años este año, restar 1
   if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
     edad--;
   }
 
   return edad;
-}
+};
+
 
 
 // ----------------------------------------------------------------------- Vehiculos

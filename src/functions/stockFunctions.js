@@ -5,7 +5,7 @@ export async function agregarItem(idDocumento, tipoCampo, valor) {
   const ref = doc(db, "ubicaciones", idDocumento);
   const valores = Array.isArray(valor) ? valor : [valor];
   await updateDoc(ref, {
-    [tipoCampo]: arrayUnion(...valores),
+    [tipoCampo]: arrayUnion(...valores), // me tiraba error porque guardaba un array dentro de otro [[1, 2, 3]] por eso el arrayRemove
   });
 }
 
@@ -13,7 +13,7 @@ export async function quitarItem(idDocumento, tipoCampo, valor) {
   const ref = doc(db, "ubicaciones", idDocumento);
   const valores = Array.isArray(valor) ? valor : [valor];
   await updateDoc(ref, {
-    [tipoCampo]: arrayRemove(...valores),
+    [tipoCampo]: arrayRemove(...valores), // me tiraba error porque guardaba un array dentro de otro [[1, 2, 3]] por eso el arrayRemove 
   });
 }
 
@@ -22,7 +22,7 @@ export async function reemplazarItems(idDocumento, tipoCampo, valor) {
   await setDoc(
     ref,
     {
-      [tipoCampo]: Array.isArray(valor) ? valor : [valor],
+      [tipoCampo]: Array.isArray(valor) ? valor : [valor], // me tiraba error porque guardaba un array dentro de otro [[1, 2, 3]] por eso el arrayRemove
     },
     { merge: true }
   );

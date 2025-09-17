@@ -1,18 +1,26 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
 // ----------------------------------------------------------------------- internos
-import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
+import { useData } from "../../context/DataContext";
+import {
+  buscarEmpresa,
+  formatearFecha,
+  calcularEdad,
+} from "../../functions/dataFunctions";
 import TablaEventosReducida from "../tablas/TablaEventosReducida";
-import FormularioPersona from "../forms/FormularioPersona";
+import FormPersona from "../forms/FormPersona";
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
 import LogoEmpresa from "../logos/LogoEmpresa";
 
 const FichaPersonal = ({ persona, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
+  const { empresas } = useData();
 
   if (!persona) return null;
+  const fechaNacimiento = formatearFecha(persona.nacimiento);
   const fechaIngreso = formatearFecha(persona.ingreso);
+  const edad = calcularEdad(persona.nacimiento);
 
   const handleGuardado = async (personaModificada) => {
     setModoEdicion(false);
@@ -32,10 +40,34 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
               <span className="nombres">{persona.nombres}</span>
             </h1>
             <hr />
-            <div className="info-right">
-              <p>
-                <strong>DNI </strong> {persona.dni || persona.id}
-              </p>
+            <div className="info-subname">
+              <p className="info-minitext">{edad ? edad + " años" : null}</p>
+            </div>
+            <p className="ficha-info-title">
+              <strong>Información Personal</strong>
+            </p>
+            <div className="ficha-info container">
+              <div className="row">
+                <p className="ficha-info-item">
+                  <strong>Nro DNI </strong>{" "}
+                  <span className="ficha-info-item-txt">
+                    {persona.dni || persona.id}
+                  </span>
+                </p>
+                <p className="ficha-info-item">
+                  <strong>Fecha nac.</strong>{" "}
+                  <span className="ficha-info-item-txt">{fechaNacimiento}</span>{" "}
+                  {edad ? (
+                    <span className="ficha-info-item-txt2">{edad} años</span>
+                  ) : null}
+                </p>
+                <p className="ficha-info-item">
+                  <strong>Ubicación</strong>{" "}
+                  <span className="ficha-info-item-txt">
+                    {persona.ubicacion}
+                  </span>
+                </p>
+              </div>
             </div>
             <p className="ficha-info-title">
               <strong>Información laboral</strong>
@@ -46,7 +78,7 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
                   <p className="ficha-info-item">
                     <strong>Empresa</strong>{" "}
                     <span className="ficha-info-item-txt">
-                      {nombreEmpresa(persona.empresa)}
+                      {buscarEmpresa(empresas, persona.empresa)}
                     </span>
                   </p>
                   <p className="ficha-info-item">
@@ -59,6 +91,12 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
                     <strong>Puesto</strong>{" "}
                     <span className="ficha-info-item-txt">
                       {persona.puesto}
+                    </span>
+                  </p>
+                  <p className="ficha-info-item">
+                    <strong>Sucursal</strong>{" "}
+                    <span className="ficha-info-item-txt">
+                      {persona.sucursal}
                     </span>
                   </p>
                 </div>
@@ -90,7 +128,7 @@ const FichaPersonal = ({ persona, onClose, onGuardar }) => {
           </div>
         </div>
       ) : (
-        <FormularioPersona
+        <FormPersona
           tipoPuesto={persona.puesto}
           persona={persona}
           onClose={() => setModoEdicion(false)}

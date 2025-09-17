@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 // ----------------------------------------------------------------------- internos
@@ -49,7 +49,9 @@ const FormPersona = ({
   const [modoEdicion, setModoEdicion] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  if (persona) setModoEdicion(true);
+  useEffect(() => {
+    if (persona) setModoEdicion(true);
+  }, [persona]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
