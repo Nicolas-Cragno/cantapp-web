@@ -41,14 +41,9 @@ export const buscarCuitEmpresa = (coleccion, nombre) => {
   return cuit;
 }
 
-export const verificarDuplicado = (coleccion, identificador) => {
-  const auxId = coleccion.find((idx) => idx.id === identificador);
-
-  if(auxId === identificador) return true;
-
-  return false;
-}
-
+export const verificarDuplicado = (coleccion, dni) => {
+  return coleccion.some((p) => String(p.dni) === String(dni));
+};
 // ----------------------------------------------------------------------- Personas
 
 export const useBuscarDni = (nombrePersona) => {

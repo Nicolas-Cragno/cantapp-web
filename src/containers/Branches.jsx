@@ -16,7 +16,7 @@ const Branches = () => {
     <div className="container group-card">
       <div className="row">
         <div className="col-md-2 gtitle">
-          <h1>FLOTA</h1>
+          <h1>SUCURSALES</h1>
         </div>
         <div className="col-auto gcard">
           <MiniCard

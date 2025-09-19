@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
-import { verificarDni, agregar, modificar } from "../../functions/db-functions";
+import { agregar, modificar } from "../../functions/dbFunctions";
 import {
   buscarEmpresa,
   formatearFecha,
@@ -23,29 +23,23 @@ const FormPersona = ({
   onClose,
   onGuardar,
 }) => {
-  const { personas, empresas, sectores } = useData();
+  const { personas, empresas } = useData();
 
   const [formData, setFormData] = useState({
-    // informacion personal
-    dni: persona && persona.dni ? Number(persona.dni) : "",
-    apellido: persona && persona.apellido ? String(persona.apellido) : "",
-    nombres: persona && persona.nombres ? String(persona.nombres) : "",
-    nacimiento:
-      persona && persona.nacimiento ? formatearFecha(persona.nacimiento) : "",
-    ubicacion: persona && persona.ubicacion ? String(persona.ubicacion) : "",
-    edad: persona && persona.nacimiento ? calcularEdad(persona.nacimiento) : "",
-    // información laboral
-    empresa:
-      persona && persona.empresa
-        ? buscarEmpresa(empresas, persona.empresa)
-        : "",
-    puesto: persona && persona.puesto ? String(persona.puesto) : "",
-    ingreso: persona && persona.ingreso ? formatearFecha(persona.ingreso) : "",
-    legajo: persona && persona.legajo ? Number(persona.legajo) : "",
-    sucursal: persona && persona.sucursal ? String(persona.sucursal) : "",
-    estado: persona && persona.estado ? "Activo" : "Inactivo",
-    detalle: persona && persona.detalle ? String(persona.detalle) : "",
+    dni: persona?.dni || "",
+    apellido: persona?.apellido || "",
+    nombres: persona?.nombres || "",
+    ubicacion: persona?.ubicacion || "",
+    edad: persona?.nacimiento ? calcularEdad(persona.nacimiento) : "",
+    empresa: persona?.empresa ? buscarEmpresa(empresas, persona.empresa) : "",
+    puesto: persona?.puesto || "",
+    ingreso: persona?.ingreso ? formatearFecha(persona.ingreso) : "",
+    legajo: persona?.legajo || "",
+    sucursal: persona?.sucursal || "",
+    estado: persona?.estado ? "Activo" : "Inactivo",
+    detalle: persona?.detalle || "",
   });
+
   const [modoEdicion, setModoEdicion] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -55,7 +49,7 @@ const FormPersona = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((data) => ({ ...ProgressEvent, [name]: value }));
+    setFormData((data) => ({ ...data, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -66,32 +60,25 @@ const FormPersona = ({
       if (modoEdicion) {
         const personaEditada = {
           ...formData,
-          // informacion personal
-          apellido: formData.apellido ? String(formData.apellido) : null,
-          nombres: formData.nombres ? String(formData.nombres) : null,
-          nacimiento: formData.nacimiento
-            ? formatearFecha(formData.nacimiento)
-            : null,
-          ubicacion: formData.ubicacion ? String(formData.ubicacion) : null,
+          apellido: formData.apellido || null,
+          nombres: formData.nombres || null,
+          ubicacion: formData.ubicacion || null,
           edad: formData.nacimiento ? calcularEdad(formData.nacimiento) : null,
-          // información laboral
           empresa: formData.empresa
             ? buscarCuitEmpresa(formData.empresa)
             : null,
-          puesto: formData.puesto ? String(formData.puesto) : null,
+          puesto: formData.puesto || null,
           ingreso: formData.ingreso ? formatearFecha(formData.ingreso) : null,
-          legajo: formData.legajo ? Number(formData.legajo) : null,
-          sucursal: formData.sucursal ? String(formData.sucursal) : null,
-          estado: formData.estado ? true : false,
-          detalle: formData.detalle ? String(formData.detalle) : null,
+          legajo: formData.legajo || null,
+          sucursal: formData.sucursal || null,
+          estado: formData.estado === "Activo",
+          detalle: formData.detalle || null,
         };
 
-        await modificar(personas, personaEditada.dni, personaEditada);
-        if (onGuardar) onGuardar(personaEditada);
+        await modificar("personas", personaEditada.dni, personaEditada);
+        onGuardar?.(personaEditada);
       } else {
-        const existeDni = verificarDuplicado(personas, formData.dni);
-
-        if (existeDni) {
+        if (verificarDuplicado(personas, formData.dni)) {
           Swal.fire({
             title: "Duplicado",
             text: "Ya existe una persona con ese DNI.",
@@ -105,30 +92,23 @@ const FormPersona = ({
 
         const nuevaPersona = {
           ...formData,
-          // informacion personal
-
-          dni: formData.dni && Number(formData.dni), // si no se completa no se puede cargar (filtro desde return)
-          apellido: formData.apellido ? String(formData.apellido) : null,
-          nombres: formData.nombres ? String(formData.nombres) : null,
-          nacimiento: formData.nacimiento
-            ? formatearFecha(formData.nacimiento)
-            : null,
-          ubicacion: formData.ubicacion ? String(formData.ubicacion) : null,
-          edad: formData.nacimiento ? calcularEdad(formData.nacimiento) : null,
-          // información laboral
+          dni: String(formData.dni),
+          apellido: formData.apellido || null,
+          nombres: formData.nombres || null,
+          ubicacion: formData.ubicacion || null,
           empresa: formData.empresa
             ? buscarCuitEmpresa(formData.empresa)
             : null,
-          puesto: formData.puesto ? String(formData.puesto) : null,
-          ingreso: formData.ingreso ? formatearFecha(formData.ingreso) : null,
-          legajo: formData.legajo ? Number(formData.legajo) : null,
-          sucursal: formData.sucursal ? String(formData.sucursal) : null,
-          estado: formData.estado ? true : false,
-          detalle: formData.detalle ? String(formData.detalle) : null,
+          puesto: formData.puesto || null,
+          ingreso: new Date(),
+          legajo: formData.legajo || null,
+          sucursal: formData.sucursal || null,
+          estado: true,
+          detalle: formData.detalle || null,
         };
 
-        await agregar(personas, nuevaPersona, nuevaPersona.dni);
-        if (onGuardar) onGuardar(nuevaPersona);
+        await agregar("personas", nuevaPersona, String(nuevaPersona.dni));
+        onGuardar?.(nuevaPersona);
       }
       onClose();
     } catch (error) {
@@ -161,9 +141,9 @@ const FormPersona = ({
               name="dni"
               value={formData.dni}
               onChange={handleChange}
-              min="1000000" // mínimo 7 cifras
-              max="99999999" // máximo 8 cifras
-              disabled={modoEdicion} // el DNI no se edita
+              min="1000000"
+              max="99999999"
+              disabled={modoEdicion}
               required
             />
 
@@ -186,13 +166,6 @@ const FormPersona = ({
               style={{ textTransform: "uppercase" }}
               required
             />
-            <label>Fecha de nacimiento</label>
-            <input
-              type="date"
-              name="nacimiento"
-              value={formData.nacimiento}
-              onChange={handleChange}
-            />
           </div>
 
           <p className="ficha-info-title">
@@ -201,29 +174,31 @@ const FormPersona = ({
           <div className="ficha-info">
             <label>Empresa</label>
             <select
+              name="empresa"
               value={formData.empresa}
               onChange={handleChange}
               disabled={uploading}
             >
               <option value="">Seleccionar empresa...</option>
               {empresas
-                .filter((empresa) => empresa.tipo === "propia")
-                .map((empresa) => (
-                  <option key={empresa.cuit} value={empresa.nombre}>
-                    {empresa.nombre}
+                .filter((e) => e.tipo === "propia")
+                .map((e) => (
+                  <option key={e.cuit} value={e.nombre}>
+                    {e.nombre}
                   </option>
                 ))}
             </select>
 
             <label>Puesto</label>
             <select
+              name="puesto"
               value={formData.puesto}
               onChange={handleChange}
               disabled={uploading}
             >
               <option value="">Seleccionar puesto...</option>
-              {puestos.map((p, index) => (
-                <option key={index} value={p}>
+              {puestos.map((p, i) => (
+                <option key={i} value={p}>
                   {p}
                 </option>
               ))}

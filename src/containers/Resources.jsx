@@ -7,10 +7,8 @@ import Contratados from "./Contratados";
 const Resources = () => {
   return (
     <section className="section-container page">
-      <div>
-        <Branches />
-        <Flota />
-      </div>
+      <Branches />
+      <Flota />
     </section>
   );
 };
