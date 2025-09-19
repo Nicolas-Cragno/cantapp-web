@@ -3,11 +3,17 @@ import Card from "../components/cards/Card";
 import { useEffect, useState } from "react";
 import { listarColeccion } from "../functions/db-functions";
 import { FaSpinner } from "react-icons/fa";
+import ModalVehiculo from "../components/modales/ModalVehiculo";
+import { useData } from "../context/DataContext";
 
 const Flota = () => {
+  const { tractores, furgones, utilitarios } = useData();
   const [cantTractores, setTractores] = useState(0);
   const [cantFurgones, setFurgones] = useState(0);
   const [cantUtilitarios, setUtilitarios] = useState(0);
+  const [modalTractoresVisible, setModalTractoresVisible] = useState(false);
+  const [modalFurgonesVisible, setModalFurgonesVisible] = useState(false);
+  const [modalUtilitariosVisible, setModalUtilitariosVisible] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +46,18 @@ const Flota = () => {
     fetchAll();
   }, []);
 
+  const cerrarModalTractores = () => {
+    setModalTractoresVisible(false);
+  };
+
+  const cerrarModalFurgones = () => {
+    setModalFurgonesVisible(false);
+  };
+
+  const cerrarModalUtilitarios = () => {
+    setModalUtilitariosVisible(false);
+  };
+
   return (
     <div className="container group-card">
       <div className="row">
@@ -52,7 +70,8 @@ const Flota = () => {
             value={
               loading ? <FaSpinner className="spinner" /> : `${cantTractores}`
             }
-            route="/tractores"
+            // route="/tractores"
+            onClick={() => setModalTractoresVisible(true)}
           />
 
           <Card
@@ -60,15 +79,43 @@ const Flota = () => {
             value={
               loading ? <FaSpinner className="spinner" /> : `${cantFurgones}`
             }
-            route="/furgones"
+            //route="/furgones"
+            onClick={() => setModalFurgonesVisible(true)}
           />
           <Card
             title="Utilitarios"
             value={
               loading ? <FaSpinner className="spinner" /> : `${cantUtilitarios}`
             }
-            route="/utilitarios"
+            //route="/utilitarios"
+            onClick={() => setModalUtilitariosVisible(true)}
           />
+
+          <div>
+            {modalTractoresVisible && (
+              <ModalVehiculo
+                coleccion={tractores}
+                tipo={"tractores"}
+                onClose={cerrarModalTractores}
+              />
+            )}
+
+            {modalFurgonesVisible && (
+              <ModalVehiculo
+                coleccion={furgones}
+                tipo={"furgones"}
+                onClose={cerrarModalFurgones}
+              />
+            )}
+
+            {modalUtilitariosVisible && (
+              <ModalVehiculo
+                coleccion={utilitarios}
+                tipo={"utilitarios"}
+                onClose={cerrarModalUtilitarios}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -115,12 +115,13 @@ const ModalPersona = ({ puesto = null, onClose }) => {
             setModalFichaVisible(true);
           }}
         />
-
+        {/*
         <div className="ficha-buttons">
           <button onClick={() => setModalAgregarVisible(true)}>
             <BsPersonPlusFill size={26} />
           </button>
         </div>
+            */}
 
         {modalFichaVisible && (
           <FichaGestor

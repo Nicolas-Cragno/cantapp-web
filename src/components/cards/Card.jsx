@@ -1,7 +1,7 @@
 import "./css/Card.css";
 import { Link } from "react-router-dom";
 
-const Card = ({ title, value, route = null }) => {
+const Card = ({ title, value, route = null, onClick = null }) => {
   return (
     <>
       {route ? (
@@ -16,7 +16,7 @@ const Card = ({ title, value, route = null }) => {
           </div>
         </Link>
       ) : (
-        <div className="card">
+        <div className="card" onClick={onClick}>
           <div className="card-section">
             <h3 className="card-title">{title}</h3>
           </div>
