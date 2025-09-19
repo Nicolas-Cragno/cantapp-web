@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../tablas/TablaColeccion";
 import "./css/Modales.css";
@@ -8,6 +8,9 @@ const ModalBranch = ({ sucursalId, onClose }) => {
   const [filtro, setFiltro] = useState("");
   const [activeTab, setActiveTab] = useState("llaves"); // default tab
   const { ubicaciones, tractores, furgones } = useData();
+  const [cantTractores, setCantTractores] = useState(0);
+  const [cantFurgones, setCantFurgones] = useState(0);
+  const [cantLlaves, setCantLlaves] = useState(0);
 
   // --- Obtener datos de la sucursal
   const sucursalData = useMemo(() => {
@@ -42,6 +45,12 @@ const ModalBranch = ({ sucursalId, onClose }) => {
       }),
     [sucursalData, furgones]
   );
+
+  useEffect(() => {
+    setCantLlaves(llavesSucursal.length);
+    setCantTractores(tractoresSucursal.length);
+    setCantFurgones(furgonesSucursal.length);
+  }, [llavesSucursal, tractoresSucursal, furgonesSucursal]);
 
   // --- Columnas para cada tipo
   const columnasLlaves = [
@@ -134,7 +143,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
             }
             onClick={() => setActiveTab("llaves")}
           >
-            Llaves
+            Llaves ({cantLlaves})
           </button>
           <button
             className={
@@ -144,7 +153,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
             }
             onClick={() => setActiveTab("tractores")}
           >
-            Tractores
+            Tractores ({cantTractores})
           </button>
           <button
             className={
@@ -154,7 +163,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
             }
             onClick={() => setActiveTab("furgones")}
           >
-            Furgones
+            Furgones ({cantFurgones})
           </button>
         </div>
 
