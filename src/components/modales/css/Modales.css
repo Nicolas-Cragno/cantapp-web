@@ -36,6 +36,68 @@ font-size: 1.8rem;
   font-weight: bolder;
 }
 
+.type-container{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.type-container-small{
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.type-btn{
+  position: relative;
+  flex: 1;
+  padding: 4px 16px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: 0.3s;
+  opacity: 0.2;
+  display: flex;            
+  align-items: center;       
+  justify-content: center;   
+  gap: 6px;    
+}
+
+.type-btn.active{
+  background-color: #007bff; /* Verde para ALTA */
+  color: white;
+
+  opacity: 1;
+}
+
+.type-btn.positive-active{
+ background-color: #d8252a; /* Rojo para cargado por pedido de Guille */
+  color: white;
+  opacity: 1;
+}
+
+.positive-active-yellow{
+  background-color: #fceb05;
+  color: #000;
+  opacity: 1;
+}
+
+.positive-active-black{
+  background-color: #000;
+  color: #fff;
+  opacity: 1;
+}
+
+.type-btn.negative-active{
+  background-color: #058516; /* Verde para vacio por pedido de Guille */
+  color: white;
+  opacity: 1;
+}
+
 .modal-type-logo{
   margin-right: .4rem;
 }
@@ -379,6 +441,8 @@ max-height: 50;
 .modal-buttons button:hover {
   background-color: #0056b3;
 }
+
+
 
 /* Celulares */
 @media (max-width: 640px) {

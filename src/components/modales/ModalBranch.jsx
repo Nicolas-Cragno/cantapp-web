@@ -17,28 +17,40 @@ const ModalBranch = ({ sucursalId, onClose }) => {
   }, [ubicaciones, sucursalId]);
 
   const llavesSucursal = useMemo(
-    () => sucursalData.llaves.map((num) => ({ id: num })),
-    [sucursalData]
+    () =>
+      sucursalData.llaves.map((num) => {
+        const tractor = tractores.find((t) => t.interno === num);
+        return { interno: num, dominio: tractor?.dominio || "-" };
+      }),
+    [sucursalData, tractores]
   );
 
   const tractoresSucursal = useMemo(
-    () => sucursalData.tractores.map((num) => ({ interno: num })),
-    [sucursalData]
+    () =>
+      sucursalData.tractores.map((num) => {
+        const tractor = tractores.find((t) => t.interno === num);
+        return { interno: num, dominio: tractor?.dominio || "-" };
+      }),
+    [sucursalData, tractores]
   );
 
   const furgonesSucursal = useMemo(
-    () => sucursalData.furgones.map((num) => ({ id: num })),
-    [sucursalData]
+    () =>
+      sucursalData.furgones.map((num) => {
+        const furgon = furgones.find((f) => f.interno === num);
+        return { interno: num, dominio: furgon?.dominio || "-" };
+      }),
+    [sucursalData, furgones]
   );
 
   // --- Columnas para cada tipo
   const columnasLlaves = [
-    { titulo: "ID", campo: "id" },
+    { titulo: "ID", campo: "interno" },
     {
       titulo: "DOMINIO",
       campo: "id",
       render: (valor, item) => {
-        const tractor = tractores.find((t) => t.interno === item.id);
+        const tractor = tractores.find((t) => t.interno === item.interno);
         return tractor ? tractor.dominio : "-";
       },
     },
@@ -57,18 +69,17 @@ const ModalBranch = ({ sucursalId, onClose }) => {
   ];
 
   const columnasFurgones = [
-    { titulo: "ID", campo: "id" },
+    { titulo: "ID", campo: "interno" },
     {
       titulo: "DOMINIO",
       campo: "id",
       render: (valor, item) => {
-        const furgon = furgones.find((f) => f.interno === item.id);
+        const furgon = furgones.find((f) => f.interno === item.interno);
         return furgon ? furgon.dominio : "-";
       },
     },
   ];
 
-  // --- Datos filtrados según tab y búsqueda
   const datosActivos = useMemo(() => {
     let datos = [];
     if (activeTab === "llaves") datos = llavesSucursal;
@@ -99,42 +110,54 @@ const ModalBranch = ({ sucursalId, onClose }) => {
           ✕
         </button>
 
-        <h2>BASE {sucursalData.nombre}</h2>
+        <div className="modal-header">
+          <h1 className="modal-title">
+            <strong>{sucursalData.nombre}</strong>
+          </h1>
+          <hr />
+          <input
+            type="text"
+            placeholder="Filtrar vehículos..."
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="modal-input-filtro"
+          />
+        </div>
 
-        <hr />
-
-        {/* Tabs */}
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+        <div className="type-container-small">
           <button
-            className={activeTab === "llaves" ? "tab-active" : ""}
+            type="button"
+            className={
+              activeTab === "llaves"
+                ? "type-btn positive-active-black"
+                : "type-btn"
+            }
             onClick={() => setActiveTab("llaves")}
           >
             Llaves
           </button>
           <button
-            className={activeTab === "tractores" ? "tab-active" : ""}
+            className={
+              activeTab === "tractores"
+                ? "type-btn positive-active-black"
+                : "type-btn"
+            }
             onClick={() => setActiveTab("tractores")}
           >
             Tractores
           </button>
           <button
-            className={activeTab === "furgones" ? "tab-active" : ""}
+            className={
+              activeTab === "furgones"
+                ? "type-btn positive-active-black"
+                : "type-btn"
+            }
             onClick={() => setActiveTab("furgones")}
           >
             Furgones
           </button>
         </div>
 
-        {/* Filtro */}
-        <input
-          type="text"
-          placeholder="Filtrar..."
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-          className="modal-input-filtro"
-        />
-
-        {/* Tabla */}
         <TablaColeccion columnas={columnasActivas} datos={datosActivos} />
       </div>
     </div>
