@@ -1,20 +1,19 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
+import { BsPersonDash } from "react-icons/bs"; // logo innactiva
+import { BsPersonCheck } from "react-icons/bs"; // logo activa
+import { BsPersonPlusFill } from "react-icons/bs"; // logo agregar
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import { buscarPersona } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
-import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import FichaGestor from "../fichas/FichaGestor";
-import FichaPersonal from "../fichas/FichaPersonal";
 import FormPersona from "../forms/FormPersona";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Modales.css";
-import { BsPersonDash } from "react-icons/bs"; // logo innactiva
-import { BsPersonCheck } from "react-icons/bs"; // logo activa
-import { BsPersonPlusFill } from "react-icons/bs"; // logo agregar
+import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 
 const ModalPersona = ({ puesto = null, onClose }) => {
   const [filtro, setFiltro] = useState("");
@@ -125,7 +124,7 @@ const ModalPersona = ({ puesto = null, onClose }) => {
         {modalFichaVisible && (
           <FichaGestor
             tipo="personal"
-            persona={personaSeleccionada}
+            elemento={personaSeleccionada}
             onClose={cerrarModalFicha}
             onGuardar={handleGuardar}
           />

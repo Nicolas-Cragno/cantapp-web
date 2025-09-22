@@ -1,5 +1,4 @@
 // ----------------------------------------------------------------------- imports externos
-
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
@@ -15,7 +14,7 @@ import {
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
 
-const FormularioVehiculo = ({
+const FormVehiculo = ({
   tipoVehiculo,
   vehiculo = null,
   onClose,
@@ -24,33 +23,33 @@ const FormularioVehiculo = ({
   const tipo =
     typeof tipoVehiculo === "string" ? tipoVehiculo : tipoVehiculo?.value || "";
 
+  const { empresas, tractores, furgones, utilitarios } = useData();
+  const modoEdicion = !!vehiculo;
+
   const [interno, setInterno] = useState("");
   const [dominio, setDominio] = useState("");
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
-  const [empresa, setEmpresa] = useState("SIN ASIGNAR");
+  const [empresa, setEmpresa] = useState("");
   const [detalle, setDetalle] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const modoEdicion = !!vehiculo;
-
-  const { empresas, tractores, furgones } = useData();
-
+  // Cargar datos en modo edición
   useEffect(() => {
     if (modoEdicion && vehiculo) {
-      setInterno(vehiculo.interno);
-      setDominio(vehiculo.dominio);
-      setMarca(vehiculo.marca);
-      setModelo(vehiculo.modelo);
-      setEmpresa(buscarEmpresa(empresas, vehiculo.empresa));
-      setDetalle(vehiculo.detalle);
+      setInterno(vehiculo.interno ? String(vehiculo.interno) : "");
+      setDominio(vehiculo.dominio || "");
+      setMarca(vehiculo.marca || "");
+      setModelo(vehiculo.modelo || "");
+      setEmpresa(buscarEmpresa(empresas, vehiculo.empresa) || "");
+      setDetalle(vehiculo.detalle || "");
     }
-  }, [modoEdicion, vehiculo]);
+  }, [modoEdicion, vehiculo, empresas]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!String(interno).trim() || !String(dominio).trim()) {
+    if (!String(interno.trim()) || !String(dominio.trim())) {
       Swal.fire({
         title: "Faltan datos",
         text: "Complete los campos obligatorios.",
@@ -64,62 +63,53 @@ const FormularioVehiculo = ({
     setLoading(true);
 
     try {
+      const vehiculoData = {
+        interno: String(interno).trim(),
+        dominio: dominio.toUpperCase().trim(),
+        marca: marca.toUpperCase().trim(),
+        modelo: modelo,
+        empresa: buscarCuitEmpresa(empresas, empresa) || "",
+        detalle: detalle.toUpperCase().trim(),
+      };
+
       if (modoEdicion) {
-        const vehiculoEditado = {
-          interno: String(interno),
-          dominio: dominio.toUpperCase(),
-          marca: marca.toUpperCase(),
-          modelo: modelo,
-          empresa:
-            buscarCuitEmpresa(empresas, empresa?.toUpperCase() || "") || "",
-          detalle: detalle.toUpperCase(),
-        };
-
         await modificar(
-          tipo.toLowerCase(),
-          String(vehiculo.interno),
-          vehiculoEditado
+          tipoVehiculo.toLowerCase(),
+          vehiculo.interno,
+          vehiculoData
         );
-
-        if (onGuardar) onGuardar(vehiculoEditado);
+        if (onGuardar) onGuardar(vehiculoData);
       } else {
-        const existeInterno = await verificarDuplicado(
-          tipo === "tractores" ? empresas : furgones,
-          interno
-        );
-
+        const lista =
+          tipo === "tractores"
+            ? tractores
+            : tipo === "furgones"
+            ? furgones
+            : utilitarios;
+        const existeInterno = await verificarDuplicado(lista, interno);
         if (existeInterno) {
           Swal.fire({
             title: "Duplicado",
-            text: "El interno" + interno + "ya se encuentra asignado.",
+            text: `El interno ${interno} ya se encuentra asignado.`,
             icon: "warning",
             confirmButtonText: "Entendido",
             confirmButtonColor: "#4161bd",
           });
-
           setLoading(false);
           return;
         }
 
-        const nuevoVehiculo = {
-          interno,
-          dominio: dominio.toUpperCase(),
-          marca: marca.toUpperCase(),
-          modelo: modelo,
-          empresa: buscarCuitEmpresa(empresas, empresa),
-          detalle: detalle.toUpperCase(),
-        };
-
         const vehiculoAgregado = await agregar(
           tipo.toLowerCase(),
-          nuevoVehiculo,
-          interno
+          vehiculoData,
+          vehiculoData.interno
         );
         if (onGuardar) onGuardar(vehiculoAgregado);
       }
 
       onClose();
     } catch (error) {
+      console.error("Error al guardar vehículo: ", error);
       Swal.fire({
         title: "Error",
         text: "No hemos podido procesar la solicitud.",
@@ -127,8 +117,6 @@ const FormularioVehiculo = ({
         confirmButtonText: "Entendido",
         confirmButtonColor: "#4161bd",
       });
-
-      console.error("Error al guardar vehículo: ", error);
     } finally {
       setLoading(false);
     }
@@ -153,6 +141,7 @@ const FormularioVehiculo = ({
               disabled={modoEdicion || loading}
             />
           </label>
+
           <label>
             Dominio
             <input
@@ -162,6 +151,7 @@ const FormularioVehiculo = ({
               disabled={loading}
             />
           </label>
+
           <label>
             Marca
             <input
@@ -171,6 +161,7 @@ const FormularioVehiculo = ({
               disabled={loading}
             />
           </label>
+
           <label>
             Modelo
             <input
@@ -183,6 +174,7 @@ const FormularioVehiculo = ({
               disabled={modoEdicion || loading}
             />
           </label>
+
           <label>
             Empresa
             <select
@@ -191,13 +183,14 @@ const FormularioVehiculo = ({
               disabled={loading}
             >
               <option value="">Seleccionar empresa...</option>
-              {Object.entries(empresas).map(([cuit, nombre]) => (
-                <option key={cuit} value={nombre}>
-                  {nombre}
+              {empresas.map((e) => (
+                <option key={e.cuit} value={e.nombre}>
+                  {e.nombre}
                 </option>
               ))}
             </select>
           </label>
+
           <label>
             Detalle
             <textarea
@@ -206,6 +199,7 @@ const FormularioVehiculo = ({
               disabled={loading}
             />
           </label>
+
           <div className="form-buttons">
             <button type="submit" disabled={loading}>
               {loading ? "Guardando..." : "Guardar"}
@@ -220,4 +214,4 @@ const FormularioVehiculo = ({
   );
 };
 
-export default FormularioVehiculo;
+export default FormVehiculo;

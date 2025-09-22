@@ -24,7 +24,7 @@ export const useObtenerCuitPorNombre = (nombreEmpresa) => {
 }
 
 export const buscarEmpresa = (coleccion, cuit, completo=true) => {
-  if (!cuit) return "";
+  if (!cuit || !Array.isArray(coleccion)) return "";
   const empresa = coleccion.find((e) => e.cuit === cuit || e.id === cuit);
   if (!empresa) return "";
   const nombreCompleto = `${empresa.nombre}`;

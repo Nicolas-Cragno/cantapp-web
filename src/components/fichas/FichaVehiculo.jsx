@@ -14,13 +14,14 @@ import {
 import FichaEventoPorteria from "./FichaEventoPorteria";
 import FichaLlavePorteria from "./FichaLlavePorteria";
 import FichaViaje from "./FichaViaje";
-import FormularioVehiculo from "../forms/FormularioVehiculo";
+import FormVehiculo from "../forms/FormVehiculo";
 import { listarColeccion } from "../../functions/db-functions";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
 
-const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
+const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
+  const vehiculo = elemento;
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventos, setEventos] = useState([]);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
@@ -216,7 +217,7 @@ const FichaVehiculo = ({ vehiculo, tipoVehiculo, onClose, onGuardar }) => {
           </div>
         </div>
       ) : (
-        <FormularioVehiculo
+        <FormVehiculo
           tipoVehiculo={tipoVehiculo}
           vehiculo={vehiculo}
           onClose={() => setModoEdicion(false)}

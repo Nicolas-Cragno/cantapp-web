@@ -13,7 +13,8 @@ import FormPersona from "../forms/FormPersona";
 import "./css/Fichas.css";
 import LogoEmpresa from "../logos/LogoEmpresa";
 
-const FichaPersonal = ({ persona, onClose, onGuardar }) => {
+const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
+  const persona = elemento;
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalEventoVisible, setModalEventoVisible] = useState(false);

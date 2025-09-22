@@ -1,12 +1,12 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
-
+import { BsPersonPlusFill } from "react-icons/bs";
 // ----------------------------------------------------------------------- internos
 import TablaColeccion from "../tablas/TablaColeccion";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
-import FichaVehiculo from "../fichas/FichaVehiculo";
-
+import FichaGestor from "../fichas/FichaGestor";
+import FormVehiculo from "../forms/FormVehiculo";
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Modales.css";
 
@@ -14,6 +14,7 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
   const [filtro, setFiltro] = useState("");
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
+  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
 
   const columnasVehiculo = [
     {
@@ -49,6 +50,15 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
     });
   }, [coleccion, filtro]);
 
+  const handleGuardar = async () => {
+    setModalFichaVisible(false);
+    setVehiculoSeleccionado(false);
+  };
+
+  const cerrarModalAgregar = () => {
+    setModalAgregarVisible(false);
+  };
+
   return (
     <div className="modal">
       <div className="modal-content">
@@ -78,13 +88,24 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
           }}
         />
 
+        <div className="ficha-buttons">
+          <button onClick={() => setModalAgregarVisible(true)}>
+            <BsPersonPlusFill size={26} />
+          </button>
+        </div>
+
         {modalFichaVisible && (
-          <FichaVehiculo
-            vehiculo={vehiculoSeleccionado}
+          <FichaGestor
+            tipo="vehiculo"
+            filtroVehiculo={tipo}
+            elemento={vehiculoSeleccionado}
             tipoVehiculo={tipo}
             onClose={cerrarModalFicha}
+            onGuardar={handleGuardar}
           />
         )}
+
+        {modalAgregarVisible && <FormVehiculo onClose={cerrarModalAgregar} />}
       </div>
     </div>
   );
