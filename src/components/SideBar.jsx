@@ -28,14 +28,6 @@ const SideBar = () => {
       label: "Inicio",
       roles: ["dev", "admin", "user"],
     },
-    /*
-    {
-      to: "/perfil",
-      icon: <IoSettingsSharp className="nav-icon" />,
-      label: "Perfil",
-      roles: ["dev", "admin", "user"],
-    },
-    */
   ];
   const linksManagement = [
     {
@@ -53,14 +45,6 @@ const SideBar = () => {
   ];
 
   const linksEvents = [
-    /* ACTIVIDAD OCULTA, QUEDA DIRECTAMENTE SATELITAL
-    {
-      to: "/actividad",
-      icon: <IoCalendarSharp className="nav-icon" />,
-      label: "Actividad",
-      roles: ["dev", "admin", "user"],
-    },
-    */
     {
       to: "/satelital",
       icon: <FaMapLocationDot className="nav-icon" />,
@@ -72,24 +56,6 @@ const SideBar = () => {
       icon: <FaSignOutAlt className="nav-icon" />,
       label: "Portería",
       roles: ["dev", "admin", "user"],
-    },
-    {
-      to: "/taller-tractores",
-      icon: <GiAutoRepair className="nav-icon dev" />,
-      label: "Tractores",
-      roles: ["dev"],
-    },
-    {
-      to: "/taller-furgones",
-      icon: <GiAutoRepair className="nav-icon" />,
-      label: "Furgones",
-      roles: ["dev"],
-    },
-    {
-      to: "/control-combustible",
-      icon: <BsFillFuelPumpFill className="nav-icon dev" />,
-      label: "Consumo",
-      roles: ["dev"],
     },
   ];
   // Toggle de colapsado
