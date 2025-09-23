@@ -16,6 +16,7 @@ export const DataProvider = ({ children }) => {
   const [personas, setPersonas] = useState([]);
   const [furgones, setFurgones] = useState([]);
   const [tractores, setTractores] = useState([]);
+  const [vehiculos, setVehiculos] = useState([]);
   const [utilitarios, setUtilitarios] = useState([]);
   const [stock, setStock] = useState([]);
 
@@ -41,6 +42,7 @@ export const DataProvider = ({ children }) => {
       { name: "personas", setter: setPersonas },
       { name: "furgones", setter: setFurgones },
       { name: "tractores", setter: setTractores },
+      { name: "vehiculos", setter: setVehiculos },
       { name: "utilitarios", setter: setUtilitarios },
       { name: "stock", setter: setStock },
 
@@ -93,6 +95,7 @@ export const DataProvider = ({ children }) => {
         personas,
         furgones,
         tractores,
+        vehiculos,
         utilitarios,
         stock,
         eventos,

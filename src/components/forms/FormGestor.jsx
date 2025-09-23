@@ -17,7 +17,7 @@ const formularios = {
 const FormGestor = ({
   tipo,
   filtroVehiculo = null,
-  elemento,
+  elemento = null,
   onClose,
   onGuardar,
 }) => {
@@ -32,7 +32,7 @@ const FormGestor = ({
 
   return (
     <Suspense fallback={<div>Cargando...</div>}>
-      <Formulario {...props} />;
+      <Formulario {...props} />
     </Suspense>
   );
 };

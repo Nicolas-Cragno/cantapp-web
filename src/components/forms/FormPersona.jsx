@@ -27,9 +27,9 @@ const FormPersona = ({
 
   const [formData, setFormData] = useState({
     dni: persona?.dni || "",
-    apellido: persona?.apellido || "",
-    nombres: persona?.nombres || "",
-    ubicacion: persona?.ubicacion || "",
+    apellido: persona?.apellido?.toUpperCase() || "",
+    nombres: persona?.nombres?.toUpperCase() || "",
+    ubicacion: persona?.ubicacion?.toUpperCase() || "",
     edad: persona?.nacimiento ? calcularEdad(persona.nacimiento) : "",
     empresa: persona?.empresa ? buscarEmpresa(empresas, persona.empresa) : "",
     puesto: persona?.puesto || "",
@@ -37,7 +37,7 @@ const FormPersona = ({
     legajo: persona?.legajo || "",
     sucursal: persona?.sucursal || "",
     estado: persona?.estado ? "Activo" : "Inactivo",
-    detalle: persona?.detalle || "",
+    detalle: persona?.detalle?.toUpperCase() || "",
   });
 
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -60,19 +60,19 @@ const FormPersona = ({
       if (modoEdicion) {
         const personaEditada = {
           ...formData,
-          apellido: formData.apellido || null,
-          nombres: formData.nombres || null,
-          ubicacion: formData.ubicacion || null,
+          apellido: formData.apellido?.toUpperCase() || null,
+          nombres: formData.nombres?.toUpperCase() || null,
+          ubicacion: formData.ubicacion?.toUpperCase() || null,
           edad: formData.nacimiento ? calcularEdad(formData.nacimiento) : null,
           empresa: formData.empresa
-            ? buscarCuitEmpresa(formData.empresa)
+            ? buscarCuitEmpresa(empresas, formData.empresa)
             : null,
           puesto: formData.puesto || null,
           ingreso: formData.ingreso ? formatearFecha(formData.ingreso) : null,
           legajo: formData.legajo || null,
           sucursal: formData.sucursal || null,
           estado: formData.estado === "Activo",
-          detalle: formData.detalle || null,
+          detalle: formData.detalle?.toUpperCase() || null,
         };
 
         await modificar("personas", personaEditada.dni, personaEditada);
@@ -93,18 +93,18 @@ const FormPersona = ({
         const nuevaPersona = {
           ...formData,
           dni: String(formData.dni),
-          apellido: formData.apellido || null,
-          nombres: formData.nombres || null,
-          ubicacion: formData.ubicacion || null,
+          apellido: formData.apellido?.toUpperCase() || null,
+          nombres: formData.nombres?.toUpperCase() || null,
+          ubicacion: formData.ubicacion?.toUpperCase() || null,
           empresa: formData.empresa
-            ? buscarCuitEmpresa(formData.empresa)
+            ? buscarCuitEmpresa(empresas, formData.empresa)
             : null,
           puesto: formData.puesto || null,
           ingreso: new Date(),
           legajo: formData.legajo || null,
           sucursal: formData.sucursal || null,
           estado: true,
-          detalle: formData.detalle || null,
+          detalle: formData.detalle?.toUpperCase() || null,
         };
 
         await agregar("personas", nuevaPersona, String(nuevaPersona.dni));

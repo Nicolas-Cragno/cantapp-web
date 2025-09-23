@@ -72,7 +72,9 @@ export const useBuscarPersona = (dni, completo=true) => {
 
 export const buscarPersona = (coleccion, dni, completo=true) => {
   if (!dni) return "";
-  const persona = coleccion.find((p) => p.dni === dni || p.id === dni);
+
+  const dniStr = String(dni);
+  const persona = coleccion.find((p) => p.dni === dniStr || p.id === dniStr);
   if (!persona) return "";
   const nombreCompleto = `${persona.apellido}, ${persona.nombres}`;
   const nombreAbreviado = `${persona.apellido}, ${persona.nombres[0]}.`;
@@ -144,12 +146,9 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
 }
 
 export const buscarDominio = (interno, coleccion = []) => {
+  if (!interno || !Array.isArray(coleccion)) return "";
 
-
-  if (!interno) return "";
-  let vehiculo = null;
-
-  vehiculo = coleccion.find((v) => v.interno === interno || v.id === interno);
+  const vehiculo = coleccion.find((v) => v.interno === interno || v.id === interno);
 
   return vehiculo ? vehiculo.dominio : "";
 };

@@ -19,13 +19,10 @@ import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import "./css/Fichas.css";
 
 const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
-  const { personas, tractores, furgones } = useData();
+  const { personas, tractores, furgones, vehiculos } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [nombre, setNombre] = useState("");
-  const [operador, setOperador] = useState("");
-  const [tractor, setTractor] = useState("");
-  const [furgon, setFurgon] = useState("");
   const [cargado, setCargado] = useState(false);
+  const [distincion, setDistincion] = useState("tractor");
   const [modificaciones, setModificaciones] = useState([]);
 
   useEffect(() => {
@@ -34,6 +31,10 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
 
       if (elemento.cargado) {
         setCargado(true);
+      }
+
+      if (elemento.distincion) {
+        setDistincion(elemento.distincion);
       }
 
       // Modificaciones
@@ -97,57 +98,81 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
                   ) : null}
                 </strong>
               </p>
+              {/* chofer / persona */}
               <p>
-                <strong>Chofer: </strong>{" "}
+                {distincion === "tractor" ? (
+                  <strong>Chofer: </strong>
+                ) : (
+                  <strong>Persona: </strong>
+                )}{" "}
                 {buscarPersona(personas, elemento.persona)}
               </p>
+              {/* operador */}
               <p>
                 <strong>Operador: </strong>{" "}
                 {buscarPersona(personas, elemento.operador)}
               </p>
-              <p>
-                <strong>Tractor: </strong>
-                {elemento.tractor} ({buscarDominio(elemento.tractor, tractores)}
-                )
-              </p>
-              <p>
-                <strong>Furgón: </strong>
-                {cargado ? (
-                  <>
-                    {elemento.furgon} (
-                    {buscarDominio(elemento.furgon, furgones)}){" "}
-                    <span className="infobox redbox">CARGADO</span>{" "}
-                  </>
-                ) : elemento.furgon ? (
-                  <>
-                    {elemento.furgon} (
-                    {buscarDominio(elemento.furgon, furgones)}){" "}
-                    <span className="infobox greenbox">VACIO</span>{" "}
-                  </>
-                ) : null}
-              </p>
+              {/* asfas */}
+              {distincion === "tractor" ? (
+                <>
+                  <p>
+                    <strong>Tractor: </strong>
+                    {elemento.tractor} (
+                    {buscarDominio(elemento.tractor, tractores)})
+                  </p>
+                  <p>
+                    <strong>Furgón: </strong>
+                    {cargado ? (
+                      <>
+                        {elemento.furgon} (
+                        {buscarDominio(elemento.furgon, furgones)}){" "}
+                        <span className="infobox redbox">CARGADO</span>{" "}
+                      </>
+                    ) : elemento.furgon ? (
+                      <>
+                        {elemento.furgon} (
+                        {buscarDominio(elemento.furgon, furgones)}){" "}
+                        <span className="infobox greenbox">VACIO</span>{" "}
+                      </>
+                    ) : null}
+                  </p>
+                </>
+              ) : elemento.vehiculo ? (
+                <>
+                  {" "}
+                  <p>
+                    <strong>Vehiculo: </strong>
+                    {elemento.vehiculo}
+                  </p>
+                </>
+              ) : null}
+
               <p>
                 <strong>Detalle: </strong> {elemento.detalle || "-"}
               </p>
             </div>
-            <label>
-              <strong>Chequeos</strong>
-            </label>
-            <div className="checkbox-list">
-              {chequeosPorteria.map(({ key, label }) => {
-                const valor = elemento.chequeos?.[key];
-                return (
-                  <span
-                    key={key}
-                    className={`chequeo-item ${
-                      valor ? "chequeo-ok" : "chequeo-fail"
-                    }`}
-                  >
-                    {label}
-                  </span>
-                );
-              })}
-            </div>
+            {distincion === "tractor" ? (
+              <>
+                <label>
+                  <strong>Chequeos</strong>
+                </label>
+                <div className="checkbox-list">
+                  {chequeosPorteria.map(({ key, label }) => {
+                    const valor = elemento.chequeos?.[key];
+                    return (
+                      <span
+                        key={key}
+                        className={`chequeo-item ${
+                          valor ? "chequeo-ok" : "chequeo-fail"
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    );
+                  })}
+                </div>
+              </>
+            ) : null}
             <div className="ficha-data">
               {elemento.usuario ? (
                 <p>

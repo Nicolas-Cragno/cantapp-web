@@ -9,6 +9,8 @@ import { GiCancel as XLogo } from "react-icons/gi";
 import { useData } from "../../context/DataContext";
 import { agregarEvento } from "../../functions/eventFunctions";
 import { agregarItem, quitarItem } from "../../functions/stockFunctions";
+import FormVehiculo from "./FormVehiculo";
+import FormPersona from "./FormPersona";
 
 // ----------------------------------------------------------------------- json e info
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
@@ -21,10 +23,16 @@ import "./css/Forms.css";
 const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const SUCURSAL = "01";
   const area = "porteria";
-  const { personas, tractores, furgones } = useData();
+  const { personas, tractores, furgones, vehiculos } = useData();
+  const [tipoSeleccionado, setTipoSeleccionado] = useState("tractor");
+  const [modalTractorVisible, setModalTractorVisible] = useState(false);
+  const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
+  const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
+  const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     tipo: elemento.tipo || "",
+    distincion: elemento.distincion || "tractor", // El ingreso puede ser de TRACTOR o PARTICULAR
     persona: elemento.persona ? String(elemento.persona) : "",
     operador: elemento.operador ? String(elemento.operador) : "",
     tractor: elemento.tractor || "",
@@ -49,6 +57,7 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     const cargarDatos = async () => {
       setFormData({
         tipo: elemento.tipo || "",
+        distincion: elemento.distincion || "tractor",
         persona: elemento.persona ? String(elemento.persona) : "",
         operador: elemento.operador ? String(elemento.operador) : "",
         tractor: elemento.tractor || "",
@@ -60,6 +69,9 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           return typeof valor === "boolean" ? valor : false;
         }),
       });
+      setTipoSeleccionado(
+        elemento.distincion ? elemento.distincion : "tractor"
+      );
     };
 
     cargarDatos();
@@ -110,7 +122,7 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         !formData.tipo ||
         !formData.persona ||
         !formData.operador ||
-        !formData.tractor
+        (tipoSeleccionado === "tractor" && !formData.tractor)
       ) {
         Swal.fire({
           title: "Atención",
@@ -127,6 +139,7 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         ...formData,
         fecha: fechaParaGuardar,
         tipo: formData.tipo || null,
+        distincion: tipoSeleccionado, // por default TRACTOR
         persona: formData.persona ? Number(formData.persona) : null,
         operador: formData.operador ? Number(formData.operador) : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
@@ -171,6 +184,36 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     }
   };
 
+  const cerrarModalTractor = () => {
+    setModalTractorVisible(false);
+  };
+
+  const handleClickTractor = async () => {
+    setModalTractorVisible(true);
+  };
+
+  const handleClickFurgon = async () => {
+    setModalFurgonVisible(true);
+  };
+
+  const handleClickVehiculo = async () => {
+    setModalVehiculoVisible(true);
+  };
+
+  const handleClickPersona = async () => {
+    setModalPersonaVisible(true);
+  };
+
+  const cerrarModalFurgon = () => {
+    setModalFurgonVisible(false);
+  };
+  const cerrarModalVehiculo = () => {
+    setModalVehiculoVisible(false);
+  };
+  const cerrarModalPersona = () => {
+    setModalPersonaVisible(false);
+  };
+
   return (
     <div className="form">
       <div className="form-content">
@@ -179,7 +222,34 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           <p>* campo obligatorio</p>
           <hr />
         </div>
+        {/* Tipo de ingreso /tractor/ /particular/ */}
+        <div className="type-container-small">
+          <button
+            type="button"
+            className={
+              tipoSeleccionado === "tractor"
+                ? "type-btn positive-active-black"
+                : "type-btn"
+            }
+            onClick={() => setTipoSeleccionado("tractor")}
+          >
+            TRACTOR {tipoSeleccionado === "tractor" ? " *" : null}{" "}
+          </button>
+          <button
+            type="button"
+            className={
+              tipoSeleccionado === "particular"
+                ? "type-btn positive-active-black"
+                : "type-btn"
+            }
+            onClick={() => setTipoSeleccionado("particular")}
+          >
+            PARTICULAR {tipoSeleccionado === "particular" ? " *" : null}{" "}
+          </button>
+        </div>
+        {/* Formulario */}
         <form onSubmit={handleSubmit}>
+          {/* Tipo de evento /entrada/ /salida/ /inventario/ */}
           <label>
             Tipo *
             <Select
@@ -203,37 +273,46 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
               required
             />
           </label>
-
+          {/* /persona/ o /chofer/ */}
           <label>
-            Chofer *
-            <Select
-              options={personas.map((p) => ({
-                value: p.id,
-                label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-              }))}
-              value={
-                formData.persona
-                  ? {
-                      value: formData.persona,
-                      label:
-                        personas.find((p) => p.id === formData.persona)
-                          ?.apellido +
-                        " " +
-                        personas.find((p) => p.id === formData.persona)
-                          ?.nombres +
-                        ` (DNI: ${formData.persona})`,
-                    }
-                  : null
-              }
-              onChange={(opt) =>
-                setFormData({ ...formData, persona: opt ? opt.value : "" })
-              }
-              placeholder=""
-              isClearable
-              required
-            />
+            {" "}
+            {tipoSeleccionado === "particular" ? "Persona *" : "Chofer *"}
+            <div className="select-with-button">
+              <Select
+                className="select-grow"
+                options={personas.map((p) => ({
+                  value: p.id,
+                  label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                }))}
+                value={
+                  formData.persona
+                    ? {
+                        value: formData.persona,
+                        label:
+                          personas.find((p) => p.id === formData.persona)
+                            ?.apellido +
+                          " " +
+                          personas.find((p) => p.id === formData.persona)
+                            ?.nombres +
+                          ` (DNI: ${formData.persona})`,
+                      }
+                    : null
+                }
+                onChange={(opt) =>
+                  setFormData({ ...formData, persona: opt ? opt.value : "" })
+                }
+                placeholder=""
+                isClearable
+                required
+              />
+              <TextButton
+                text="+"
+                className="mini-btn"
+                onClick={handleClickPersona}
+              />
+            </div>
           </label>
-
+          {/* /operador/ que carga */}
           <label>
             Operador *
             <Select
@@ -267,113 +346,177 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
               required
             />
           </label>
-
-          <label>
-            Tractor *
-            <Select
-              options={tractores.map((t) => ({
-                value: t.interno,
-                label: `${t.dominio} (${t.interno})`,
-              }))}
-              value={
-                formData.tractor
-                  ? {
-                      value: formData.tractor,
-                      label:
-                        tractores.find((t) => t.interno === formData.tractor)
-                          ?.dominio + ` (${formData.tractor})`,
+          {/* tipo vehiculo /tractor + furgon + chequeos/ o /vehiculo/ */}
+          {tipoSeleccionado === "tractor" ? (
+            <>
+              <label>
+                Tractor *
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={tractores.map((t) => ({
+                      value: t.interno,
+                      label: `${t.dominio} (${t.interno})`,
+                    }))}
+                    value={
+                      formData.tractor
+                        ? {
+                            value: formData.tractor,
+                            label:
+                              tractores.find(
+                                (t) => t.interno === formData.tractor
+                              )?.dominio + ` (${formData.tractor})`,
+                          }
+                        : null
                     }
-                  : null
-              }
-              onChange={(opt) =>
-                setFormData({ ...formData, tractor: opt ? opt.value : "" })
-              }
-              placeholder=""
-              isClearable
-              required
-            />
-          </label>
-
-          <label>
-            Furgón
-            <Select
-              options={furgones.map((f) => ({
-                value: f.interno,
-                label: `${f.dominio} (${f.interno})`,
-              }))}
-              value={
-                formData.furgon
-                  ? {
-                      value: formData.furgon,
-                      label:
-                        furgones.find((f) => f.interno === formData.furgon)
-                          ?.dominio + ` (${formData.furgon})`,
+                    onChange={(opt) =>
+                      setFormData({
+                        ...formData,
+                        tractor: opt ? opt.value : "",
+                      })
                     }
-                  : null
-              }
-              onChange={(opt) =>
-                setFormData({ ...formData, furgon: opt ? opt.value : "" })
-              }
-              placeholder=""
-              isClearable
-            />
-          </label>
-
-          <div className="type-container">
-            {formData.furgon && (
-              <>
-                <button
-                  type="button"
-                  className={
-                    furgonCargado ? "type-btn positive-active" : "type-btn"
-                  }
-                  onClick={() => handleCarga(true)}
-                >
-                  <XLogo className="check-logo" />
-                  CARGADO
-                </button>
-                <button
-                  type="button"
-                  className={
-                    !furgonCargado ? "type-btn negative-active" : "type-btn"
-                  }
-                  onClick={() => handleCarga(false)}
-                >
-                  <OkLogo className="check-logo" />
-                  VACIO
-                </button>{" "}
-              </>
-            )}
-          </div>
-
-          <div>
-            <label>Chequeos</label>
-            <div className="checkbox-list">
-              {chequeosPorteria.map((nombre, i) => (
-                <label
-                  key={i}
-                  className={`item-check ${
-                    formData.chequeos[i] ? "activo" : "inactivo"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={formData.chequeos[i]}
-                    onChange={(e) => {
-                      const nuevasMarcas = [...formData.chequeos];
-                      nuevasMarcas[i] = e.target.checked;
-                      setFormData((prev) => ({
-                        ...prev,
-                        chequeos: nuevasMarcas,
-                      }));
-                    }}
+                    placeholder=""
+                    isClearable
+                    required
                   />
-                  {nombre.label}
-                </label>
-              ))}
-            </div>
-          </div>
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    onClick={handleClickTractor}
+                  />
+                </div>
+              </label>
+              <label>
+                Furgón
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={furgones.map((f) => ({
+                      value: f.interno,
+                      label: `${f.dominio} (${f.interno})`,
+                    }))}
+                    value={
+                      formData.furgon
+                        ? {
+                            value: formData.furgon,
+                            label:
+                              furgones.find(
+                                (f) => f.interno === formData.furgon
+                              )?.dominio + ` (${formData.furgon})`,
+                          }
+                        : null
+                    }
+                    onChange={(opt) =>
+                      setFormData({ ...formData, furgon: opt ? opt.value : "" })
+                    }
+                    placeholder=""
+                    isClearable
+                  />
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    onClick={handleClickFurgon}
+                  />
+                </div>
+              </label>
 
+              <div className="type-container">
+                {formData.furgon && (
+                  <>
+                    <button
+                      type="button"
+                      className={
+                        furgonCargado ? "type-btn positive-active" : "type-btn"
+                      }
+                      onClick={() => handleCarga(true)}
+                    >
+                      <XLogo className="check-logo" />
+                      CARGADO
+                    </button>
+                    <button
+                      type="button"
+                      className={
+                        !furgonCargado ? "type-btn negative-active" : "type-btn"
+                      }
+                      onClick={() => handleCarga(false)}
+                    >
+                      <OkLogo className="check-logo" />
+                      VACIO
+                    </button>{" "}
+                  </>
+                )}
+              </div>
+
+              <div>
+                <label>Chequeos</label>
+                <div className="checkbox-list">
+                  {chequeosPorteria.map((nombre, i) => (
+                    <label
+                      key={i}
+                      className={`item-check ${
+                        formData.chequeos[i] ? "activo" : "inactivo"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.chequeos[i]}
+                        onChange={(e) => {
+                          const nuevasMarcas = [...formData.chequeos];
+                          nuevasMarcas[i] = e.target.checked;
+                          setFormData((prev) => ({
+                            ...prev,
+                            chequeos: nuevasMarcas,
+                          }));
+                        }}
+                      />
+                      {nombre.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <label>
+                Vehiculo
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={vehiculos.map((t) => ({
+                      value: t.dominio,
+                      label: `${t.dominio} (${t.marca})`,
+                    }))}
+                    value={
+                      formData.vehiculo
+                        ? {
+                            value: formData.vehiculo,
+                            label:
+                              vehiculos.find(
+                                (v) => v.dominio === formData.vehiculo
+                              )?.dominio + ` (${formData.vehiculo})`,
+                          }
+                        : null
+                    }
+                    onChange={(opt) =>
+                      setFormData({
+                        ...formData,
+                        vehiculo: opt ? opt.value : "",
+                      })
+                    }
+                    placeholder=""
+                    isClearable
+                    // required  // Puede entrar SIN VEHICULO
+                  />
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    onClick={handleClickVehiculo}
+                  />
+                </div>
+              </label>
+            </>
+          )}
+          {/* datalle */}
           <label>
             Detalle
             <textarea
@@ -394,6 +537,30 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           </div>
         </form>
       </div>
+      {modalTractorVisible && (
+        <FormVehiculo
+          tipoVehiculo={"tractor"}
+          onClose={cerrarModalTractor}
+          onGuardar={handleSubmit}
+        />
+      )}
+      {modalFurgonVisible && (
+        <FormVehiculo
+          tipoVehiculo={"furgon"}
+          onClose={cerrarModalFurgon}
+          onGuardar={handleSubmit}
+        />
+      )}
+      {modalVehiculoVisible && (
+        <FormVehiculo
+          tipoVehiculo={"vehiculo"}
+          onClose={cerrarModalVehiculo}
+          onGuardar={handleSubmit}
+        />
+      )}
+      {modalPersonaVisible && (
+        <FormPersona onClose={cerrarModalPersona} onGuardar={handleSubmit} />
+      )}
     </div>
   );
 };

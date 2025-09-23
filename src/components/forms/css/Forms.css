@@ -293,6 +293,34 @@
   opacity: 1;
 }
 
+.select-with-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;           /* ocupa todo el ancho disponible */
+}
+
+.select-grow {
+  flex: 1;               /* hace que el Select crezca al máximo */
+}
+
+.mini-btn {
+  flex-shrink: 0;        /* evita que el botón se achique */
+  background-color: #4161bd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.mini-btn:hover {
+  background-color: #2f4da0;
+}
+
+
 .check-logo{
   position: absolute;
   left: 10px;          

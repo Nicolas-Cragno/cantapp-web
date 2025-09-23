@@ -10,6 +10,7 @@ import {
   formatearHora,
   buscarPersona,
   buscarEmpresa,
+  buscarDominio,
 } from "../../functions/dataFunctions";
 
 // ----------------------------------------------------------------------- elementos
@@ -59,30 +60,37 @@ const Movimientos = () => {
     {
       titulo: "PERSONA",
       campo: "persona",
-      render: (p) => buscarPersona(personas, p),
-    },
-    {
-      titulo: "EMPRESA",
-      campo: "servicio",
-      render: (s) => buscarEmpresa(empresas, s),
-    },
-    {
-      titulo: "TRACTOR",
-      campo: "tractor",
-      render: (t) => {
-        if (!t) return ""; // si es null, undefined o ""
+      render: (p, fila) => {
+        const valor =
+          fila.persona !== null
+            ? buscarPersona(personas, fila.persona)
+            : fila.servicio !== null
+            ? buscarEmpresa(empresas, fila.servicio)
+            : "";
 
-        if (Array.isArray(t)) {
-          if (t.length === 0) return "";
-          return t.join(", "); // une los elementos con coma
+        if (!valor) return "";
+
+        return valor;
+      },
+    },
+    {
+      titulo: "VEHICULO",
+      campo: "tractor",
+      render: (t, fila) => {
+        const valor = fila.tractor || fila.vehiculo;
+
+        if (!valor) return "";
+
+        if (Array.isArray(valor)) {
+          return valor.length ? valor.join(", ") : "";
         }
 
-        return t; // si es string, lo devuelve directo
+        return valor;
       },
     },
 
     {
-      titulo: "FURGÓN",
+      titulo: "CARGA / FURGON",
       campo: "furgon",
     },
     {
@@ -133,11 +141,16 @@ const Movimientos = () => {
       const horaTxt = formatearHora(e.fecha);
       const nombre = buscarPersona(personas, e.persona) || e.persona || "";
       const operador = buscarPersona(personas, e.operador) || e.operador || "";
+      const servicio = buscarEmpresa(empresas, e.servicio) || e.servicio || "";
+      const tractorDominio = buscarDominio(e.tractor, tractores);
+      const furgonDominio = buscarDominio(e.furgon, furgones);
       const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
         e.furgon || ""
       } ${fechaTxt} ${horaTxt} ${e.tipo || ""} ${e.usuario} ${
         e.operador
-      } ${operador}`;
+      } ${operador} ${servicio} ${
+        e.vehiculo
+      } ${tractorDominio} ${furgonDominio} ${e.persona} ${e.servicio}`;
       return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
     });
   });
