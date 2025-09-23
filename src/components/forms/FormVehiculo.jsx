@@ -9,6 +9,7 @@ import {
   buscarEmpresa,
   buscarCuitEmpresa,
   verificarDuplicado,
+  minimizarVehiculo,
 } from "../../functions/dataFunctions";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
@@ -25,7 +26,11 @@ const FormVehiculo = ({
 
   const { empresas, tractores, furgones, utilitarios } = useData();
   const modoEdicion = !!vehiculo;
+  const tipoDefault = tipoVehiculo ? tipoVehiculo : "tractores";
 
+  const [bloquearSwitch, setBloquearSwitch] = useState(
+    tipoVehiculo !== null || tipoVehiculo !== "" ? true : false
+  );
   const [interno, setInterno] = useState("");
   const [dominio, setDominio] = useState("");
   const [marca, setMarca] = useState("");
@@ -33,6 +38,7 @@ const FormVehiculo = ({
   const [empresa, setEmpresa] = useState("");
   const [detalle, setDetalle] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tipoSeleccionado, setTipoSeleccionado] = useState(tipoDefault);
 
   // Cargar datos en modo edición
   useEffect(() => {
@@ -62,16 +68,19 @@ const FormVehiculo = ({
 
     setLoading(true);
 
-    try {
-      const vehiculoData = {
-        interno: String(interno).trim(),
-        dominio: dominio.toUpperCase().trim(),
-        marca: marca.toUpperCase().trim(),
-        modelo: modelo,
-        empresa: buscarCuitEmpresa(empresas, empresa) || "",
-        detalle: detalle.toUpperCase().trim(),
-      };
+    const vehiculoData = {
+      interno:
+        tipoSeleccionado !== "vehiculo"
+          ? String(interno).trim()
+          : dominio.toUpperCase(),
+      dominio: dominio.toUpperCase().trim(),
+      marca: marca.toUpperCase().trim(),
+      modelo: modelo,
+      empresa: buscarCuitEmpresa(empresas, empresa) || "",
+      detalle: detalle.toUpperCase().trim(),
+    };
 
+    try {
       if (modoEdicion) {
         await modificar(
           tipoVehiculo.toLowerCase(),
@@ -100,7 +109,7 @@ const FormVehiculo = ({
         }
 
         const vehiculoAgregado = await agregar(
-          tipo.toLowerCase(),
+          tipoSeleccionado.toLowerCase(),
           vehiculoData,
           vehiculoData.interno
         );
@@ -126,21 +135,66 @@ const FormVehiculo = ({
     <div className="form">
       <div className="form-content">
         <h2>
-          {modoEdicion ? "MODIFICAR" : "NUEVO"} {tipo.toUpperCase()}
+          {modoEdicion ? "MODIFICAR" : "NUEVO"} {minimizarVehiculo(tipo)}
         </h2>
+        {/* Tipo de ingreso /tractor/ /particular/ */}
+        {!bloquearSwitch ? (
+          <>
+            <div className="type-container-small">
+              <button
+                type="button"
+                className={
+                  tipoSeleccionado === "tractores"
+                    ? "type-btn positive-active-black"
+                    : "type-btn"
+                }
+                onClick={() => setTipoSeleccionado("tractores")}
+              >
+                TRACTOR {tipoSeleccionado === "tractores" ? " *" : null}{" "}
+              </button>
+              <button
+                type="button"
+                className={
+                  tipoSeleccionado === "furgones"
+                    ? "type-btn positive-active-black"
+                    : "type-btn"
+                }
+                onClick={() => setTipoSeleccionado("furgones")}
+              >
+                FURGON {tipoSeleccionado === "furgones" ? " *" : null}{" "}
+              </button>
+              <button
+                type="button"
+                className={
+                  tipoSeleccionado === "vehiculos"
+                    ? "type-btn positive-active-black"
+                    : "type-btn"
+                }
+                onClick={() => setTipoSeleccionado("vehiculos")}
+              >
+                OTRO {tipoSeleccionado === "vehiculos" ? " *" : null}{" "}
+              </button>
+            </div>
+          </>
+        ) : null}
         <form onSubmit={handleSubmit}>
-          <label>
-            Interno
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="\d*"
-              maxLength={3}
-              value={interno}
-              onChange={(e) => setInterno(e.target.value)}
-              disabled={modoEdicion || loading}
-            />
-          </label>
+          {tipoSeleccionado === "tractores" ||
+          tipoSeleccionado === "furgones" ? (
+            <>
+              <label>
+                Interno
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="\d*"
+                  maxLength={3}
+                  value={interno}
+                  onChange={(e) => setInterno(e.target.value)}
+                  disabled={modoEdicion || loading}
+                />
+              </label>
+            </>
+          ) : null}
 
           <label>
             Dominio
@@ -183,11 +237,13 @@ const FormVehiculo = ({
               disabled={loading}
             >
               <option value="">Seleccionar empresa...</option>
-              {empresas.map((e) => (
-                <option key={e.cuit} value={e.nombre}>
-                  {e.nombre}
-                </option>
-              ))}
+              {empresas
+                .filter((e) => e.tipo === "propia")
+                .map((e) => (
+                  <option key={e.cuit} value={e.nombre}>
+                    {e.nombre}
+                  </option>
+                ))}
             </select>
           </label>
 

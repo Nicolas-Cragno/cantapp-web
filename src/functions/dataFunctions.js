@@ -153,6 +153,17 @@ export const buscarDominio = (interno, coleccion = []) => {
   return vehiculo ? vehiculo.dominio : "";
 };
 
+export const minimizarVehiculo = (tipoVehiculo) => {
+  let tipo;
+  switch(tipoVehiculo.toUpperCase()){
+    case "TRACTORES": tipo = "TRACTOR"; break;
+    case "FURGONES": tipo = "FURGON"; break;
+    default: tipo = "VEHICULO"; break;
+
+  }
+  return tipo;
+}
+
 // ----------------------------------------------------------------------- Formato fecha
 
 export const formatearFecha = (fechaInput) => {

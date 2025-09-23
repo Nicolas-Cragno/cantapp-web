@@ -87,13 +87,11 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
             setModalFichaVisible(true);
           }}
         />
-
         <div className="ficha-buttons">
           <button onClick={() => setModalAgregarVisible(true)}>
             <BsPersonPlusFill size={26} />
           </button>
         </div>
-
         {modalFichaVisible && (
           <FichaGestor
             tipo="vehiculo"
@@ -104,8 +102,9 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
             onGuardar={handleGuardar}
           />
         )}
-
-        {modalAgregarVisible && <FormVehiculo onClose={cerrarModalAgregar} />}
+        {modalAgregarVisible && (
+          <FormVehiculo tipoVehiculo={tipo} onClose={cerrarModalAgregar} />
+        )}
       </div>
     </div>
   );
