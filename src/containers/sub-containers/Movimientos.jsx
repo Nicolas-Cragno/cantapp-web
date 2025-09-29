@@ -15,10 +15,9 @@ import {
 
 // ----------------------------------------------------------------------- elementos
 import FichaEventoPorteria from "../../components/fichas/FichaEventoPorteria";
-import FichaLlavePorteria from "../../components/fichas/FichaLlavePorteria";
-import FormularioEventoPorteria from "../../components/forms/FormularioEventoPorteria";
-import FormularioLlavePorteria from "../../components/forms/FormularioLlavePorteria";
-
+import FichaLlave from "../../components/fichas/FichaLlave";
+import FormularioEventoPorteria from "../../components/forms/FormEventoPorteria";
+import FormLlave from "../../components/forms/FormLlave";
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalPersona from "../../components/modales/ModalPersona";
 
@@ -56,6 +55,8 @@ const Movimientos = () => {
     {
       titulo: "TIPO",
       campo: "tipo",
+      render: (v) =>
+        v === "ENTREGA" || v === "DEJA" || v === "RETIRA" ? v + " LLAVES" : v,
     },
     {
       titulo: "PERSONA",
@@ -187,7 +188,7 @@ const Movimientos = () => {
       {eventoSeleccionado &&
         (eventoSeleccionado.tipo === "RETIRA" ||
         eventoSeleccionado.tipo === "ENTREGA" ? (
-          <FichaLlavePorteria
+          <FichaLlave
             elemento={eventoSeleccionado}
             onClose={cerrarModal}
             onGuardar={handleGuardar}
@@ -208,7 +209,8 @@ const Movimientos = () => {
       )}
 
       {modalKeyVisible && (
-        <FormularioLlavePorteria
+        <FormLlave
+          sector="porteria"
           onClose={cerrarModalKey}
           onGuardar={handleGuardar}
         />

@@ -12,7 +12,7 @@ import {
   formatearHora,
 } from "../../functions/data-functions";
 import FichaEventoPorteria from "./FichaEventoPorteria";
-import FichaLlavePorteria from "./FichaLlavePorteria";
+import FichaLlave from "./FichaLlave";
 import FichaViaje from "./FichaViaje";
 import FormVehiculo from "../forms/FormVehiculo";
 import { listarColeccion } from "../../functions/db-functions";
@@ -227,7 +227,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
 
       {eventoSeleccionado &&
         (["ENTREGA", "DEJA", "RETIRA"].includes(eventoSeleccionado.tipo) ? (
-          <FichaLlavePorteria
+          <FichaLlave
             evento={eventoSeleccionado}
             onClose={() => setEventoSeleccionado(null)}
           />

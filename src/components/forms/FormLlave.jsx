@@ -20,8 +20,13 @@ import tiposEventos from "../../functions/data/eventos.json";
 import "./css/Forms.css";
 import TextButton from "../buttons/TextButton";
 
-const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
-  const { personas, tractores } = useData();
+const FormLlave = ({
+  elemento = {},
+  sector = "porteria",
+  onClose,
+  onGuardar,
+}) => {
+  const { personas, tractores, empresas } = useData();
   const [uploading, setUploading] = useState(false);
   const SUCURSAL = "01"; // Por defecto DON TORCUATO
   const area = "porteria";
@@ -35,15 +40,35 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
     detalle: elemento.detalle || "",
   });
 
+  const operadoresPorteria = personas.filter(
+    (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
+  );
+
+  const operadoresTallerTractores = personas.filter(
+    (o) => o.apellido === "RINCON" || o.apellido === "MILLET"
+  );
+
+  let listadoOperadores;
+
+  switch (sector) {
+    case "porteria":
+      listadoOperadores = operadoresPorteria;
+      break;
+    case "tractores":
+      listadoOperadores = operadoresTallerTractores;
+      break;
+    default:
+      listadoOperadores = personas;
+      break;
+  }
+
   const subtiposDisponibles = subarea
     ? tiposEventos[subarea.toUpperCase()] || []
     : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
         subtipos.map((sub) => ({ nArea, subtipo: sub }))
       );
 
-  const [servicios, setServicios] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState(""); // si deja/recibe llave una persona o un proveedor
-  const [operadores, setOperadores] = useState([]); // empleados de seguridad
   const [dejaParteTr, setDejaParteTr] = useState(false); // para partes de taller de tractores
 
   useEffect(() => {
@@ -235,10 +260,13 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
             {tipoSeleccionado === "chofer" ? (
               <Select
                 isDisabled={formData.tipo === "INVENTARIO"}
-                options={personas.map((p) => ({
-                  value: p.id,
-                  label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                }))}
+                options={personas
+                  .map((p) => ({
+                    value: p.id,
+                    label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                    apellido: p.apellido, //para ordenar alfabeticamente
+                  }))
+                  .sort((a, b) => a.apellido.localeCompare(b.apellido))}
                 value={
                   formData.persona
                     ? personas
@@ -261,13 +289,17 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
             ) : (
               <Select
                 isDisabled={formData.tipo === "INVENTARIO"}
-                options={servicios.map((s) => ({
-                  value: s.id,
-                  label: `${s.nombre}`,
-                }))}
+                options={empresas
+                  .filter((e) => e.tipo === "proveedor")
+                  .map((s) => ({
+                    value: s.id,
+                    label: `${s.nombre}`,
+                    nombre: s.nombre, //para orden alfabet..
+                  }))
+                  .sort((a, b) => a.nombre.localeCompare(b.nombre))}
                 value={
                   formData.servicio
-                    ? servicios
+                    ? empresas
                         .map((s) => ({
                           value: s.id,
                           label: `${s.nombre}`,
@@ -291,14 +323,13 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
           <label>
             Operador *
             <Select
-              options={personas
-                .filter(
-                  (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
-                )
+              options={listadoOperadores
                 .map((o) => ({
                   value: o.id,
                   label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-                }))}
+                  apellido: o.apellido, //para ordenar
+                }))
+                .sort((a, b) => a.apellido.localeCompare(b.apellido))}
               value={
                 formData.operador
                   ? personas
@@ -385,4 +416,4 @@ const FormularioLlavePorteria = ({ elemento = {}, onClose, onGuardar }) => {
   );
 };
 
-export default FormularioLlavePorteria;
+export default FormLlave;

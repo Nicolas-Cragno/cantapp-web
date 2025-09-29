@@ -20,7 +20,7 @@ import tiposEventos from "../../functions/data/eventos.json";
 import TextButton from "../buttons/TextButton";
 import "./css/Forms.css";
 
-const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
+const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const SUCURSAL = "01";
   const area = "porteria";
   const { personas, tractores, furgones, vehiculos } = useData();
@@ -280,10 +280,13 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
             <div className="select-with-button">
               <Select
                 className="select-grow"
-                options={personas.map((p) => ({
-                  value: p.id,
-                  label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                }))}
+                options={personas
+                  .map((p) => ({
+                    value: p.id,
+                    label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                    apellido: p.apellido, //para odenar
+                  }))
+                  .sort((a, b) => a.apellido.localeCompare(b.apellido))}
                 value={
                   formData.persona
                     ? {
@@ -323,7 +326,9 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                 .map((o) => ({
                   value: o.id,
                   label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-                }))}
+                  apellido: o.apellido,
+                }))
+                .sort((a, b) => a.apellido.localeCompare(b.apellido))}
               value={
                 formData.operador
                   ? {
@@ -354,10 +359,13 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
-                    options={tractores.map((t) => ({
-                      value: t.interno,
-                      label: `${t.dominio} (${t.interno})`,
-                    }))}
+                    options={tractores
+                      .map((t) => ({
+                        value: t.interno,
+                        label: `${t.dominio} (${t.interno})`,
+                        int: t.interno,
+                      }))
+                      .sort((a, b) => a.int - b.int)}
                     value={
                       formData.tractor
                         ? {
@@ -391,10 +399,13 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
-                    options={furgones.map((f) => ({
-                      value: f.interno,
-                      label: `${f.dominio} (${f.interno})`,
-                    }))}
+                    options={furgones
+                      .map((f) => ({
+                        value: f.interno,
+                        label: `${f.dominio} (${f.interno})`,
+                        int: f.interno,
+                      }))
+                      .sort((a, b) => a.int - b.int)}
                     value={
                       formData.furgon
                         ? {
@@ -565,4 +576,4 @@ const FormularioEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   );
 };
 
-export default FormularioEventoPorteria;
+export default FormEventoPorteria;

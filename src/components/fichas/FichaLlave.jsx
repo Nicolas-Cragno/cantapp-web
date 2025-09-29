@@ -15,7 +15,7 @@ import {
 import "./css/Fichas.css";
 import TextButton from "../buttons/TextButton";
 
-const FichaLlavePorteria = ({ elemento, onClose, onGuardar }) => {
+const FichaLlave = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [tractoresNombres, setTractoresNombres] = useState([]);
   const [modificaciones, setModificaciones] = useState([]);
@@ -194,4 +194,4 @@ const FichaLlavePorteria = ({ elemento, onClose, onGuardar }) => {
   );
 };
 
-export default FichaLlavePorteria;
+export default FichaLlave;

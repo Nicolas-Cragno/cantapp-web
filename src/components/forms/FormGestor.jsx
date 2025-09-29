@@ -5,10 +5,10 @@ const formularios = {
   persona: lazy(() => import("./FormPersona")),
   vehiculo: lazy(() => import("./FormularioVehiculo")),
   // eventos, viajes, etc
-  porteria: lazy(() => import("./FormularioEventoPorteria")),
+  porteria: lazy(() => import("./FormEventoPorteria")),
   satelital: lazy(() => import("./FormularioEventoSatelital")),
   taller: lazy(() => import("./FormularioEventoTaller")),
-  llave: lazy(() => import("./FormularioLlavePorteria")),
+  llave: lazy(() => import("./FormLlave")),
   stock: lazy(() => import("./FormularioStock")),
   movimientoStock: lazy(() => import("./FormularioMovimientoStock")),
   viaje: lazy(() => import("./FormularioViaje")),

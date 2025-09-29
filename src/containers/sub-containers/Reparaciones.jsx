@@ -1,5 +1,7 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
+import { FaSpinner } from "react-icons/fa";
+import { IoKeySharp } from "react-icons/io5";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -14,18 +16,15 @@ import {
 
 // ----------------------------------------------------------------------- elementos
 // import FichaEventoTaller from "../../components/fichas/FichaEventoTaller";
-import FichaLlavePorteria from "../../components/fichas/FichaLlavePorteria";
+import FichaLlave from "../../components/fichas/FichaLlave";
 // import FormularioEventoTaller from "../../components/forms/FormularioEventoTaller"
-import FormularioLlavePorteria from "../../components/forms/FormularioLlavePorteria";
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
-import ModalPersona from "../../components/modales/ModalPersona";
+import FormLlave from "../../components/forms/FormLlave";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
-import { FaSpinner } from "react-icons/fa";
-import { IoKeySharp } from "react-icons/io5";
-import { FaTruckFront as LogoTruck } from "react-icons/fa6";
-import { PiShippingContainerFill as LogoContainer } from "react-icons/pi";
-import { FaCar as LogoCar } from "react-icons/fa6";
+import LogoTractor from "../../assets/logos/logotractor-w.png";
+import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
+import LogoDefault from "../../assets/logos/logo.svg";
 
 const Reparaciones = ({ filtroSector = "tractores" }) => {
   const AREA = filtroSector;
@@ -52,6 +51,8 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     {
       titulo: "TIPO",
       campo: "tipo",
+      render: (v) =>
+        v === "ENTREGA" || v === "DEJA" || v === "RETIRA" ? v + " LLAVES" : v,
     },
     {
       titulo: "PERSONA",
@@ -149,10 +150,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           <img
             src={
               AREA === "tractores"
-                ? LogoTruck
+                ? LogoTractor
                 : AREA === "furgones"
-                ? LogoContainer
-                : LogoCar
+                ? LogoFurgon
+                : LogoDefault
             }
             alt=""
             className="table-logo"
@@ -184,7 +185,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       {eventoSeleccionado &&
         (eventoSeleccionado.tipo === "RETIRA" ||
         eventoSeleccionado.tipo === "ENTREGA" ? (
-          <FichaLlavePorteria
+          <FichaLlave
             elemento={eventoSeleccionado}
             onClose={cerrarModal}
             onGuardar={handleGuardar}
@@ -197,7 +198,8 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         }}
 
       {modalKeyVisible && (
-        <FormularioLlavePorteria
+        <FormLlave
+          sector="tractores"
           onClose={cerrarModalKey}
           onGuardar={handleGuardar}
         />
@@ -226,14 +228,14 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
               className="table-agregar"
               onClick={() => setModalTractorVisible(true)}
             >
-              <img src={LogoTruck} alt="" className="table-logo2" />
+              <img src={LogoTractor} alt="" className="table-logo2" />
             </button>
           ) : AREA == "furgones" ? (
             <button
               className="table-agregar"
               onClick={() => setModalFurgonVisible(true)}
             >
-              <img src={LogoContainer} alt="" className="table-logo2" />
+              <img src={LogoFurgon} alt="" className="table-logo2" />
             </button>
           ) : null}
         </div>
