@@ -6,6 +6,8 @@ import { GiAutoRepair } from "react-icons/gi";
 import { GrResources } from "react-icons/gr";
 import "./css/SideBar.css";
 import { BsFillFuelPumpFill } from "react-icons/bs";
+import { FaTruckFront } from "react-icons/fa6";
+
 import { FaMapLocationDot } from "react-icons/fa6";
 import Logo from "../assets/logos/logotruck.svg";
 
@@ -55,6 +57,12 @@ const SideBar = () => {
       to: "/porteria",
       icon: <FaSignOutAlt className="nav-icon" />,
       label: "Portería",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/tractores",
+      icon: <FaTruckFront className="nav-icon" />,
+      label: "Tractores",
       roles: ["dev", "admin", "user"],
     },
   ];

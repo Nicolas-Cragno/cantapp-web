@@ -9,6 +9,7 @@ export const Access = {
     // Usuarios / administradores ["user", "admin","dev"]
     "/porteria": ["user", "admin","dev"],    // seguridad / porteria
     "/satelital" : ["user", "admin","dev"], // satelital
+    "/tractores" : ["user", "admin", "dev"], // taller tractores
     
     // Todos
     "/": ["user", "admin", "dev"],

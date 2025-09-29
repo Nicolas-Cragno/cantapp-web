@@ -1,6 +1,6 @@
 import "./css/Sections.css";
-import Branches from "./Branches";
-import Flota from "./Flota";
+import Branches from "../components/Branches";
+import Flota from "../components/Flota";
 
 const Resources = () => {
   return (

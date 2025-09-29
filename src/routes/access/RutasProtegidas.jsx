@@ -9,6 +9,7 @@ const Resources = lazy(() => import("../../containers/Resources"));
 const Porteria = lazy(() => import("../../containers/Porteria"));
 const Stock = lazy(() => import("../../containers/Stock"));
 const Satelital = lazy(() => import("../../containers/Satelital"));
+const Tractores = lazy(() => import("../../containers/Tractores"));
 
 // Wrapper de Suspense para no repetir
 const withSuspense = (Component) => (
@@ -33,5 +34,6 @@ export const rutasProtegidas = (
 
     <Route path="/satelital" element={withSuspense(Satelital)} />
     <Route path="/porteria" element={withSuspense(Porteria)} />
+    <Route path="/tractores" element={withSuspense(Tractores)} />
   </Route>
 );

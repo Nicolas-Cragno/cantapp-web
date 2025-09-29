@@ -1,9 +1,9 @@
 import "./css/GroupCards.css";
-import Card from "../components/cards/Card";
+import Card from "./cards/Card";
 import { useEffect, useState } from "react";
 import { listarColeccion } from "../functions/db-functions";
 import { FaSpinner } from "react-icons/fa";
-import ModalVehiculo from "../components/modales/ModalVehiculo";
+import ModalVehiculo from "./modales/ModalVehiculo";
 import { useData } from "../context/DataContext";
 
 const Flota = () => {
