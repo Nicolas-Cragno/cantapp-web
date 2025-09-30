@@ -31,7 +31,7 @@ const FichaLlave = ({ elemento, onClose, onGuardar }) => {
       // Modificaciones
       let modificacionesArray = [];
       if (
-        elemento.modificaciones != undefined &&
+        elemento.modificaciones !== undefined &&
         elemento.modificaciones !== null
       ) {
         modificacionesArray = Array.isArray(elemento.modificaciones)
@@ -52,7 +52,9 @@ const FichaLlave = ({ elemento, onClose, onGuardar }) => {
       if (tractoresArray.length > 0) {
         const nombresTractores = tractoresArray
           .map((int) => {
-            const t = tractores.find((tr) => tr.interno === int);
+            const t = tractores.find(
+              (tr) => Number(tr.interno) === Number(int)
+            );
             return t ? `${t.dominio} (${t.interno})` : null;
           })
           .filter(Boolean);
@@ -185,6 +187,7 @@ const FichaLlave = ({ elemento, onClose, onGuardar }) => {
       ) : (
         <FormGestor
           tipo="llave"
+          filtroSector={elemento.area}
           elemento={elemento}
           onClose={onCloseFormEdit}
           onGuardar={handleGuardado}

@@ -3,6 +3,6 @@
     "trafico": "002",
     "satelital": "003",
     "administracion": "004",
-    "tallertractores": "005",
-    "tallerfurgones": "006"
+    "tractores": "005",
+    "furgones": "006"
 }

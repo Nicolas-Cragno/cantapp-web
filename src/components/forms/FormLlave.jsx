@@ -29,13 +29,21 @@ const FormLlave = ({
   const { personas, tractores, empresas } = useData();
   const [uploading, setUploading] = useState(false);
   const SUCURSAL = "01"; // Por defecto DON TORCUATO
-  const area = "porteria";
+  const depositos = {
+    depo_porteria: "llaves",
+    depo_tractores: "llaves-taller-tractores",
+  };
+  const area = sector;
   const subarea = "llaveporteria"; // para listar tipos de eventos únicament
   const [formData, setFormData] = useState({
     tipo: elemento.tipo || "",
     persona: elemento.persona ? elemento.persona : "",
     operador: elemento.operador ? elemento.operador : "",
-    tractor: elemento.tractor || "",
+    tractor: elemento.tractor
+      ? Array.isArray(elemento.tractor)
+        ? elemento.tractor
+        : [elemento.tractor]
+      : [],
     parteTr: elemento.parteTr || false,
     detalle: elemento.detalle || "",
   });
@@ -132,6 +140,15 @@ const FormLlave = ({
     e.preventDefault();
     setUploading(true);
 
+    const deposito =
+      sector === "tractores"
+        ? depositos.depo_tractores
+        : depositos.depo_porteria;
+
+    const otrosDepositos = Object.values(depositos).filter(
+      (d) => d !== deposito
+    );
+
     try {
       let fechaParaGuardar;
       if (elemento?.id && elemento.fecha) {
@@ -163,11 +180,21 @@ const FormLlave = ({
 
       await agregarEvento(datosAGuardar, area, elemento.id);
       if (datosAGuardar.tipo === "ENTREGA" || datosAGuardar === "DEJA") {
-        await agregarItem(SUCURSAL, "llaves", datosAGuardar.tractor);
+        // eliminar llave/s de otros depositos
+        for (const otroDepo of otrosDepositos) {
+          quitarItem(SUCURSAL, otroDepo, datosAGuardar.tractor);
+        }
+        // agregar llave/s al deposito correcto
+        await agregarItem(SUCURSAL, deposito, datosAGuardar.tractor);
       } else if (datosAGuardar.tipo === "RETIRA") {
-        await quitarItem(SUCURSAL, "llaves", datosAGuardar.tractor);
+        await quitarItem(SUCURSAL, deposito, datosAGuardar.tractor);
       } else if (datosAGuardar.tipo === "INVENTARIO") {
-        await reemplazarItems(SUCURSAL, "llaves", datosAGuardar.tractor);
+        // eliminar llave/s de otros depositos
+        for (const otroDepo of otrosDepositos) {
+          quitarItem(SUCURSAL, otroDepo, datosAGuardar.tractor);
+        }
+        // definir inventario
+        await reemplazarItems(SUCURSAL, deposito, datosAGuardar.tractor);
       }
 
       if (onGuardar) onGuardar();
@@ -356,15 +383,17 @@ const FormLlave = ({
             Tractor *
             <Select
               options={tractores.map((t) => ({
-                value: t.interno,
+                value: t.id,
                 label: `${t.interno} (${t.dominio})`,
               }))}
               value={tractores
                 .map((t) => ({
-                  value: t.interno,
+                  value: t.id,
                   label: `${t.interno} (${t.dominio})`,
                 }))
-                .filter((opt) => formData.tractor.includes(opt.value))}
+                .filter((opt) =>
+                  formData.tractor.map(String).includes(opt.value)
+                )}
               onChange={(opts) =>
                 handleChange({
                   target: {
