@@ -224,6 +224,38 @@ const FormLlave = ({
               required
             />
           </label>
+          {/* Operador */}
+          <label>
+            Operador *
+            <Select
+              options={listadoOperadores
+                .map((o) => ({
+                  value: o.id,
+                  label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+                  apellido: o.apellido, //para ordenar
+                }))
+                .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+              value={
+                formData.operador
+                  ? personas
+                      .map((o) => ({
+                        value: o.id,
+                        label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+                      }))
+                      .find((opt) => opt.value === formData.operador)
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: { name: "operador", value: opt ? opt.value : "" },
+                })
+              }
+              placeholder=""
+              isClearable
+              required
+            />
+          </label>
+          <br />
 
           {/* Chofer o Servicio */}
           <div className="type-container-small">
@@ -317,38 +349,6 @@ const FormLlave = ({
                 required
               />
             )}
-          </label>
-
-          {/* Operador */}
-          <label>
-            Operador *
-            <Select
-              options={listadoOperadores
-                .map((o) => ({
-                  value: o.id,
-                  label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-                  apellido: o.apellido, //para ordenar
-                }))
-                .sort((a, b) => a.apellido.localeCompare(b.apellido))}
-              value={
-                formData.operador
-                  ? personas
-                      .map((o) => ({
-                        value: o.id,
-                        label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-                      }))
-                      .find((opt) => opt.value === formData.operador)
-                  : null
-              }
-              onChange={(opt) =>
-                handleChange({
-                  target: { name: "operador", value: opt ? opt.value : "" },
-                })
-              }
-              placeholder=""
-              isClearable
-              required
-            />
           </label>
 
           {/* Tractor */}

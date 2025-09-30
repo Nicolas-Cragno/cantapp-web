@@ -273,6 +273,43 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
               required
             />
           </label>
+          {/* /operador/ que carga */}
+          <label>
+            Operador *
+            <Select
+              options={personas
+                .filter(
+                  (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
+                )
+                .map((o) => ({
+                  value: o.id,
+                  label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
+                  apellido: o.apellido,
+                }))
+                .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+              value={
+                formData.operador
+                  ? {
+                      value: formData.operador,
+                      label:
+                        personas.find((p) => p.id === formData.operador)
+                          ?.apellido +
+                        " " +
+                        personas.find((p) => p.id === formData.operador)
+                          ?.nombres +
+                        ` (DNI: ${formData.persona})`,
+                    }
+                  : null
+              }
+              onChange={(opt) =>
+                setFormData({ ...formData, operador: opt ? opt.value : "" })
+              }
+              placeholder=""
+              isClearable
+              required
+            />
+          </label>
+          <br />
           {/* /persona/ o /chofer/ */}
           <label>
             {" "}
@@ -315,42 +352,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
               />
             </div>
           </label>
-          {/* /operador/ que carga */}
-          <label>
-            Operador *
-            <Select
-              options={personas
-                .filter(
-                  (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
-                )
-                .map((o) => ({
-                  value: o.id,
-                  label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
-                  apellido: o.apellido,
-                }))
-                .sort((a, b) => a.apellido.localeCompare(b.apellido))}
-              value={
-                formData.operador
-                  ? {
-                      value: formData.operador,
-                      label:
-                        personas.find((p) => p.id === formData.operador)
-                          ?.apellido +
-                        " " +
-                        personas.find((p) => p.id === formData.operador)
-                          ?.nombres +
-                        ` (DNI: ${formData.persona})`,
-                    }
-                  : null
-              }
-              onChange={(opt) =>
-                setFormData({ ...formData, operador: opt ? opt.value : "" })
-              }
-              placeholder=""
-              isClearable
-              required
-            />
-          </label>
+
           {/* tipo vehiculo /tractor + furgon + chequeos/ o /vehiculo/ */}
           {tipoSeleccionado === "tractor" ? (
             <>
@@ -457,7 +459,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                   </>
                 )}
               </div>
-
+              <br />
               <div>
                 <label>Chequeos</label>
                 <div className="checkbox-list">
@@ -528,6 +530,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
             </>
           )}
           {/* datalle */}
+          <br />
           <label>
             Detalle
             <textarea
@@ -550,21 +553,21 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       </div>
       {modalTractorVisible && (
         <FormVehiculo
-          tipoVehiculo={"tractor"}
+          tipoVehiculo={"tractores"}
           onClose={cerrarModalTractor}
           onGuardar={handleSubmit}
         />
       )}
       {modalFurgonVisible && (
         <FormVehiculo
-          tipoVehiculo={"furgon"}
+          tipoVehiculo={"furgones"}
           onClose={cerrarModalFurgon}
           onGuardar={handleSubmit}
         />
       )}
       {modalVehiculoVisible && (
         <FormVehiculo
-          tipoVehiculo={"vehiculo"}
+          tipoVehiculo={"vehiculos"}
           onClose={cerrarModalVehiculo}
           onGuardar={handleSubmit}
         />
