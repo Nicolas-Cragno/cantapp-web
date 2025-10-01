@@ -1,9 +1,17 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
-import { BsPersonPlusFill } from "react-icons/bs";
+import { FaTruck, FaPlus, FaCarAlt } from "react-icons/fa";
+
+import { PiShippingContainerDuotone } from "react-icons/pi";
+
 // ----------------------------------------------------------------------- internos
+import { useData } from "../../context/DataContext";
 import TablaColeccion from "../tablas/TablaColeccion";
-import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
+import {
+  buscarPersona,
+  formatearFecha,
+  formatearHora,
+} from "../../functions/dataFunctions";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import FichaGestor from "../fichas/FichaGestor";
 import FormVehiculo from "../forms/FormVehiculo";
@@ -15,6 +23,23 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const { personas } = useData();
+
+  const columnaParticular = [
+    {
+      titulo: "DOMINIO",
+      campo: "dominio",
+    },
+    {
+      titulo: "MARCA",
+      campo: "marca",
+    },
+    {
+      titulo: "USUARIO",
+      campo: "persona",
+      render: (e) => buscarPersona(personas, e, false),
+    },
+  ];
 
   const columnasVehiculo = [
     {
@@ -45,7 +70,8 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
     return ordenados.filter((e) => {
       const fechaTxt = formatearFecha(e.fecha);
       const horaTxt = formatearHora(e.fecha);
-      const textoFiltro = `${fechaTxt} ${horaTxt} ${e.tipo} ${e.dominio} ${e.interno}`;
+      const usuario = buscarPersona(personas, e.persona);
+      const textoFiltro = `${fechaTxt} ${horaTxt} ${e.tipo} ${e.dominio} ${e.interno} ${e.marca} ${e.persona} ${usuario}`;
       return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
     });
   }, [coleccion, filtro]);
@@ -80,7 +106,7 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
         </div>
 
         <TablaColeccion
-          columnas={columnasVehiculo}
+          columnas={tipo === "vehiculos" ? columnaParticular : columnasVehiculo}
           datos={vehiculosFiltrados}
           onRowClick={(vehiculo) => {
             setVehiculoSeleccionado(vehiculo);
@@ -89,7 +115,14 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
         />
         <div className="ficha-buttons">
           <button onClick={() => setModalAgregarVisible(true)}>
-            <BsPersonPlusFill size={26} />
+            {tipo === "tractores" ? (
+              <FaTruck size={26} />
+            ) : tipo === "furgones" ? (
+              <PiShippingContainerDuotone size={26} />
+            ) : (
+              <FaCarAlt size={26} />
+            )}
+            <FaPlus size={16} style={{ marginLeft: "7px" }} />
           </button>
         </div>
         {modalFichaVisible && (

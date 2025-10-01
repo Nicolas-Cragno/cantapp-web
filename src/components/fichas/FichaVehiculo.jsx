@@ -6,6 +6,7 @@ import { FaRoute } from "react-icons/fa";
 import { IoLogOutSharp } from "react-icons/io5";
 
 // ----------------------------------------------------------------------- internos
+import { useData } from "../../context/DataContext";
 import {
   nombreEmpresa,
   formatearFecha,
@@ -19,12 +20,14 @@ import { listarColeccion } from "../../functions/db-functions";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
+import { buscarPersona } from "../../functions/dataFunctions";
 
 const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   const vehiculo = elemento;
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventos, setEventos] = useState([]);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
+  const { personas } = useData();
 
   const cargarEventos = async () => {
     try {
@@ -95,6 +98,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   }, []);
 
   const empresa = nombreEmpresa(vehiculo.empresa);
+  const persona = buscarPersona(personas, vehiculo.persona);
 
   const handleGuardado = async (vehiculoModificado) => {
     setModoEdicion(false);
@@ -147,10 +151,18 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                 <strong>Modelo: </strong>
                 {vehiculo.modelo || ""}
               </p>
-              <p>
-                <strong>Empresa: </strong>
-                {empresa}
-              </p>
+              {vehiculo.empresa ? (
+                <p>
+                  <strong>Empresa: </strong>
+                  {empresa}
+                </p>
+              ) : null}
+              {vehiculo.persona && (
+                <p>
+                  <strong>Conduce: </strong>
+                  {persona}
+                </p>
+              )}
               <p>
                 <strong>Detalle: </strong>
                 {vehiculo.detalle || ""}

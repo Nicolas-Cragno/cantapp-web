@@ -3,7 +3,7 @@ import { lazy, Suspense } from "react";
 const formularios = {
   // elementos (personas, vehiculos, etc)
   persona: lazy(() => import("./FormPersona")),
-  vehiculo: lazy(() => import("./FormularioVehiculo")),
+  vehiculo: lazy(() => import("./FormVehiculo")),
   // eventos, viajes, etc
   porteria: lazy(() => import("./FormEventoPorteria")),
   satelital: lazy(() => import("./FormularioEventoSatelital")),

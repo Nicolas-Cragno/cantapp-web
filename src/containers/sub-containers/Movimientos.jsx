@@ -28,11 +28,19 @@ import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoPersona from "../../assets/logos/logopersonal-w.png";
+import LogoAuto from "../../assets/logos/logoutilitario-w.png";
 
 const Movimientos = () => {
   const AREA = "porteria";
-  const { eventos, personas, empresas, tractores, furgones, loading } =
-    useData();
+  const {
+    eventos,
+    personas,
+    empresas,
+    tractores,
+    furgones,
+    vehiculos,
+    loading,
+  } = useData();
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
@@ -40,6 +48,7 @@ const Movimientos = () => {
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
+  const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
   const [modalStockVisible, setModalStockVisible] = useState(false);
 
   const columnasPorteria = [
@@ -121,6 +130,10 @@ const Movimientos = () => {
 
   const cerrarModalPersona = () => {
     setModalPersonaVisible(false);
+  };
+
+  const cerrarModalVehiculo = () => {
+    setModalVehiculoVisible(false);
   };
 
   const cerrarModalStock = () => {
@@ -234,8 +247,22 @@ const Movimientos = () => {
         />
       )}
 
+      {modalVehiculoVisible && (
+        <ModalVehiculo
+          coleccion={vehiculos}
+          tipo={"vehiculos"}
+          onClose={cerrarModalVehiculo}
+        />
+      )}
+
       <div className="table-options">
         <div className="table-options-group">
+          <button
+            className="table-agregar"
+            onClick={() => setModalVehiculoVisible(true)}
+          >
+            <img src={LogoAuto} alt="" className="table-logo2" />
+          </button>
           <button
             className="table-agregar"
             onClick={() => setModalFurgonVisible(true)}

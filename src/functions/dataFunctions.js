@@ -81,6 +81,7 @@ export const buscarPersona = (coleccion, dni, completo=true) => {
   return completo ? nombreCompleto : nombreAbreviado;
 }
 
+
 export const normalizarFecha = (valor) => {
   if (!valor) return null;
 
@@ -109,7 +110,6 @@ export const normalizarFecha = (valor) => {
   return null;
 };
 
-
 export const calcularEdad = (fechaNacimiento) => {
   const fecha = normalizarFecha(fechaNacimiento);
   if (!fecha) return null;
@@ -125,8 +125,6 @@ export const calcularEdad = (fechaNacimiento) => {
   return edad;
 };
 
-
-
 // ----------------------------------------------------------------------- Vehiculos
 
 export const useBuscarDominio = (interno, tipo = "tractor") => {
@@ -137,9 +135,9 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
   if(!interno) return valorError;
 
   if(tipo==="tractor"){
-   vehiculo = tractores.find((t) => t.interno === interno || t.id === interno); 
+   vehiculo = tractores.find((t) => String(t.interno) === String(interno) || String(t.id) === String(interno)); 
   } else{
-    vehiculo = furgones.find((f) => f.interno === interno || f.id === interno);
+    vehiculo = furgones.find((f) => String(f.interno) === String(interno) || String(f.id) === String(interno));
   }
 
   return vehiculo ? vehiculo.dominio : valorError;
@@ -148,7 +146,7 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
 export const buscarDominio = (interno, coleccion = []) => {
   if (!interno || !Array.isArray(coleccion)) return "";
 
-  const vehiculo = coleccion.find((v) => v.interno === interno || v.id === interno);
+  const vehiculo = coleccion.find((v) => String(v.interno) === String(interno) || String(v.id) === String(interno));
 
   return vehiculo ? vehiculo.dominio : "";
 };

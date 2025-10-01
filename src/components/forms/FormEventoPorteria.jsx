@@ -25,6 +25,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const area = "porteria";
   const { personas, tractores, furgones, vehiculos } = useData();
   const [tipoSeleccionado, setTipoSeleccionado] = useState("tractor");
+  const [choferFletero, setChoferFletero] = useState(false);
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
@@ -142,11 +143,14 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         distincion: tipoSeleccionado, // por default TRACTOR
         persona: formData.persona ? Number(formData.persona) : null,
         operador: formData.operador ? Number(formData.operador) : null,
-        tractor: formData.tractor ? Number(formData.tractor) : null,
-        furgon: formData.furgon ? Number(formData.furgon) : null,
-        cargado: furgonCargado,
         area: area,
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
+
+        // CONDICIONADOS (TRACTOR O VEHICULO - CHOFER, PARTICULAR O FLETERO, ETC)
+        tractor: formData.tractor ? Number(formData.tractor) : null,
+        furgon: formData.furgon ? Number(formData.furgon) : null,
+        vehiculo: formData.vehiculo ? String(formData.vehiculo) : null,
+        cargado: furgonCargado,
         chequeos: chequeosObjeto,
       };
 
@@ -310,6 +314,29 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
             />
           </label>
           <br />
+          {/* Chofer o fletero */}
+          {tipoSeleccionado === "tractor" && (
+            <div className="type-container-small">
+              <button
+                type="button"
+                className={
+                  !choferFletero ? "type-btn positive-active-black" : "type-btn"
+                }
+                onClick={() => setChoferFletero(false)}
+              >
+                CHOFER {!choferFletero ? " *" : null}{" "}
+              </button>
+              <button
+                type="button"
+                className={
+                  choferFletero ? "type-btn positive-active-black" : "type-btn"
+                }
+                onClick={() => setChoferFletero(true)}
+              >
+                FLETERO {choferFletero ? " *" : null}{" "}
+              </button>
+            </div>
+          )}
           {/* /persona/ o /chofer/ */}
           <label>
             {" "}
@@ -354,7 +381,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           </label>
 
           {/* tipo vehiculo /tractor + furgon + chequeos/ o /vehiculo/ */}
-          {tipoSeleccionado === "tractor" ? (
+          {tipoSeleccionado === "tractor" && !choferFletero ? (
             <>
               <label>
                 Tractor *
@@ -396,97 +423,6 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                   />
                 </div>
               </label>
-              <label>
-                Furgón
-                <div className="select-with-button">
-                  <Select
-                    className="select-grow"
-                    options={furgones
-                      .map((f) => ({
-                        value: f.interno,
-                        label: `${f.dominio} (${f.interno})`,
-                        int: f.interno,
-                      }))
-                      .sort((a, b) => a.int - b.int)}
-                    value={
-                      formData.furgon
-                        ? {
-                            value: formData.furgon,
-                            label:
-                              furgones.find(
-                                (f) => f.interno === formData.furgon
-                              )?.dominio + ` (${formData.furgon})`,
-                          }
-                        : null
-                    }
-                    onChange={(opt) =>
-                      setFormData({ ...formData, furgon: opt ? opt.value : "" })
-                    }
-                    placeholder=""
-                    isClearable
-                  />
-                  <TextButton
-                    text="+"
-                    className="mini-btn"
-                    onClick={handleClickFurgon}
-                  />
-                </div>
-              </label>
-
-              <div className="type-container">
-                {formData.furgon && (
-                  <>
-                    <button
-                      type="button"
-                      className={
-                        furgonCargado ? "type-btn positive-active" : "type-btn"
-                      }
-                      onClick={() => handleCarga(true)}
-                    >
-                      <XLogo className="check-logo" />
-                      CARGADO
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        !furgonCargado ? "type-btn negative-active" : "type-btn"
-                      }
-                      onClick={() => handleCarga(false)}
-                    >
-                      <OkLogo className="check-logo" />
-                      VACIO
-                    </button>{" "}
-                  </>
-                )}
-              </div>
-              <br />
-              <div>
-                <label>Chequeos</label>
-                <div className="checkbox-list">
-                  {chequeosPorteria.map((nombre, i) => (
-                    <label
-                      key={i}
-                      className={`item-check ${
-                        formData.chequeos[i] ? "activo" : "inactivo"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.chequeos[i]}
-                        onChange={(e) => {
-                          const nuevasMarcas = [...formData.chequeos];
-                          nuevasMarcas[i] = e.target.checked;
-                          setFormData((prev) => ({
-                            ...prev,
-                            chequeos: nuevasMarcas,
-                          }));
-                        }}
-                      />
-                      {nombre.label}
-                    </label>
-                  ))}
-                </div>
-              </div>
             </>
           ) : (
             <>
@@ -528,6 +464,105 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                 </div>
               </label>
             </>
+          )}
+          {tipoSeleccionado !== "particular" && (
+            <>
+              <label>
+                Furgón
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={furgones
+                      .map((f) => ({
+                        value: f.interno,
+                        label: `${f.dominio} (${f.interno})`,
+                        int: f.interno,
+                      }))
+                      .sort((a, b) => a.int - b.int)}
+                    value={
+                      formData.furgon
+                        ? {
+                            value: formData.furgon,
+                            label:
+                              furgones.find(
+                                (f) => f.interno === formData.furgon
+                              )?.dominio + ` (${formData.furgon})`,
+                          }
+                        : null
+                    }
+                    onChange={(opt) =>
+                      setFormData({
+                        ...formData,
+                        furgon: opt ? opt.value : "",
+                      })
+                    }
+                    placeholder=""
+                    isClearable
+                  />
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    onClick={handleClickFurgon}
+                  />
+                </div>
+              </label>
+              <div className="type-container">
+                {formData.furgon && (
+                  <>
+                    <button
+                      type="button"
+                      className={
+                        furgonCargado ? "type-btn positive-active" : "type-btn"
+                      }
+                      onClick={() => handleCarga(true)}
+                    >
+                      <XLogo className="check-logo" />
+                      CARGADO
+                    </button>
+                    <button
+                      type="button"
+                      className={
+                        !furgonCargado ? "type-btn negative-active" : "type-btn"
+                      }
+                      onClick={() => handleCarga(false)}
+                    >
+                      <OkLogo className="check-logo" />
+                      VACIO
+                    </button>{" "}
+                  </>
+                )}
+              </div>
+              <br />
+            </>
+          )}
+          {tipoSeleccionado === "tractor" && !choferFletero && (
+            <div>
+              <label>Chequeos</label>
+              <div className="checkbox-list">
+                {chequeosPorteria.map((nombre, i) => (
+                  <label
+                    key={i}
+                    className={`item-check ${
+                      formData.chequeos[i] ? "activo" : "inactivo"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.chequeos[i]}
+                      onChange={(e) => {
+                        const nuevasMarcas = [...formData.chequeos];
+                        nuevasMarcas[i] = e.target.checked;
+                        setFormData((prev) => ({
+                          ...prev,
+                          chequeos: nuevasMarcas,
+                        }));
+                      }}
+                    />
+                    {nombre.label}
+                  </label>
+                ))}
+              </div>
+            </div>
           )}
           {/* datalle */}
           <br />

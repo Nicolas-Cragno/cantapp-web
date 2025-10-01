@@ -1,6 +1,7 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import Select from "react-select";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -10,6 +11,7 @@ import {
   buscarCuitEmpresa,
   verificarDuplicado,
   minimizarVehiculo,
+  buscarPersona,
 } from "../../functions/dataFunctions";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
@@ -24,7 +26,7 @@ const FormVehiculo = ({
   const tipo =
     typeof tipoVehiculo === "string" ? tipoVehiculo : tipoVehiculo?.value || "";
 
-  const { empresas, tractores, furgones, utilitarios } = useData();
+  const { empresas, tractores, furgones, utilitarios, personas } = useData();
   const modoEdicion = !!vehiculo;
   const tipoDefault = tipoVehiculo ? tipoVehiculo : "tractores";
 
@@ -36,6 +38,7 @@ const FormVehiculo = ({
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
   const [empresa, setEmpresa] = useState("");
+  const [persona, setPersona] = useState("");
   const [detalle, setDetalle] = useState("");
   const [loading, setLoading] = useState(false);
   const [tipoSeleccionado, setTipoSeleccionado] = useState(tipoDefault);
@@ -49,21 +52,35 @@ const FormVehiculo = ({
       setModelo(vehiculo.modelo || "");
       setEmpresa(buscarEmpresa(empresas, vehiculo.empresa) || "");
       setDetalle(vehiculo.detalle || "");
+      setPersona(vehiculo.persona || "");
     }
   }, [modoEdicion, vehiculo, empresas]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!String(interno.trim()) || !String(dominio.trim())) {
-      Swal.fire({
-        title: "Faltan datos",
-        text: "Complete los campos obligatorios.",
-        icon: "question",
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#4161bd",
-      });
-      return;
+    if (tipoVehiculo !== "vehiculos") {
+      if (!String(interno.trim()) || !String(dominio.trim())) {
+        Swal.fire({
+          title: "Faltan datos",
+          text: "Complete los campos obligatorios.",
+          icon: "question",
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#4161bd",
+        });
+        return;
+      }
+    } else {
+      if (!String(dominio.trim())) {
+        Swal.fire({
+          title: "Faltan datos",
+          text: "Complete los campos obligatorios.",
+          icon: "question",
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#4161bd",
+        });
+        return;
+      }
     }
 
     setLoading(true);
@@ -78,13 +95,17 @@ const FormVehiculo = ({
       modelo: modelo,
       empresa: buscarCuitEmpresa(empresas, empresa) || "",
       detalle: detalle.toUpperCase().trim(),
+      persona: persona || null,
     };
 
     try {
+      const identificador =
+        tipoSeleccionado === "vehiculos" ? dominio.toUpperCase() : interno;
+
       if (modoEdicion) {
         await modificar(
           tipoVehiculo.toLowerCase(),
-          vehiculo.interno,
+          identificador,
           vehiculoData
         );
         if (onGuardar) onGuardar(vehiculoData);
@@ -95,11 +116,11 @@ const FormVehiculo = ({
             : tipo === "furgones"
             ? furgones
             : utilitarios;
-        const existeInterno = await verificarDuplicado(lista, interno);
+        const existeInterno = await verificarDuplicado(lista, identificador);
         if (existeInterno) {
           Swal.fire({
             title: "Duplicado",
-            text: `El interno ${interno} ya se encuentra asignado.`,
+            text: `El interno o patente ${identificador} ya se encuentra registrado.`,
             icon: "warning",
             confirmButtonText: "Entendido",
             confirmButtonColor: "#4161bd",
@@ -111,7 +132,7 @@ const FormVehiculo = ({
         const vehiculoAgregado = await agregar(
           tipoSeleccionado.toLowerCase(),
           vehiculoData,
-          vehiculoData.interno
+          identificador
         );
         if (onGuardar) onGuardar(vehiculoAgregado);
       }
@@ -202,7 +223,9 @@ const FormVehiculo = ({
               type="text"
               value={dominio}
               onChange={(e) => setDominio(e.target.value)}
-              disabled={loading}
+              disabled={
+                (tipoVehiculo === "vehiculos" && modoEdicion) || loading
+              }
             />
           </label>
 
@@ -236,12 +259,29 @@ const FormVehiculo = ({
               onChange={(e) => setEmpresa(e.target.value)}
               disabled={loading}
             >
-              <option value="">Seleccionar empresa...</option>
+              <option value=""></option>
               {empresas
                 .filter((e) => e.tipo === "propia")
                 .map((e) => (
                   <option key={e.cuit} value={e.nombre}>
                     {e.nombre}
+                  </option>
+                ))}
+            </select>
+          </label>
+          <label>
+            Persona asignada / Dueño
+            <select
+              value={persona}
+              onChange={(e) => setPersona(e.target.value)}
+              disabled={loading}
+            >
+              <option value=""></option>
+              {personas
+                .sort((a, b) => a.apellido.localeCompare(b.apellido))
+                .map((e) => (
+                  <option key={e.id} value={e.dni}>
+                    {e.apellido}, {e.nombres} (DNI: {e.dni})
                   </option>
                 ))}
             </select>

@@ -15,18 +15,34 @@ const ModalBranch = ({ sucursalId, onClose }) => {
   // --- Obtener datos de la sucursal
   const sucursalData = useMemo(() => {
     return (
-      ubicaciones[sucursalId] || { llaves: [], tractores: [], furgones: [] }
+      ubicaciones[sucursalId] || {
+        llaves: [],
+        ["llaves-taller-tractores"]: [],
+        tractores: [],
+        furgones: [],
+      }
     );
   }, [ubicaciones, sucursalId]);
 
-  const llavesSucursal = useMemo(
-    () =>
-      sucursalData.llaves.map((num) => {
-        const tractor = tractores.find((t) => t.interno === num);
-        return { interno: num, dominio: tractor?.dominio || "-" };
-      }),
-    [sucursalData, tractores]
-  );
+  const llavesSucursal = useMemo(() => {
+    if (!sucursalData) return [];
+
+    const llavesPorteria = (sucursalData.llaves || []).map((num) => ({
+      interno: num,
+      dominio: tractores.find((t) => t.interno === num)?.dominio || "-",
+      ubicacion: "Porteria",
+    }));
+
+    const llavesTaller = (sucursalData["llaves-taller-tractores"] || []).map(
+      (num) => ({
+        interno: num,
+        dominio: tractores.find((t) => t.id === num)?.dominio || "-",
+        ubicacion: "Taller Tractores",
+      })
+    );
+
+    return [...llavesPorteria, ...llavesTaller];
+  }, [sucursalData, tractores]);
 
   const tractoresSucursal = useMemo(
     () =>
@@ -54,7 +70,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
 
   // --- Columnas para cada tipo
   const columnasLlaves = [
-    { titulo: "ID", campo: "interno" },
+    { titulo: "INT", campo: "interno" },
     {
       titulo: "DOMINIO",
       campo: "id",
@@ -63,6 +79,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
         return tractor ? tractor.dominio : "-";
       },
     },
+    { titulo: "UBICACIÓN", campo: "ubicacion" },
   ];
 
   const columnasTractores = [
