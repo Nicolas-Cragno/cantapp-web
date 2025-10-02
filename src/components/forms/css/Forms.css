@@ -445,7 +445,7 @@
 }
 
 
-/* Celulares */
+/* Celulares 
 @media (max-width: 640px) {
   .form-content {
     width: 100%;
@@ -468,7 +468,7 @@
   }
 }
 
-/* Tablets */
+ Tablets 
 @media (min-width: 641px) and (max-width: 991.98px) {
   .form-content {
     max-width: 420px;
@@ -481,7 +481,7 @@
   }
 }
 
-/* Escritorio */
+ Escritorio 
 @media (min-width: 992px) {
   .form-content {
     max-width: 480px;
@@ -491,4 +491,23 @@
     min-width: 120px;
     font-size: 1rem;
   }
+}
+*/
+
+@media (max-width: 1140px) {
+  .form {
+  justify-content: right;
+}
+.form-content { 
+  background-color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  max-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
 }

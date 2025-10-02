@@ -45,7 +45,6 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       ({ key }) => elemento?.chequeos?.[key] || false
     ),
   });
-
   const subtiposDisponibles = area
     ? tiposEventos[area.toUpperCase()] || []
     : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
@@ -53,7 +52,6 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       );
   const [furgonCargado, setFuegonCargado] = useState(false);
   const [uploading, setUploading] = useState(false);
-
   useEffect(() => {
     const cargarDatos = async () => {
       setFormData({
@@ -77,12 +75,10 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
 
     cargarDatos();
   }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleCarga = (state) => {
     if (state) {
       setFuegonCargado(true);
@@ -90,7 +86,6 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       setFuegonCargado(false);
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true); // para evitar doble carga/duplicados
@@ -187,27 +182,21 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       console.error("Error al guardar evento:", error);
     }
   };
-
   const cerrarModalTractor = () => {
     setModalTractorVisible(false);
   };
-
   const handleClickTractor = async () => {
     setModalTractorVisible(true);
   };
-
   const handleClickFurgon = async () => {
     setModalFurgonVisible(true);
   };
-
   const handleClickVehiculo = async () => {
     setModalVehiculoVisible(true);
   };
-
   const handleClickPersona = async () => {
     setModalPersonaVisible(true);
   };
-
   const cerrarModalFurgon = () => {
     setModalFurgonVisible(false);
   };
