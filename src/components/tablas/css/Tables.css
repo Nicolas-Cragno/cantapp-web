@@ -206,6 +206,7 @@
 
   .table-options {
     gap: 2rem; /* un poco de espacio para los dedos */
+    display: inline-flex;
   }
 
   .table-busqueda {
@@ -272,6 +273,12 @@
 */
 
 @media (max-width: 1140px) {
+
+  .table-body-wrapper {
+  max-height: 20vh; 
+
+}
+
  .table-lista th,
 .table-lista td {
   padding: 0.5px; 

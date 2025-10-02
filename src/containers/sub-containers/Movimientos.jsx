@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
+import TextButton from "../../components/buttons/TextButton";
+import LogoButton from "../../components/buttons/LogoButton";
 import {
   formatearFecha,
   formatearFechaCorta,
@@ -286,44 +288,32 @@ const Movimientos = () => {
 
       <div className="table-options">
         <div className="table-options-group">
-          <button
-            className="table-agregar"
+          <LogoButton
+            logo={LogoAuto}
             onClick={() => setModalVehiculoVisible(true)}
-          >
-            <img src={LogoAuto} alt="" className="table-logo2" />
-          </button>
-          <button
-            className="table-agregar"
+          />
+          <LogoButton
+            logo={LogoFurgon}
             onClick={() => setModalFurgonVisible(true)}
-          >
-            <img src={LogoFurgon} alt="" className="table-logo2" />
-          </button>
-          <button
-            className="table-agregar"
+          />
+          <LogoButton
+            logo={LogoTractor}
             onClick={() => setModalTractorVisible(true)}
-          >
-            <img src={LogoTractor} alt="" className="table-logo2" />
-          </button>
-          <button
-            className="table-agregar"
+          />
+          <LogoButton
+            logo={LogoPersona}
             onClick={() => setModalPersonaVisible(true)}
-          >
-            <img src={LogoPersona} alt="" className="table-logo2" />
-          </button>
+          />
         </div>
         <div className="table-options-group">
-          <button
-            className="table-agregar"
+          <LogoButton
+            logo={<IoKeySharp />}
             onClick={() => setModalKeyVisible(true)}
-          >
-            <IoKeySharp className="button-logo" />
-          </button>
-          <button
-            className="table-agregar"
+          />
+          <TextButton
+            text="+ AGREGAR"
             onClick={() => setModalAgregarVisible(true)}
-          >
-            + AGREGAR
-          </button>
+          />
         </div>
       </div>
     </section>
