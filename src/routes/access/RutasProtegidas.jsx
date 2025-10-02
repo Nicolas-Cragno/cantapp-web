@@ -32,7 +32,6 @@ export const rutasProtegidas = (
 
     <Route path="/stock" element={withSuspense(Stock)} />
 
-    <Route path="/satelital" element={withSuspense(Satelital)} />
     <Route path="/porteria" element={withSuspense(Porteria)} />
     <Route path="/tractores" element={withSuspense(Tractores)} />
   </Route>

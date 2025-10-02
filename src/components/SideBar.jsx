@@ -48,12 +48,6 @@ const SideBar = () => {
 
   const linksEvents = [
     {
-      to: "/satelital",
-      icon: <FaMapLocationDot className="nav-icon" />,
-      label: "Satelital",
-      roles: ["dev", "admin", "user"],
-    },
-    {
       to: "/porteria",
       icon: <FaSignOutAlt className="nav-icon" />,
       label: "Portería",

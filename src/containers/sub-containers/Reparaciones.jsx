@@ -8,6 +8,7 @@ import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
 import {
   formatearFecha,
+  formatearFechaCorta,
   formatearHora,
   buscarPersona,
   buscarEmpresa,
@@ -42,11 +43,19 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     {
       titulo: "#",
       campo: "id",
+      offresponsive: true,
     },
     {
       titulo: "FECHA",
       campo: "fecha",
       render: (v) => formatearFecha(v) + " - " + formatearHora(v) + " hs",
+      offresponsive: true,
+    },
+    {
+      titulo: "FECHA",
+      campo: "fecha",
+      render: (v) => formatearFechaCorta(v),
+      onresponsive: true,
     },
     {
       titulo: "TIPO",
@@ -69,9 +78,27 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
         return valor;
       },
+      offresponsive: true,
     },
     {
-      titulo: "TRACTOR",
+      titulo: "PERS",
+      campo: "persona",
+      render: (p, fila) => {
+        const valor =
+          fila.persona !== null
+            ? buscarPersona(personas, fila.persona, false)
+            : fila.servicio !== null
+            ? buscarEmpresa(empresas, fila.servicio)
+            : "";
+
+        if (!valor) return "";
+
+        return valor;
+      },
+      onresponsive: true,
+    },
+    {
+      titulo: "INT",
       campo: "tractor",
       render: (t, fila) => {
         const valor = fila.tractor;
@@ -90,6 +117,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       titulo: "CARGA",
       campo: "operador",
       render: (p) => buscarPersona(personas, p, false),
+      offresponsive: true,
     },
   ];
 

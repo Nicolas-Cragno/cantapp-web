@@ -14,14 +14,14 @@
   color: white;
 }
 
-.header-user {
-  color: white;
-}
+
 
 .header-user {
+  color: white;
   position: relative;
   cursor: pointer;
   user-select: none;
+  font-size: 1.5rem;
 }
 
 .user-dropdown {
@@ -49,7 +49,7 @@
   background-color: #f0f0f0;
 }
 
-/* Laptops medianas y tablets horizontales */
+/* Laptops medianas y tablets horizontales
 @media (max-width: 1280px) {
   .header-title{
     display: none;
@@ -66,18 +66,22 @@
     font-size: 1.9rem;
   }
 }
+ */
 
-/* Tablets verticales y notebooks chicas */
-@media (max-width: 1024px) {
-  /* SIN CAMBIOS */
+@media (max-width: 1140px) {
+
+.header {
+  height: 30px;
+  background-color: #1f2937;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  padding: 0rem 1.5rem;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }
 
-/* Tablets chicas / celulares grandes */
-@media (max-width: 768px) {
-  /* SIN CAMBIOS */
-}
+.header-user{
+font-size: 25px;
 
-/* Celulares comunes */
-@media (max-width: 480px) {
-  /* SIN CAMBIOS */
+}
 }
