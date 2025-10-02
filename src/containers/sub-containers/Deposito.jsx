@@ -15,6 +15,7 @@ import unidades from "../../functions/data/unidades.json";
 // ----------------------------------------------------------------------- visuales, logos, etc
 
 import LogoStock from "../../assets/logos/logostock-w.png";
+import TextButton from "../../components/buttons/TextButton";
 
 // --asf asfas
 
@@ -128,18 +129,17 @@ const Deposito = ({ taller = null }) => {
       )}
 
       <div className="table-options">
-        <button
-          className="table-agregar"
-          onClick={() => setModalMovimientoVisible(true)}
-        >
-          ↓↑ MOVIMIENTO
-        </button>
-        <button
-          className="table-agregar"
-          onClick={() => setModalAgregarVisible(true)}
-        >
-          + AGREGAR
-        </button>
+        <div className="table-options-group"></div>
+        <div className="table-options-group">
+          <TextButton
+            text="↓↑ MOVIMIENTO"
+            onClick={() => setModalMovimientoVisible(true)}
+          />
+          <TextButton
+            text="+ AGREGAR"
+            onClick={() => setModalAgregarVisible(true)}
+          />
+        </div>
       </div>
     </section>
   );
