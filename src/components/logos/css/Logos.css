@@ -16,6 +16,11 @@
     max-width: 6rem;
 }
 
+
+.logo-img-only-mini{
+    max-width: 2.5rem;
+}
+
 .logo-name{
     margin-left: .5rem;
 }

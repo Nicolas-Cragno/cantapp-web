@@ -66,3 +66,23 @@
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+
+@media (max-width: 1140px) {
+.group-card {
+ max-width: 25vh;
+}
+
+.group-card .gtitle {
+    width: 2rem;
+  padding: 0.5rem;
+}
+.group-card .gcard {
+ 
+  gap: .01rem;      
+  overflow-x: auto;         
+  padding-left: .01rem;   
+  padding-right: .01rem;   
+
+}
+}

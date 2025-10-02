@@ -5,7 +5,7 @@ import LogoDefault from "../../assets/images/logo-truck.png";
 import { nombreEmpresa } from "../../functions/data-functions";
 import "./css/Logos.css";
 
-const LogoEmpresa = ({ cuitEmpresa }) => {
+const LogoEmpresa = ({ cuitEmpresa, mini = false }) => {
   const logos = {
     30610890403: LogoTC,
     30644511304: LogoEX,
@@ -17,7 +17,11 @@ const LogoEmpresa = ({ cuitEmpresa }) => {
 
   return (
     <div className="logo-empresa">
-      <img src={logo} alt={nombre} className="logo-img-only"></img>
+      <img
+        src={logo}
+        alt={nombre}
+        className={mini ? "logo-img-only-mini" : "logo-img-only"}
+      ></img>
     </div>
   );
 };

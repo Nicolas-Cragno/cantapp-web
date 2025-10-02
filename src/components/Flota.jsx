@@ -7,34 +7,27 @@ import ModalVehiculo from "./modales/ModalVehiculo";
 import { useData } from "../context/DataContext";
 
 const Flota = () => {
-  const { tractores, furgones, utilitarios } = useData();
+  const { tractores, furgones, vehiculos } = useData();
   const [cantTractores, setTractores] = useState(0);
   const [cantFurgones, setFurgones] = useState(0);
-  const [cantUtilitarios, setUtilitarios] = useState(0);
+  const [cantVehiculos, setVehiculos] = useState(0);
   const [modalTractoresVisible, setModalTractoresVisible] = useState(false);
   const [modalFurgonesVisible, setModalFurgonesVisible] = useState(false);
-  const [modalUtilitariosVisible, setModalUtilitariosVisible] = useState(false);
+  const [modalVehiculosVisible, setModalVehiculosVisible] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAll = async () => {
       setLoading(true);
       try {
-        const [tractores, furgones, utilitarios] = await Promise.all([
-          listarColeccion("tractores"),
-          listarColeccion("furgones"),
-          listarColeccion("utilitarios"),
-        ]);
-
         setTractores(
           tractores.filter((tr) => tr.estado === true || tr.estado === 1).length
         );
         setFurgones(
           furgones.filter((fg) => fg.estado === true || fg.estado === 1).length
         );
-        setUtilitarios(
-          utilitarios.filter((ut) => ut.estado === true || ut.estado === 1)
-            .length
+        setVehiculos(
+          vehiculos.filter((vh) => vh.estado === true || vh.estado === 1).length
         );
       } catch (error) {
         console.error("Error al obtener datos con caché: ", error);
@@ -54,8 +47,8 @@ const Flota = () => {
     setModalFurgonesVisible(false);
   };
 
-  const cerrarModalUtilitarios = () => {
-    setModalUtilitariosVisible(false);
+  const cerrarModalVehiculos = () => {
+    setModalVehiculosVisible(false);
   };
 
   return (
@@ -83,12 +76,12 @@ const Flota = () => {
             onClick={() => setModalFurgonesVisible(true)}
           />
           <Card
-            title="Utilitarios"
+            title="Vehiculos"
             value={
-              loading ? <FaSpinner className="spinner" /> : `${cantUtilitarios}`
+              loading ? <FaSpinner className="spinner" /> : `${cantVehiculos}`
             }
-            //route="/utilitarios"
-            onClick={() => setModalUtilitariosVisible(true)}
+            //route="/vehiculos"
+            onClick={() => setModalVehiculosVisible(true)}
           />
 
           <div>
@@ -108,11 +101,12 @@ const Flota = () => {
               />
             )}
 
-            {modalUtilitariosVisible && (
+            {modalVehiculosVisible && (
               <ModalVehiculo
-                coleccion={utilitarios}
-                tipo={"utilitarios"}
-                onClose={cerrarModalUtilitarios}
+                coleccion={vehiculos}
+                tipo={"vehiculos"}
+                propios={true}
+                onClose={cerrarModalVehiculos}
               />
             )}
           </div>

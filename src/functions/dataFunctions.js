@@ -32,11 +32,25 @@ export const buscarEmpresa = (coleccion, cuit, completo=true) => {
   return completo ? nombreCompleto : abreviatura;
 }
 
-export const buscarCuitEmpresa = (coleccion, nombre) => {
+export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
   if(!nombre) return 0;
 
   const empresa = coleccion.find((e) => e.nombre.toUpperCase() === nombre.toUpperCase());
-  if(!empresa) return 0;
+
+  if(verificar){
+    if(empresa){
+      if(empresa.tipo === "propia") {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+  
+  if(!empresa) 
+    return 0;
   const cuit = empresa.cuit || empresa.id;
   return cuit;
 }
@@ -161,6 +175,13 @@ export const minimizarVehiculo = (tipoVehiculo) => {
   }
   return tipo;
 }
+
+// ----------------------------------------------------------------------- Validaciones
+
+export const verificarEstado = (empresa) => {
+
+}
+
 
 // ----------------------------------------------------------------------- Formato fecha
 
@@ -307,4 +328,4 @@ export const colorPromedio = (nro) => {
   if (nro > margen) return "#cb3234";
   return "#000";
   
-}
+};

@@ -96,6 +96,7 @@ const FormVehiculo = ({
       empresa: buscarCuitEmpresa(empresas, empresa) || "",
       detalle: detalle.toUpperCase().trim(),
       persona: persona || null,
+      estado: buscarEmpresa(empresas, empresa, true), // para verificar devuelve t o f
     };
 
     try {

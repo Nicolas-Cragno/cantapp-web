@@ -13,12 +13,18 @@ import {
   formatearHora,
 } from "../../functions/dataFunctions";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
+import LogoEmpresa from "../logos/LogoEmpresa";
 import FichaGestor from "../fichas/FichaGestor";
 import FormVehiculo from "../forms/FormVehiculo";
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Modales.css";
 
-const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
+const ModalVehiculo = ({
+  coleccion = [],
+  tipo = "tractores",
+  propios = false,
+  onClose,
+}) => {
   const [filtro, setFiltro] = useState("");
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
@@ -39,6 +45,22 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
       campo: "persona",
       render: (e) => buscarPersona(personas, e, false),
       offresponsive: true,
+    },
+  ];
+
+  const columnaParticularPropios = [
+    {
+      titulo: "DOMINIO",
+      campo: "dominio",
+    },
+    {
+      titulo: "MARCA",
+      campo: "marca",
+    },
+    {
+      titulo: "EMPRESA",
+      campo: "empresa",
+      render: (e) => <LogoEmpresaTxt cuitEmpresa={e} completo={false} />,
     },
   ];
 
@@ -68,7 +90,17 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
       (a, b) => new Date(b.fecha) - new Date(a.fecha)
     );
 
-    return ordenados.filter((e) => {
+    let listadoFinal;
+
+    if (propios) {
+      listadoFinal = ordenados.filter(
+        (v) => v.estado === true || v.estado === 1 || v.estado === "1"
+      );
+    } else {
+      listadoFinal = ordenados;
+    }
+
+    return listadoFinal.filter((e) => {
       const fechaTxt = formatearFecha(e.fecha);
       const horaTxt = formatearHora(e.fecha);
       const usuario = buscarPersona(personas, e.persona);
@@ -107,7 +139,13 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
         </div>
 
         <TablaColeccion
-          columnas={tipo === "vehiculos" ? columnaParticular : columnasVehiculo}
+          columnas={
+            tipo === "vehiculos" && !propios
+              ? columnaParticular
+              : tipo === "vehiculos" && propios
+              ? columnaParticularPropios
+              : columnasVehiculo
+          }
           datos={vehiculosFiltrados}
           onRowClick={(vehiculo) => {
             setVehiculoSeleccionado(vehiculo);

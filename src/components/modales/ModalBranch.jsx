@@ -78,6 +78,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
         const tractor = tractores.find((t) => t.interno === item.interno);
         return tractor ? tractor.dominio : "-";
       },
+      offresponsive: true,
     },
     { titulo: "UBICACIÓN", campo: "ubicacion" },
   ];
@@ -95,7 +96,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
   ];
 
   const columnasFurgones = [
-    { titulo: "ID", campo: "interno" },
+    { titulo: "INT", campo: "interno" },
     {
       titulo: "DOMINIO",
       campo: "id",
