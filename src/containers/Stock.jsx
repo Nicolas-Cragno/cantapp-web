@@ -1,9 +1,9 @@
 import "./css/Sections.css";
-import TablaStock from "../components/tablas/TablaStock";
+import Deposito from "./sub-containers/Deposito";
 const Stock = () => {
   return (
     <section className="section-containers">
-      <TablaStock />
+      <Deposito />
     </section>
   );
 };
