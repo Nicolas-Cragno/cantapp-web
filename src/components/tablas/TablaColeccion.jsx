@@ -25,7 +25,18 @@ const TablaColeccion = ({ columnas, datos, onRowClick = false }) => {
         <thead className="table-titles">
           <tr>
             {columnas.map((col, index) => (
-              <th key={index}>{col.titulo}</th>
+              <th
+                key={index}
+                className={
+                  col.offresponsive
+                    ? "off-responsive"
+                    : col.onresponsive
+                    ? "on-responsive"
+                    : ""
+                }
+              >
+                {col.titulo}
+              </th>
             ))}
           </tr>
         </thead>
@@ -40,7 +51,16 @@ const TablaColeccion = ({ columnas, datos, onRowClick = false }) => {
                 className="table-item"
               >
                 {columnas.map((col, index) => (
-                  <td key={index}>
+                  <td
+                    key={index}
+                    className={
+                      col.offresponsive
+                        ? "off-responsive"
+                        : col.onresponsive
+                        ? "on-responsive"
+                        : ""
+                    }
+                  >
                     {col.render
                       ? col.render(item[col.campo], item)
                       : item[col.campo]}

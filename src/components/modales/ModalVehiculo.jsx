@@ -38,6 +38,7 @@ const ModalVehiculo = ({ coleccion = [], tipo = "tractores", onClose }) => {
       titulo: "USUARIO",
       campo: "persona",
       render: (e) => buscarPersona(personas, e, false),
+      offresponsive: true,
     },
   ];
 

@@ -7,6 +7,7 @@ import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
 import {
   formatearFecha,
+  formatearFechaCorta,
   formatearHora,
   buscarPersona,
   buscarEmpresa,
@@ -55,11 +56,19 @@ const Movimientos = () => {
     {
       titulo: "#",
       campo: "id",
+      offresponsive: true,
+    },
+    {
+      titulo: "FECHA",
+      campo: "fecha",
+      render: (v) => formatearFechaCorta(v),
+      onresponsive: true,
     },
     {
       titulo: "FECHA",
       campo: "fecha",
       render: (v) => formatearFecha(v) + " - " + formatearHora(v) + " hs",
+      offresponsive: true,
     },
     {
       titulo: "TIPO",
@@ -82,6 +91,24 @@ const Movimientos = () => {
 
         return valor;
       },
+      offresponsive: true,
+    },
+    {
+      titulo: "PERS",
+      campo: "persona",
+      render: (p, fila) => {
+        const valor =
+          fila.persona !== null
+            ? buscarPersona(personas, fila.persona, false)
+            : fila.servicio !== null
+            ? buscarEmpresa(empresas, fila.servicio)
+            : "";
+
+        if (!valor) return "";
+
+        return valor;
+      },
+      onresponsive: true,
     },
     {
       titulo: "VEHICULO",
@@ -102,11 +129,13 @@ const Movimientos = () => {
     {
       titulo: "CARGA / FURGON",
       campo: "furgon",
+      offresponsive: true,
     },
     {
       titulo: "CARGA",
       campo: "operador",
       render: (p) => buscarPersona(personas, p, false),
+      offresponsive: true,
     },
   ];
 

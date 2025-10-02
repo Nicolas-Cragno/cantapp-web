@@ -35,11 +35,13 @@ const ModalPersona = ({ puesto = null, onClose }) => {
     {
       titulo: "PUESTO",
       campo: "puesto",
+      offresponsive: true,
     },
     {
       titulo: "EMPRESA",
       campo: "empresa",
       render: (e) => <LogoEmpresaTxt cuitEmpresa={e} completo={false} />,
+      offresponsive: true,
     },
     {
       titulo: "",
@@ -50,6 +52,7 @@ const ModalPersona = ({ puesto = null, onClose }) => {
         ) : (
           <BsPersonDash className="logoestado logo-disabled" />
         ),
+      offresponsive: true,
     },
   ];
 

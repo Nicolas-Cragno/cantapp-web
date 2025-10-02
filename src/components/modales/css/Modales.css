@@ -445,7 +445,7 @@ max-height: 50;
 
 
 
-/* Celulares */
+/* Celulares 
 @media (max-width: 640px) {
   .modal-content {
     width: 100%;
@@ -482,7 +482,7 @@ max-height: 50;
   }
 }
 
-/* Tablets */
+Tablets 
 @media (min-width: 641px) and (max-width: 991.98px) {
   .modal-content {
     max-width: 400px;
@@ -503,7 +503,7 @@ max-height: 50;
   }
 }
 
-/* Desktops */
+Desktops 
 @media (min-width: 992px) {
   .modal-content {
     max-width: 500px;
@@ -520,4 +520,27 @@ max-height: 50;
   .dominio {
     font-size: 2.2rem;
   }
+}
+*/
+
+@media (max-width: 1140px) {
+  .modal {
+  justify-content: right;
+}
+.modal-content { 
+  background-color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  max-height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.modal-header{
+  display: block;
+}
 }

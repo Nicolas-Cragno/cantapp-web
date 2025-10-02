@@ -5,6 +5,10 @@
   gap: 1.5rem;
 }
 
+.on-responsive{
+  display: none;
+}
+
 .only-cel-on{
   display: none;
 }
@@ -219,17 +223,18 @@
   }
 }
 
-/* Tablets verticales y notebooks chicas */
+/*
+ Tablets verticales y notebooks chicas 
 @media (max-width: 1024px) {
-  /* SIN CAMBIOS */
+ 
 }
 
-/* Tablets chicas / celulares grandes */
+ Tablets chicas / celulares grandes 
 @media (max-width: 768px) {
-  /* SIN CAMBIOS */
+
 }
 
-/* Celulares comunes */
+ Celulares comunes 
 @media (max-width: 480px) {
   .only-cel-off{
     display: none;
@@ -246,7 +251,7 @@
   }
   
   .table-options {
-    gap: 2.5rem; /* un poco mas de espacio para los dedos */
+    gap: 2.5rem; un poco mas de espacio para los dedos 
     justify-content: center;
   }
 
@@ -263,4 +268,29 @@
   .table-lista td {
     padding: 5px; 
   }
+}
+*/
+
+@media (max-width: 1140px) {
+ .table-lista th,
+.table-lista td {
+  padding: 0.5px; 
+  
+}
+
+.on-responsive{
+  display: flex;
+
+}
+
+.off-responsive{
+  display: none;
+}
+
+.table-lista th,
+.table-lista td {
+  padding: 1px; 
+  
+}
+
 }
