@@ -54,6 +54,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
         await altaBaja("personas", persona.id, false);
         // actualizacion de ficha local
         elemento.estado = false;
+        elemento.empresa = null;
         // evento de baja
         await agregarEvento(datosBaja, "administracion");
         console.log("Empleado dado de baja:", elemento.nombre);
@@ -111,20 +112,13 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
             <div className="info-subname">
               <p className="info-minitext">{edad ? edad + " años" : null}</p>
               {persona.estado ? (
-                <p className="info-minitext stateBox">
-                  activo{" "}
-                  <BsPersonCheck
-                    className="logoestado logo-active"
-                    onClick={handleBaja}
-                  />
+                <p className="info-minitext stateBox" onClick={handleBaja}>
+                  activo <BsPersonCheck className="logoestado logo-active" />
                 </p>
               ) : (
-                <p className="info-minitext stateBox">
+                <p className="info-minitext stateBox " onClick={handleAlta}>
                   innactivo{" "}
-                  <BsPersonDash
-                    className="logoestado logo-disabled"
-                    onClick={handleAlta}
-                  />
+                  <BsPersonDash className="logoestado logo-disabled" />
                 </p>
               )}{" "}
             </div>

@@ -42,7 +42,7 @@ export const altaBaja = async (nombreColeccion, idDoc, tipo=true) => {
   }
   try{
       const idStr = String(idDoc);
-    await modificar(nombreColeccion, idStr, { estado: tipo});
+    await modificar(nombreColeccion, idStr, { estado: tipo, empresa: null});
     return true;
   } catch(error){
     console.error(

@@ -31,6 +31,7 @@
   align-items: center;
   padding-right: .4rem;
   padding-left: .4rem;
+ cursor: pointer;
 }
 
 .ficha-type-logo{
