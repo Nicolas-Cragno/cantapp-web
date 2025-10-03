@@ -35,3 +35,21 @@ export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
     throw error;
   }
 };
+
+export const altaBaja = async (nombreColeccion, idDoc, tipo=true) => {
+   if (!idDoc || typeof idDoc !== "string") {
+    throw new Error("ID de documento inválido: " + idDoc);
+  }
+  try{
+      const idStr = String(idDoc);
+    await modificar(nombreColeccion, idStr, { estado: tipo});
+    return true;
+  } catch(error){
+    console.error(
+      `Error al cambiar estado en ${nombreColeccion}, id ${idDoc}:`,
+      error
+    );
+    throw error;
+  }
+};
+

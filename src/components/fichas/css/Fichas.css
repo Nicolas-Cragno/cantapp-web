@@ -23,6 +23,16 @@
 }
 
 
+.stateBox{
+  border-radius: 5rem;
+  background-color: #f1f1f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: .4rem;
+  padding-left: .4rem;
+}
+
 .ficha-type-logo{
   margin-right: .4rem;
 }

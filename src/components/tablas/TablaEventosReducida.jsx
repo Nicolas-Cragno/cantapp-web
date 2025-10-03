@@ -5,6 +5,8 @@ import { IoEnterSharp } from "react-icons/io5";
 import { IoLogOutSharp } from "react-icons/io5";
 import { FaRoute } from "react-icons/fa";
 import { MdEventNote } from "react-icons/md";
+import { FaArrowAltCircleUp } from "react-icons/fa"; // LOGO ALTA
+import { FaArrowAltCircleDown } from "react-icons/fa"; // LOGO BAJA
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -19,9 +21,16 @@ const TablaEventosReducida = ({
 }) => {
   const { eventos } = useData();
   let eventosFiltrados;
+
   switch (tipoColeccion.toLowerCase()) {
     case "persona":
-      eventosFiltrados = eventos.filter((e) => e.persona === identificador);
+      const eventos1 = eventos.filter(
+        (e) => e.persona === String(identificador)
+      );
+      const eventos2 = eventos.filter(
+        (e) => e.persona === Number(identificador)
+      );
+      eventosFiltrados = eventos1.concat(eventos2);
       break;
     case "tractor":
       eventosFiltrados = eventos.filter((e) => e.tractor === identificador);
@@ -47,6 +56,8 @@ const TablaEventosReducida = ({
     SALIDA: <IoLogOutSharp size={logoSize} />,
     VIAJE: <FaRoute size={logoSize} />,
     OTRO: <MdEventNote size={logoSize} />,
+    BAJA: <FaArrowAltCircleDown size={logoSize} />,
+    alta: <FaArrowAltCircleUp size={logoSize} />,
   };
 
   return (

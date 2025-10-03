@@ -1,8 +1,7 @@
 {
     "porteria": "001",
     "trafico": "002",
-    "satelital": "003",
-    "administracion": "004",
-    "tractores": "005",
-    "furgones": "006"
+    "tractores": "003",
+    "furgones": "004",
+    "administracion": "005"
 }

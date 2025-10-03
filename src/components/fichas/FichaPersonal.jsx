@@ -1,5 +1,8 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
+import { BsPersonDash } from "react-icons/bs"; // logo innactiva
+import { BsPersonCheck } from "react-icons/bs"; // logo activa
+import Swal from "sweetalert2";
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import {
@@ -7,8 +10,11 @@ import {
   formatearFecha,
   calcularEdad,
 } from "../../functions/dataFunctions";
+import { altaBaja } from "../../functions/dbFunctions";
+import { agregarEvento } from "../../functions/eventFunctions";
 import TablaEventosReducida from "../tablas/TablaEventosReducida";
 import FormPersona from "../forms/FormPersona";
+
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
 import LogoEmpresa from "../logos/LogoEmpresa";
@@ -18,13 +24,69 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalEventoVisible, setModalEventoVisible] = useState(false);
-  const { empresas } = useData();
+  const { personas, empresas, eventos } = useData();
 
   if (!persona) return null;
   const fechaNacimiento = formatearFecha(persona.nacimiento);
   const fechaIngreso = formatearFecha(persona.ingreso);
   const edad = calcularEdad(persona.nacimiento);
+  const handleBaja = () => {
+    Swal.fire({
+      title: "Empleado activo",
+      text: "¿Desea dar de baja?",
+      icon: "warning",
+      input: "text",
+      inputPlaceholder: "Motivo de la baja",
+      showCancelButton: true,
+      confirmButtonText: "DAR DE BAJA",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const motivo = result.value?.trim() || "Sin motivo";
 
+        const datosBaja = {
+          fecha: new Date(),
+          tipo: "baja",
+          persona: persona.id,
+          detalle: motivo,
+        };
+        // actualizar estado de persona en firestore
+        await altaBaja("personas", persona.id, false);
+        // actualizacion de ficha local
+        elemento.estado = false;
+        // evento de baja
+        await agregarEvento(datosBaja, "administracion");
+        console.log("Empleado dado de baja:", elemento.nombre);
+      }
+    });
+  };
+
+  const handleAlta = () => {
+    Swal.fire({
+      title: "Dar de alta",
+      text: `¿Desea dar de alta a ${persona.nombre}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "DAR DE ALTA",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const datosAlta = {
+          fecha: new Date(),
+          tipo: "alta",
+          persona: persona.id,
+        };
+        // actualizar estado de persona en firestore
+        await altaBaja("personas", persona.id, true); // 👈 true = alta
+        console.log("Empleado dado de alta:", persona.nombre);
+        // actualizacion de ficha local
+        elemento.estado = true;
+        // evento de baja
+        await agregarEvento(datosAlta, "administracion");
+        console.log("Nuevo empleado dado de alta:", elemento.nombre);
+      }
+    });
+  };
   const handleGuardado = async (personaModificada) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(personaModificada);
@@ -40,12 +102,33 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
             </button>
             <h1 className="person-name">
               <strong className="apellido">{persona.apellido}</strong>
-              <span className="nombres">{persona.nombres}</span>
+              <span className="nombres">
+                <span> {persona.nombres} </span>
+              </span>
             </h1>
+
             <hr />
             <div className="info-subname">
               <p className="info-minitext">{edad ? edad + " años" : null}</p>
+              {persona.estado ? (
+                <p className="info-minitext stateBox">
+                  activo{" "}
+                  <BsPersonCheck
+                    className="logoestado logo-active"
+                    onClick={handleBaja}
+                  />
+                </p>
+              ) : (
+                <p className="info-minitext stateBox">
+                  innactivo{" "}
+                  <BsPersonDash
+                    className="logoestado logo-disabled"
+                    onClick={handleAlta}
+                  />
+                </p>
+              )}{" "}
             </div>
+
             <p className="ficha-info-title">
               <strong>Información Personal</strong>
             </p>
