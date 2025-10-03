@@ -176,6 +176,14 @@ export const minimizarVehiculo = (tipoVehiculo) => {
   return tipo;
 }
 
+export const buscarMarca = (id, coleccion = []) => {
+  if (!id || !Array.isArray(coleccion)) return "";
+
+  const vehiculo = coleccion.find((v) => String(v.id) === String(id) || String(v.dominio) === String(id));
+
+  return vehiculo ? vehiculo.marca : "";
+};
+
 // ----------------------------------------------------------------------- Validaciones
 
 export const verificarEstado = (empresa) => {

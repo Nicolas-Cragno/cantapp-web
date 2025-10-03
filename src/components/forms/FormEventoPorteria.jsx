@@ -14,6 +14,8 @@ import FormPersona from "./FormPersona";
 
 // ----------------------------------------------------------------------- json e info
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
+import chequeosPorteriaFletero from "../../functions/data/chequeosPorteriaFletero.json";
+
 import tiposEventos from "../../functions/data/eventos.json";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
@@ -37,6 +39,8 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     persona: elemento.persona ? String(elemento.persona) : "",
     operador: elemento.operador ? String(elemento.operador) : "",
     tractor: elemento.tractor || "",
+    esFletero: elemento.esFletero || false,
+    vehiculo: elemento.vehiculo || "",
     furgon: elemento.furgon || "",
     cargado: elemento.cargado || false,
     detalle: elemento.detalle || "",
@@ -60,6 +64,8 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         persona: elemento.persona ? String(elemento.persona) : "",
         operador: elemento.operador ? String(elemento.operador) : "",
         tractor: elemento.tractor || "",
+        esFletero: elemento.esFletero,
+        vehiculo: elemento.vehiculo,
         furgon: elemento.furgon || "",
         cargado: elemento.cargado || false,
         detalle: elemento.detalle || "",
@@ -71,6 +77,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       setTipoSeleccionado(
         elemento.distincion ? elemento.distincion : "tractor"
       );
+      setChoferFletero(elemento.esFletero);
     };
 
     cargarDatos();
@@ -118,7 +125,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         !formData.tipo ||
         !formData.persona ||
         !formData.operador ||
-        (tipoSeleccionado === "tractor" && !formData.tractor)
+        (tipoSeleccionado === "tractor" && !choferFletero && !formData.tractor)
       ) {
         Swal.fire({
           title: "Atención",
@@ -142,9 +149,12 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
 
         // CONDICIONADOS (TRACTOR O VEHICULO - CHOFER, PARTICULAR O FLETERO, ETC)
-        tractor: formData.tractor ? Number(formData.tractor) : null,
+        esFletero: choferFletero,
+        tractor:
+          !choferFletero && formData.tractor ? Number(formData.tractor) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
-        vehiculo: formData.vehiculo ? String(formData.vehiculo) : null,
+        vehiculo:
+          choferFletero && formData.vehiculo ? String(formData.vehiculo) : null,
         cargado: furgonCargado,
         chequeos: chequeosObjeto,
       };
@@ -403,7 +413,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                     }
                     placeholder=""
                     isClearable
-                    required
+                    required={!choferFletero}
                   />
                   <TextButton
                     text="+"
@@ -420,18 +430,21 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
-                    options={vehiculos.map((t) => ({
-                      value: t.dominio,
-                      label: `${t.dominio} (${t.marca})`,
-                    }))}
+                    options={vehiculos
+                      .map((t) => ({
+                        value: t.id,
+                        label: `${t.id} (${t.marca})`,
+                      }))
+                      .sort((a, b) => a.id - b.id)}
                     value={
                       formData.vehiculo
                         ? {
                             value: formData.vehiculo,
                             label:
                               vehiculos.find(
-                                (v) => v.dominio === formData.vehiculo
-                              )?.dominio + ` (${formData.vehiculo})`,
+                                (v) =>
+                                  String(v.id) === String(formData.vehiculo)
+                              )?.id + ` (${formData.vehiculo})`,
                           }
                         : null
                     }
@@ -443,8 +456,9 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                     }
                     placeholder=""
                     isClearable
-                    // required  // Puede entrar SIN VEHICULO
+                    required={choferFletero}
                   />
+
                   <TextButton
                     text="+"
                     className="mini-btn"
@@ -524,7 +538,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
               <br />
             </>
           )}
-          {tipoSeleccionado === "tractor" && !choferFletero && (
+          {tipoSeleccionado === "tractor" && (
             <div>
               <label>Chequeos</label>
               <div className="checkbox-list">

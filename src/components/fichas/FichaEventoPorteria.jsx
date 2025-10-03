@@ -10,6 +10,7 @@ import {
   buscarDominio,
   formatearFecha,
   formatearHora,
+  buscarMarca,
 } from "../../functions/dataFunctions";
 import FormGestor from "../forms/FormGestor";
 import TextButton from "../buttons/TextButton";
@@ -23,6 +24,7 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [cargado, setCargado] = useState(false);
   const [distincion, setDistincion] = useState("tractor");
+  const [esFletero, setEsFletero] = useState(false);
   const [modificaciones, setModificaciones] = useState([]);
 
   useEffect(() => {
@@ -35,6 +37,10 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
 
       if (elemento.distincion) {
         setDistincion(elemento.distincion);
+      }
+
+      if (elemento.esFletero) {
+        setEsFletero(true);
       }
 
       // Modificaciones
@@ -113,7 +119,7 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
                 {buscarPersona(personas, elemento.operador)}
               </p>
               {/* asfas */}
-              {distincion === "tractor" ? (
+              {distincion === "tractor" && !esFletero ? (
                 <>
                   <p>
                     <strong>Tractor: </strong>
@@ -137,12 +143,13 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
                     ) : null}
                   </p>
                 </>
-              ) : elemento.vehiculo ? (
+              ) : esFletero ? (
                 <>
                   {" "}
                   <p>
                     <strong>Vehiculo: </strong>
-                    {elemento.vehiculo}
+                    {elemento.vehiculo} (
+                    {buscarMarca(elemento.vehiculo, vehiculos)})
                   </p>
                 </>
               ) : null}
