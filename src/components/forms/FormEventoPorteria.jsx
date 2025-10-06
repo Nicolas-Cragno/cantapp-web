@@ -152,9 +152,8 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         esFletero: choferFletero,
         tractor:
           !choferFletero && formData.tractor ? Number(formData.tractor) : null,
+        vehiculo: formData.vehiculo ? String(formData.vehiculo) : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
-        vehiculo:
-          choferFletero && formData.vehiculo ? String(formData.vehiculo) : null,
         cargado: furgonCargado,
         chequeos: chequeosObjeto,
       };

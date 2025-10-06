@@ -32,13 +32,13 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const edad = calcularEdad(persona.nacimiento);
   const handleBaja = () => {
     Swal.fire({
-      title: "Empleado activo",
-      text: "¿Desea dar de baja?",
+      title: `BAJA ${persona.puesto}`,
+      text: `${persona.apellido}, ${persona.nombres}`,
       icon: "warning",
       input: "text",
       inputPlaceholder: "Motivo de la baja",
       showCancelButton: true,
-      confirmButtonText: "DAR DE BAJA",
+      confirmButtonText: "CONFIRMAR",
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -63,12 +63,22 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   };
 
   const handleAlta = () => {
+    const empresasPropias = empresas.filter((e) => e.tipo === "propia");
+    const empresasOptions = {};
+    empresasPropias.forEach((e) => {
+      empresasOptions[e.id] = e.nombre;
+    });
+
     Swal.fire({
-      title: "Dar de alta",
-      text: `¿Desea dar de alta a ${persona.nombre}?`,
+      title: `ALTA ${persona.puesto}`,
+      text: `${persona.apellido + ", " + persona.nombres}`,
+
       icon: "question",
+      input: "select",
+      inputOptions: empresasOptions,
+      inputPlaceholder: "Seleccionar una empresa",
       showCancelButton: true,
-      confirmButtonText: "DAR DE ALTA",
+      confirmButtonText: "CONFIRMAR",
       cancelButtonText: "Cancelar",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -76,9 +86,10 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
           fecha: new Date(),
           tipo: "alta",
           persona: persona.id,
+          empresa: result.value, // el value viene desde el select del swalfire
         };
         // actualizar estado de persona en firestore
-        await altaBaja("personas", persona.id, true); // 👈 true = alta
+        await altaBaja("personas", persona.id, datosAlta.empresa, true); // 👈 true = alta
         console.log("Empleado dado de alta:", persona.nombre);
         // actualizacion de ficha local
         elemento.estado = true;

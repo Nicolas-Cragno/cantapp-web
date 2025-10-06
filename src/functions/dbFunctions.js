@@ -36,13 +36,13 @@ export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
   }
 };
 
-export const altaBaja = async (nombreColeccion, idDoc, tipo=true) => {
+export const altaBaja = async (nombreColeccion, idDoc, empresa=null, tipo=true) => {
    if (!idDoc || typeof idDoc !== "string") {
     throw new Error("ID de documento inválido: " + idDoc);
   }
   try{
       const idStr = String(idDoc);
-    await modificar(nombreColeccion, idStr, { estado: tipo, empresa: null});
+    await modificar(nombreColeccion, idStr, { estado: tipo, empresa});
     return true;
   } catch(error){
     console.error(

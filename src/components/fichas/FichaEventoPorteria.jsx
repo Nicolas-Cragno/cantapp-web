@@ -143,7 +143,7 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
                     ) : null}
                   </p>
                 </>
-              ) : esFletero ? (
+              ) : esFletero || elemento.vehiculo ? (
                 <>
                   {" "}
                   <p>
