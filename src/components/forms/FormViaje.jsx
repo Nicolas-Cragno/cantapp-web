@@ -8,7 +8,7 @@ import {
 } from "../../functions/db-functions";
 import { formatearFecha } from "../../functions/data-functions";
 
-export default function FormularioViaje({ viaje = {}, onClose, onGuardar }) {
+export default function FormViaje({ viaje = {}, onClose, onGuardar }) {
   const [formData, setFormData] = useState({
     fecha: viaje.fecha
       ? formatearFecha(viaje.fecha)

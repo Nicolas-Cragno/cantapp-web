@@ -1,14 +1,14 @@
+// ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
-import { FaHome, FaUser, FaTruck, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { RiListSettingsLine } from "react-icons/ri";
-import { GiAutoRepair } from "react-icons/gi";
-import { GrResources } from "react-icons/gr";
-import "./css/SideBar.css";
-import { BsFillFuelPumpFill } from "react-icons/bs";
+import { FaHome, FaSignOutAlt } from "react-icons/fa";
 import { FaTruckFront } from "react-icons/fa6";
+import { RiListSettingsLine } from "react-icons/ri";
+import { GrResources } from "react-icons/gr";
+import { BsFillFuelPumpFill } from "react-icons/bs";
 
-import { FaMapLocationDot } from "react-icons/fa6";
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/SideBar.css";
 import Logo from "../assets/logos/logotruck.svg";
 
 const SideBar = () => {
@@ -58,6 +58,12 @@ const SideBar = () => {
       icon: <FaTruckFront className="nav-icon" />,
       label: "Tractores",
       roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/combustible",
+      icon: <BsFillFuelPumpFill className="nav-icon" />,
+      label: "Combustible",
+      roles: ["dev"],
     },
   ];
   // Toggle de colapsado

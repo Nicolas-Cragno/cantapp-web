@@ -1,6 +1,7 @@
 export const Access = {
     // En desarrollo ["dev"]
-    
+    "/combustible": ["dev"],
+
     
     // Solo administradores ["admin", "dev"]
     "/recursos": ["admin", "dev"],

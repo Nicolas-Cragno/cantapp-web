@@ -93,7 +93,8 @@ const FormVehiculo = ({
       dominio: dominio.toUpperCase().trim(),
       marca: marca.toUpperCase().trim(),
       modelo: modelo,
-      empresa: buscarCuitEmpresa(empresas, empresa) || "",
+      empresa: buscarCuitEmpresa(empresas, empresa) || null,
+      estado: empresa ? true : false,
       detalle: detalle.toUpperCase().trim(),
       persona: persona || null,
       estado: buscarEmpresa(empresas, empresa, true), // para verificar devuelve t o f

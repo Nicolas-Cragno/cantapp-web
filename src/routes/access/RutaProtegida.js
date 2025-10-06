@@ -1,10 +1,13 @@
+// ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
 import { auth, db } from "../../firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 import { Navigate, useLocation } from "react-router-dom";
-import { Access } from "./Access";
 import Swal from "sweetalert2";
+
+// ----------------------------------------------------------------------- internos
+import { Access } from "./Access";
 
 const jerarquia = ["user", "admin", "dev"];
 

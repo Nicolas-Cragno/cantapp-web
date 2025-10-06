@@ -8,10 +8,10 @@ import {
 } from "../../functions/data-functions";
 import CardInfo from "../cards/CardInfo";
 import { useState, useEffect } from "react";
-import FormularioViaje from "../forms/FormularioViaje";
+import FormularioViaje from "../forms/FormViaje";
 import { FaPray } from "react-icons/fa";
 
-const FichaViaje = ({ viaje, onClose, onGuardar }) => {
+const FichaViaje = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [formData, setFormData] = useState(null);
   const [vacio, setVacio] = useState(true); // viaje con/sin furgon
@@ -25,13 +25,13 @@ const FichaViaje = ({ viaje, onClose, onGuardar }) => {
     try {
       setLoading(true);
 
-      const dominioT = await buscarDominioT(viaje.tractor);
+      const dominioT = await buscarDominioT(elemento.tractor);
 
       setFormData({
-        ...viaje,
+        ...elemento,
         dominioTractor: dominioT,
         //dominioFurgon: dominioF,
-        fechaFormateada: viaje.fecha ? formatearFecha(viaje.fecha) : "-",
+        fechaFormateada: elemento.fecha ? formatearFecha(elemento.fecha) : "-",
       });
 
       if (formData.furgon) setVacio(false);
@@ -44,11 +44,11 @@ const FichaViaje = ({ viaje, onClose, onGuardar }) => {
 
   useEffect(() => {
     cargarFicha();
-  }, [viaje]);
+  }, [elemento]);
 
-  if (!viaje) return null;
+  if (!elemento) return null;
 
-  const fechaFormateada = viaje.fecha ? formatearFecha(viaje.fecha) : "-";
+  const fechaFormateada = elemento.fecha ? formatearFecha(elemento.fecha) : "-";
 
   const handleGuardado = async (viajeModificado) => {
     setModoEdicion(false);
@@ -63,7 +63,7 @@ const FichaViaje = ({ viaje, onClose, onGuardar }) => {
             <button className="ficha-close" onClick={onClose}>
               ✕
             </button>
-            <h1 className="event-subtipo">{"VIAJE " + (viaje.id || "-")}</h1>
+            <h1 className="event-subtipo">{"VIAJE " + (elemento.id || "-")}</h1>
             <hr />
             {loading ? (
               <p>Cargando...</p>
@@ -96,25 +96,27 @@ const FichaViaje = ({ viaje, onClose, onGuardar }) => {
                   </h6>
                   <h6
                     style={{
-                      backgroundColor: colorSatelital(viaje.satelital),
+                      backgroundColor: colorSatelital(elemento.satelital),
                       color: "#fff",
                       padding: "0.2rem",
                     }}
                   >
-                    {viaje.satelital || "-"}
+                    {elemento.satelital || "-"}
                   </h6>
                 </div>
                 <div className="ficha-info">
                   <p>
-                    <strong>Litros Ticket: </strong> {viaje.litrosticket || 0}
+                    <strong>Litros Ticket: </strong>{" "}
+                    {elemento.litrosticket || 0}
                   </p>
                   {formData?.satelital !== "N/F" ? (
                     <p>
-                      <strong>Litros Reales: </strong> {viaje.litrosreales || 0}
+                      <strong>Litros Reales: </strong>{" "}
+                      {elemento.litrosreales || 0}
                     </p>
                   ) : null}
                   <p>
-                    <strong>Kilómetros: </strong> {viaje.km || 0}
+                    <strong>Kilómetros: </strong> {elemento.km || 0}
                   </p>
                 </div>
                 <div className="ficha-card-info">
@@ -150,9 +152,9 @@ const FichaViaje = ({ viaje, onClose, onGuardar }) => {
                   </div>
                 </div>
                 <div className="ficha-data">
-                  {viaje.usuario && (
+                  {elemento.usuario && (
                     <p>
-                      Cargado por <strong>{viaje.usuario}</strong>
+                      Cargado por <strong>{elemento.usuario}</strong>
                     </p>
                   )}
                 </div>
@@ -165,7 +167,7 @@ const FichaViaje = ({ viaje, onClose, onGuardar }) => {
         </div>
       ) : (
         <FormularioViaje
-          viaje={viaje}
+          viaje={elemento}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}
         />
