@@ -59,25 +59,25 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   useEffect(() => {
     const cargarDatos = async () => {
       setFormData({
-        tipo: elemento.tipo || "",
-        distincion: elemento.distincion || "tractor",
-        persona: elemento.persona ? String(elemento.persona) : "",
-        operador: elemento.operador ? String(elemento.operador) : "",
-        tractor: elemento.tractor || "",
-        esFletero: elemento.esFletero,
-        vehiculo: elemento.vehiculo,
-        furgon: elemento.furgon || "",
-        cargado: elemento.cargado || false,
-        detalle: elemento.detalle || "",
+        tipo: elemento?.tipo ?? "",
+        distincion: elemento.distincion ?? "tractor",
+        persona: elemento?.persona ? String(elemento.persona) : "",
+        operador: elemento?.operador ? String(elemento.operador) : "",
+        tractor: elemento?.tractor ?? "",
+        esFletero: elemento?.esFletero ?? false,
+        vehiculo: elemento?.vehiculo,
+        furgon: elemento?.furgon ?? "",
+        cargado: elemento?.cargado ?? false,
+        detalle: elemento?.detalle ?? "",
         chequeos: chequeosPorteria.map(({ key }) => {
           const valor = elemento?.chequeos?.[key];
           return typeof valor === "boolean" ? valor : false;
         }),
       });
       setTipoSeleccionado(
-        elemento.distincion ? elemento.distincion : "tractor"
+        elemento?.distincion ? elemento.distincion : "tractor"
       );
-      setChoferFletero(elemento.esFletero);
+      setChoferFletero(elemento?.esFletero ?? false);
     };
 
     cargarDatos();
