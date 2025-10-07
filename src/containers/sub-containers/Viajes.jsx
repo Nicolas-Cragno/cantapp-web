@@ -35,7 +35,10 @@ const Viajes = () => {
     useData();
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
-  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [modalAgregarViajeVisible, setModalAgregarViajeVisible] =
+    useState(false);
+  const [modalAgregarMovimientoVisible, setModalAgregarMovimientoVisible] =
+    useState(false);
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
@@ -106,8 +109,11 @@ const Viajes = () => {
   const cerrarModal = () => {
     setEventoSeleccionado(null);
   };
-  const cerrarModalAgregar = () => {
-    setModalAgregarVisible(null);
+  const cerrarModalAgregarViaje = () => {
+    setModalAgregarViajeVisible(null);
+  };
+  const cerrarModalAgregarMovimiento = () => {
+    setModalAgregarMovimientoVisible(null);
   };
   const cerrarModalTractor = () => {
     setModalTractorVisible(null);
@@ -119,12 +125,27 @@ const Viajes = () => {
     setModalPersonaVisible(false);
   };
   const handleGuardar = async () => {
-    setModalAgregarVisible(false);
+    setModalAgregarViajeVisible(false);
+    setModalAgregarMovimientoVisible(false);
     setEventoSeleccionado(null);
   };
 
   const eventosFiltrados = useMemo(() => {
-    let filtrados = eventos.filter((e) => e.area === AREA);
+    let filtrados = eventos.filter((e) => {
+      if (!e.fecha) return false;
+
+      let fechaEvento;
+
+      // Si es Timestamp de Firestore
+      if (e.fecha.toDate) {
+        fechaEvento = e.fecha.toDate();
+      } else {
+        // Si es string o Date
+        fechaEvento = new Date(e.fecha);
+      }
+
+      return e.area === AREA && fechaEvento.getFullYear() === 2025; // limitar solo a los del 2025
+    });
 
     filtrados = filtrados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
@@ -184,6 +205,65 @@ const Viajes = () => {
           onGuardar={handleGuardar}
         />
       )}
+
+      {modalAgregarViajeVisible && (
+        <FormGestor
+          tipo={"viaje"}
+          onClose={cerrarModal}
+          onGuardar={handleGuardar}
+        />
+      )}
+      {modalAgregarViajeVisible && (
+        <FormGestor
+          tipo={"movimiento"}
+          onClose={cerrarModal}
+          onGuardar={handleGuardar}
+        />
+      )}
+      {modalTractorVisible && (
+        <ModalVehiculo
+          coleccion={tractores}
+          tipo={"tractores"}
+          onClose={cerrarModalTractor}
+        />
+      )}
+
+      {modalPersonaVisible && <ModalPersona onClose={cerrarModalPersona} />}
+
+      {modalFurgonVisible && (
+        <ModalVehiculo
+          coleccion={furgones}
+          tipo={"furgones"}
+          onClose={cerrarModalFurgon}
+        />
+      )}
+
+      <div className="table-options">
+        <div className="table-options-group">
+          <LogoButton
+            logo={LogoFurgon}
+            onClick={() => setModalFurgonVisible(true)}
+          />
+          <LogoButton
+            logo={LogoTractor}
+            onClick={() => setModalTractorVisible(true)}
+          />
+          <LogoButton
+            logo={LogoPersona}
+            onClick={() => setModalPersonaVisible(true)}
+          />
+        </div>
+        <div className="table-options-group">
+          <TextButton
+            text="+ VIAJE"
+            onClick={() => setModalAgregarViajeVisible(true)}
+          />
+          <TextButton
+            text="+ Movimiento"
+            onClick={() => setModalAgregarMovimientoVisible(true)}
+          />
+        </div>
+      </div>
     </section>
   );
 };

@@ -70,6 +70,23 @@
   white-space: nowrap;
 }
 
+.btn-body-mini{
+   background-color: #2563eb;
+   opacity: .5;
+  color: white;
+  border: none;
+  padding: 0.1rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-body-mini:hover {
+  opacity: 1;
+}
+
 .btn-body:hover {
   background-color: #1d4ed8;
 }

@@ -1,7 +1,6 @@
 import unidades from "./data/unidades.json";
 import { useData } from "../context/DataContext";
 
-
 // ----------------------------------------------------------------------- Nombre de empresas
 export const useNombreEmpresa = (cuit) => {
   const { empresas } = useData();

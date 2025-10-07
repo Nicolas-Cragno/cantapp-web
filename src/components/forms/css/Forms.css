@@ -196,6 +196,8 @@
   font-weight: 700;
 }
 
+/* boxes */
+
 .form-box{
   margin-top: 1rem;
   border-style: solid;
@@ -210,6 +212,50 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;  /* IE y Edge */
 }
+
+
+.form-box2{
+  border-style: solid;
+  border-width: 0.1rem;
+  border-color: #888; 
+  padding: .5rem;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.form-subbox{
+  display: flex;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+.form-subbox2{
+  display: flex;
+  justify-content: flex-end;
+padding-top: 1rem;}
+
+/* tablas */
+
+.form-itemlist{
+  margin-top: 1.4rem;
+  font-size: smaller;
+  width: 100%;
+}
+
+
+.form-table-item{
+  background-color: #949393;
+  border-radius: 5rem;
+  color: white;
+  padding: .3rem;
+  padding-right: .8rem;
+  padding-left: .8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/**/
 
 .delete-btn {
   background-color: transparent;

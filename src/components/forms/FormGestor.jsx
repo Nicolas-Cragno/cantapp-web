@@ -12,6 +12,7 @@ const formularios = {
   stock: lazy(() => import("./FormularioStock")),
   movimientoStock: lazy(() => import("./FormularioMovimientoStock")),
   viaje: lazy(() => import("./FormViaje")),
+  movimiento: lazy(() => import("./FormMovimiento")),
 };
 
 const FormGestor = ({

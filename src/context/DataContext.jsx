@@ -26,6 +26,7 @@ export const DataProvider = ({ children }) => {
 
   // ------- informativos
   const [ubicaciones, setUbicaciones] = useState({}); // ahora será un objeto
+  const [estaciones, setEstaciones] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +50,8 @@ export const DataProvider = ({ children }) => {
       { name: "eventos", setter: setEventos },
       { name: "usoStock", setter: setUsoStock },
 
-      { name: "ubicaciones", setter: setUbicaciones }, // se convertirá a objeto
+      { name: "ubicaciones", setter: setUbicaciones }, // objeto
+      { name: "estaciones", setter: setEstaciones },
     ];
 
     coleccionesFirestore.forEach(({ name, setter }) => {
@@ -57,14 +59,14 @@ export const DataProvider = ({ children }) => {
       const unsubscribe = onSnapshot(q, (snapshot) => {
         let data;
 
-        // Si es ubicaciones, convertir a objeto {id: doc.data()}
+        // Si es ubicaciones, convierte a objeto {id: doc.data()}
         if (name === "ubicaciones") {
           data = snapshot.docs.reduce((acc, doc) => {
             acc[doc.id] = doc.data();
             return acc;
           }, {});
         } else {
-          // para todas las demás colecciones dejamos array
+          // para todas las demás colecciones  array
           data = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
@@ -100,7 +102,8 @@ export const DataProvider = ({ children }) => {
         stock,
         eventos,
         usoStock,
-        ubicaciones, // ahora es objeto
+        ubicaciones, // objeto
+        estaciones,
         loading,
       }}
     >

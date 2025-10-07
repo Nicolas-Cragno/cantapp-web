@@ -1,50 +1,25 @@
-import "./css/Fichas.css";
+// ----------------------------------------------------------------------- imports externos
+import { useState, useEffect } from "react";
+
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
 import {
   formatearFecha,
-  buscarDominioT,
+  buscarDominio,
   colorSatelital,
   colorBatman,
   colorPromedio,
-} from "../../functions/data-functions";
+} from "../../functions/dataFunctions";
 import CardInfo from "../cards/CardInfo";
-import { useState, useEffect } from "react";
-import FormularioViaje from "../forms/FormViaje";
-import { FaPray } from "react-icons/fa";
+import FormViaje from "../forms/FormViaje";
 
 const FichaViaje = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [formData, setFormData] = useState(null);
   const [vacio, setVacio] = useState(true); // viaje con/sin furgon
-  const [dominioTractor, setDominioTractor] = useState(null);
-  //const [dominioFurgon, setDominioFurgon] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const cargarFicha = async () => {
-    setLoading(true);
-
-    try {
-      setLoading(true);
-
-      const dominioT = await buscarDominioT(elemento.tractor);
-
-      setFormData({
-        ...elemento,
-        dominioTractor: dominioT,
-        //dominioFurgon: dominioF,
-        fechaFormateada: elemento.fecha ? formatearFecha(elemento.fecha) : "-",
-      });
-
-      if (formData.furgon) setVacio(false);
-    } catch (error) {
-      console.error("Error al cargar datos del viaje: ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    cargarFicha();
-  }, [elemento]);
+  const { personas, tractores, furgones } = useData();
 
   if (!elemento) return null;
 
@@ -166,7 +141,7 @@ const FichaViaje = ({ elemento, onClose, onGuardar }) => {
           </div>
         </div>
       ) : (
-        <FormularioViaje
+        <FormViaje
           viaje={elemento}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}
