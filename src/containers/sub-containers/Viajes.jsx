@@ -112,9 +112,7 @@ const Viajes = () => {
   const cerrarModalAgregarViaje = () => {
     setModalAgregarViajeVisible(null);
   };
-  const cerrarModalAgregarMovimiento = () => {
-    setModalAgregarMovimientoVisible(null);
-  };
+
   const cerrarModalTractor = () => {
     setModalTractorVisible(null);
   };
@@ -209,14 +207,7 @@ const Viajes = () => {
       {modalAgregarViajeVisible && (
         <FormGestor
           tipo={"viaje"}
-          onClose={cerrarModal}
-          onGuardar={handleGuardar}
-        />
-      )}
-      {modalAgregarViajeVisible && (
-        <FormGestor
-          tipo={"movimiento"}
-          onClose={cerrarModal}
+          onClose={cerrarModalAgregarViaje}
           onGuardar={handleGuardar}
         />
       )}
@@ -257,10 +248,6 @@ const Viajes = () => {
           <TextButton
             text="+ VIAJE"
             onClick={() => setModalAgregarViajeVisible(true)}
-          />
-          <TextButton
-            text="+ Movimiento"
-            onClick={() => setModalAgregarMovimientoVisible(true)}
           />
         </div>
       </div>
