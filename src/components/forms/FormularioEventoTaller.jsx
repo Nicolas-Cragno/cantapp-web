@@ -29,19 +29,19 @@ const FormularioEventoTaller = ({
   onClose,
   onGuardar,
 }) => {
-  const evento = elemento;
+  const evento = elemento || {};
 
   const { tractores, furgones, personas, stock } = useData();
 
   const [formData, setFormData] = useState({
-    tipo: evento.tipo || "",
-    chofer: evento.chofer ? String(evento.chofer) : "",
-    mecanico: evento.mecanico ? String(evento.mecanico) : "",
-    tractor: evento.tractor,
-
-    detalle: evento.detalle || "",
-    area: evento.area || "",
-    subarea: evento.subarea || "",
+    tipo: evento?.tipo || "",
+    chofer: evento?.chofer ? String(evento.chofer) : "",
+    mecanico: evento?.mecanico ? String(evento.mecanico) : "",
+    tractor: evento?.tractor || "",
+    furgon: evento?.furgon || "",
+    detalle: evento?.detalle || "",
+    area: evento?.area || area,
+    subarea: evento?.subarea || subarea,
   });
 
   const subtiposDisponibles = tiposEventos[area.toUpperCase()];
@@ -60,6 +60,18 @@ const FormularioEventoTaller = ({
   const [modalArticuloVisible, setModalArticuloVisible] = useState(false);
 
   useEffect(() => {
+    const cargarDatos = async () => {
+      setFormData({
+        tipo: evento?.tipo || "",
+        chofer: evento?.chofer ? String(evento.chofer) : "",
+        mecanico: evento?.mecanico ? String(evento.mecanico) : "",
+        tractor: evento?.tractor || "",
+        furgon: evento?.furgon || "",
+        detalle: evento?.detalle || "",
+        area: evento?.area || area,
+        subarea: evento?.subarea || subarea,
+      });
+    };
     const cargarMecanicos = async () => {
       try {
         const data = personas.filter((p) => p.puesto === "MECANICO");
@@ -96,7 +108,8 @@ const FormularioEventoTaller = ({
     }
     cargarMecanicos();
     cargarChoferes();
-  }, [articuloSeleccionado, stock]);
+    cargarDatos();
+  }, [articuloSeleccionado, stock, evento, personas]);
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
     setIngresos([]); // limpiar ingresos agregados manualmente

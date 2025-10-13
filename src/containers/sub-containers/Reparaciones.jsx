@@ -21,6 +21,7 @@ import FichaGestor from "../../components/fichas/FichaGestor";
 import FichaLlave from "../../components/fichas/FichaLlave";
 // import FormularioEventoTaller from "../../components/forms/FormularioEventoTaller"
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
+import FormGestor from "../../components/forms/FormGestor";
 import FormLlave from "../../components/forms/FormLlave";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
@@ -236,10 +237,13 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           />
         ) : null)}
 
-      {modalAgregarVisible &&
-        {
-          /* agregar eventotaller */
-        }}
+      {modalAgregarVisible && (
+        <FormGestor
+          tipo={AREA}
+          onClose={cerrarModalAgregar}
+          onGuardar={handleGuardar}
+        />
+      )}
 
       {modalKeyVisible && (
         <FormLlave
@@ -290,14 +294,13 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           >
             <IoKeySharp className="button-logo" />
           </button>
-          {/*
+
           <button
             className="table-agregar"
             onClick={() => setModalAgregarVisible(true)}
           >
             + AGREGAR
           </button>
-         */}
         </div>
       </div>
     </section>
