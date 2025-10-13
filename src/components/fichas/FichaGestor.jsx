@@ -3,7 +3,7 @@ import { lazy, Suspense } from "react";
 const fichas = {
   porteria: lazy(() => import("./FichaEventoPorteria")),
   satelital: lazy(() => import("./FichaEventoSatelital")),
-  taller: lazy(() => import("./FichaEventoTaller")),
+  tractores: lazy(() => import("./FichaEventoTaller")),
   llave: lazy(() => import("./FichaLlave")),
   perfil: lazy(() => import("./FichaPerfil")),
   personal: lazy(() => import("./FichaPersonal")),

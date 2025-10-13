@@ -1,55 +1,62 @@
+// ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
-import "./css/Forms.css";
-import {
-  agregarEventoTaller,
-  listarColeccion,
-} from "../../functions/db-functions";
-import { singularTipoVehiculo } from "../../functions/data-functions";
+import Select from "react-select";
 import Swal from "sweetalert2";
+
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
+import { agregarEvento } from "../../functions/eventFunctions";
+import { agregar, modificar } from "../../functions/dbFunctions";
 import {
   formatearFecha,
   formatearHora,
-  obtenerNombreUnidad,
-} from "../../functions/data-functions";
+  unidadArticulo,
+} from "../../functions/dataFunctions";
+import TextButton from "../buttons/TextButton";
+// ----------------------------------------------------------------------- json e info
 import tiposEventos from "../../functions/data/eventos.json";
+import { singularTipoVehiculo } from "../../functions/data-functions";
 
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/Forms.css";
 import PlusLogo from "../../assets/logos/pluslogo.png";
 import RefreshLogo from "../../assets/logos/refreshlogo.png";
 import DropLogo from "../../assets/logos/droplogo.png";
 
 const FormularioEventoTaller = ({
-  evento = {},
-  tipoVehiculo = null,
-  area = null,
+  elemento = {},
+  area = "tractores",
   subarea = null,
-  tipoPorArea = null,
   onClose,
   onGuardar,
 }) => {
+  const evento = elemento;
+
+  const { tractores, furgones, personas, stock, usoStock, eventos } = useData();
+
   const [formData, setFormData] = useState({
-    subtipo: evento.subtipo || "",
-    persona: evento.persona ? String(evento.persona) : "",
-    vehiculo:
-      evento.tractor ||
-      evento.furgon ||
-      evento.utilitario ||
-      evento.vehiculo ||
-      "",
+    tipo: evento.tipo || "",
+    chofer: evento.chofer ? String(evento.chofer) : "",
+    mecanico: evento.mecanico ? String(evento.mecanico) : "",
+    tractor: evento.tractor,
+
     detalle: evento.detalle || "",
     area: evento.area || "",
     subarea: evento.subarea || "",
   });
 
-  const subtiposDisponibles = tiposEventos["TALLER"];
+  const subtiposDisponibles = tiposEventos[area.toUpperCase()];
 
   const [mecanicos, setMecanicos] = useState([]);
+  const [choferes, setChoferes] = useState([]);
   const [vehiculos, setVehiculos] = useState([]);
   const [articulos, setArticulos] = useState([]);
-  const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
+  const [articuloSeleccionado, setArticuloSeleccionado] = useState(null);
   const [articulosUsados, setArticulosUsados] = useState([]);
   const [articulosUsadosBackUp, setArticulosUsadosBackUp] = useState([]);
   const [cantidad, setCantidad] = useState("");
-  const [unidad, setUnidad] = useState("");
+  const [unidadArticuloSeleccionado, setUnidadArticuloSeleccionado] =
+    useState("");
   const [ingresos, setIngresos] = useState([]); // para el listado de repuestos a usar
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false); // Para evitar doble cargas
@@ -57,58 +64,34 @@ const FormularioEventoTaller = ({
   useEffect(() => {
     const cargarMecanicos = async () => {
       try {
-        const data = await listarColeccion("personas");
+        const data = personas.filter((p) => p.puesto === "MECANICO");
         setMecanicos(data);
       } catch (error) {
         console.error("Error al cargar Mecanicos: ", error);
       }
     };
-
-    const cargarVehiculos = async () => {
+    const cargarChoferes = async () => {
       try {
-        let data = [];
-
-        const subareaEnUso = evento.subarea
-          ? evento.subarea.toUpperCase()
-          : tipoVehiculo.toUpperCase();
-
-        switch (subareaEnUso) {
-          case "TRACTORES":
-            data = await listarColeccion("tractores");
-            break;
-          case "FURGONES":
-            data = await listarColeccion("furgones");
-            break;
-          default:
-            data = await listarColeccion("utilitarios");
-            break;
-        }
-
-        setVehiculos(data);
+        const data = personas.filter(
+          (p) =>
+            p.puesto === "CHOFER LARGA DISTANCIA" ||
+            p.puesto === "CHOFER MOVIMIENTO"
+        );
+        setChoferes(data);
       } catch (error) {
-        console.error("Error al cargar vehiculos: ", error);
+        console.error("Error al carga choferes: ", error);
       }
     };
-
-    const cargarArticulos = async () => {
-      const data = await listarColeccion("stock", true);
-      setArticulos(data);
-      setLoading(false);
-    };
-
     const cargarUsoStock = async () => {
       if (evento.id) {
-        const listaArticulos = await listarColeccion("stock", true);
-        const data = await listarColeccion("usoStock", true);
-
-        const articulosUsados = data
+        const articulosUsados = usoStock
           .filter((uso) => uso.reparacion === evento.id)
           .map((uso) => {
-            const articulo = listaArticulos.find(
+            const articulo = stock.find(
               (art) => String(art.id) === String(uso.repuesto)
             );
 
-            listaArticulos.forEach((a) => {
+            stock.forEach((a) => {
               console.log("Artículo ID:", `"${a.id}"`);
             });
             console.log("Buscando repuesto ID:", `"${uso.repuesto}"`);
@@ -126,81 +109,93 @@ const FormularioEventoTaller = ({
         setLoading(false);
       }
     };
+    if (articuloSeleccionado) {
+      const articulo = stock.find((a) => a.id === articuloSeleccionado);
+      setUnidadArticuloSeleccionado(articulo?.unidad || "");
+    }
     cargarMecanicos();
-    cargarVehiculos();
-    cargarArticulos();
+    cargarChoferes();
     cargarUsoStock();
-  }, []);
-
+  }, [articuloSeleccionado, stock]);
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
     setIngresos([]); // limpiar ingresos agregados manualmente
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
-    let idGuardado;
 
     try {
+      // --- Preparar fecha ---
       let fechaParaGuardar;
-
       if (evento.id) {
-        // evento.fecha es un Timestamp de Firebase
-        if (evento.fecha.toDate) {
-          fechaParaGuardar = evento.fecha.toDate(); // ✅ convierte a Date
-        } else {
-          fechaParaGuardar = new Date(evento.fecha); // por si ya era Date
-        }
+        fechaParaGuardar = evento.fecha?.toDate
+          ? evento.fecha.toDate()
+          : new Date(evento.fecha);
       } else {
-        fechaParaGuardar = new Date(); // fecha nueva
+        fechaParaGuardar = new Date();
       }
-
-      if (isNaN(fechaParaGuardar.getTime())) {
+      if (isNaN(fechaParaGuardar.getTime()))
         throw new Error("La fecha es inválida");
-      }
 
+      // --- Preparar usuario ---
       const usuarioJSON = JSON.parse(localStorage.usuario);
-      const usuarioDeCarga =
-        usuarioJSON["apellido"] + " " + usuarioJSON["nombres"];
+      const usuarioDeCarga = `${usuarioJSON.apellido} ${usuarioJSON.nombres}`;
 
+      // --- Datos del evento ---
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
-        subtipo: formData.subtipo ? formData.subtipo.toUpperCase() : null,
+        subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
-        area: formData.area ? formData.area : area, //El area la recibe desde la tabla/ficha
-        subarea: formData.subarea ? formData.subarea : subarea,
-        detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
-        usuario: evento.id
-          ? evento.usuario
-            ? evento.usuario
-            : usuarioDeCarga
-          : null,
+        area: formData.area || area,
+        subarea: formData.subarea || subarea,
+        detalle: formData.detalle?.toUpperCase() || null,
+        usuario: evento.id ? evento.usuario || usuarioDeCarga : usuarioDeCarga,
       };
 
-      // Lista final de articulos/repuestos
+      // --- Guardar evento ---
+      const eventoGuardado = evento.id
+        ? await agregarEvento(datosAGuardar, area, evento.id)
+        : await agregarEvento(datosAGuardar, area);
+
+      const idEvento = eventoGuardado.id;
+
+      // --- Preparar artículos para usoStock ---
       const listaArticulosFinal = [...articulosUsados, ...ingresos];
+      if (listaArticulosFinal.length > 0) {
+        const usoStockAGuardar = listaArticulosFinal.map((item) => ({
+          reparacion: idEvento, // ✅ ID del evento recién guardado
+          repuesto: item.id,
+          cantidad: item.cantidad,
+          unidad: item.unidad,
+        }));
 
-      // Uso de stock: cada elemento será un documento en la colección
-      const usoStockAGuardar = listaArticulosFinal.map((item) => ({
-        reparacion: evento.id, // Para saber a qué evento pertenece
-        repuesto: item.id, // ID del artículo
-        cantidad: item.cantidad,
-        unidad: item.unidad,
-      }));
-
-      if (evento.id) {
-        idGuardado = await agregarEventoTaller(
-          datosAGuardar,
-          usoStockAGuardar,
-          evento.id
+        // Guardar todos los artículos en Firestore
+        const idReparacionesGuardado = await agregar(
+          usoStock,
+          usoStockAGuardar
         );
-      } else {
-        idGuardado = await agregarEventoTaller(datosAGuardar, usoStockAGuardar);
+
+        // Actualizar el evento con la referencia a los repuestos (opcional)
+        await modificar(eventos, idEvento, {
+          repuestos: idReparacionesGuardado,
+        });
       }
+
+      if (onGuardar) onGuardar();
+      Swal.fire({
+        title: `Evento guardado: ${idEvento}`,
+        text: "Se ha completado el registro exitosamente.",
+        icon: "success",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#4161bd",
+      });
+
+      onClose();
     } catch (error) {
+      console.error("Error al guardar evento:", error);
       Swal.fire({
         title: "Error",
         text: "No hemos podido procesar la solicitud.",
@@ -208,25 +203,15 @@ const FormularioEventoTaller = ({
         confirmButtonText: "Entendido",
         confirmButtonColor: "#4161bd",
       });
-      console.error("Error al guardar evento:", error);
       onClose();
+    } finally {
+      setUploading(false);
     }
-
-    Swal.fire({
-      title: "Evento guardado  " + idGuardado,
-      text: "Se ha completado el registro exitosamente.",
-      icon: "success",
-      confirmButtonText: "Entendido",
-      confirmButtonColor: "#4161bd",
-    });
-    onClose();
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleAdd = () => {
     if (!articuloSeleccionado || !cantidad || isNaN(cantidad)) {
       Swal.fire(
@@ -237,7 +222,7 @@ const FormularioEventoTaller = ({
       return;
     }
 
-    const articulo = articulos.find((a) => a.id === articuloSeleccionado);
+    const articulo = stock.find((a) => a.id === articuloSeleccionado);
 
     const nuevoIngreso = {
       id: articulo.id,
@@ -251,7 +236,6 @@ const FormularioEventoTaller = ({
     setArticuloSeleccionado("");
     setCantidad("");
   };
-
   const handleDelete = (indexEliminar) => {
     const totalUsados = articulosUsados.length;
 
@@ -264,7 +248,6 @@ const FormularioEventoTaller = ({
       setIngresos((prev) => prev.filter((_, i) => i !== ingresoIndex));
     }
   };
-
   return (
     <div className="doble-form">
       <div className="doble-form-content">
@@ -285,63 +268,204 @@ const FormularioEventoTaller = ({
           <div className="form-left">
             <label>
               Tipo *
-              <select
-                name="subtipo"
-                value={formData.subtipo}
-                onChange={handleChange}
+              <Select
+                options={subtiposDisponibles.map((sub) =>
+                  typeof sub === "string"
+                    ? { value: sub.toUpperCase(), label: sub.toUpperCase() }
+                    : {
+                        value: sub.tipo.toUpperCase(),
+                        label: sub.tipo.toUpperCase(),
+                      }
+                )}
+                value={
+                  formData.tipo
+                    ? {
+                        value: formData.tipo.toUpperCase(), // 🔹 normalizamos aquí
+                        label: formData.tipo.toUpperCase(),
+                      }
+                    : null
+                }
+                onChange={(opt) =>
+                  handleChange({
+                    target: { name: "tipo", value: opt ? opt.value : "" },
+                  })
+                }
+                placeholder=""
+                isClearable
                 required
-              >
-                <option value="">Seleccione subtipo</option>
-                {typeof subtiposDisponibles[0] === "string"
-                  ? subtiposDisponibles.map((sub, i) => (
-                      <option key={i} value={sub}>
-                        {sub}
-                      </option>
-                    ))
-                  : subtiposDisponibles.map((item, i) => (
-                      <option key={i} value={item.subtipo}>
-                        {item.area} - {item.subtipo}
-                      </option>
-                    ))}
-              </select>
+              />
             </label>
 
             <label>
               Mecanico
-              <select
-                name="persona"
-                value={formData.persona}
-                onChange={handleChange}
-                required
-              >
-                <option value=""></option>
-                {mecanicos.map((p) => (
-                  <option key={p.dni} value={p.dni}>
-                    {p.apellido} {p.nombres} (DNI: {p.dni})
-                  </option>
-                ))}
-              </select>
+              <div className="select-with-button">
+                <Select
+                  className="select-grow"
+                  options={mecanicos
+                    .map((p) => ({
+                      value: p.id,
+                      label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                      apellido: p.apellido,
+                    }))
+                    .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+                  value={
+                    formData.mecanico
+                      ? {
+                          value: formData.mecanico,
+                          label:
+                            mecanicos.find((p) => p.id === formData.mecanico)
+                              ?.apellido +
+                            " " +
+                            mecanicos.find((p) => p.id === formData.mecanico)
+                              ?.nombres +
+                            ` (DNI: ${formData.mecanico})`,
+                        }
+                      : null
+                  }
+                  onChange={(opt) =>
+                    setFormData({ ...formData, operador: opt ? opt.value : "" })
+                  }
+                  placeholder=""
+                  isClearable
+                  required
+                />
+                <TextButton
+                  text="+"
+                  className="mini-btn"
+                  //onClick={handleClickPersona}
+                />
+              </div>
             </label>
 
+            {area === "tractores" ? (
+              <>
+                <label>
+                  Tractor *
+                  <div className="select-with-button">
+                    <Select
+                      className="select-grow"
+                      options={tractores
+                        .map((t) => ({
+                          value: t.interno,
+                          label: `${t.dominio} (${t.interno})`,
+                          int: t.interno,
+                        }))
+                        .sort((a, b) => a.int - b.int)}
+                      value={
+                        formData.tractor
+                          ? {
+                              value: formData.tractor,
+                              label:
+                                tractores.find(
+                                  (t) => t.interno === formData.tractor
+                                )?.dominio + ` (${formData.tractor})`,
+                            }
+                          : null
+                      }
+                      onChange={(opt) =>
+                        setFormData({
+                          ...formData,
+                          tractor: opt ? opt.value : "",
+                        })
+                      }
+                      placeholder=""
+                      isClearable
+                      required={area === "tractores"}
+                    />
+                    <TextButton
+                      text="+"
+                      className="mini-btn"
+                      //onClick={handleClickTractor}
+                    />
+                  </div>
+                </label>
+              </>
+            ) : null}
+
+            {area === "furgones" ? (
+              <>
+                <label>
+                  Furgon *
+                  <div className="select-with-button">
+                    <Select
+                      className="select-grow"
+                      options={furgones
+                        .map((f) => ({
+                          value: f.interno,
+                          label: `${f.dominio} (${f.interno})`,
+                          int: f.interno,
+                        }))
+                        .sort((a, b) => a.int - b.int)}
+                      value={
+                        formData.furgon
+                          ? {
+                              value: formData.furgon,
+                              label:
+                                furgones.find(
+                                  (t) => t.interno === formData.furgon
+                                )?.dominio + ` (${formData.furgon})`,
+                            }
+                          : null
+                      }
+                      onChange={(opt) =>
+                        setFormData({
+                          ...formData,
+                          furgon: opt ? opt.value : "",
+                        })
+                      }
+                      placeholder=""
+                      isClearable
+                      required={area === "furgones"}
+                    />
+                    <TextButton
+                      text="+"
+                      className="mini-btn"
+                      //onClick={handleClickFurgon}
+                    />
+                  </div>
+                </label>
+              </>
+            ) : null}
+
             <label>
-              {evento.subarea
-                ? singularTipoVehiculo(evento.subarea)
-                : tipoVehiculo
-                ? singularTipoVehiculo(tipoVehiculo)
-                : "Vehiculo"}
-              <select
-                type="number"
-                name="vehiculo"
-                value={formData.vehiculo}
-                onChange={handleChange}
-              >
-                <option value=""></option>
-                {vehiculos.map((t) => (
-                  <option key={t.interno} value={t.interno}>
-                    {t.dominio} ({t.interno})
-                  </option>
-                ))}
-              </select>
+              Chofer
+              <div className="select-with-button">
+                <Select
+                  className="select-grow"
+                  options={choferes
+                    .map((p) => ({
+                      value: p.id,
+                      label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                      apellido: p.apellido,
+                    }))
+                    .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+                  value={
+                    formData.chofer
+                      ? {
+                          value: formData.choferes,
+                          label:
+                            choferes.find((p) => p.id === formData.chofer)
+                              ?.apellido +
+                            " " +
+                            choferes.find((p) => p.id === formData.chofer)
+                              ?.nombres +
+                            ` (DNI: ${formData.chofer})`,
+                        }
+                      : null
+                  }
+                  onChange={(opt) =>
+                    setFormData({ ...formData, chofer: opt ? opt.value : "" })
+                  }
+                  placeholder=""
+                  isClearable
+                  //required
+                />
+                <TextButton
+                  text="+"
+                  className="mini-btn"
+                  //onClick={handleClickPersona}
+                />
+              </div>
             </label>
 
             <label>
@@ -357,25 +481,53 @@ const FormularioEventoTaller = ({
             <div className="form-box">
               <label>
                 Cargar repuesto
-                <select
-                  value={articuloSeleccionado}
-                  onChange={(e) => {
-                    const idSeleccionado = e.target.value;
-                    setArticuloSeleccionado(idSeleccionado);
-                    const articulo = articulos.find(
-                      (a) => a.id === idSeleccionado
-                    );
-                    setUnidad(articulo ? articulo.unidad : "");
-                  }}
-                  disabled={loading}
-                >
-                  <option value="">Seleccionar...</option>
-                  {articulos.map((art) => (
-                    <option key={art.id} value={art.id}>
-                      {art.id} - {art.descripcion} ({art.marca})
-                    </option>
-                  ))}
-                </select>
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={stock
+                      .map((a) => ({
+                        value: a.id,
+                        label: `${a.descripcion} (${a.marca})`,
+                      }))
+                      .sort((a, b) => a.label.localeCompare(b.label))}
+                    value={
+                      articuloSeleccionado
+                        ? {
+                            value: articuloSeleccionado,
+                            label: `${
+                              stock.find((a) => a.id === articuloSeleccionado)
+                                ?.descripcion || ""
+                            } (${
+                              stock.find((a) => a.id === articuloSeleccionado)
+                                ?.marca || ""
+                            })`,
+                          }
+                        : null
+                    }
+                    onChange={(opt) => {
+                      if (opt) {
+                        const idSeleccionado = opt.value;
+                        setArticuloSeleccionado(idSeleccionado);
+                        const articulo = stock.find(
+                          (a) => a.id === idSeleccionado
+                        );
+
+                        setUnidadArticuloSeleccionado(articulo?.unidad || "");
+                      } else {
+                        setArticuloSeleccionado("");
+                        setUnidadArticuloSeleccionado("");
+                      }
+                    }}
+                    placeholder="Seleccionar repuesto..."
+                    isClearable
+                  />
+
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    //onClick={handleClickStock}
+                  />
+                </div>
               </label>
               <div className="input-inline">
                 <label>
@@ -390,7 +542,11 @@ const FormularioEventoTaller = ({
                 <div className="unidad-display">
                   <input
                     type="text"
-                    value={obtenerNombreUnidad(unidad).toUpperCase()}
+                    value={
+                      articuloSeleccionado
+                        ? unidadArticulo(stock, articuloSeleccionado)
+                        : "b"
+                    }
                     disabled
                   />
                   <img
@@ -398,7 +554,7 @@ const FormularioEventoTaller = ({
                     alt=""
                     onClick={handleAdd}
                     className="plus-logo"
-                  ></img>
+                  />
                 </div>
               </div>
             </div>

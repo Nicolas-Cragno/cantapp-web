@@ -183,6 +183,16 @@ export const buscarMarca = (id, coleccion = []) => {
   return vehiculo ? vehiculo.marca : "";
 };
 
+// ----------------------------------------------------------------------- Stock
+
+export const buscarRepuestoPorID = async (coleccion, id) => {
+  if (!id || !Array.isArray(coleccion)) return "";
+
+  const articulo = coleccion.find((v) => String(v.id) === String(id));
+
+  return articulo ? articulo.nombre : "";
+}
+
 // ----------------------------------------------------------------------- Validaciones
 
 export const verificarEstado = (empresa) => {
@@ -299,6 +309,13 @@ export const singularTipoVehiculo = (tipo) => {
   
 };
 
+export const unidadArticulo = (coleccion, id) => {
+    if (!id || !Array.isArray(coleccion)) return "";
+
+    const articulo = coleccion.find((a) => a.id === id);
+
+    return articulo ? articulo.unidad : "no";
+}
 // ----------------------------------------------------------------------- colores & estilos
 
 export const colorSatelital = (satelital) => {

@@ -16,6 +16,7 @@ import {
 } from "../../functions/dataFunctions";
 
 // ----------------------------------------------------------------------- elementos
+import FichaGestor from "../../components/fichas/FichaGestor";
 // import FichaEventoTaller from "../../components/fichas/FichaEventoTaller";
 import FichaLlave from "../../components/fichas/FichaLlave";
 // import FormularioEventoTaller from "../../components/forms/FormularioEventoTaller"
@@ -60,19 +61,14 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     {
       titulo: "TIPO",
       campo: "tipo",
-      render: (v) =>
-        v === "ENTREGA" || v === "DEJA" || v === "RETIRA" ? v + " LLAVES" : v,
+      render: (v) => v.toUpperCase(),
     },
     {
-      titulo: "PERSONA",
-      campo: "persona",
+      titulo: "MECANICO",
+      campo: "mecanico",
       render: (p, fila) => {
         const valor =
-          fila.persona !== null
-            ? buscarPersona(personas, fila.persona)
-            : fila.servicio !== null
-            ? buscarEmpresa(empresas, fila.servicio)
-            : "";
+          fila.mecanico !== null ? buscarPersona(personas, fila.mecanico) : "";
 
         if (!valor) return "";
 
@@ -81,14 +77,12 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       offresponsive: true,
     },
     {
-      titulo: "PERS",
-      campo: "persona",
+      titulo: "MEC",
+      campo: "mecanico",
       render: (p, fila) => {
         const valor =
-          fila.persona !== null
-            ? buscarPersona(personas, fila.persona, false)
-            : fila.servicio !== null
-            ? buscarEmpresa(empresas, fila.servicio)
+          fila.mecanico !== null
+            ? buscarPersona(personas, fila.mecanico, false)
             : "";
 
         if (!valor) return "";
@@ -112,7 +106,19 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         return valor;
       },
     },
+    {
+      titulo: "CHOFER",
+      campo: "chofer",
+      render: (p, fila) => {
+        const valor =
+          fila.chofer !== null ? buscarPersona(personas, fila.chofer) : "";
 
+        if (!valor) return "";
+
+        return valor;
+      },
+      offresponsive: true,
+    },
     {
       titulo: "CARGA",
       campo: "operador",
@@ -213,7 +219,17 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       {eventoSeleccionado &&
         (eventoSeleccionado.tipo === "RETIRA" ||
         eventoSeleccionado.tipo === "ENTREGA" ? (
-          <FichaLlave
+          <FichaGestor
+            tipo={"llave"}
+            elemento={eventoSeleccionado}
+            onClose={cerrarModal}
+            onGuardar={handleGuardar}
+          />
+        ) : eventoSeleccionado.tipo === "REPARACION" ||
+          eventoSeleccionado.tipo === "reparacion" ? (
+          <FichaGestor
+            tipo={AREA}
+            filtroVehiculo={AREA}
             elemento={eventoSeleccionado}
             onClose={cerrarModal}
             onGuardar={handleGuardar}

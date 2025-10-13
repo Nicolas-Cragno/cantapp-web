@@ -1,22 +1,33 @@
-import "./css/Fichas.css";
-import { FaSpinner } from "react-icons/fa";
-import { formatearFecha, formatearHora } from "../../functions/data-functions";
+// ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
-import FormularioEventoTaller from "../forms/FormularioEventoTaller";
+import { FaSpinner } from "react-icons/fa";
+import { useData } from "../../context/DataContext";
+// ----------------------------------------------------------------------- imports internos
+import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
+
 import {
-  buscarNombrePorDni,
-  listarColeccion,
+  buscarPersona,
   buscarRepuestoPorID,
-} from "../../functions/db-functions";
+} from "../../functions/dataFunctions";
+import FormularioEventoTaller from "../forms/FormularioEventoTaller";
+import FormGestor from "../forms/FormGestor";
+
+// ----------------------------------------------------------------------- visuales logos etc
+import "./css/Fichas.css";
 
 const FichaEventoTaller = ({
-  evento,
+  elemento,
   tipoVehiculo = "Vehiculo",
   onClose,
   onGuardar,
 }) => {
+  const { tractores, furgones, personas, usoStock, stock } = useData();
+  const evento = elemento;
+  const AREA = elemento.area;
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [nombre, setNombre] = useState("SIN ASIGNAR");
+  const [persona, setPersona] = useState("");
+  const [mecanico, setMecanico] = useState("");
+  const [chofer, setChofer] = useState("");
   const [tractor, setTractor] = useState("SIN ASIGNAR");
   const [furgon, setFurgon] = useState("SIN ASIGNAR");
   const [repuestos, setRepuestos] = useState([]);
@@ -30,14 +41,13 @@ const FichaEventoTaller = ({
       if (!evento) return null;
       setLoading(true);
       try {
-        const datos = await listarColeccion("usoStock");
-
-        const repuestosFiltrados = datos.filter(
+        const repuestosFiltrados = usoStock.filter(
           (r) => evento.id === r.reparacion
         );
         const repuestosDetallados = await Promise.all(
           repuestosFiltrados.map(async (r) => {
             const descripcionCompleta = await buscarRepuestoPorID(
+              stock,
               evento.repuesto
             );
             return {
@@ -49,12 +59,21 @@ const FichaEventoTaller = ({
         setRepuestos(repuestosDetallados);
 
         if (evento.persona) {
-          const nombrePersona = await buscarNombrePorDni(evento.persona);
-          setNombre(nombrePersona);
+          const nombrePersona = await buscarPersona(personas, evento.persona);
+          setPersona(nombrePersona);
+        }
+
+        if (evento.chofer) {
+          const nombreChofer = await buscarPersona(personas, evento.chofer);
+          setChofer(nombreChofer);
+        }
+
+        if (evento.mecanico) {
+          const nombreMecanico = await buscarPersona(personas, evento.mecanico);
+          setMecanico(nombreMecanico);
         }
 
         if (evento.tractor) {
-          const tractores = await listarColeccion("tractores");
           const dTractor = tractores.find((t) => t.interno === evento.tractor);
           if (dTractor) {
             setTractor(`${dTractor.dominio} (${dTractor.interno})`);
@@ -62,7 +81,6 @@ const FichaEventoTaller = ({
         }
 
         if (evento.furgon) {
-          const furgones = await listarColeccion("furgones");
           const dFurgon = furgones.find((f) => f.interno === evento.furgon);
           if (dFurgon) {
             setFurgon(`${dFurgon.dominio} (${dFurgon.interno})`);
@@ -93,7 +111,7 @@ const FichaEventoTaller = ({
               ✕
             </button>
             <h1 className="event-subtipo">
-              {evento.area ? "TALLER " + evento.subarea : "TALLER"}
+              {evento.area ? "TALLER " + evento.area.toUpperCase() : "TALLER"}
             </h1>
             <hr />
             <div className="hora">
@@ -102,39 +120,50 @@ const FichaEventoTaller = ({
             </div>
             <div className="ficha-info">
               <p>
-                <strong>Mecanico: </strong> {nombre}
+                <strong>Mecanico: </strong> {mecanico}
               </p>
-              <p>
-                <strong>
-                  {tipoVehiculo === "tractores"
-                    ? "Tractor"
-                    : tipoVehiculo === "furgones"
-                    ? "Furgon"
-                    : tipoVehiculo}
-                  :{" "}
-                </strong>
-                {tractor}
-              </p>
+
+              {tipoVehiculo === "tractores" ? (
+                <p>
+                  <strong>Tractor: </strong> {tractor}
+                </p>
+              ) : tipoVehiculo === "furgones" ? (
+                <p>
+                  <strong>Furgón: </strong>
+                  {furgon}
+                </p>
+              ) : null}
+
+              {chofer ? (
+                <p>
+                  <strong>Chofer: </strong>
+                  {chofer}
+                </p>
+              ) : null}
             </div>
-            <p className="ficha-info-title">
-              <strong>Repuesto/s</strong>
-            </p>
-            <div className="ficha-info">
-              {loading ? (
-                <div className="loading-item">
-                  <FaSpinner className="spinner" />
+            {repuestos.length > 0 && (
+              <>
+                <p className="ficha-info-title">
+                  <strong>Repuesto/s</strong>
+                </p>
+                <div className="ficha-info">
+                  {loading ? (
+                    <div className="loading-item">
+                      <FaSpinner className="spinner" />
+                    </div>
+                  ) : (
+                    repuestos.map((r, id) => (
+                      <p key={id}>
+                        <strong>{r.repuesto}</strong> - {r.descripcion}{" "}
+                        <span className="cant-detail">
+                          {r.cantidad} {r.unidad}
+                        </span>
+                      </p>
+                    ))
+                  )}
                 </div>
-              ) : (
-                repuestos.map((r, id) => (
-                  <p key={id}>
-                    <strong>{r.repuesto}</strong> - {r.descripcion}{" "}
-                    <span className="cant-detail">
-                      {r.cantidad} {r.unidad}
-                    </span>
-                  </p>
-                ))
-              )}
-            </div>
+              </>
+            )}
             <p className="ficha-info-title">
               <strong>Detalle</strong>
             </p>
@@ -158,8 +187,9 @@ const FichaEventoTaller = ({
           </div>
         </div>
       ) : (
-        <FormularioEventoTaller
-          evento={evento}
+        <FormGestor
+          tipo={AREA}
+          elemento={elemento}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}
         />
