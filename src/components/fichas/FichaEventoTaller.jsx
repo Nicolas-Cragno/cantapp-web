@@ -8,6 +8,7 @@ import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
 import {
   buscarPersona,
   buscarRepuestoPorID,
+  abreviarUnidad,
 } from "../../functions/dataFunctions";
 import FormGestor from "../forms/FormGestor";
 
@@ -141,10 +142,10 @@ const FichaEventoTaller = ({
                     </div>
                   ) : (
                     repuestos.map((r, id) => (
-                      <p key={id}>
-                        <strong>{r.repuesto}</strong> - {r.descripcion}{" "}
+                      <p key={id} className="ficha-itemlist">
+                        <strong>{r.id}</strong> - {r.descripcion}{" "}
                         <span className="cant-detail">
-                          {r.cantidad} {r.unidad}
+                          {r.cantidad} {abreviarUnidad(r.unidad)}
                         </span>
                       </p>
                     ))

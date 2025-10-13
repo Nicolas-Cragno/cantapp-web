@@ -6,16 +6,15 @@ import Swal from "sweetalert2";
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import { agregarEvento } from "../../functions/eventFunctions";
-import { agregar, modificar } from "../../functions/dbFunctions";
 import {
   formatearFecha,
   formatearHora,
   unidadArticulo,
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
+import FormGestor from "./FormGestor";
 // ----------------------------------------------------------------------- json e info
 import tiposEventos from "../../functions/data/eventos.json";
-import { singularTipoVehiculo } from "../../functions/data-functions";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
@@ -55,8 +54,10 @@ const FormularioEventoTaller = ({
   const [articulosUsadosBackUp, setArticulosUsadosBackUp] = useState([]);
   const [cantidad, setCantidad] = useState("");
   const [ingresos, setIngresos] = useState([]); // para el listado de repuestos a usar
-  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false); // Para evitar doble cargas
+  const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
+  const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
+  const [modalArticuloVisible, setModalArticuloVisible] = useState(false);
 
   useEffect(() => {
     const cargarMecanicos = async () => {
@@ -212,6 +213,24 @@ const FormularioEventoTaller = ({
       setIngresos((prev) => prev.filter((_, i) => i !== ingresoIndex));
     }
   };
+  const handleClickVehiculo = async () => {
+    setModalVehiculoVisible(true);
+  };
+  const handleClickPersona = async () => {
+    setModalPersonaVisible(true);
+  };
+  const handleClickArticulo = async () => {
+    setModalArticuloVisible(true);
+  };
+  const cerrarModalVehiculo = () => {
+    setModalVehiculoVisible(false);
+  };
+  const cerrarModalPersona = () => {
+    setModalPersonaVisible(false);
+  };
+  const cerrarModalArticulo = () => {
+    setModalArticuloVisible(false);
+  };
   return (
     <div className="doble-form">
       <div className="doble-form-content">
@@ -296,7 +315,7 @@ const FormularioEventoTaller = ({
                 <TextButton
                   text="+"
                   className="mini-btn"
-                  //onClick={handleClickPersona}
+                  onClick={handleClickPersona}
                 />
               </div>
             </label>
@@ -339,7 +358,7 @@ const FormularioEventoTaller = ({
                     <TextButton
                       text="+"
                       className="mini-btn"
-                      //onClick={handleClickTractor}
+                      onClick={handleClickVehiculo}
                     />
                   </div>
                 </label>
@@ -427,7 +446,7 @@ const FormularioEventoTaller = ({
                 <TextButton
                   text="+"
                   className="mini-btn"
-                  //onClick={handleClickPersona}
+                  onClick={handleClickPersona}
                 />
               </div>
             </label>
@@ -485,7 +504,7 @@ const FormularioEventoTaller = ({
                   <TextButton
                     text="+"
                     className="mini-btn"
-                    //onClick={handleClickStock}
+                    onClick={handleClickArticulo}
                   />
                 </div>
               </label>
@@ -571,6 +590,28 @@ const FormularioEventoTaller = ({
           </div>
         </form>
       </div>
+      {modalVehiculoVisible && (
+        <FormGestor
+          tipo={"vehiculo"}
+          filtroVehiculo={"tractores"}
+          onClose={cerrarModalVehiculo}
+          onGuardar={handleSubmit}
+        />
+      )}
+      {modalPersonaVisible && (
+        <FormGestor
+          tipo={"persona"}
+          onClose={cerrarModalPersona}
+          onGuardar={handleSubmit}
+        />
+      )}
+      {modalArticuloVisible && (
+        <FormGestor
+          tipo={"stock"}
+          onClose={cerrarModalArticulo}
+          onGuardar={handleSubmit}
+        />
+      )}
     </div>
   );
 };

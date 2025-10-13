@@ -1,11 +1,19 @@
-import "./css/Forms.css";
+// ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { agregar, modificar, codigoStock } from "../../functions/db-functions";
-import { obtenerNombreUnidad } from "../../functions/data-functions";
+import { useData } from "../../context/DataContext";
+
+// ----------------------------------------------------------------------- imports internos
+import { agregar, modificar } from "../../functions/dbFunctions";
+import { codigoStock } from "../../functions/dataFunctions";
+
+// -----------------------------------------------------------------------
 import Codigos from "../../functions/data/articulos.json";
 import Proveedores from "../../functions/data/proveedores.json";
 import Medidas from "../../functions/data/unidades.json";
+
+// ----------------------------------------------------------------------- visuales, logos, etc
+import "./css/Forms.css";
 
 const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
   const [cantidad, setCantidad] = useState(0);
@@ -17,6 +25,8 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
   const [tipo, setTipo] = useState("");
   const [unidad, setUnidad] = useState("Unidades");
   const [loading, setLoading] = useState(false);
+
+  const { stock } = useData();
 
   const modoEdicion = !!articulo;
 
@@ -81,7 +91,7 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
           marca: marca.toUpperCase(),
           proveedor: proveedor.toUpperCase(),
           tipo: tipo.toUpperCase(),
-          id: await codigoStock(tipo, prefijo, codProv),
+          id: await codigoStock(stock, tipo, prefijo, codProv),
           unidad: Medidas[unidad.toLowerCase()],
         };
 

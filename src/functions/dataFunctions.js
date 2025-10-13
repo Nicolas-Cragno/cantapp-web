@@ -193,12 +193,27 @@ export const buscarRepuestoPorID = async (coleccion, id) => {
   return articulo ? articulo.nombre : "";
 }
 
+export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
+    
+  const articulosTipo = coleccion.filter(
+    (a) => a.tipo?.toLowerCase() === tipo.toLowerCase()
+  );
+
+  const maxNum = articulosTipo.reduce((max, art) => {
+    const match = art.id?.match(/\d+$/);
+    const numero = match ? parseInt(match[0], 10) : 0;
+    return numero > max ? numero : max;
+  }, 0);
+
+  const nuevoNumero = maxNum + 1;
+  return `${prefijo}${proveedor}${String(nuevoNumero).padStart(4, "0")}`;
+};
+
 // ----------------------------------------------------------------------- Validaciones
 
 export const verificarEstado = (empresa) => {
 
 }
-
 
 // ----------------------------------------------------------------------- Formato fecha
 
@@ -288,6 +303,10 @@ export const formatearFechaHoraInput = (fecha) => {
 export const obtenerNombreUnidad = (abreviatura) => {
   return Object.entries(unidades).find(([, abrev]) => abrev === abreviatura)?.[0] || "";
 };
+
+export const abreviarUnidad = (unidad) => {
+  return unidades[unidad] || ""; 
+}
 
 export const singularTipoVehiculo = (tipo) => {
   let tipoSingular;
