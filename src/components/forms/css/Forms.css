@@ -372,6 +372,7 @@ padding-top: 1rem;}
 
 .select-grow {
   flex: 1;               /* hace que el Select crezca al máximo */
+  
 }
 
 .mini-btn {

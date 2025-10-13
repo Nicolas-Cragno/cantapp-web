@@ -32,7 +32,7 @@ const FormularioEventoTaller = ({
 }) => {
   const evento = elemento;
 
-  const { tractores, furgones, personas, stock, usoStock, eventos } = useData();
+  const { tractores, furgones, personas, stock } = useData();
 
   const [formData, setFormData] = useState({
     tipo: evento.tipo || "",
@@ -49,14 +49,11 @@ const FormularioEventoTaller = ({
 
   const [mecanicos, setMecanicos] = useState([]);
   const [choferes, setChoferes] = useState([]);
-  const [vehiculos, setVehiculos] = useState([]);
-  const [articulos, setArticulos] = useState([]);
+
   const [articuloSeleccionado, setArticuloSeleccionado] = useState(null);
   const [articulosUsados, setArticulosUsados] = useState([]);
   const [articulosUsadosBackUp, setArticulosUsadosBackUp] = useState([]);
   const [cantidad, setCantidad] = useState("");
-  const [unidadArticuloSeleccionado, setUnidadArticuloSeleccionado] =
-    useState("");
   const [ingresos, setIngresos] = useState([]); // para el listado de repuestos a usar
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false); // Para evitar doble cargas
@@ -82,40 +79,22 @@ const FormularioEventoTaller = ({
         console.error("Error al carga choferes: ", error);
       }
     };
-    const cargarUsoStock = async () => {
-      if (evento.id) {
-        const articulosUsados = usoStock
-          .filter((uso) => uso.reparacion === evento.id)
-          .map((uso) => {
-            const articulo = stock.find(
-              (art) => String(art.id) === String(uso.repuesto)
-            );
-
-            stock.forEach((a) => {
-              console.log("Artículo ID:", `"${a.id}"`);
-            });
-            console.log("Buscando repuesto ID:", `"${uso.repuesto}"`);
-
-            return {
-              id: uso.repuesto,
-              descripcion: articulo?.descripcion || "Artículo no encontrado",
-              cantidad: uso.cantidad,
-              unidad: articulo?.unidad || "",
-            };
-          });
-
-        setArticulosUsados(articulosUsados);
-        setArticulosUsadosBackUp(articulosUsados); // para restablecer
-        setLoading(false);
-      }
-    };
+    if (evento.id && evento.repuestos) {
+      setArticulosUsados(
+        evento.repuestos.map((r) => ({
+          id: r.id,
+          descripcion: r.descripcion,
+          cantidad: r.cantidad,
+          unidad: r.unidad,
+        }))
+      );
+      setArticulosUsadosBackUp(evento.repuestos); // para poder restaurar
+    }
     if (articuloSeleccionado) {
       const articulo = stock.find((a) => a.id === articuloSeleccionado);
-      setUnidadArticuloSeleccionado(articulo?.unidad || "");
     }
     cargarMecanicos();
     cargarChoferes();
-    cargarUsoStock();
   }, [articuloSeleccionado, stock]);
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
@@ -138,11 +117,17 @@ const FormularioEventoTaller = ({
       if (isNaN(fechaParaGuardar.getTime()))
         throw new Error("La fecha es inválida");
 
-      // --- Preparar usuario ---
       const usuarioJSON = JSON.parse(localStorage.usuario);
       const usuarioDeCarga = `${usuarioJSON.apellido} ${usuarioJSON.nombres}`;
 
-      // --- Datos del evento ---
+      const listaArticulosFinal = [...articulosUsados, ...ingresos];
+      const repuestos = listaArticulosFinal.map((item) => ({
+        id: item.id,
+        descripcion: item.descripcion,
+        cantidad: item.cantidad,
+        unidad: item.unidad,
+      }));
+
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
@@ -153,36 +138,14 @@ const FormularioEventoTaller = ({
         subarea: formData.subarea || subarea,
         detalle: formData.detalle?.toUpperCase() || null,
         usuario: evento.id ? evento.usuario || usuarioDeCarga : usuarioDeCarga,
+        repuestos,
       };
 
-      // --- Guardar evento ---
       const eventoGuardado = evento.id
         ? await agregarEvento(datosAGuardar, area, evento.id)
         : await agregarEvento(datosAGuardar, area);
 
       const idEvento = eventoGuardado.id;
-
-      // --- Preparar artículos para usoStock ---
-      const listaArticulosFinal = [...articulosUsados, ...ingresos];
-      if (listaArticulosFinal.length > 0) {
-        const usoStockAGuardar = listaArticulosFinal.map((item) => ({
-          reparacion: idEvento, // ✅ ID del evento recién guardado
-          repuesto: item.id,
-          cantidad: item.cantidad,
-          unidad: item.unidad,
-        }));
-
-        // Guardar todos los artículos en Firestore
-        const idReparacionesGuardado = await agregar(
-          usoStock,
-          usoStockAGuardar
-        );
-
-        // Actualizar el evento con la referencia a los repuestos (opcional)
-        await modificar(eventos, idEvento, {
-          repuestos: idReparacionesGuardado,
-        });
-      }
 
       if (onGuardar) onGuardar();
       Swal.fire({
@@ -208,6 +171,7 @@ const FormularioEventoTaller = ({
       setUploading(false);
     }
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -511,17 +475,13 @@ const FormularioEventoTaller = ({
                         const articulo = stock.find(
                           (a) => a.id === idSeleccionado
                         );
-
-                        setUnidadArticuloSeleccionado(articulo?.unidad || "");
                       } else {
                         setArticuloSeleccionado("");
-                        setUnidadArticuloSeleccionado("");
                       }
                     }}
                     placeholder="Seleccionar repuesto..."
                     isClearable
                   />
-
                   <TextButton
                     text="+"
                     className="mini-btn"
@@ -545,7 +505,7 @@ const FormularioEventoTaller = ({
                     value={
                       articuloSeleccionado
                         ? unidadArticulo(stock, articuloSeleccionado)
-                        : "b"
+                        : ""
                     }
                     disabled
                   />

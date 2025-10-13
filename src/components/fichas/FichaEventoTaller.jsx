@@ -9,7 +9,6 @@ import {
   buscarPersona,
   buscarRepuestoPorID,
 } from "../../functions/dataFunctions";
-import FormularioEventoTaller from "../forms/FormularioEventoTaller";
 import FormGestor from "../forms/FormGestor";
 
 // ----------------------------------------------------------------------- visuales logos etc
@@ -41,22 +40,11 @@ const FichaEventoTaller = ({
       if (!evento) return null;
       setLoading(true);
       try {
-        const repuestosFiltrados = usoStock.filter(
-          (r) => evento.id === r.reparacion
-        );
-        const repuestosDetallados = await Promise.all(
-          repuestosFiltrados.map(async (r) => {
-            const descripcionCompleta = await buscarRepuestoPorID(
-              stock,
-              evento.repuesto
-            );
-            return {
-              ...r,
-              descripcion: descripcionCompleta,
-            };
-          })
-        );
-        setRepuestos(repuestosDetallados);
+        const repuestosListado = evento.repuestos.map((r) => ({
+          ...r,
+          descripcion: r.descripcion || buscarRepuestoPorID(stock, r.id),
+        }));
+        setRepuestos(repuestosListado);
 
         if (evento.persona) {
           const nombrePersona = await buscarPersona(personas, evento.persona);
