@@ -195,15 +195,18 @@ export const buscarRepuestoPorID = async (coleccion, id) => {
 
 export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
     
-  const articulosTipo = coleccion.filter(
-    (a) => a.tipo?.toLowerCase() === tipo.toLowerCase()
+
+   const articulosTipoProv = coleccion.filter(
+    (a) =>
+      a.tipo?.toLowerCase() === tipo.toLowerCase() &&
+      a.id?.startsWith(`${prefijo}${proveedor}`)
   );
 
-  const maxNum = articulosTipo.reduce((max, art) => {
-    const match = art.id?.match(/\d+$/);
-    const numero = match ? parseInt(match[0], 10) : 0;
-    return numero > max ? numero : max;
-  }, 0);
+    const maxNum = articulosTipoProv.reduce((max, art) => {
+  const numero = art.id ? parseInt(art.id.slice(-4), 10) : 0;
+  return numero > max ? numero : max;
+}, 0);
+
 
   const nuevoNumero = maxNum + 1;
   return `${prefijo}${proveedor}${String(nuevoNumero).padStart(4, "0")}`;

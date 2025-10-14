@@ -2,10 +2,12 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useData } from "../../context/DataContext";
+import Select from "react-select";
 
 // ----------------------------------------------------------------------- imports internos
 import { agregar, modificar } from "../../functions/dbFunctions";
 import { codigoStock } from "../../functions/dataFunctions";
+import TextButton from "../buttons/TextButton";
 
 // -----------------------------------------------------------------------
 import Codigos from "../../functions/data/articulos.json";
@@ -23,87 +25,106 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
   const [marca, setMarca] = useState("");
   const [codigo, setCodigo] = useState("");
   const [tipo, setTipo] = useState("");
-  const [unidad, setUnidad] = useState("Unidades");
+  const [unidad, setUnidad] = useState("unidades");
   const [loading, setLoading] = useState(false);
 
   const { stock } = useData();
 
-  const modoEdicion = !!articulo;
+  const [modoEdicion, setModoEdicion] = useState(false);
+
+  const [formData, setFormData] = useState({
+    codigo: articulo?.codigo || "",
+    descripcion: articulo?.descripcion || "",
+    tipo: articulo?.tipo || "",
+    unidad: articulo?.unidad || "unidades",
+    proveedor: articulo?.proveedor || "",
+    codigoProveedor: articulo?.codigoProveedor || "",
+    marca: articulo?.marca || "",
+    cantidad: articulo?.cantidad || 0,
+    detalle: articulo?.detalle || "",
+  });
+
+  const tipoDisponibles = Object.entries(Codigos).map(([key, value]) => ({
+    value: key,
+    label: `${value.tipo.toUpperCase()} (${value.descripcion})`,
+    descripcion: value.descripcion,
+  }));
+
+  const proveedoresDisponibles = Object.entries(Proveedores).map(
+    ([key, value]) => ({
+      value: value.codigo,
+      label: `${value.codigo} - ${key.toUpperCase()}`,
+      cuit: key.cuit,
+    })
+  );
 
   useEffect(() => {
-    if (modoEdicion && articulo) {
-      setCodigo(articulo.id);
-      setCantidad(articulo.cantidad ? articulo.cantidad : 0);
-      setCodigoProveedor(
-        articulo.codigoProveedor ? articulo.codigoProveedor : ""
-      );
-      setDescripcion(
-        articulo.descripcion ? articulo.descripcion.toUpperCase() : ""
-      );
-      setMarca(articulo.marca ? articulo.marca.toUpperCase() : "");
-      setProveedor(
-        articulo.proveedor ? articulo.proveedor.toUpperCase() : "SIN ASIGNAR"
-      );
-      setTipo(articulo.tipo.toUpperCase());
-      setUnidad(articulo.unidad ? articulo.unidad.toUpperCase() : "UNIDADES");
-    }
-  }, [modoEdicion, articulo]);
+    if (articulo) setModoEdicion(true);
+  }, [articulo]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((data) => ({ ...data, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!String(descripcion).trim() || !String(tipo).trim()) {
-      Swal.fire({
-        title: "Faltan datos",
-        text: "Complete los campos obligatorios",
-        icon: "question",
-        confirmButtonText: "Entendido",
-        confirmButtonColor: "#4161bd",
-      });
-      return;
-    }
-
     setLoading(true);
 
     try {
       if (modoEdicion) {
         const articuloEditado = {
-          // cantidad : 0 // se le da stock en otro lado
-          codigoProveedor: codigoProveedor.toUpperCase(),
-          descripcion: descripcion.toUpperCase(),
-          marca: marca.toUpperCase(),
-          proveedor: proveedor.toUpperCase(),
-          tipo: tipo.toUpperCase(),
-          unidad: unidad.toUpperCase(),
+          ...formData,
+          descripcion: formData.descripcion.toUpperCase(),
+          unidad: articulo.unidad.toUpperCase() || "UNIDADES",
+          proveedor: formData.proveedor || null,
+          codigoProveedor: formData.codigoProveedor || null,
+          marca: formData.marca || null,
+          detalle: formData.detalle || null,
         };
 
         await modificar("stock", articulo.id, articuloEditado);
-
-        if (onGuardar) onGuardar(articuloEditado);
+        onGuardar?.(articuloEditado);
       } else {
-        const prefijo = Codigos[tipo.toLowerCase()];
-        const codProv = Proveedores[proveedor.toLowerCase()];
+        // Obtener solo los códigos correctos
+        const txtTipo = Codigos[formData.tipo]?.tipo;
+
+        // Llamada correcta a codigoStock
+        const codArticulo = await codigoStock(
+          stock,
+          txtTipo, // tipo en string (ej: "motor")
+          formData.tipo, // prefijo string (ej: "MT")
+          formData.proveedor // proveedor string (ej: "02")
+        );
 
         const nuevoArticulo = {
-          cantidad: 0, // se le da stock en otro lado
-          codigoProveedor: codigoProveedor,
-          descripcion: descripcion.toUpperCase(), // siempre en mayusculas
-          marca: marca.toUpperCase(),
-          proveedor: proveedor.toUpperCase(),
-          tipo: tipo.toUpperCase(),
-          id: await codigoStock(stock, tipo, prefijo, codProv),
-          unidad: Medidas[unidad.toLowerCase()],
+          ...formData,
+          codigo: codArticulo,
+          descripcion: formData.descripcion?.toUpperCase() || "",
+          tipo: Codigos[formData.tipo]?.tipo,
+          unidad: formData.unidad?.toUpperCase() || "UNIDADES",
+          proveedor: formData.proveedor || null,
+          codigoProveedor: formData.codigoProveedor || null,
+          marca: formData.marca?.toUpperCase() || null,
+          cantidad: Number(formData.cantidad) || 0,
+          detalle: formData.detalle || null,
         };
 
-        const articuloAgregado = await agregar(
-          "stock",
-          nuevoArticulo,
-          nuevoArticulo.id
-        );
-        if (onGuardar) onGuardar(articuloAgregado);
-      }
+        //prueba de codigo
+        /*
+       await Swal.fire({
+        title: "Código generado",
+        text: `Se creó el código: ${codArticulo}`,
+        icon: "info",
+        confirmButtonText: "Continuar",
+        confirmButtonColor: "#4161bd",
+      });
+      */
 
-      onClose();
+        await agregar("stock", nuevoArticulo, nuevoArticulo.codigo);
+        onGuardar?.(nuevoArticulo);
+      }
+      //onClose();
     } catch (error) {
       Swal.fire({
         title: "Error",
@@ -112,8 +133,7 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
         confirmButtonText: "Entendido",
         confirmButtonColor: "#4161bd",
       });
-
-      console.error("Error al guardar articulo: ", error);
+      console.error("Error al guardar articulo:", error);
     } finally {
       setLoading(false);
     }
@@ -123,95 +143,106 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <h2>{modoEdicion ? "MODIFICAR " + tipo.toUpperCase() : "NUEVO"}</h2>
+        <hr />
         <form onSubmit={handleSubmit}>
-          <label>
-            Tipo
-            {modoEdicion ? (
-              <input
-                type="text"
-                value={tipo}
-                onChange={(e) => setTipo(e.target.value)}
-                disabled
+          <p className="ficha-info-title">
+            <strong>Informacion</strong>
+          </p>
+          <div className="ficha-info">
+            {/* tipo de articulo */}
+            <label>
+              Tipo *
+              <Select
+                options={tipoDisponibles.map((opt) => ({
+                  value: String(opt.value), // asegurar string
+                  label: opt.label,
+                  descripcion: opt.descripcion,
+                }))}
+                value={
+                  formData.tipo
+                    ? tipoDisponibles.find(
+                        (opt) => String(opt.value) === String(formData.tipo)
+                      )
+                    : null
+                }
+                onChange={(opt) =>
+                  handleChange({
+                    target: {
+                      name: "tipo",
+                      value: opt ? String(opt.value) : "",
+                    },
+                  })
+                }
+                placeholder=""
+                isClearable
+                required
               />
-            ) : (
-              <select
-                value={tipo}
-                onChange={(e) => setTipo(e.target.value)}
-                disabled={loading || modoEdicion}
-              >
-                <option value="">Seleccionar...</option>
-                {Object.entries(Codigos).map(([nombre]) => (
-                  <option key={nombre} value={nombre}>
-                    {nombre.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            )}
-          </label>
-          <label>
-            Descripción
+            </label>
+            {/* descripcipon */}
+            <label>Descripción</label>
             <input
               type="text"
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              disabled={loading}
-            />
-          </label>
-          <label>
-            Proveedor
-            <select
-              value={proveedor}
-              onChange={(e) => setProveedor(e.target.value)}
-              disabled={loading}
-            >
-              <option value="">Seleccionar...</option>
-              {Object.entries(Proveedores).map(([nombre]) => (
-                <option key={nombre} value={nombre}>
-                  {nombre.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Código Proveedor
+              style={{ textTransform: "uppercase" }}
+              value={formData.descripcion}
+              onChange={handleChange}
+              name="descripcion"
+            ></input>
+          </div>
+          <div className="ficha-info">
+            {/* marca */}
+            <label>Marca</label>
             <input
               type="text"
-              value={codigoProveedor}
-              onChange={(e) => setCodigo(e.target.value)}
-              disabled={loading}
+              style={{ textTransform: "uppercase" }}
+              value={formData.marca}
+              onChange={handleChange}
+              name="marca"
+            ></input>
+            {/* proveedor */}
+            <label>Proveedor</label>
+            <Select
+              options={proveedoresDisponibles.map((opt) => ({
+                value: String(opt.value), // asegurar string
+                label: opt.label,
+                cuit: opt.cuit,
+              }))}
+              value={
+                formData.proveedor
+                  ? proveedoresDisponibles.find(
+                      (opt) => String(opt.value) === String(formData.proveedor)
+                    )
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: {
+                    name: "proveedor",
+                    value: opt ? String(opt.value) : "",
+                  },
+                })
+              }
+              placeholder=""
+              isClearable
+              required
             />
-          </label>
-          <label>
-            Marca
-            <input
-              type="text"
-              value={marca}
-              onChange={(e) => setMarca(e.target.value)}
-              disabled={loading}
+          </div>
+          <div className="ficha-info">
+            {/* detalle */}
+            <label>Detalle</label>
+            <textarea
+              name="detalle"
+              value={formData.detalle}
+              onChange={handleChange}
             />
-          </label>
-          <label>
-            Unidad de medida
-            <select
-              value={unidad}
-              onChange={(e) => setUnidad(e.target.value)}
-              disabled={loading}
-            >
-              <option value="">Seleccionar...</option>
-              {Object.entries(Medidas).map(([nombre]) => (
-                <option key={nombre} value={nombre}>
-                  {nombre.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </label>
+          </div>
           <div className="form-buttons">
-            <button type="submit" disabled={loading}>
-              {loading ? "Guardando..." : "Guardar"}
-            </button>
-            <button type="button" onClick={onClose} disabled={loading}>
-              Cancelar
-            </button>
+            <TextButton
+              text={loading ? "Guardando..." : "Guardar"}
+              onClick={handleSubmit}
+              type="submit"
+              disabled={loading}
+            />
+            <TextButton text="Cancelar" onClick={onClose} type="button" />
           </div>
         </form>
       </div>

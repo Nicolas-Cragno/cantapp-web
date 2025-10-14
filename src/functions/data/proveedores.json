@@ -1,3 +1,5 @@
     {
-        "30575170125" : "PRESEGUR SA"
+        "generico" : {"codigo" : "01"},
+        "scania" : {"cuit" : 30517424303, "nombre" : "Scania Argentina S.A.U.", "codigo" : "02" },
+        "michelin" : {"cuit" : 30525514885, "nombre" : "Michelin Argentina sa ic y f", "codigo" : "03" }
     }
