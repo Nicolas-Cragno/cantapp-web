@@ -69,7 +69,7 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault(); // para evitar el error al abrirlo desde otro form como modal
     setLoading(true);
 
     try {
@@ -80,8 +80,8 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
           unidad: articulo.unidad.toUpperCase() || "UNIDADES",
           proveedor: formData.proveedor || null,
           codigoProveedor: formData.codigoProveedor || null,
-          marca: formData.marca || null,
-          detalle: formData.detalle || null,
+          marca: formData.marca.toUpperCase() || null,
+          detalle: formData.detalle.toUpperCase() || null,
         };
 
         await modificar("stock", articulo.id, articuloEditado);
@@ -108,7 +108,7 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
           codigoProveedor: formData.codigoProveedor || null,
           marca: formData.marca?.toUpperCase() || null,
           cantidad: Number(formData.cantidad) || 0,
-          detalle: formData.detalle || null,
+          detalle: formData.detalle?.toUpperCase() || null,
         };
 
         //prueba de codigo
@@ -125,7 +125,7 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
         await agregar("stock", nuevoArticulo, nuevoArticulo.codigo);
         onGuardar?.(nuevoArticulo);
       }
-      //onClose();
+      onClose();
     } catch (error) {
       Swal.fire({
         title: "Error",
@@ -228,7 +228,16 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
               isClearable
               required
             />
+            <label>Codigo Proveedor</label>
+            <input
+              type="text"
+              style={{ textTransform: "uppercase" }}
+              value={formData.codigoProveedor}
+              onChange={handleChange}
+              name="codigoProveedor"
+            ></input>
           </div>
+
           <div className="ficha-info">
             {/* detalle */}
             <label>Detalle</label>
@@ -241,7 +250,6 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
           <div className="form-buttons">
             <TextButton
               text={loading ? "Guardando..." : "Guardar"}
-              onClick={handleSubmit}
               type="submit"
               disabled={loading}
             />

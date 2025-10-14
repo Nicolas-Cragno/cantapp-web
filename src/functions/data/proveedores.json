@@ -1,5 +1,6 @@
     {
-        "generico" : {"codigo" : "01"},
-        "scania" : {"cuit" : 30517424303, "nombre" : "Scania Argentina S.A.U.", "codigo" : "02" },
-        "michelin" : {"cuit" : 30525514885, "nombre" : "Michelin Argentina sa ic y f", "codigo" : "03" }
+        "generico" : {"marca": "generico", "codigo" : "01"},
+        "scania" : {"marca": "scania", "cuit" : 30517424303, "nombre" : "Scania Argentina S.A.U.", "codigo" : "02" },
+        "michelin" : {"marca": "michelin", "cuit" : 30525514885, "nombre" : "Michelin Argentina sa ic y f", "codigo" : "03" },
+        "iveco" : {"marca": "iveco", "cuit" : 33717114219, "nombre" : "IVECO ARGENTINA S.A.", "codigo" : "04" }
     }

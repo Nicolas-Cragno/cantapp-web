@@ -10,11 +10,13 @@ import {
   formatearFecha,
   formatearHora,
   unidadArticulo,
+  marcaPorCodigo,
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
 import FormGestor from "./FormGestor";
 // ----------------------------------------------------------------------- json e info
 import tiposEventos from "../../functions/data/eventos.json";
+import CodigosProv from "../../functions/data/proveedores.json";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
@@ -73,7 +75,8 @@ const FormularioEventoTaller = ({
         const data = personas.filter(
           (p) =>
             p.puesto === "CHOFER LARGA DISTANCIA" ||
-            p.puesto === "CHOFER MOVIMIENTO"
+            p.puesto === "CHOFER MOVIMIENTO" ||
+            p.puesto === "FLETERO"
         );
         setChoferes(data);
       } catch (error) {
@@ -467,7 +470,9 @@ const FormularioEventoTaller = ({
                     options={stock
                       .map((a) => ({
                         value: a.id,
-                        label: `${a.descripcion} (${a.marca})`,
+                        label: `${a.descripcion} (${marcaPorCodigo(
+                          a.proveedor
+                        ).toUpperCase()})`,
                       }))
                       .sort((a, b) => a.label.localeCompare(b.label))}
                     value={

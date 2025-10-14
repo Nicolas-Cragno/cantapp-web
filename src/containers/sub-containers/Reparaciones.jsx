@@ -214,8 +214,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
             onClose={cerrarModal}
             onGuardar={handleGuardar}
           />
-        ) : eventoSeleccionado.tipo === "REPARACION" ||
-          eventoSeleccionado.tipo === "reparacion" ? (
+        ) : (
           <FichaGestor
             tipo={AREA}
             filtroVehiculo={AREA}
@@ -223,7 +222,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
             onClose={cerrarModal}
             onGuardar={handleGuardar}
           />
-        ) : null)}
+        ))}
 
       {modalAgregarVisible && (
         <FormGestor

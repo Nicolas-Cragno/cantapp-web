@@ -1,4 +1,5 @@
 import unidades from "./data/unidades.json";
+import proveedores from "./data/proveedores.json";
 import { useData } from "../context/DataContext";
 
 // ----------------------------------------------------------------------- Nombre de empresas
@@ -211,6 +212,11 @@ export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
   const nuevoNumero = maxNum + 1;
   return `${prefijo}${proveedor}${String(nuevoNumero).padStart(4, "0")}`;
 };
+
+export const marcaPorCodigo = (codigo) => {
+   const prov = Object.values(proveedores).find((p) => p.codigo === codigo);
+  return prov ? prov.marca.toUpperCase() : "GENERICO";
+}
 
 // ----------------------------------------------------------------------- Validaciones
 
