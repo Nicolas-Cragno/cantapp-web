@@ -107,23 +107,11 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         return valor;
       },
     },
-    {
-      titulo: "CHOFER",
-      campo: "chofer",
-      render: (p, fila) => {
-        const valor =
-          fila.chofer !== null ? buscarPersona(personas, fila.chofer) : "";
 
-        if (!valor) return "";
-
-        return valor;
-      },
-      offresponsive: true,
-    },
     {
-      titulo: "CARGA",
-      campo: "operador",
-      render: (p) => buscarPersona(personas, p, false),
+      titulo: "DETALLE",
+      campo: "detalle",
+
       offresponsive: true,
     },
   ];

@@ -60,18 +60,6 @@ const FormularioEventoTaller = ({
   const [modalArticuloVisible, setModalArticuloVisible] = useState(false);
 
   useEffect(() => {
-    const cargarDatos = async () => {
-      setFormData({
-        tipo: evento?.tipo || "",
-        chofer: evento?.chofer ? String(evento.chofer) : "",
-        mecanico: evento?.mecanico ? String(evento.mecanico) : "",
-        tractor: evento?.tractor || "",
-        furgon: evento?.furgon || "",
-        detalle: evento?.detalle || "",
-        area: evento?.area || area,
-        subarea: evento?.subarea || subarea,
-      });
-    };
     const cargarMecanicos = async () => {
       try {
         const data = personas.filter((p) => p.puesto === "MECANICO");
@@ -92,6 +80,7 @@ const FormularioEventoTaller = ({
         console.error("Error al carga choferes: ", error);
       }
     };
+
     if (evento.id && evento.repuestos) {
       setArticulosUsados(
         evento.repuestos.map((r) => ({
@@ -106,10 +95,11 @@ const FormularioEventoTaller = ({
     if (articuloSeleccionado) {
       const articulo = stock.find((a) => a.id === articuloSeleccionado);
     }
+
     cargarMecanicos();
     cargarChoferes();
-    cargarDatos();
-  }, [articuloSeleccionado, stock, evento, personas]);
+  }, [evento.id, articuloSeleccionado, stock, evento, personas]);
+
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
     setIngresos([]); // limpiar ingresos agregados manualmente
@@ -267,18 +257,12 @@ const FormularioEventoTaller = ({
               <Select
                 options={subtiposDisponibles.map((sub) =>
                   typeof sub === "string"
-                    ? { value: sub.toUpperCase(), label: sub.toUpperCase() }
-                    : {
-                        value: sub.tipo.toUpperCase(),
-                        label: sub.tipo.toUpperCase(),
-                      }
+                    ? { value: sub, label: sub }
+                    : { value: sub.tipo, label: sub.tipo }
                 )}
                 value={
                   formData.tipo
-                    ? {
-                        value: formData.tipo.toUpperCase(), // 🔹 normalizamos aquí
-                        label: formData.tipo.toUpperCase(),
-                      }
+                    ? { value: formData.tipo, label: formData.tipo }
                     : null
                 }
                 onChange={(opt) =>
@@ -319,7 +303,7 @@ const FormularioEventoTaller = ({
                       : null
                   }
                   onChange={(opt) =>
-                    setFormData({ ...formData, operador: opt ? opt.value : "" })
+                    setFormData({ ...formData, mecanico: opt ? opt.value : "" })
                   }
                   placeholder=""
                   isClearable
@@ -438,7 +422,7 @@ const FormularioEventoTaller = ({
                   value={
                     formData.chofer
                       ? {
-                          value: formData.choferes,
+                          value: formData.chofer,
                           label:
                             choferes.find((p) => p.id === formData.chofer)
                               ?.apellido +
@@ -523,7 +507,7 @@ const FormularioEventoTaller = ({
               </label>
               <div className="input-inline">
                 <label>
-                  Cantidad {area}
+                  Cantidad
                   <input
                     type="number"
                     value={cantidad}

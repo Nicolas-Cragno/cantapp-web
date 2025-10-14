@@ -166,6 +166,14 @@ const FormPersona = ({
               style={{ textTransform: "uppercase" }}
               required
             />
+            <label>Ubicación</label>
+            <input
+              type="text"
+              name="ubicacion"
+              value={formData.ubicacion}
+              onChange={handleChange}
+              style={{ textTransform: "uppercase" }}
+            />
           </div>
 
           <p className="ficha-info-title">
