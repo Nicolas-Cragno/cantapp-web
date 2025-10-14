@@ -1,14 +1,14 @@
 
 {
-     "AC": { "tipo": "accesorio", "descripcion": "Componentes adicionales o decorativos del vehículo" },
-  "CA": { "tipo": "carroceria", "descripcion": "Partes externas y estructurales del camión" },
-  "CB": { "tipo": "combustible", "descripcion": "Elementos del sistema de alimentación y filtrado de combustible" },
-  "EL": { "tipo": "electricidad", "descripcion": "Sistema eléctrico, iluminación y sensores" },
-  "FR": { "tipo": "frenos", "descripcion": "Componentes del sistema de frenos y aire" },
-  "HI": { "tipo": "hidraulica", "descripcion": "Sistemas hidráulicos y neumáticos auxiliares" },
-  "MT": { "tipo": "motor", "descripcion": "Partes y accesorios del motor" },
-  "RF": { "tipo": "refrigeracion", "descripcion": "Sistema de enfriamiento del motor y radiadores" },
-  "RO": { "tipo": "rodado", "descripcion": "Ruedas, cubiertas, llantas y rodamientos" },
-  "SP": { "tipo": "suspension", "descripcion": "Amortiguadores, bujes, fuelles y resortes" },
-  "TR": { "tipo": "transmision", "descripcion": "Embrague, caja de cambios y diferencial" }
+     "AC": { "tipo": "ACCESORIO", "descripcion": "Componentes adicionales o decorativos del vehículo" },
+  "CA": { "tipo": "CARROCERIA", "descripcion": "Partes externas y estructurales del camión" },
+  "CB": { "tipo": "COMBUSTIBLE", "descripcion": "Elementos del sistema de alimentación y filtrado de combustible" },
+  "EL": { "tipo": "ELECTRICIDAD", "descripcion": "Sistema eléctrico, iluminación y sensores" },
+  "FR": { "tipo": "FRENOS", "descripcion": "Componentes del sistema de frenos y aire" },
+  "HI": { "tipo": "HIDRAULICA", "descripcion": "Sistemas hidráulicos y neumáticos auxiliares" },
+  "MT": { "tipo": "MOTOR", "descripcion": "Partes y accesorios del motor" },
+  "RF": { "tipo": "REFRIGERACION", "descripcion": "Sistema de enfriamiento del motor y radiadores" },
+  "RO": { "tipo": "RODADO", "descripcion": "Ruedas, cubiertas, llantas y rodamientos" },
+  "SP": { "tipo": "SUSPENSION", "descripcion": "Amortiguadores, bujes, fuelles y resortes" },
+  "TR": { "tipo": "TRANSMISION", "descripcion": "Embrague, caja de cambios y diferencial" }
 }

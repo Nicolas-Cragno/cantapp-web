@@ -44,10 +44,11 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
     detalle: articulo?.detalle || "",
   });
 
-  const tipoDisponibles = Object.entries(Codigos).map(([key, value]) => ({
+  const tiposDisponibles = Object.entries(Codigos).map(([key, value]) => ({
     value: key,
     label: `${value.tipo.toUpperCase()} (${value.descripcion})`,
     descripcion: value.descripcion,
+    tipotxt: value.tipo,
   }));
 
   const proveedoresDisponibles = Object.entries(Proveedores).map(
@@ -153,15 +154,16 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
             <label>
               Tipo *
               <Select
-                options={tipoDisponibles.map((opt) => ({
+                options={tiposDisponibles.map((opt) => ({
                   value: String(opt.value), // asegurar string
                   label: opt.label,
                   descripcion: opt.descripcion,
+                  tipotxt: opt.tipotxt,
                 }))}
                 value={
                   formData.tipo
-                    ? tipoDisponibles.find(
-                        (opt) => String(opt.value) === String(formData.tipo)
+                    ? tiposDisponibles.find(
+                        (opt) => String(opt.tipotxt) === String(formData.tipo)
                       )
                     : null
                 }
@@ -176,6 +178,7 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
                 placeholder=""
                 isClearable
                 required
+                disabled={modoEdicion}
               />
             </label>
             {/* descripcipon */}
