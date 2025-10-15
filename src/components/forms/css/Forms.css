@@ -428,6 +428,14 @@ padding-top: 1rem;}
   cursor: not-allowed;
 }
 
+.item-info-smaller{
+  font-size: xx-small;
+}
+
+.item-info-small{
+  font-size: smaller;
+}
+
 .item-rojo{
   color:#c0392b;
 }

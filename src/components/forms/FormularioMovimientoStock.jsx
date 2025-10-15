@@ -11,8 +11,11 @@ import {
   sumarMultiplesCantidades,
   obtenerNombreUnidad,
 } from "../../functions/dataFunctions";
+
+// ----------------------------------------------------------------------- jsons
 import Proveedores from "../../functions/data/proveedores.json";
 import Sectores from "../../functions/data/areas.json";
+import Unidades from "../../functions/data/unidades.json";
 
 // ----------------------------------------------------------------------- visuales
 import "./css/Forms.css";
@@ -20,7 +23,7 @@ import { agregarEvento } from "../../functions/db-functions";
 
 const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
   const { stock } = useData();
-  const [area, setArea] = useState("administracion"); //para saber a que sector atribuir el evento
+  const [area, setArea] = useState("ADMINISTRACION"); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
   const [factura, setFactura] = useState("");
@@ -102,19 +105,21 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
     const resumenIngresos = ingresos
       .map(
         (i) =>
-          `${i.cantidad} ${i.unidad.toUpperCase()} | ${i.descripcion} ${
+          `<p><strong style="background-color:black; color:#fff; padding:.3rem;border-radius:5rem;font-size:small;">${
+            i.cantidad
+          } ${Unidades[i.unidad.toUpperCase()]}</strong> ${i.descripcion} ${
             i.codigoProveedor ? "(" + i.codigoProveedor + ")" : ""
-          }`
+          }</p>`
       )
       .join("<br>");
 
     const confirmacion = await Swal.fire({
       title: "Confirmar movimiento",
       html: `
-      <p>Se registrarán los siguientes artículos:</p>
-      <div style="text-align:left;margin-top:10px;">
+      <div style="text-align:center;margin-top:10px;" class="form-box2">
         ${resumenIngresos}
       </div>
+      <p>Sector: ${area}</p>
     `,
       icon: "question",
       showCancelButton: true,
@@ -174,7 +179,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
   return (
     <div className="form">
       <div className="form-content">
-        <h2>MOVIMIENTO DE STOCK</h2> {tipoMovimiento}
+        <h2>MOVIMIENTO DE STOCK</h2>
         <hr />
         <form>
           <div className="type-container">
@@ -233,7 +238,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
           </label>
           <div className="form-box2">
             <label>
-              Sector {area}
+              Area / Sector
               <Select
                 options={sectoresDisponibles}
                 value={
@@ -348,13 +353,13 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
                     >
                       {item.logo}
                     </div>
-                    <div className="item-info">
+                    <div className="item-info-small">
                       <strong>{item.id}</strong>
                     </div>
-                    <div className="item-info">{item.descripcion}</div>
+                    <div className="item-info-smaller">{item.descripcion}</div>
                     <div className="item-actions">
                       <span className="list-cant">
-                        {item.cantidad} {item.unidad.toUpperCase()}
+                        {item.cantidad} {Unidades[item.unidad.toUpperCase()]}
                       </span>
 
                       <button
