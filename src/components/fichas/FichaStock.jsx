@@ -1,6 +1,6 @@
 import "./css/Fichas.css";
 import { useState, useEffect } from "react";
-import FormularioStock from "../forms/FormularioStock";
+import FormStock from "../forms/FormStock";
 
 const FichaStock = ({ articulo, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -68,7 +68,7 @@ const FichaStock = ({ articulo, onClose, onGuardar }) => {
           </div>
         </div>
       ) : (
-        <FormularioStock
+        <FormStock
           articulo={articulo}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}

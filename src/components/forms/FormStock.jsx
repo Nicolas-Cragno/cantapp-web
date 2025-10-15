@@ -17,19 +17,9 @@ import Medidas from "../../functions/data/unidades.json";
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
 
-const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
-  const [cantidad, setCantidad] = useState(0);
-  const [proveedor, setProveedor] = useState("");
-  const [codigoProveedor, setCodigoProveedor] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [marca, setMarca] = useState("");
-  const [codigo, setCodigo] = useState("");
-  const [tipo, setTipo] = useState("");
-  const [unidad, setUnidad] = useState("unidades");
+const FormStock = ({ articulo = null, onClose, onGuardar }) => {
   const [loading, setLoading] = useState(false);
-
   const { stock } = useData();
-
   const [modoEdicion, setModoEdicion] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -143,7 +133,9 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
   return (
     <div className="form">
       <div className="form-content">
-        <h2>{modoEdicion ? "MODIFICAR " + tipo.toUpperCase() : "NUEVO"}</h2>
+        <h2>
+          {modoEdicion ? "MODIFICAR " + formData.tipo.toUpperCase() : "NUEVO"}
+        </h2>
         <hr />
         <form onSubmit={handleSubmit}>
           <p className="ficha-info-title">
@@ -261,4 +253,4 @@ const FormularioStock = ({ articulo = null, onClose, onGuardar }) => {
   );
 };
 
-export default FormularioStock;
+export default FormStock;

@@ -1,6 +1,8 @@
 import unidades from "./data/unidades.json";
 import proveedores from "./data/proveedores.json";
 import { useData } from "../context/DataContext";
+import {  doc,updateDoc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 
 // ----------------------------------------------------------------------- Nombre de empresas
 export const useNombreEmpresa = (cuit) => {
@@ -217,6 +219,51 @@ export const marcaPorCodigo = (codigo) => {
    const prov = Object.values(proveedores).find((p) => p.codigo === codigo);
   return prov ? prov.marca.toUpperCase() : "GENERICO";
 }
+
+
+export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {
+  try {
+    const ref = doc(db, "stock", idArticulo);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      throw new Error("Artículo no encontrado");
+    }
+
+    const data = snap.data();
+    const nuevaCantidad = (data.cantidad || 0) + cantidadASumar;
+
+    await updateDoc(ref, { cantidad: nuevaCantidad });
+
+    return nuevaCantidad;
+  } catch (error) {
+    console.error("Error al sumar cantidad al stock:", error);
+    throw error;
+  }
+};
+
+export const sumarMultiplesCantidades = async (ingresosMap) => {
+  try {
+    for (const [idArticulo, cantidadASumar] of Object.entries(ingresosMap)) {
+      const ref = doc(db, "stock", idArticulo);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) {
+        console.warn(`Artículo con ID ${idArticulo} no encontrado`);
+        continue; // o lanzar error si preferís
+      }
+
+      const data = snap.data();
+      const nuevaCantidad = (data.cantidad || 0) + cantidadASumar;
+
+      await updateDoc(ref, { cantidad: nuevaCantidad });
+    }
+  } catch (error) {
+    console.error("Error al actualizar múltiples cantidades:", error);
+    throw error;
+  }
+};
+
 
 // ----------------------------------------------------------------------- Validaciones
 

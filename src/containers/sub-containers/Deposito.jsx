@@ -6,7 +6,7 @@ import { FaSpinner } from "react-icons/fa";
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
 import FichaStock from "../../components/fichas/FichaStock";
-import FormularioStock from "../../components/forms/FormularioStock";
+import FormStock from "../../components/forms/FormStock";
 import FormularioMovimientoStock from "../../components/forms/FormularioMovimientoStock";
 import unidades from "../../functions/data/unidades.json";
 
@@ -115,7 +115,7 @@ const Deposito = ({ taller = null }) => {
       )}
 
       {modalAgregarVisible && (
-        <FormularioStock
+        <FormStock
           onClose={() => setModalAgregarVisible(false)}
           onGuardar={() => setModalAgregarVisible(false)}
         />
