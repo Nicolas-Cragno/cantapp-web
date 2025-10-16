@@ -16,11 +16,13 @@ import Medidas from "../../functions/data/unidades.json";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
+import FormProveedor from "./FormProveedor";
 
 const FormStock = ({ articulo = null, onClose, onGuardar }) => {
   const [loading, setLoading] = useState(false);
-  const { stock } = useData();
+  const { stock, proveedores } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     codigo: articulo?.codigo || "",
@@ -41,14 +43,6 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
     tipotxt: value.tipo,
   }));
 
-  const proveedoresDisponibles = Object.entries(Proveedores).map(
-    ([key, value]) => ({
-      value: value.codigo,
-      label: `${value.codigo} - ${key.toUpperCase()}`,
-      cuit: key.cuit,
-    })
-  );
-
   useEffect(() => {
     if (articulo) setModoEdicion(true);
   }, [articulo]);
@@ -56,6 +50,14 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((data) => ({ ...data, [name]: value }));
+  };
+
+  const handleClickProveedor = () => {
+    setModalProveedorVisible(true);
+  };
+
+  const cerrarModalProveedor = () => {
+    setModalProveedorVisible(false);
   };
 
   const handleSubmit = async (e) => {
@@ -195,31 +197,43 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
             ></input>
             {/* proveedor */}
             <label>Proveedor</label>
-            <Select
-              options={proveedoresDisponibles.map((opt) => ({
-                value: String(opt.value), // asegurar string
-                label: opt.label,
-                cuit: opt.cuit,
-              }))}
-              value={
-                formData.proveedor
-                  ? proveedoresDisponibles.find(
-                      (opt) => String(opt.value) === String(formData.proveedor)
-                    )
-                  : null
-              }
-              onChange={(opt) =>
-                handleChange({
-                  target: {
-                    name: "proveedor",
-                    value: opt ? String(opt.value) : "",
-                  },
-                })
-              }
-              placeholder=""
-              isClearable
-              required
-            />
+            <div className="select-with-button">
+              <Select
+                className="select-grow"
+                options={proveedores.map((opt) => ({
+                  value: String(opt.id),
+                  label: opt.id + " - " + opt.nombre,
+                  cuit: opt.cuit,
+                }))}
+                value={
+                  formData.proveedor
+                    ? proveedores
+                        .map((opt) => ({
+                          value: String(opt.id),
+                          label: opt.id + " - " + opt.nombre,
+                          cuit: opt.cuit,
+                        }))
+                        .find((opt) => opt.value === String(formData.proveedor))
+                    : null
+                }
+                onChange={(opt) =>
+                  handleChange({
+                    target: {
+                      name: "proveedor",
+                      value: opt ? String(opt.value) : "",
+                    },
+                  })
+                }
+                placeholder="Seleccionar proveedor..."
+                isClearable
+                required
+              />
+              <TextButton
+                text="+"
+                className="mini-btn"
+                onClick={handleClickProveedor}
+              />
+            </div>
             <label>Codigo Proveedor</label>
             <input
               type="text"
@@ -248,6 +262,10 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
             <TextButton text="Cancelar" onClick={onClose} type="button" />
           </div>
         </form>
+
+        {modalProveedorVisible && (
+          <FormProveedor onClose={cerrarModalProveedor} onGuardar={onGuardar} />
+        )}
       </div>
     </div>
   );

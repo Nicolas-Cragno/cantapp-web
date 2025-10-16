@@ -10,7 +10,7 @@ const formularios = {
   tractores: lazy(() => import("./FormularioEventoTaller")),
   llave: lazy(() => import("./FormLlave")),
   stock: lazy(() => import("./FormStock")),
-  movimientoStock: lazy(() => import("./FormularioMovimientoStock")),
+  movimientoStock: lazy(() => import("./FormMovimientoStock")),
   viaje: lazy(() => import("./FormViaje")),
   movimiento: lazy(() => import("./FormMovimiento")),
 };

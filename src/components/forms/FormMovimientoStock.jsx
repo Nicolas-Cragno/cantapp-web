@@ -21,11 +21,12 @@ import Unidades from "../../functions/data/unidades.json";
 import "./css/Forms.css";
 import { agregarEvento } from "../../functions/db-functions";
 
-const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
-  const { stock } = useData();
+const FormMovimientoStock = ({ onClose, onGuardar }) => {
+  const { stock, proveedores } = useData();
   const [area, setArea] = useState("ADMINISTRACION"); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
+  const [remito, setRemito] = useState("");
   const [factura, setFactura] = useState("");
   const [proveedor, setProveedor] = useState(null);
   const [cantidad, setCantidad] = useState("");
@@ -154,6 +155,7 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
         tipo: "MOVIMIENTO DE STOCK",
         area: area,
         proveedor: proveedor ? proveedor : null,
+        remito: remito ? remito : null,
         factura: factura ? factura : null,
         ingresos: ingresos.map((i) => ({
           id: i.id,
@@ -199,8 +201,16 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
           {/* info de la factura */}
           {esFactura && (
             <>
-              <label className="form-title">Datos del remito</label>
+              <label className="form-title">Datos del remito/factura</label>
               <div className="form-box2">
+                <label>Remito</label>
+                <input
+                  type="text"
+                  style={{ textTransform: "uppercase" }}
+                  value={remito}
+                  onChange={(e) => setRemito(e.target.value)}
+                  name="remito"
+                ></input>
                 <label>Factura</label>
                 <input
                   type="text"
@@ -209,18 +219,26 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
                   onChange={(e) => setFactura(e.target.value)}
                   name="factura"
                 ></input>
-                <label>Proveedor</label> {proveedor}
+                <label>Proveedor</label>
                 <Select
-                  options={proveedoresDisponibles.map((opt) => ({
-                    value: String(opt.value), // asegurar string
-                    label: opt.label,
+                  options={proveedores.map((opt) => ({
+                    value: String(opt.id),
+                    label: opt.id + " - " + opt.nombre,
                     cuit: opt.cuit,
                   }))}
                   value={
                     proveedor
-                      ? proveedoresDisponibles.find(
-                          (opt) => String(opt.value) === String(proveedor)
-                        )
+                      ? proveedores
+                          .map((opt) => ({
+                            value: String(opt.id),
+                            label: opt.id + " - " + opt.nombre,
+                            cuit: opt.cuit,
+                          }))
+                          .find(
+                            (opt) =>
+                              opt.cuit === proveedor ||
+                              String(opt.value) === String(proveedor)
+                          )
                       : null
                   }
                   onChange={(opt) => setProveedor(opt ? opt.cuit : null)}
@@ -390,4 +408,4 @@ const FormularioMovimientoStock = ({ onClose, onGuardar }) => {
   );
 };
 
-export default FormularioMovimientoStock;
+export default FormMovimientoStock;

@@ -7,7 +7,7 @@ import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
 import FichaStock from "../../components/fichas/FichaStock";
 import FormStock from "../../components/forms/FormStock";
-import FormularioMovimientoStock from "../../components/forms/FormularioMovimientoStock";
+import FormMovimientoStock from "../../components/forms/FormMovimientoStock";
 import unidades from "../../functions/data/unidades.json";
 
 // ----------------------------------------------------------------------- elementos
@@ -122,7 +122,7 @@ const Deposito = ({ taller = null }) => {
       )}
 
       {modalMovimientoVisible && (
-        <FormularioMovimientoStock
+        <FormMovimientoStock
           onClose={() => setModalMovimientoVisible(false)}
           onGuardar={() => setModalMovimientoVisible(false)}
         />

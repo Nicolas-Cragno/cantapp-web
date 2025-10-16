@@ -1,5 +1,5 @@
 import unidades from "./data/unidades.json";
-import proveedores from "./data/proveedores.json";
+//import proveedores from "./data/proveedores.json";
 import { useData } from "../context/DataContext";
 import {  doc,updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
@@ -215,12 +215,11 @@ export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
   return `${prefijo}${proveedor}${String(nuevoNumero).padStart(4, "0")}`;
 };
 
-export const marcaPorCodigo = (codigo) => {
-   const prov = Object.values(proveedores).find((p) => p.codigo === codigo);
+export const marcaPorCodigo = (coleccion, codigo) => {
+  
+   const prov = Object.values(coleccion).find((p) => p.codigo === codigo);
   return prov ? prov.marca.toUpperCase() : "GENERICO";
-}
-
-
+};
 export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {
   try {
     const ref = doc(db, "stock", idArticulo);
@@ -241,7 +240,6 @@ export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {
     throw error;
   }
 };
-
 export const sumarMultiplesCantidades = async (ingresosMap) => {
   try {
     for (const [idArticulo, cantidadASumar] of Object.entries(ingresosMap)) {
@@ -263,7 +261,23 @@ export const sumarMultiplesCantidades = async (ingresosMap) => {
     throw error;
   }
 };
+export const idNuevoProveedor = (proveedores = []) => {
+  if (!Array.isArray(proveedores) || proveedores.length === 0) return "01";
 
+  
+  const idsNumericos = proveedores
+    .map((p) => parseInt(p.id, 10))
+    .filter((n) => !isNaN(n));
+
+  if (idsNumericos.length === 0) return "01";
+
+  
+  const maxId = Math.max(...idsNumericos);
+  const nuevoId = maxId + 1;
+
+  
+  return nuevoId.toString().padStart(2, "0");
+};
 
 // ----------------------------------------------------------------------- Validaciones
 
