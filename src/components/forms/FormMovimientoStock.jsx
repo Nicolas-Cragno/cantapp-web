@@ -19,11 +19,11 @@ import Unidades from "../../functions/data/unidades.json";
 
 // ----------------------------------------------------------------------- visuales
 import "./css/Forms.css";
-import { agregarEvento } from "../../functions/db-functions";
+import { agregarEvento } from "../../functions/eventFunctions";
 
 const FormMovimientoStock = ({ onClose, onGuardar }) => {
   const { stock, proveedores } = useData();
-  const [area, setArea] = useState("ADMINISTRACION"); //para saber a que sector atribuir el evento
+  const [area, setArea] = useState("administracion"); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
   const [remito, setRemito] = useState("");
@@ -38,13 +38,7 @@ const FormMovimientoStock = ({ onClose, onGuardar }) => {
   const [uploading, setUploading] = useState(false);
 
   console.log("Ingresos:", ingresos);
-  const proveedoresDisponibles = Object.entries(Proveedores).map(
-    ([key, value]) => ({
-      value: value.codigo,
-      label: `${value.cuit} - ${key.toUpperCase()}`,
-      cuit: value.cuit,
-    })
-  );
+
   const sectoresDisponibles = Object.entries(Sectores).map(([key, value]) => ({
     value: value,
     label: key.toUpperCase(),
@@ -152,7 +146,7 @@ const FormMovimientoStock = ({ onClose, onGuardar }) => {
       // registro para evento
       const datosEvento = {
         fecha: new Date(),
-        tipo: "MOVIMIENTO DE STOCK",
+        tipo: "STOCK",
         area: area,
         proveedor: proveedor ? proveedor : null,
         remito: remito ? remito : null,
@@ -164,13 +158,18 @@ const FormMovimientoStock = ({ onClose, onGuardar }) => {
         })),
       };
 
-      await agregarEvento(datosEvento, area.toLowerCase());
-
-      if (
-        esFactura
-          ? Swal.fire("Éxito", "Factura cargada correctamente", "success")
-          : Swal.fire("Éxito", "Stock actualizado correctamente", "success")
+      const { id: idEvento } = await agregarEvento(
+        datosEvento,
+        area.toLowerCase()
       );
+
+      await Swal.fire({
+        icon: "success",
+        title: esFactura
+          ? "Factura cargada correctamente"
+          : "Stock actualizado correctamente",
+      });
+
       if (onGuardar) onGuardar();
       onClose();
     } catch (err) {

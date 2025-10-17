@@ -4,6 +4,8 @@ import { useData } from "../context/DataContext";
 import {  doc,updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
+
+
 // ----------------------------------------------------------------------- Nombre de empresas
 export const useNombreEmpresa = (cuit) => {
   const { empresas } = useData();

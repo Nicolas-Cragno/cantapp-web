@@ -16,6 +16,7 @@ import unidades from "../../functions/data/unidades.json";
 
 import LogoStock from "../../assets/logos/logostock-w.png";
 import TextButton from "../../components/buttons/TextButton";
+import ModalEventos from "../../components/modales/ModalEventos";
 
 // --asf asfas
 
@@ -26,6 +27,7 @@ const Deposito = ({ taller = null }) => {
   const [articulosSeleccionado, setArticuloSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
+  const [modalEventosVisible, setModalEventosVisible] = useState(false);
 
   const { stock } = useData();
 
@@ -79,8 +81,12 @@ const Deposito = ({ taller = null }) => {
       <div className="table-header">
         <h1 className="table-logo-box">
           <img src={LogoStock} alt="" className="table-logo" />
-          REGISTRO DE STOCK
+          REGISTRO DE STOCK{" "}
         </h1>
+        <TextButton
+          text="Ver movimientos"
+          onClick={() => setModalEventosVisible(true)}
+        />
         <input
           type="text"
           placeholder="Buscar ..."
@@ -125,6 +131,13 @@ const Deposito = ({ taller = null }) => {
         <FormMovimientoStock
           onClose={() => setModalMovimientoVisible(false)}
           onGuardar={() => setModalMovimientoVisible(false)}
+        />
+      )}
+
+      {modalEventosVisible && (
+        <ModalEventos
+          tipo={"STOCK"}
+          onClose={() => setModalEventosVisible(false)}
         />
       )}
 

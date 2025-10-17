@@ -1,36 +1,31 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState } from "react";
-import { FaKey } from "react-icons/fa";
-import { IoEnterSharp } from "react-icons/io5";
-import { IoLogOutSharp } from "react-icons/io5";
-import { FaRoute } from "react-icons/fa";
+import {
+  FaKey,
+  FaRoute,
+  FaArrowAltCircleUp,
+  FaArrowAltCircleDown,
+} from "react-icons/fa";
+import { IoEnterSharp, IoLogOutSharp } from "react-icons/io5";
 import { MdEventNote } from "react-icons/md";
-import { FaArrowAltCircleUp } from "react-icons/fa"; // LOGO ALTA
-import { FaArrowAltCircleDown } from "react-icons/fa"; // LOGO BAJA
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
-// ----------------------------------------------------------------------- visuales, logos, etc
+
+// ----------------------------------------------------------------------- visuales
 import "./css/Tables.css";
 
-const TablaEventosReducida = ({
-  tipoColeccion,
-  identificador,
-  onRowClick = false,
-}) => {
+const TablaEventosReducida = ({ tipoColeccion, identificador, onRowClick }) => {
   const { eventos } = useData();
-  let eventosFiltrados;
 
+  let eventosFiltrados = [];
   switch (tipoColeccion.toLowerCase()) {
     case "persona":
-      const eventos1 = eventos.filter(
-        (e) => e.persona === String(identificador)
+      eventosFiltrados = eventos.filter(
+        (e) =>
+          e.persona === String(identificador) ||
+          e.persona === Number(identificador)
       );
-      const eventos2 = eventos.filter(
-        (e) => e.persona === Number(identificador)
-      );
-      eventosFiltrados = eventos1.concat(eventos2);
       break;
     case "tractor":
       eventosFiltrados = eventos.filter((e) => e.tractor === identificador);
@@ -42,10 +37,10 @@ const TablaEventosReducida = ({
       eventosFiltrados = eventos.filter((e) => e.vehiculo === identificador);
       break;
     default:
-      eventosFiltrados = null;
+      eventosFiltrados = [];
   }
 
-  const eventosOrdenados = eventosFiltrados?.sort((a, b) => b.fecha - a.fecha);
+  const eventosOrdenados = eventosFiltrados.sort((a, b) => b.fecha - a.fecha);
 
   const logoSize = 18;
   const logos = {
@@ -57,33 +52,31 @@ const TablaEventosReducida = ({
     VIAJE: <FaRoute size={logoSize} />,
     OTRO: <MdEventNote size={logoSize} />,
     BAJA: <FaArrowAltCircleDown size={logoSize} />,
-    alta: <FaArrowAltCircleUp size={logoSize} />,
+    ALTA: <FaArrowAltCircleUp size={logoSize} />,
   };
+
+  if (!eventosOrdenados.length) return null;
 
   return (
     <>
-      {eventosOrdenados.length > 0 ? (
-        <>
-          <p className="ficha-info-title">
-            <strong>Eventos relacionados</strong>
+      <p className="ficha-info-title">
+        <strong>Eventos relacionados</strong>
+      </p>
+      <div className="ficha-info-box">
+        {eventosOrdenados.map((e) => (
+          <p
+            key={e.id}
+            className="item-list"
+            onClick={() => onRowClick && onRowClick(e)}
+          >
+            {logos[e.tipo.toUpperCase()] || <MdEventNote size={logoSize} />}
+            <span>{e.tipo.toUpperCase()}</span>
+            <span>
+              {formatearFecha(e.fecha)} | {formatearHora(e.fecha)} hs
+            </span>
           </p>
-          <div className="ficha-info-box">
-            {eventosOrdenados.map((e) => (
-              <p
-                key={e.id}
-                className="item-list"
-                onClick={() => onRowClick && onRowClick(e)}
-              >
-                {logos[e.tipo.toUpperCase()]}
-                <span>{e.tipo.toUpperCase()}</span>
-                <span>
-                  {formatearFecha(e.fecha)} | {formatearHora(e.fecha)} hs
-                </span>{" "}
-              </p>
-            ))}
-          </div>
-        </>
-      ) : null}
+        ))}
+      </div>
     </>
   );
 };

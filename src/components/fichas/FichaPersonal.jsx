@@ -1,9 +1,7 @@
-// ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
-import { BsPersonDash } from "react-icons/bs"; // logo innactiva
-import { BsPersonCheck } from "react-icons/bs"; // logo activa
+import { BsPersonDash, BsPersonCheck } from "react-icons/bs";
 import Swal from "sweetalert2";
-// ----------------------------------------------------------------------- internos
+
 import { useData } from "../../context/DataContext";
 import {
   buscarEmpresa,
@@ -12,24 +10,28 @@ import {
 } from "../../functions/dataFunctions";
 import { altaBaja } from "../../functions/dbFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
+
 import TablaEventosReducida from "../tablas/TablaEventosReducida";
 import FormPersona from "../forms/FormPersona";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-import "./css/Fichas.css";
+import FichaEventosGestor from "../fichas/FichaEventosGestor";
 import LogoEmpresa from "../logos/LogoEmpresa";
+
+import "./css/Fichas.css";
 
 const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const persona = elemento;
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
-  const [modalEventoVisible, setModalEventoVisible] = useState(false);
-  const { personas, empresas, eventos } = useData();
+  const [modalFichaVisible, setModalFichaVisible] = useState(false);
+
+  const { empresas } = useData();
 
   if (!persona) return null;
+
   const fechaNacimiento = formatearFecha(persona.nacimiento);
   const fechaIngreso = formatearFecha(persona.ingreso);
   const edad = calcularEdad(persona.nacimiento);
+
   const handleBaja = () => {
     Swal.fire({
       title: `BAJA ${persona.puesto}`,
@@ -43,21 +45,16 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const motivo = result.value?.trim() || "Sin motivo";
-
         const datosBaja = {
           fecha: new Date(),
           tipo: "baja",
           persona: persona.id,
           detalle: motivo,
         };
-        // actualizar estado de persona en firestore
         await altaBaja("personas", persona.id, false);
-        // actualizacion de ficha local
         elemento.estado = false;
         elemento.empresa = null;
-        // evento de baja
         await agregarEvento(datosBaja, "administracion");
-        console.log("Empleado dado de baja:", elemento.nombre);
       }
     });
   };
@@ -71,8 +68,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
 
     Swal.fire({
       title: `ALTA ${persona.puesto}`,
-      text: `${persona.apellido + ", " + persona.nombres}`,
-
+      text: `${persona.apellido}, ${persona.nombres}`,
       icon: "question",
       input: "select",
       inputOptions: empresasOptions,
@@ -86,19 +82,15 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
           fecha: new Date(),
           tipo: "alta",
           persona: persona.id,
-          empresa: result.value, // el value viene desde el select del swalfire
+          empresa: result.value,
         };
-        // actualizar estado de persona en firestore
-        await altaBaja("personas", persona.id, datosAlta.empresa, true); // 👈 true = alta
-        console.log("Empleado dado de alta:", persona.nombre);
-        // actualizacion de ficha local
+        await altaBaja("personas", persona.id, datosAlta.empresa, true);
         elemento.estado = true;
-        // evento de baja
         await agregarEvento(datosAlta, "administracion");
-        console.log("Nuevo empleado dado de alta:", elemento.nombre);
       }
     });
   };
+
   const handleGuardado = async (personaModificada) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(personaModificada);
@@ -112,11 +104,10 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
             <button className="ficha-close" onClick={onClose}>
               ✕
             </button>
+
             <h1 className="person-name">
               <strong className="apellido">{persona.apellido}</strong>
-              <span className="nombres">
-                <span> {persona.nombres} </span>
-              </span>
+              <span className="nombres"> {persona.nombres} </span>
             </h1>
 
             <hr />
@@ -127,11 +118,11 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                   activo <BsPersonCheck className="logoestado logo-active" />
                 </p>
               ) : (
-                <p className="info-minitext stateBox " onClick={handleAlta}>
+                <p className="info-minitext stateBox" onClick={handleAlta}>
                   innactivo{" "}
                   <BsPersonDash className="logoestado logo-disabled" />
                 </p>
-              )}{" "}
+              )}
             </div>
 
             <p className="ficha-info-title">
@@ -140,26 +131,27 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
             <div className="ficha-info container">
               <div className="row">
                 <p className="ficha-info-item">
-                  <strong>Nro DNI </strong>{" "}
+                  <strong>Nro DNI </strong>
                   <span className="ficha-info-item-txt">
                     {persona.dni || persona.id}
                   </span>
                 </p>
                 <p className="ficha-info-item">
-                  <strong>Fecha nac.</strong>{" "}
-                  <span className="ficha-info-item-txt">{fechaNacimiento}</span>{" "}
-                  {edad ? (
+                  <strong>Fecha nac.</strong>
+                  <span className="ficha-info-item-txt">{fechaNacimiento}</span>
+                  {edad && (
                     <span className="ficha-info-item-txt2">{edad} años</span>
-                  ) : null}
+                  )}
                 </p>
                 <p className="ficha-info-item">
-                  <strong>Ubicación</strong>{" "}
+                  <strong>Ubicación</strong>
                   <span className="ficha-info-item-txt">
                     {persona.ubicacion}
                   </span>
                 </p>
               </div>
             </div>
+
             <p className="ficha-info-title">
               <strong>Información laboral</strong>
             </p>
@@ -167,25 +159,23 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
               <div className="row">
                 <div className="col-md-9">
                   <p className="ficha-info-item">
-                    <strong>Empresa</strong>{" "}
+                    <strong>Empresa</strong>
                     <span className="ficha-info-item-txt">
                       {buscarEmpresa(empresas, persona.empresa)}
                     </span>
                   </p>
                   <p className="ficha-info-item">
-                    <strong>Ingreso</strong>{" "}
-                    <span className="ficha-info-item-txt">
-                      {fechaIngreso || ""}
-                    </span>
+                    <strong>Ingreso</strong>
+                    <span className="ficha-info-item-txt">{fechaIngreso}</span>
                   </p>
                   <p className="ficha-info-item">
-                    <strong>Puesto</strong>{" "}
+                    <strong>Puesto</strong>
                     <span className="ficha-info-item-txt">
                       {persona.puesto}
                     </span>
                   </p>
                   <p className="ficha-info-item">
-                    <strong>Sucursal</strong>{" "}
+                    <strong>Sucursal</strong>
                     <span className="ficha-info-item-txt">
                       {persona.sucursal}
                     </span>
@@ -196,27 +186,45 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                 </div>
               </div>
             </div>
-            {persona.detalle ? (
+
+            {persona.detalle && (
               <>
                 <p className="ficha-info-title">
                   <strong>Detalle</strong>
                 </p>
                 <div className="ficha-info">
-                  <p>{persona.detalle || ""}</p>
+                  <p>{persona.detalle}</p>
                 </div>
               </>
-            ) : null}
-            <TablaEventosReducida
-              tipoColeccion={"persona"}
-              identificador={persona.dni}
-              onRowClick={(evento) => setEventoSeleccionado(evento)}
-            />
+            )}
 
-            {onGuardar ? (
+            <TablaEventosReducida
+              tipoColeccion="persona"
+              identificador={persona.dni}
+              onRowClick={(evento) => {
+                setEventoSeleccionado(evento);
+                setModalFichaVisible(true);
+              }}
+            />
+            {modalFichaVisible && (
+              <FichaEventosGestor
+                tipo={
+                  eventoSeleccionado.tipo === "DEJA" ||
+                  eventoSeleccionado.tipo === "RETIRA" ||
+                  eventoSeleccionado.tipo === "ENTREGA"
+                    ? "llave"
+                    : eventoSeleccionado.tipo
+                }
+                elemento={eventoSeleccionado}
+                onClose={() => setModalFichaVisible(false)}
+                onGuardar={onGuardar}
+              />
+            )}
+            {onGuardar && (
               <div className="ficha-buttons">
                 <button onClick={() => setModoEdicion(true)}>Editar</button>
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       ) : (

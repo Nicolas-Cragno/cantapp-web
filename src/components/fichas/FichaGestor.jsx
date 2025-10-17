@@ -1,13 +1,13 @@
 import { lazy, Suspense } from "react";
 
 const fichas = {
+  stock: lazy(() => import("./FichaEventoStock")),
   porteria: lazy(() => import("./FichaEventoPorteria")),
   satelital: lazy(() => import("./FichaEventoSatelital")),
   tractores: lazy(() => import("./FichaEventoTaller")),
   llave: lazy(() => import("./FichaLlave")),
   perfil: lazy(() => import("./FichaPerfil")),
   personal: lazy(() => import("./FichaPersonal")),
-  stock: lazy(() => import("./FichaStock")),
   vehiculo: lazy(() => import("./FichaVehiculo")),
   viaje: lazy(() => import("./FichaViaje")),
 };
