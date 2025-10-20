@@ -27,6 +27,7 @@ export const DataProvider = ({ children }) => {
 
   // ------- informativos
   const [ubicaciones, setUbicaciones] = useState({}); // ahora será un objeto
+  const [depositos, setDepositos] = useState([]);
   const [estaciones, setEstaciones] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -53,6 +54,7 @@ export const DataProvider = ({ children }) => {
       { name: "usoStock", setter: setUsoStock },
 
       { name: "ubicaciones", setter: setUbicaciones }, // objeto
+      { name: "depositos", setter: setDepositos },
       { name: "estaciones", setter: setEstaciones },
     ];
 
@@ -106,6 +108,7 @@ export const DataProvider = ({ children }) => {
         eventos,
         usoStock,
         ubicaciones, // objeto
+        depositos,
         estaciones,
         loading,
       }}

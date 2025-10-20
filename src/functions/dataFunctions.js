@@ -1,9 +1,8 @@
 import unidades from "./data/unidades.json";
 //import proveedores from "./data/proveedores.json";
 import { useData } from "../context/DataContext";
-import {  doc,updateDoc, getDoc } from "firebase/firestore";
+import {  doc,updateDoc, getDoc,arrayUnion } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
-
 
 
 // ----------------------------------------------------------------------- Nombre de empresas
@@ -279,6 +278,24 @@ export const idNuevoProveedor = (proveedores = []) => {
 
   
   return nuevoId.toString().padStart(2, "0");
+};
+export const agregarStockADeposito = async (idDeposito, nuevoItem) => {
+  try {
+    const ref = doc(db, "depositos", idDeposito);
+
+    await updateDoc(ref, {
+      stock: arrayUnion({
+        id: nuevoItem.id,
+        cantidad: nuevoItem.cantidad,
+        unidad: nuevoItem.unidad,
+      }),
+    });
+
+    console.log(`Stock agregado a depósito: ${idDeposito}`);
+  } catch (error) {
+    console.error("Error al agregar stock al depósito:", error);
+    throw error;
+  }
 };
 
 // ----------------------------------------------------------------------- Validaciones

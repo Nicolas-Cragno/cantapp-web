@@ -16,11 +16,13 @@ import {
 } from "../../functions/dataFunctions";
 
 // ----------------------------------------------------------------------- elementos
+import LogoButton from "../../components/buttons/LogoButton";
 import FichaGestor from "../../components/fichas/FichaGestor";
 // import FichaEventoTaller from "../../components/fichas/FichaEventoTaller";
 import FichaLlave from "../../components/fichas/FichaLlave";
 // import FormularioEventoTaller from "../../components/forms/FormularioEventoTaller"
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
+import ModalStock from "../../components/modales/ModalStock";
 import FormGestor from "../../components/forms/FormGestor";
 import FormLlave from "../../components/forms/FormLlave";
 
@@ -28,10 +30,11 @@ import FormLlave from "../../components/forms/FormLlave";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoDefault from "../../assets/logos/logo.svg";
+import LogoStock from "../../assets/logos/logostock-w.png";
 
 const Reparaciones = ({ filtroSector = "tractores" }) => {
   const AREA = filtroSector;
-  const { eventos, personas, empresas, tractores, furgones, loading } =
+  const { eventos, stock, personas, empresas, tractores, furgones, loading } =
     useData();
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
@@ -256,6 +259,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         />
       )}
 
+      {modalStockVisible && (
+        <ModalStock taller={AREA} onClose={cerrarModalStock} />
+      )}
+
       <div className="table-options">
         <div className="table-options-group">
           {AREA === "tractores" ? (
@@ -273,6 +280,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
               <img src={LogoFurgon} alt="" className="table-logo2" />
             </button>
           ) : null}
+          <LogoButton
+            logo={LogoStock}
+            onClick={() => setModalStockVisible(true)}
+          />
         </div>
         <div className="table-options-group">
           <button

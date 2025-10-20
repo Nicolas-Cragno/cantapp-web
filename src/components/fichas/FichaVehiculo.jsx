@@ -7,16 +7,18 @@ import { IoLogOutSharp } from "react-icons/io5";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
+import { nombreEmpresa } from "../../functions/data-functions";
+
 import {
-  nombreEmpresa,
+  buscarEmpresa,
   formatearFecha,
   formatearHora,
-} from "../../functions/data-functions";
+} from "../../functions/dataFunctions";
+import FichaEventosGestor from "./FichaEventosGestor";
 import FichaEventoPorteria from "./FichaEventoPorteria";
 import FichaLlave from "./FichaLlave";
 import FichaViaje from "./FichaViaje";
 import FormVehiculo from "../forms/FormVehiculo";
-import { listarColeccion } from "../../functions/db-functions";
 
 // ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
@@ -25,14 +27,13 @@ import { buscarPersona } from "../../functions/dataFunctions";
 const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   const vehiculo = elemento;
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [eventos, setEventos] = useState([]);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
-  const { personas } = useData();
+  const { personas, eventos, empresas } = useData();
+  const [eventosFiltrados, setEventosFiltrados] = useState([]);
 
   const cargarEventos = async () => {
     try {
-      const data = await listarColeccion("eventos");
-      const dataFiltrada = data.filter((e) => {
+      const listaFiltrada = eventos.filter((e) => {
         const idVehiculo = Number(vehiculo.id);
 
         switch (minimizarTipo(tipoVehiculo).toLowerCase()) {
@@ -67,7 +68,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
         }
       });
 
-      const dataOrdenada = dataFiltrada.sort((a, b) => {
+      const dataOrdenada = listaFiltrada.sort((a, b) => {
         const fechaA = new Date(a.fecha);
         const fechaB = new Date(b.fecha);
         return fechaB - fechaA; // más nuevo primero
@@ -81,13 +82,12 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
             return {
               ...e,
               nPersona: personaNombre,
-            };
-          }
-          return e;
-        })
-      ); */
-
-      setEventos(dataOrdenada);
+              };
+              }
+              return e;
+              })
+              ); */
+      setEventosFiltrados(dataOrdenada);
     } catch (error) {
       console.log("Error al listar eventos: ", error);
     }
@@ -97,7 +97,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
     cargarEventos();
   }, []);
 
-  const empresa = nombreEmpresa(vehiculo.empresa);
+  const empresa = buscarEmpresa(empresas, vehiculo.empresa);
   const persona = buscarPersona(personas, vehiculo.persona);
 
   const handleGuardado = async (vehiculoModificado) => {
@@ -169,13 +169,13 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
               </p>
             </div>
 
-            {eventos.length > 0 ? (
+            {eventosFiltrados.length > 0 ? (
               <>
                 <p className="ficha-info-title">
                   <strong>EVENTOS</strong>
                 </p>
                 <div className="ficha-info-box">
-                  {eventos.map((e) => (
+                  {eventosFiltrados.map((e) => (
                     <p
                       key={e.id}
                       className="item-list"
@@ -237,24 +237,20 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
         />
       )}
 
-      {eventoSeleccionado &&
-        (["ENTREGA", "DEJA", "RETIRA"].includes(eventoSeleccionado.tipo) ? (
-          <FichaLlave
-            evento={eventoSeleccionado}
-            onClose={() => setEventoSeleccionado(null)}
-          />
-        ) : ["ENTRADA", "SALIDA"].includes(eventoSeleccionado.tipo) ? (
-          <FichaEventoPorteria
-            evento={eventoSeleccionado}
-            onClose={() => setEventoSeleccionado(null)}
-          />
-        ) : eventoSeleccionado.tipo === "viaje" ||
-          eventoSeleccionado.tipo === "VIAJE" ? (
-          <FichaViaje
-            evento={eventoSeleccionado}
-            onClose={() => setEventoSeleccionado(null)}
-          />
-        ) : null)}
+      {eventoSeleccionado && (
+        <FichaEventosGestor
+          tipo={
+            eventoSeleccionado.tipo === "DEJA" ||
+            eventoSeleccionado.tipo === "RETIRA" ||
+            eventoSeleccionado.tipo === "ENTREGA"
+              ? "llave"
+              : eventoSeleccionado.tipo
+          }
+          elemento={eventoSeleccionado}
+          onClose={() => setEventoSeleccionado(null)}
+          onGuardar={onGuardar}
+        />
+      )}
     </>
   );
 };

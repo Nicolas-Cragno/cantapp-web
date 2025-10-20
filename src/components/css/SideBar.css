@@ -7,10 +7,9 @@
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   transition: width 0.3s ease;
   display: flex;
-  align-items: center;
-  justify-items: left;
+  align-items: left;
   flex-direction: column;
-  z-index: 9999;
+  align-items: center;  z-index: 9999;
 }
 
 .sidebar.collapsed {
@@ -94,6 +93,7 @@
 .nav {
   display: flex;
   flex-direction: column;
+ 
   gap: 1.5rem;
   margin-top: 3rem;
 }

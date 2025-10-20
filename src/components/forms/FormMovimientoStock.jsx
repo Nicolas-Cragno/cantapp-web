@@ -10,6 +10,7 @@ import { useData } from "../../context/DataContext";
 import {
   sumarMultiplesCantidades,
   obtenerNombreUnidad,
+  agregarStockADeposito,
 } from "../../functions/dataFunctions";
 
 // ----------------------------------------------------------------------- jsons
@@ -21,9 +22,9 @@ import Unidades from "../../functions/data/unidades.json";
 import "./css/Forms.css";
 import { agregarEvento } from "../../functions/eventFunctions";
 
-const FormMovimientoStock = ({ onClose, onGuardar }) => {
+const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
   const { stock, proveedores } = useData();
-  const [area, setArea] = useState("administracion"); //para saber a que sector atribuir el evento
+  const [area, setArea] = useState("001"); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
   const [remito, setRemito] = useState("");
@@ -43,11 +44,14 @@ const FormMovimientoStock = ({ onClose, onGuardar }) => {
     value: value,
     label: key.toUpperCase(),
   }));
+
   useEffect(() => {
     const fetchArticulos = async () => {
       setArticulos(stock);
       setLoading(false);
     };
+
+    if (taller) setArea(Sectores[taller]);
 
     fetchArticulos();
   }, []);
@@ -163,6 +167,15 @@ const FormMovimientoStock = ({ onClose, onGuardar }) => {
         area.toLowerCase()
       );
 
+      const idDeposito = area.toLowerCase();
+      for (const ingreso of ingresos) {
+        await agregarStockADeposito(idDeposito, {
+          id: ingreso.id,
+          cantidad: ingreso.cantidad,
+          unidad: ingreso.unidad,
+        });
+      }
+
       await Swal.fire({
         icon: "success",
         title: esFactura
@@ -263,9 +276,10 @@ const FormMovimientoStock = ({ onClose, onGuardar }) => {
                     ? sectoresDisponibles.find((opt) => opt.value === area)
                     : null
                 }
-                onChange={(opt) => setArea(opt ? opt.label : null)}
+                onChange={(opt) => setArea(opt ? opt.value : null)}
                 placeholder="Seleccionar sector..."
                 noOptionsMessage={() => "No hay sectores disponibles"}
+                disabled={taller}
               />
             </label>
             <br />
