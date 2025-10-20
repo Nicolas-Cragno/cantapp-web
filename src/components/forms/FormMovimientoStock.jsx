@@ -24,7 +24,7 @@ import { agregarEvento } from "../../functions/eventFunctions";
 
 const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
   const { stock, proveedores } = useData();
-  const [area, setArea] = useState("001"); //para saber a que sector atribuir el evento
+  const [area, setArea] = useState("administracion"); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
   const [remito, setRemito] = useState("");
@@ -51,10 +51,10 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
       setLoading(false);
     };
 
-    if (taller) setArea(Sectores[taller]);
+    //if (taller) setArea(Sectores[taller]);
 
     fetchArticulos();
-  }, []);
+  }, [ingresos]);
   const handleAgregar = () => {
     if (!articuloSeleccionado || !cantidad || isNaN(cantidad)) {
       Swal.fire(
@@ -194,6 +194,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <h2>MOVIMIENTO DE STOCK</h2>
+        {area}
         <hr />
         <form>
           <div className="type-container">
@@ -276,7 +277,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                     ? sectoresDisponibles.find((opt) => opt.value === area)
                     : null
                 }
-                onChange={(opt) => setArea(opt ? opt.value : null)}
+                onChange={(opt) => setArea(opt ? opt.label : null)}
                 placeholder="Seleccionar sector..."
                 noOptionsMessage={() => "No hay sectores disponibles"}
                 disabled={taller}

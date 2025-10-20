@@ -3,7 +3,11 @@ import { useState, useMemo, useEffect } from "react";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
-import { abreviarUnidad, buscarPersona } from "../../functions/dataFunctions";
+import {
+  abreviarUnidad,
+  buscarPersona,
+  buscarRepuestoPorID,
+} from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import FichaPersonal from "../fichas/FichaPersonal";
@@ -20,12 +24,7 @@ import { BsPersonCheck } from "react-icons/bs"; // logo activa
 import { BsPersonPlusFill } from "react-icons/bs"; // logo agregar
 
 const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
-  const idDepo =
-    taller === "tractores"
-      ? "tractores-1"
-      : taller === "furgones"
-      ? "furgones-1"
-      : null;
+  const idDepo = taller;
   const [filtro, setFiltro] = useState("");
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState(null);
@@ -43,11 +42,12 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
   const columnas = [
     {
       titulo: "COD.",
-      campo: "codigo",
+      campo: "id",
     },
     {
       titulo: "DESCRIPCION",
-      campo: "descripcion",
+      campo: "id",
+      render: (a) => buscarRepuestoPorID(stock, a),
     },
     {
       titulo: "STOCK",

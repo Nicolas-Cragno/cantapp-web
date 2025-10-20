@@ -194,9 +194,8 @@ export const buscarRepuestoPorID = async (coleccion, id) => {
 
   const articulo = coleccion.find((v) => String(v.id) === String(id));
 
-  return articulo ? articulo.nombre : "";
+  return articulo ? articulo.descripcion : "";
 }
-
 export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
     
 
@@ -215,7 +214,6 @@ export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
   const nuevoNumero = maxNum + 1;
   return `${prefijo}${proveedor}${String(nuevoNumero).padStart(4, "0")}`;
 };
-
 export const marcaPorCodigo = (coleccion, codigo) => {
   
    const prov = Object.values(coleccion).find((p) => p.codigo === codigo);
