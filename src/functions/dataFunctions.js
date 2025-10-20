@@ -215,9 +215,11 @@ export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
   return `${prefijo}${proveedor}${String(nuevoNumero).padStart(4, "0")}`;
 };
 export const marcaPorCodigo = (coleccion, codigo) => {
-  
-   const prov = Object.values(coleccion).find((p) => p.codigo === codigo);
-  return prov ? prov.marca.toUpperCase() : "GENERICO";
+  if (!codigo || !coleccion) return "GENERICO";
+
+  const prov = Object.values(coleccion).find((p) => p.id === codigo);
+
+  return prov && prov.marca ? prov.marca.toUpperCase() : "GENERICO";
 };
 export const sumarCantidadStock = async (idArticulo, cantidadASumar) => {
   try {

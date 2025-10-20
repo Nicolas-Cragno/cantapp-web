@@ -286,12 +286,14 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           />
         </div>
         <div className="table-options-group">
-          <button
-            className="table-agregar"
-            onClick={() => setModalKeyVisible(true)}
-          >
-            <IoKeySharp className="button-logo" />
-          </button>
+          {filtroSector === "tractores" && (
+            <button
+              className="table-agregar"
+              onClick={() => setModalKeyVisible(true)}
+            >
+              <IoKeySharp className="button-logo" />
+            </button>
+          )}
 
           <button
             className="table-agregar"

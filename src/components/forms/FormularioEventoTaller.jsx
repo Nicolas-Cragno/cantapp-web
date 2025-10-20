@@ -470,8 +470,9 @@ const FormularioEventoTaller = ({
                     options={stock
                       .map((a) => ({
                         value: a.id,
-                        label: `${a.descripcion} (${marcaPorCodigo(
-                          a.proveedor
+                        label: `${a.id} - ${a.descripcion} (${marcaPorCodigo(
+                          stock,
+                          a.id
                         ).toUpperCase()})`,
                       }))
                       .sort((a, b) => a.label.localeCompare(b.label))}

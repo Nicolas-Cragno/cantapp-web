@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { FaHome, FaSignOutAlt } from "react-icons/fa";
 import { FaTruckFront } from "react-icons/fa6";
 import { RiListSettingsLine } from "react-icons/ri";
+import { PiShippingContainerFill } from "react-icons/pi";
+
 import { GrResources } from "react-icons/gr";
 import { BsFillFuelPumpFill } from "react-icons/bs";
 
@@ -57,6 +59,12 @@ const SideBar = () => {
       to: "/tractores",
       icon: <FaTruckFront className="nav-icon" />,
       label: "Tractores",
+      roles: ["dev", "admin", "user"],
+    },
+    {
+      to: "/furgones",
+      icon: <PiShippingContainerFill className="nav-icon" />,
+      label: "Furgones",
       roles: ["dev", "admin", "user"],
     },
     {

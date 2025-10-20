@@ -1,10 +1,19 @@
 import "./css/Fichas.css";
 import { useState, useEffect } from "react";
 import FormStock from "../forms/FormStock";
+import { useData } from "../../context/DataContext";
 
 const FichaStock = ({ articulo, onClose, onGuardar }) => {
+  const { depositos } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
   if (!articulo) return null;
+
+  // stock en depositos especificos
+  const stockDepoTractores =
+    depositos.tractores?.stock?.find((a) => a.id === articulo.id)?.cantidad ||
+    0;
+  const stockDepoFurgones =
+    depositos.furgones?.stock?.find((a) => a.id === articulo.id)?.cantidad || 0;
 
   const handleGuardado = async (articuloModificado) => {
     setModoEdicion(false);
@@ -54,9 +63,12 @@ const FichaStock = ({ articulo, onClose, onGuardar }) => {
                 </p>
               ) : null}
             </div>
+            <p className="ficha-info-title">
+              <strong>Stock</strong>
+            </p>
             <div className="ficha-info">
               <p>
-                <strong>Disponible: </strong>
+                <strong>Total: </strong>
                 {articulo.cantidad === 0
                   ? "SIN STOCK"
                   : articulo.cantidad + " " + articulo.unidad}
