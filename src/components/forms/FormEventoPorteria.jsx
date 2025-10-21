@@ -26,6 +26,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const SUCURSAL = "01";
   const area = "porteria";
   const { personas, tractores, furgones, vehiculos } = useData();
+  const [vehiculosCarga, setVehiculosCarga] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState("tractor");
   const [choferFletero, setChoferFletero] = useState(false);
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
@@ -78,6 +79,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         elemento?.distincion ? elemento.distincion : "tractor"
       );
       setChoferFletero(elemento?.esFletero ?? false);
+      setVehiculosCarga([...furgones, ...vehiculos]); // para que figuren los furgones ajenos
     };
 
     cargarDatos();
@@ -153,7 +155,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         tractor:
           !choferFletero && formData.tractor ? Number(formData.tractor) : null,
         vehiculo: formData.vehiculo ? String(formData.vehiculo) : null,
-        furgon: formData.furgon ? Number(formData.furgon) : null,
+        furgon: formData.furgon ? String(formData.furgon) : null,
         cargado: furgonCargado,
         chequeos: chequeosObjeto,
       };
@@ -470,26 +472,35 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           {tipoSeleccionado !== "particular" && (
             <>
               <label>
-                Furgón
+                Carga / Furgón
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
-                    options={furgones
+                    options={vehiculosCarga
                       .map((f) => ({
-                        value: f.interno,
-                        label: `${f.dominio} (${f.interno})`,
-                        int: f.interno,
+                        value: f.id,
+                        label: `${f.dominio} (${
+                          f.interno ? f.interno : f.marca
+                        })`,
                       }))
-                      .sort((a, b) => a.int - b.int)}
+                      .sort((a, b) => a.label.localeCompare(b.label))}
                     value={
                       formData.furgon
-                        ? {
-                            value: formData.furgon,
-                            label:
-                              furgones.find(
-                                (f) => f.interno === formData.furgon
-                              )?.dominio + ` (${formData.furgon})`,
-                          }
+                        ? (() => {
+                            const seleccion = vehiculosCarga.find(
+                              (v) => v.id === formData.furgon
+                            );
+                            return seleccion
+                              ? {
+                                  value: seleccion.id,
+                                  label: `${seleccion.dominio} (${
+                                    seleccion.interno
+                                      ? seleccion.interno
+                                      : seleccion.marca
+                                  })`,
+                                }
+                              : null;
+                          })() // 👈 ejecutamos la función acá
                         : null
                     }
                     onChange={(opt) =>
@@ -498,9 +509,10 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                         furgon: opt ? opt.value : "",
                       })
                     }
-                    placeholder=""
+                    placeholder="Seleccionar vehículo..."
                     isClearable
                   />
+
                   <TextButton
                     text="+"
                     className="mini-btn"

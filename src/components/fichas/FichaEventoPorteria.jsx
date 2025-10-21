@@ -127,7 +127,7 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
                     {buscarDominio(elemento.tractor, tractores)})
                   </p>
                   <p>
-                    <strong>Furgón: </strong>
+                    <strong>Carga / Furgón: </strong>
                     {cargado ? (
                       <>
                         {elemento.furgon} (
@@ -137,8 +137,9 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
                     ) : elemento.furgon ? (
                       <>
                         {elemento.furgon} (
-                        {buscarDominio(elemento.furgon, furgones)}){" "}
-                        <span className="infobox greenbox">VACIO</span>{" "}
+                        {buscarDominio(elemento.furgon, furgones) ||
+                          buscarMarca(elemento.furgon, vehiculos)}
+                        ) <span className="infobox greenbox">VACIO</span>{" "}
                       </>
                     ) : null}
                   </p>
