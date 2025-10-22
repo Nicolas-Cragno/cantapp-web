@@ -195,7 +195,7 @@ const Movimientos = () => {
         e.operador
       } ${operador} ${servicio} ${
         e.vehiculo
-      } ${tractorDominio} ${furgonDominio} ${e.persona} ${e.servicio}`;
+      } ${tractorDominio} ${furgonDominio} ${e.persona} ${e.servicio} ${e.id}`;
       return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
     });
   });

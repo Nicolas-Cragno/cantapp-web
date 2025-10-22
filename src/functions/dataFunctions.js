@@ -87,17 +87,23 @@ export const useBuscarPersona = (dni, completo=true) => {
   return completo ? nombreCompleto : nombreAbreviado;
 }
 
-export const buscarPersona = (coleccion, dni, completo=true) => {
+export const buscarPersona = (coleccion, dni, completo = true) => {
   if (!dni) return "";
 
   const dniStr = String(dni);
   const persona = coleccion.find((p) => p.dni === dniStr || p.id === dniStr);
   if (!persona) return "";
-  const nombreCompleto = `${persona.apellido}, ${persona.nombres}`;
-  const nombreAbreviado = `${persona.apellido}, ${persona.nombres[0]}.`;
-  return completo ? nombreCompleto : nombreAbreviado;
-}
 
+  // Usar 'nombres' si existe, si no fallback a 'nombre', si no ""
+  const nombres = persona.nombres ?? persona.nombre ?? "";
+
+  const nombreCompleto = `${persona.apellido ?? ""}, ${nombres}`;
+  const nombreAbreviado = nombres
+    ? `${persona.apellido ?? ""}, ${nombres[0]}.`
+    : persona.apellido ?? "";
+
+  return completo ? nombreCompleto : nombreAbreviado;
+};
 
 export const normalizarFecha = (valor) => {
   if (!valor) return null;

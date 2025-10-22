@@ -58,6 +58,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
 
             return Number(e.utilitario) === idVehiculo;
             break;
+
           default:
             if (Array.isArray(e.vehiculo)) {
               return e.vehiculo.includes(idVehiculo);
