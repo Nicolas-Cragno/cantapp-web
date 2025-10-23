@@ -1,27 +1,18 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo, useEffect } from "react";
 
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import {
   abreviarUnidad,
-  buscarPersona,
   buscarRepuestoPorID,
 } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
-import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
-import FichaPersonal from "../fichas/FichaPersonal";
-import FormPersona from "../forms/FormPersona";
 import TextButton from "../buttons/TextButton";
 import FichaStock from "../fichas/FichaStock";
 import FormStock from "../forms/FormStock";
 import FormMovimientoStock from "../forms/FormMovimientoStock";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Modales.css";
-import { BsPersonDash } from "react-icons/bs"; // logo innactiva
-import { BsPersonCheck } from "react-icons/bs"; // logo activa
-import { BsPersonPlusFill } from "react-icons/bs"; // logo agregar
 
 const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
   const idDepo = taller;

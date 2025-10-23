@@ -1,5 +1,5 @@
-import "./css/Sections.css";
 import Viajes from "./sub-containers/Viajes";
+import "./css/Sections.css";
 
 const Combustible = () => {
   return (

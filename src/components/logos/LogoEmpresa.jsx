@@ -1,11 +1,13 @@
+import { useData } from "../../context/DataContext";
+import { buscarEmpresa } from "../../functions/dataFunctions";
 import LogoTC from "../../assets/images/logo-tc-color.png";
 import LogoEX from "../../assets/images/logo-ex-color.png";
 import LogoTA from "../../assets/images/logo-ta-color.png";
 import LogoDefault from "../../assets/images/logo-truck.png";
-import { nombreEmpresa } from "../../functions/data-functions";
 import "./css/Logos.css";
 
 const LogoEmpresa = ({ cuitEmpresa, mini = false }) => {
+  const { empresas } = useData();
   const logos = {
     30610890403: LogoTC,
     30644511304: LogoEX,
@@ -13,7 +15,7 @@ const LogoEmpresa = ({ cuitEmpresa, mini = false }) => {
   };
 
   const logo = logos[String(cuitEmpresa)] || LogoDefault;
-  const nombre = nombreEmpresa(cuitEmpresa);
+  const nombre = buscarEmpresa(empresas, cuitEmpresa);
 
   return (
     <div className="logo-empresa">

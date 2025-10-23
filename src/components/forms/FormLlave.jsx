@@ -11,14 +11,10 @@ import {
   reemplazarItems,
 } from "../../functions/stockFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
-import { formatearFecha, formatearHora } from "../../functions/dataFunctions"; // la función que formatea fecha+hora
-
-// ----------------------------------------------------------------------- info y json
+import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
 import tiposEventos from "../../functions/data/eventos.json";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-import "./css/Forms.css";
 import TextButton from "../buttons/TextButton";
+import "./css/Forms.css";
 
 const FormLlave = ({
   elemento = {},

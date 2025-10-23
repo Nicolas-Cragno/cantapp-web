@@ -1,18 +1,16 @@
 // ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
-import { FaSpinner } from "react-icons/fa";
-import { useData } from "../../context/DataContext";
+import { FaSpinner as LogoLoading } from "react-icons/fa";
 // ----------------------------------------------------------------------- imports internos
-import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
-
+import { useData } from "../../context/DataContext";
 import {
+  formatearFecha,
+  formatearHora,
   buscarPersona,
   buscarRepuestoPorID,
   abreviarUnidad,
 } from "../../functions/dataFunctions";
 import FormGestor from "../forms/FormGestor";
-
-// ----------------------------------------------------------------------- visuales logos etc
 import "./css/Fichas.css";
 
 const FichaEventoTaller = ({
@@ -138,7 +136,7 @@ const FichaEventoTaller = ({
                 <div className="ficha-info">
                   {loading ? (
                     <div className="loading-item">
-                      <FaSpinner className="spinner" />
+                      <LogoLoading className="spinner" />
                     </div>
                   ) : (
                     repuestos.map((r, id) => (

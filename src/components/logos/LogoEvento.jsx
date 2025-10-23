@@ -1,22 +1,26 @@
-import { FaKey } from "react-icons/fa6";
-import { IoEnterSharp } from "react-icons/io5";
-import { IoExitSharp } from "react-icons/io5";
-import { IoIosAlert } from "react-icons/io";
+// ----------------------------------------------------------------------- imports externos
+import { FaKey as LogoKey } from "react-icons/fa6";
+import {
+  IoEnterSharp as LogoEnter,
+  IoExitSharp as LogoExit,
+} from "react-icons/io5";
+import { IoIosAlert as LogoAlert } from "react-icons/io";
 
+// ----------------------------------------------------------------------- imports internos
 import "./css/Logos.css";
 
 const LogoEvento = ({ tipoEvento }) => {
   const logos = {
-    DEJA: <FaKey />,
-    ENTREGA: <FaKey />,
-    RETIRA: <FaKey />,
-    ENTRADA: <IoEnterSharp />,
-    SALIDA: <IoExitSharp />,
+    DEJA: <LogoKey />,
+    ENTREGA: <LogoKey />,
+    RETIRA: <LogoKey />,
+    ENTRADA: <LogoEnter />,
+    SALIDA: <LogoExit />,
   };
 
   const evento = tipoEvento.toUpperCase();
 
-  const logo = logos[evento] || <IoIosAlert />;
+  const logo = logos[evento] || <LogoAlert />;
 
   return <div className="logo-evento">{logo}</div>;
 };

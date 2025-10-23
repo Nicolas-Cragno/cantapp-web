@@ -1,7 +1,10 @@
-import "./css/Fichas.css";
-import { useState, useEffect } from "react";
-import FormStock from "../forms/FormStock";
+// ----------------------------------------------------------------------- imports externos
+import { useState } from "react";
+
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
+import FormStock from "../forms/FormStock";
+import "./css/Fichas.css";
 
 const FichaStock = ({ articulo, onClose, onGuardar }) => {
   const { depositos } = useData();

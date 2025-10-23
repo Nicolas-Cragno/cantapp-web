@@ -1,16 +1,14 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import {
   formatearFecha,
-  buscarDominio,
   colorSatelital,
   colorBatman,
   colorPromedio,
 } from "../../functions/dataFunctions";
-import CardInfo from "../cards/CardInfo";
 import FormViaje from "../forms/FormViaje";
 
 const FichaViaje = ({ elemento, onClose, onGuardar }) => {

@@ -1,22 +1,16 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { useData } from "../../context/DataContext";
 import Select from "react-select";
 
 // ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
 import { agregar, modificar } from "../../functions/dbFunctions";
 import { codigoStock } from "../../functions/dataFunctions";
-import TextButton from "../buttons/TextButton";
-
-// -----------------------------------------------------------------------
-import Codigos from "../../functions/data/articulos.json";
-import Proveedores from "../../functions/data/proveedores.json";
-import Medidas from "../../functions/data/unidades.json";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-import "./css/Forms.css";
 import FormProveedor from "./FormProveedor";
+import TextButton from "../buttons/TextButton";
+import Codigos from "../../functions/data/articulos.json";
+import "./css/Forms.css";
 
 const FormStock = ({ articulo = null, onClose, onGuardar }) => {
   const [loading, setLoading] = useState(false);

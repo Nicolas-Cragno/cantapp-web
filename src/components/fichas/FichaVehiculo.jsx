@@ -1,28 +1,23 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
-import { FaKey } from "react-icons/fa6";
-import { IoEnterSharp } from "react-icons/io5";
-import { FaRoute } from "react-icons/fa";
-import { IoLogOutSharp } from "react-icons/io5";
+import { FaKey as LogoKey } from "react-icons/fa6";
+import { FaRoute as LogoRoute } from "react-icons/fa";
+import {
+  IoEnterSharp as LogoEnter,
+  IoLogOutSharp as LogoOut,
+} from "react-icons/io5";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
-import { nombreEmpresa } from "../../functions/data-functions";
-
 import {
+  buscarPersona,
   buscarEmpresa,
   formatearFecha,
   formatearHora,
 } from "../../functions/dataFunctions";
 import FichaEventosGestor from "./FichaEventosGestor";
-import FichaEventoPorteria from "./FichaEventoPorteria";
-import FichaLlave from "./FichaLlave";
-import FichaViaje from "./FichaViaje";
 import FormVehiculo from "../forms/FormVehiculo";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
-import { buscarPersona } from "../../functions/dataFunctions";
 
 const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   const vehiculo = elemento;
@@ -188,12 +183,12 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                       e.tipo === "RETIRA" ||
                       e.tipo === "DEJA" ? (
                         <>
-                          <FaKey /> {e.tipo} LLAVES
+                          <LogoKey /> {e.tipo} LLAVES
                         </>
                       ) : null}
                       {e.tipo === "ENTRADA" && (
                         <>
-                          <IoEnterSharp /> {e.tipo}
+                          <LogoEnter /> {e.tipo}
                           {e.cargado && (
                             <span className="infobox-mini redbox">Cargado</span>
                           )}
@@ -201,7 +196,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                       )}
                       {e.tipo === "SALIDA" && (
                         <>
-                          <IoLogOutSharp /> {e.tipo}
+                          <LogoOut /> {e.tipo}
                           {e.cargado && (
                             <span className="infobox-mini redbox">Cargado</span>
                           )}
@@ -211,7 +206,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                       {e.tipo === "VIAJE" ||
                         (e.tipo === "viaje" && (
                           <>
-                            <FaRoute /> {e.tipo.toUpperCase()}
+                            <LogoRoute /> {e.tipo.toUpperCase()}
                           </>
                         ))}
                       <span>

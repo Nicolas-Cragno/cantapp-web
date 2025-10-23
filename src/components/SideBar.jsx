@@ -1,17 +1,16 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaSignOutAlt } from "react-icons/fa";
-import { FaTruckFront } from "react-icons/fa6";
-import { RiListSettingsLine } from "react-icons/ri";
-import { PiShippingContainerFill } from "react-icons/pi";
+import { FaHome as LogoHome, FaSignOutAlt as LogoOut } from "react-icons/fa";
+import { FaTruckFront as LogoTruck } from "react-icons/fa6";
+import { RiListSettingsLine as LogoSettings } from "react-icons/ri";
+import { PiShippingContainerFill as LogoContainer } from "react-icons/pi";
+import { GrResources as LogoResources } from "react-icons/gr";
+import { BsFillFuelPumpFill as LogoFuel } from "react-icons/bs";
 
-import { GrResources } from "react-icons/gr";
-import { BsFillFuelPumpFill } from "react-icons/bs";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-import "./css/SideBar.css";
+// ----------------------------------------------------------------------- imports internos
 import Logo from "../assets/logos/logotruck.svg";
+import "./css/SideBar.css";
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -28,7 +27,7 @@ const SideBar = () => {
   const linksAll = [
     {
       to: "/",
-      icon: <FaHome className="nav-icon" />,
+      icon: <LogoHome className="nav-icon" />,
       label: "Inicio",
       roles: ["dev", "admin", "user"],
     },
@@ -36,13 +35,13 @@ const SideBar = () => {
   const linksManagement = [
     {
       to: "/recursos",
-      icon: <GrResources className="nav-icon" />,
+      icon: <LogoResources className="nav-icon" />,
       label: "Recursos",
       roles: ["dev", "admin"],
     },
     {
       to: "/stock",
-      icon: <RiListSettingsLine className="nav-icon" />,
+      icon: <LogoSettings className="nav-icon" />,
       label: "Stock",
       roles: ["dev", "admin"],
     },
@@ -51,25 +50,25 @@ const SideBar = () => {
   const linksEvents = [
     {
       to: "/porteria",
-      icon: <FaSignOutAlt className="nav-icon" />,
+      icon: <LogoOut className="nav-icon" />,
       label: "Portería",
       roles: ["dev", "admin", "user"],
     },
     {
       to: "/tractores",
-      icon: <FaTruckFront className="nav-icon" />,
+      icon: <LogoTruck className="nav-icon" />,
       label: "Tractores",
       roles: ["dev", "admin", "user"],
     },
     {
       to: "/furgones",
-      icon: <PiShippingContainerFill className="nav-icon" />,
+      icon: <LogoContainer className="nav-icon" />,
       label: "Furgones",
       roles: ["dev", "admin", "user"],
     },
     {
       to: "/combustible",
-      icon: <BsFillFuelPumpFill className="nav-icon" />,
+      icon: <LogoFuel className="nav-icon" />,
       label: "Combustible",
       roles: ["dev"],
     },

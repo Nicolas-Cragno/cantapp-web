@@ -1,7 +1,4 @@
-// ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
-
-// ----------------------------------------------------------------------- estilos
 import "./css/Modales.css";
 
 const ModalSatelital = ({

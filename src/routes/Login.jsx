@@ -1,10 +1,13 @@
+// ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
-import { auth, db } from "../firebase/firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import Logo from "../assets/images/logo-truck.png";
 import Swal from "sweetalert2";
+
+// ----------------------------------------------------------------------- imports internos
+import { auth, db } from "../firebase/firebaseConfig";
+import Logo from "../assets/images/logo-truck.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");

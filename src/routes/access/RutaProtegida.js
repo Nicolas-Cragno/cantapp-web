@@ -6,7 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { Navigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import { Access } from "./Access";
 
 const jerarquia = ["user", "admin", "dev"];

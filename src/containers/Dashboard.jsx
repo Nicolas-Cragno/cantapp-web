@@ -1,8 +1,8 @@
-import "./css/Dashboard.css";
 import CardInfo from "../components/cards/CardInfo";
 import Clock from "../components/Clock";
 import LogoPorteria from "../assets/logos/logoporteria-w.png";
 import LogoSatelital from "../assets/logos/logosatelital-w.png";
+import "./css/Dashboard.css";
 
 const Dashboard = () => {
   let rolUsuario = null;

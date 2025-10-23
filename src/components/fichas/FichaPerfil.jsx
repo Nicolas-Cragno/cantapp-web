@@ -1,10 +1,18 @@
-import "./css/Fichas.css";
+// ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
-import { nombreEmpresa, formatearFecha } from "../../functions/data-functions";
-import { buscarPersona, buscarUsuario } from "../../functions/db-functions";
+
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
+import {
+  buscarEmpresa,
+  formatearFecha,
+  buscarPersona,
+} from "../../functions/dataFunctions";
 import LogoEmpresa from "../logos/LogoEmpresa";
+import "./css/Fichas.css";
 
 const FichaPerfil = ({ persona, onClose, OnGuardar = false }) => {
+  const { users, personas, empresas } = useData();
   const [personaDB, setPersonaDB] = useState(null);
   const [personaUser, setPersonaUser] = useState(null);
   const [rolUser, setRolUser] = useState("");
@@ -17,8 +25,8 @@ const FichaPerfil = ({ persona, onClose, OnGuardar = false }) => {
     const cargarDatos = async () => {
       setLoading(true);
       try {
-        const dbData = await buscarPersona(persona.dni);
-        const userData = await buscarUsuario(persona.dni);
+        const dbData = await buscarPersona(personas, persona.dni);
+        const userData = await buscarPersona(users, persona.dni);
 
         setPersonaDB(dbData || {});
         setPersonaUser(userData || {});
@@ -106,7 +114,9 @@ const FichaPerfil = ({ persona, onClose, OnGuardar = false }) => {
               <p className="ficha-info-item">
                 <strong>Empresa</strong>{" "}
                 <span className="ficha-info-item-txt">
-                  {personaDB?.empresa ? nombreEmpresa(personaDB.empresa) : ""}
+                  {personaDB?.empresa
+                    ? buscarEmpresa(empresas, personaDB.empresa)
+                    : ""}
                 </span>
               </p>
               <p className="ficha-info-item">

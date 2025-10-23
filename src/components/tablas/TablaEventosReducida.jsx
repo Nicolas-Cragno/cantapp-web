@@ -1,18 +1,19 @@
 // ----------------------------------------------------------------------- imports externos
 import {
-  FaKey,
-  FaRoute,
-  FaArrowAltCircleUp,
-  FaArrowAltCircleDown,
+  FaKey as LogoKey,
+  FaRoute as LogoRoute,
+  FaArrowAltCircleUp as LogoUp,
+  FaArrowAltCircleDown as LogoDown,
 } from "react-icons/fa";
-import { IoEnterSharp, IoLogOutSharp } from "react-icons/io5";
-import { MdEventNote } from "react-icons/md";
+import {
+  IoEnterSharp as LogoEnter,
+  IoLogOutSharp as LogoOut,
+} from "react-icons/io5";
+import { MdEventNote as LogoNote } from "react-icons/md";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- visuales
 import "./css/Tables.css";
 
 const TablaEventosReducida = ({ tipoColeccion, identificador, onRowClick }) => {
@@ -44,15 +45,15 @@ const TablaEventosReducida = ({ tipoColeccion, identificador, onRowClick }) => {
 
   const logoSize = 18;
   const logos = {
-    RETIRA: <FaKey size={logoSize} />,
-    ENTREGA: <FaKey size={logoSize} />,
-    DEJA: <FaKey size={logoSize} />,
-    ENTRADA: <IoEnterSharp size={logoSize} />,
-    SALIDA: <IoLogOutSharp size={logoSize} />,
-    VIAJE: <FaRoute size={logoSize} />,
-    OTRO: <MdEventNote size={logoSize} />,
-    BAJA: <FaArrowAltCircleDown size={logoSize} />,
-    ALTA: <FaArrowAltCircleUp size={logoSize} />,
+    RETIRA: <LogoKey size={logoSize} />,
+    ENTREGA: <LogoKey size={logoSize} />,
+    DEJA: <LogoKey size={logoSize} />,
+    ENTRADA: <LogoEnter size={logoSize} />,
+    SALIDA: <LogoOut size={logoSize} />,
+    VIAJE: <LogoRoute size={logoSize} />,
+    OTRO: <LogoNote size={logoSize} />,
+    BAJA: <LogoDown size={logoSize} />,
+    ALTA: <LogoUp size={logoSize} />,
   };
 
   if (!eventosOrdenados.length) return null;
@@ -69,7 +70,7 @@ const TablaEventosReducida = ({ tipoColeccion, identificador, onRowClick }) => {
             className="item-list"
             onClick={() => onRowClick && onRowClick(e)}
           >
-            {logos[e.tipo.toUpperCase()] || <MdEventNote size={logoSize} />}
+            {logos[e.tipo.toUpperCase()] || <LogoNote size={logoSize} />}
             <span>{e.tipo.toUpperCase()}</span>
             <span>
               {formatearFecha(e.fecha)} | {formatearHora(e.fecha)} hs

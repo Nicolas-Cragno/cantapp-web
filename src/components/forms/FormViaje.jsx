@@ -4,14 +4,15 @@ import Select from "react-select";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
+import {
+  formatearFecha,
+  colorBatman,
+  colorPromedio,
+} from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
 import ModalTramos from "../modales/ModalTramos";
 import ModalSatelital from "../modales/ModalSatelital";
-import { formatearFecha } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
-import { colorBatman, colorPromedio } from "../../functions/dataFunctions";
 
 export default function FormViaje({ elemento = {}, onClose, onGuardar }) {
   const viaje = elemento || {};

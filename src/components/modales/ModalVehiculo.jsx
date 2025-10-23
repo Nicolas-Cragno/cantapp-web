@@ -1,10 +1,13 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
-import { FaTruck, FaPlus, FaCarAlt } from "react-icons/fa";
+import {
+  FaTruck as LogoTruck,
+  FaPlus as LogoPlus,
+  FaCarAlt as LogoCar,
+} from "react-icons/fa";
+import { PiShippingContainerDuotone as LogoContainer } from "react-icons/pi";
 
-import { PiShippingContainerDuotone } from "react-icons/pi";
-
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../tablas/TablaColeccion";
 import {
@@ -13,10 +16,8 @@ import {
   formatearHora,
 } from "../../functions/dataFunctions";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
-import LogoEmpresa from "../logos/LogoEmpresa";
 import FichaGestor from "../fichas/FichaGestor";
 import FormVehiculo from "../forms/FormVehiculo";
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Modales.css";
 
 const ModalVehiculo = ({
@@ -155,13 +156,13 @@ const ModalVehiculo = ({
         <div className="ficha-buttons">
           <button onClick={() => setModalAgregarVisible(true)}>
             {tipo === "tractores" ? (
-              <FaTruck size={26} />
+              <LogoTruck size={26} />
             ) : tipo === "furgones" ? (
-              <PiShippingContainerDuotone size={26} />
+              <LogoContainer size={26} />
             ) : (
-              <FaCarAlt size={26} />
+              <LogoCar size={26} />
             )}
-            <FaPlus size={16} style={{ marginLeft: "7px" }} />
+            <LogoPlus size={16} style={{ marginLeft: "7px" }} />
           </button>
         </div>
         {modalFichaVisible && (

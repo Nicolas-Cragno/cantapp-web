@@ -1,5 +1,5 @@
-import "./css/Sections.css";
 import RegistroSatelital from "./sub-containers/RegistroSatelital";
+import "./css/Sections.css";
 
 const Satelital = () => {
   return (

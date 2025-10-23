@@ -1,13 +1,18 @@
-import "./css/Header.css";
+// ----------------------------------------------------------------------- imports externos
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebaseConfig";
 import { signOut } from "firebase/auth";
-import { buscarNombreUsuario } from "../functions/db-functions";
-import { FaCircleUser } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
+import { FaCircleUser as LogoUser } from "react-icons/fa6";
+
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../context/DataContext";
+import { buscarPersona } from "../functions/dataFunctions";
 import FichaPerfil from "./fichas/FichaPerfil";
+import "./css/Header.css";
 
 const Header = () => {
+  const { users } = useData();
   const [userName, setUserName] = useState("Usuario");
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [mostrarPerfil, setMostrarPerfil] = useState(false);
@@ -26,7 +31,7 @@ const Header = () => {
         if (usuarioGuardado) {
           datos = JSON.parse(usuarioGuardado);
         } else {
-          const nombre = await buscarNombreUsuario(user.uid);
+          const nombre = buscarPersona(users, user.uid);
           datos = {
             uid: user.uid,
             nombres: nombre || user.email,
@@ -72,7 +77,7 @@ const Header = () => {
           ref={menuRef}
           onClick={() => setMenuAbierto(!menuAbierto)}
         >
-          {userName} <FaCircleUser />
+          {userName} <LogoUser />
           {menuAbierto && (
             <div className="user-dropdown">
               <button onClick={handleLogout}>Cerrar sesión</button>

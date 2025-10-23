@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
-import "./css/Forms.css";
-import { listarColeccion } from "../../functions/db-functions";
-import { agregarEvento } from "../../functions/eventFunctions";
-import areas from "../../functions/data/areas.json";
+// ----------------------------------------------------------------------- imports externos
+import { useState } from "react";
 import Swal from "sweetalert2";
-import { formatearFecha, formatearHora } from "../../functions/data-functions"; // la función que formatea fecha+hora
+
+// ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
+import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
+import { agregarEvento } from "../../functions/eventFunctions";
 import tiposEventos from "../../functions/data/eventos.json";
+import "./css/Forms.css";
 
-const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
+const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   const area = "satelital";
-
+  const { personas, tractores, furgones } = useData();
   const [formData, setFormData] = useState({
     tipo: evento.tipo,
     fecha: formatearFecha(evento.fecha),
@@ -27,43 +29,7 @@ const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
         subtipos.map((sub) => ({ nArea, subtipo: sub }))
       );
 
-  const [personas, setPersonas] = useState([]);
-  const [tractores, setTractores] = useState([]);
-  const [furgones, setFurgones] = useState([]);
   const [uploading, setUploading] = useState(false);
-
-  useEffect(() => {
-    const cargarPersonas = async () => {
-      try {
-        const data = await listarColeccion("personas");
-        setPersonas(data);
-      } catch (error) {
-        console.error("Error cargando personas:", error);
-      }
-    };
-
-    const cargarTractores = async () => {
-      try {
-        const data = await listarColeccion("tractores");
-        setTractores(data);
-      } catch (error) {
-        console.error("Error al cargar tractores: ", error);
-      }
-    };
-
-    const cargarFurgones = async () => {
-      try {
-        const data = await listarColeccion("furgones");
-        setFurgones(data);
-      } catch (error) {
-        console.error("Error al cargar furgones:", error);
-      }
-    };
-
-    cargarPersonas();
-    cargarTractores();
-    cargarFurgones();
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -237,4 +203,4 @@ const FormularioEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   );
 };
 
-export default FormularioEventoSatelital;
+export default FormEventoSatelital;

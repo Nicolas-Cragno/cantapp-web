@@ -1,10 +1,13 @@
-import "./css/GroupCards.css";
-import Card from "./cards/Card";
+// ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
-import { FaSpinner } from "react-icons/fa";
-import ModalVehiculo from "./modales/ModalVehiculo";
-import ModalPersona from "./modales/ModalPersona";
+import { FaSpinner as LogoLoading } from "react-icons/fa";
+
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../context/DataContext";
+import ModalPersona from "./modales/ModalPersona";
+import ModalVehiculo from "./modales/ModalVehiculo";
+import Card from "./cards/Card";
+import "./css/GroupCards.css";
 
 const Flota = () => {
   const { tractores, furgones, vehiculos, personas } = useData();
@@ -70,7 +73,7 @@ const Flota = () => {
           <Card
             title="Empleados"
             value={
-              loading ? <FaSpinner className="spinner" /> : `${cantPersonas}`
+              loading ? <LogoLoading className="spinner" /> : `${cantPersonas}`
             }
             // route="/personas"
             onClick={() => setModalPersonasVisible(true)}
@@ -78,7 +81,7 @@ const Flota = () => {
           <Card
             title="Tractores"
             value={
-              loading ? <FaSpinner className="spinner" /> : `${cantTractores}`
+              loading ? <LogoLoading className="spinner" /> : `${cantTractores}`
             }
             // route="/tractores"
             onClick={() => setModalTractoresVisible(true)}
@@ -87,7 +90,7 @@ const Flota = () => {
           <Card
             title="Furgones"
             value={
-              loading ? <FaSpinner className="spinner" /> : `${cantFurgones}`
+              loading ? <LogoLoading className="spinner" /> : `${cantFurgones}`
             }
             //route="/furgones"
             onClick={() => setModalFurgonesVisible(true)}
@@ -95,7 +98,7 @@ const Flota = () => {
           <Card
             title="Vehiculos"
             value={
-              loading ? <FaSpinner className="spinner" /> : `${cantVehiculos}`
+              loading ? <LogoLoading className="spinner" /> : `${cantVehiculos}`
             }
             //route="/vehiculos"
             onClick={() => setModalVehiculosVisible(true)}

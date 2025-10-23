@@ -6,9 +6,9 @@ const formularios = {
   vehiculo: lazy(() => import("./FormVehiculo")),
   // eventos, viajes, etc
   porteria: lazy(() => import("./FormEventoPorteria")),
-  satelital: lazy(() => import("./FormularioEventoSatelital")),
-  tractores: lazy(() => import("./FormularioEventoTaller")),
-  furgones: lazy(() => import("./FormularioEventoTaller")),
+  satelital: lazy(() => import("./FormEventoSatelital")),
+  tractores: lazy(() => import("./FormEventoTaller")),
+  furgones: lazy(() => import("./FormEventoTaller")),
   llave: lazy(() => import("./FormLlave")),
   stock: lazy(() => import("./FormStock")),
   movimientoStock: lazy(() => import("./FormMovimientoStock")),

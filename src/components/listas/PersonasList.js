@@ -1,18 +1,8 @@
-// src/components/PersonasList.js
-import { useEffect, useState } from "react";
-import { listarColeccion } from "../../functions/db-functions"; // o el path correcto
+import { useData } from "../../context/DataContext";
 
 const PersonasList = () => {
-  const [personas, setPersonas] = useState([]);
+  const {personas } = useData();  
 
-  useEffect(() => {
-    const fetchPersonas = async () => {
-      const datos = await listarColeccion("personas"); // Usa cache si existe
-      setPersonas(datos);
-    };
-
-    fetchPersonas();
-  }, []);
 
   return (
     <div>

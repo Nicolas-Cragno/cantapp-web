@@ -1,5 +1,7 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo, useEffect } from "react";
+
+// ----------------------------------------------------------------------- imports INTERNOS
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../tablas/TablaColeccion";
 import "./css/Modales.css";

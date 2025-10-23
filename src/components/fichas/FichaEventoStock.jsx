@@ -1,6 +1,9 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState, useEffect } from "react";
-import { FaArrowAltCircleUp, FaArrowAltCircleDown } from "react-icons/fa";
+import { useState } from "react";
+import {
+  FaArrowAltCircleUp as LogoUp,
+  FaArrowAltCircleDown as LogoDown,
+} from "react-icons/fa";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
@@ -10,10 +13,8 @@ import {
   buscarEmpresa,
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-import "./css/Fichas.css";
 import Unidades from "../../functions/data/unidades.json";
+import "./css/Fichas.css";
 
 const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
   const { proveedores, stock } = useData();
@@ -86,11 +87,7 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                           i.cantidad < 0 ? "item-rojo" : "item-verde"
                         }`}
                       >
-                        {i.cantidad > 0 ? (
-                          <FaArrowAltCircleUp />
-                        ) : (
-                          <FaArrowAltCircleDown />
-                        )}
+                        {i.cantidad > 0 ? <LogoUp /> : <LogoDown />}
                       </div>
                       <div className="item-info-small">
                         <strong>{i.id}</strong>
@@ -120,11 +117,7 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
             </div>
           </div>
         </div>
-      ) : (
-        <div>
-          {/* Aquí podrías integrar un formulario de edición si lo necesitás */}
-        </div>
-      )}
+      ) : null}
     </>
   );
 };

@@ -13,8 +13,6 @@ import {
   verificarDuplicado,
 } from "../../functions/dataFunctions";
 import puestos from "../../functions/data/puestos.json";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
 
 const FormPersona = ({

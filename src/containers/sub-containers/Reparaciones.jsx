@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
-import { FaSpinner } from "react-icons/fa";
-import { IoKeySharp } from "react-icons/io5";
+import { FaSpinner as LogoLoading } from "react-icons/fa";
+import { IoKeySharp as LogoKey } from "react-icons/io5";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -14,19 +14,12 @@ import {
   buscarEmpresa,
   buscarDominio,
 } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- elementos
-import LogoButton from "../../components/buttons/LogoButton";
 import FichaGestor from "../../components/fichas/FichaGestor";
-// import FichaEventoTaller from "../../components/fichas/FichaEventoTaller";
-import FichaLlave from "../../components/fichas/FichaLlave";
-// import FormularioEventoTaller from "../../components/forms/FormularioEventoTaller"
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalStock from "../../components/modales/ModalStock";
 import FormGestor from "../../components/forms/FormGestor";
 import FormLlave from "../../components/forms/FormLlave";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
+import LogoButton from "../../components/buttons/LogoButton";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoDefault from "../../assets/logos/logo.svg";
@@ -198,7 +191,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
       {loading ? (
         <div className="loading-item">
-          <FaSpinner className="spinner" />
+          <LogoLoading className="spinner" />
         </div>
       ) : (
         <TablaColeccion
@@ -291,7 +284,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
               className="table-agregar"
               onClick={() => setModalKeyVisible(true)}
             >
-              <IoKeySharp className="button-logo" />
+              <LogoKey className="button-logo" />
             </button>
           )}
 

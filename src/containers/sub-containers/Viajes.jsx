@@ -1,7 +1,8 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
+import { FaSpinner as LogoLoading } from "react-icons/fa";
 
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
 import TextButton from "../../components/buttons/TextButton";
@@ -14,17 +15,11 @@ import {
   buscarEmpresa,
   buscarDominio,
 } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- elementos
 import FichaGestor from "../../components/fichas/FichaGestor";
 import FormGestor from "../../components/forms/FormGestor";
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalPersona from "../../components/modales/ModalPersona";
-
-// ----------------------------------------------------------------------- elementos
-import { FaSpinner } from "react-icons/fa";
-import { IoKeySharp } from "react-icons/io5";
-import LogoViaje from "../../assets/logos/logo.svg"; //crear
+import LogoViaje from "../../assets/logos/logo.svg";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoPersona from "../../assets/logos/logopersonal-w.png";
@@ -185,7 +180,7 @@ const Viajes = () => {
 
       {loading ? (
         <div className="loading-item">
-          <FaSpinner className="spinner" />
+          <LogoLoading className="spinner" />
         </div>
       ) : (
         <TablaColeccion

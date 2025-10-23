@@ -1,8 +1,10 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
-import { BsPersonDash } from "react-icons/bs"; // logo innactiva
-import { BsPersonCheck } from "react-icons/bs"; // logo activa
-import { BsPersonPlusFill } from "react-icons/bs"; // logo agregar
+import {
+  BsPersonDash as LogoDash,
+  BsPersonCheck as LogoCheck,
+  BsPersonPlusFill as LogoPlus,
+} from "react-icons/bs";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -10,10 +12,8 @@ import { buscarPersona } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
 import FichaGestor from "../fichas/FichaGestor";
 import FormPersona from "../forms/FormPersona";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-import "./css/Modales.css";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
+import "./css/Modales.css";
 
 const ModalPersona = ({ puesto = null, onClose }) => {
   const [filtro, setFiltro] = useState("");
@@ -48,9 +48,9 @@ const ModalPersona = ({ puesto = null, onClose }) => {
       campo: "estado",
       render: (e) =>
         e === true ? (
-          <BsPersonCheck className="logoestado logo-active" />
+          <LogoCheck className="logoestado logo-active" />
         ) : (
-          <BsPersonDash className="logoestado logo-disabled" />
+          <LogoDash className="logoestado logo-disabled" />
         ),
       offresponsive: true,
     },
@@ -120,7 +120,7 @@ const ModalPersona = ({ puesto = null, onClose }) => {
 
         <div className="ficha-buttons">
           <button onClick={() => setModalAgregarVisible(true)}>
-            <BsPersonPlusFill size={26} />
+            <LogoPlus size={26} />
           </button>
         </div>
 

@@ -4,13 +4,8 @@ import Select from "react-select";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
+import { formatearFecha } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
-import {
-  formatearFecha,
-  formatearFechaCorta,
-} from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- estilos
 import "./css/Modales.css";
 
 const ModalTramos = ({ onClose, tramos, setTramos }) => {

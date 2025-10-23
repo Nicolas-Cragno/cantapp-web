@@ -1,5 +1,5 @@
-import "./css/Buttons.css";
 import LogoDefault from "../../assets/logos/logo.svg";
+import "./css/Buttons.css";
 
 const TextButton = ({
   text = "",

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
-import { FaSignInAlt } from "react-icons/fa";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSignInAlt as LogoSingIn } from "react-icons/fa";
+import { FaSignOutAlt as LogoSingOut } from "react-icons/fa";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
@@ -15,8 +15,6 @@ import {
 import FormGestor from "../forms/FormGestor";
 import TextButton from "../buttons/TextButton";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
 
 const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
@@ -93,12 +91,12 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
                 <strong>
                   {elemento.tipo === "ENTRADA" ? (
                     <>
-                      <FaSignInAlt className="ficha-type-logo" /> ENTRADA AL
+                      <LogoSingIn className="ficha-type-logo" /> ENTRADA AL
                       PREDIO
                     </>
                   ) : elemento.tipo === "SALIDA" ? (
                     <>
-                      <FaSignOutAlt className="ficha-type-logo" />
+                      <LogoSingOut className="ficha-type-logo" />
                       SALIDA DEL PREDIO
                     </>
                   ) : null}

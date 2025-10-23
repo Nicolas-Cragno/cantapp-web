@@ -1,9 +1,8 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import Select from "react-select";
 
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import { agregar, modificar } from "../../functions/dbFunctions";
 import {
@@ -11,10 +10,7 @@ import {
   buscarCuitEmpresa,
   verificarDuplicado,
   minimizarVehiculo,
-  buscarPersona,
 } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
 
 const FormVehiculo = ({

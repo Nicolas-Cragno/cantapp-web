@@ -2,7 +2,7 @@
 import { Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import RutaProtegida from "./RutaProtegida";
 import Layout from "../../components/Layout";
 

@@ -1,3 +1,5 @@
+import { useData } from "../../context/DataContext";
+import { buscarEmpresa } from "../../functions/dataFunctions";
 import LogoTC from "../../assets/images/logo-tc-color.png";
 import LogoEX from "../../assets/images/logo-ex-color.png";
 import LogoTA from "../../assets/images/logo-ta-color.png";
@@ -5,27 +7,18 @@ import LogoDefault from "../../assets/images/logo-truck.png";
 import "./css/Logos.css";
 
 const LogoEmpresaTxt = ({ cuitEmpresa, completo = true }) => {
+  const { empresas } = useData();
   const logos = {
     30610890403: LogoTC,
     30644511304: LogoEX,
     30683612916: LogoTA,
   };
-
-  const nombres = {
-    30610890403: "TRANSPORTES CANTARINI",
-    30644511304: "EXPRESO CANTARINI",
-    30683612916: "TRANSAMERICA TRANSPORTES",
-  };
-
-  const nombresAbreviados = {
-    30610890403: "TC",
-    30644511304: "EX",
-    30683612916: "TA",
-  };
-
+  const empresasFiltro = empresas.filter(
+    (e) => e.tipo.toLowerCase() === "propia"
+  );
   const logo = logos[cuitEmpresa] || LogoDefault;
-  const nombre = nombres[cuitEmpresa] || "SIN ASIGNAR";
-  const nombreAbreviado = nombresAbreviados[cuitEmpresa] || "S/A";
+  const nombre = buscarEmpresa(empresasFiltro, cuitEmpresa);
+  const nombreAbreviado = buscarEmpresa(empresasFiltro, cuitEmpresa, false);
 
   return (
     <div className="logo-empresa-txt">

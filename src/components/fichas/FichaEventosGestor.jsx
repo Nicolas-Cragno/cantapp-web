@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import tipoEventos from "../../functions/data/eventos.json";
 
 const fichas = {
   // desde evento.tipo

@@ -1,5 +1,5 @@
-import "./css/Sections.css";
 import Reparaciones from "./sub-containers/Reparaciones";
+import "./css/Sections.css";
 
 const Furgones = () => {
   return (

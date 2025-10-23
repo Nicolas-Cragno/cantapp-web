@@ -1,6 +1,6 @@
+import { IoMdAlert as AlertLogo } from "react-icons/io";
+import { IoRefreshCircle as RefreshLogo } from "react-icons/io5";
 import "./css/Buttons.css";
-import { IoMdAlert } from "react-icons/io";
-import { IoRefreshCircle } from "react-icons/io5";
 
 const AlertButton = ({
   txtFront = "Hay actualizaciones",
@@ -10,11 +10,11 @@ const AlertButton = ({
   return (
     <button className="alert-btn" onClick={onClick}>
       <span className="btn-text visible">
-        <IoMdAlert />
+        <AlertLogo />
         {txtFront}
       </span>
       <span className="btn-text hidden">
-        <IoRefreshCircle />
+        <RefreshLogo />
         {txtBack}
       </span>
     </button>

@@ -8,9 +8,7 @@ const Page404 = () => {
     <div className="pagina404-container">
       <h1 className="pagina404-titulo">404</h1>
       <p className="pagina404-subtitulo">Página no encontrada</p>
-      <p className="pagina404-texto">
-        La página que estás buscando no existe o fue movida.
-      </p>
+      <p className="pagina404-texto">La página que estás buscando no existe.</p>
       <button className="pagina404-boton" onClick={() => navigate("/")}>
         Volver al inicio
       </button>

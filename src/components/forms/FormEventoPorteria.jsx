@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
-import { FaCheck as OkLogo } from "react-icons/fa";
-import { GiCancel as XLogo } from "react-icons/gi";
+import { FaCheck as LogoCheck } from "react-icons/fa";
+import { GiCancel as LogoCancel } from "react-icons/gi";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
@@ -11,14 +11,8 @@ import { agregarEvento } from "../../functions/eventFunctions";
 import { agregarItem, quitarItem } from "../../functions/stockFunctions";
 import FormVehiculo from "./FormVehiculo";
 import FormPersona from "./FormPersona";
-
-// ----------------------------------------------------------------------- json e info
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
-import chequeosPorteriaFletero from "../../functions/data/chequeosPorteriaFletero.json";
-
 import tiposEventos from "../../functions/data/eventos.json";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import TextButton from "../buttons/TextButton";
 import "./css/Forms.css";
 
@@ -530,7 +524,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                       }
                       onClick={() => handleCarga(true)}
                     >
-                      <XLogo className="check-logo" />
+                      <LogoCancel className="check-logo" />
                       CARGADO
                     </button>
                     <button
@@ -540,7 +534,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                       }
                       onClick={() => handleCarga(false)}
                     >
-                      <OkLogo className="check-logo" />
+                      <LogoCheck className="check-logo" />
                       VACIO
                     </button>{" "}
                   </>

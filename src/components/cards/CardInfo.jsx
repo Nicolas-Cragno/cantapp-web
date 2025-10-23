@@ -1,8 +1,11 @@
-import "./css/CardInfo.css";
-import Swal from "sweetalert2";
+// ----------------------------------------------------------------------- imports externos
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+
+// ----------------------------------------------------------------------- imports internos
 import RepairLogo from "../../assets/logos/repairLogo.png";
 import DeniedLogo from "../../assets/logos/deniedLogo.png";
+import "./css/CardInfo.css";
 
 const CardInfo = ({
   title,

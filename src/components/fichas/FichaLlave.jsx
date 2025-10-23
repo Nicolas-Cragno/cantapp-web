@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------- imports externos
 import { useEffect, useState } from "react";
-import { FaKey } from "react-icons/fa";
-import { TbChecklist } from "react-icons/tb";
+import { FaKey as LogoKey } from "react-icons/fa";
+import { TbChecklist as LogoCheck } from "react-icons/tb";
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import FormGestor from "../forms/FormGestor";
@@ -11,7 +11,6 @@ import {
   buscarPersona,
   buscarEmpresa,
 } from "../../functions/dataFunctions";
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Fichas.css";
 import TextButton from "../buttons/TextButton";
 
@@ -97,17 +96,17 @@ const FichaLlave = ({ elemento, onClose, onGuardar }) => {
                 <strong>
                   {elemento.tipo === "RETIRA" ? (
                     <>
-                      <FaKey className="ficha-type-logo" /> RETIRA LLAVES
+                      <LogoKey className="ficha-type-logo" /> RETIRA LLAVES
                     </>
                   ) : elemento.tipo === "ENTREGA" ||
                     elemento.tipo === "DEJA" ? (
                     <>
-                      <FaKey className="ficha-type-logo" />
+                      <LogoKey className="ficha-type-logo" />
                       ENTREGA LLAVES
                     </>
                   ) : elemento.tipo === "INVENTARIO" ? (
                     <>
-                      <TbChecklist className="ficha-type-logo" />
+                      <LogoCheck className="ficha-type-logo" />
                       INVENTARIO DE LLAVES
                     </>
                   ) : null}

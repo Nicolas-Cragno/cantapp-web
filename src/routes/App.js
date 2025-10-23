@@ -1,10 +1,13 @@
-import '../assets/css/App.css';
+// ----------------------------------------------------------------------- imports externos
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// ----------------------------------------------------------------------- imports internos
+import { rutasProtegidas } from './access/RutasProtegidas.jsx';
+import { DataProvider } from '../context/DataContext.jsx';
 import Login from './Login.jsx';
 import Denied from './Denied.jsx';
 import Page404 from './404.jsx';
-import { rutasProtegidas } from './access/RutasProtegidas.jsx';
-import { DataProvider } from '../context/DataContext.jsx';
+import '../assets/css/App.css';
 
 function App() {
   return (

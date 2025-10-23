@@ -1,13 +1,18 @@
-import "./css/Fichas.css";
-import { formatearFecha, formatearHora } from "../../functions/data-functions";
+// ----------------------------------------------------------------------- imports externos
+import { useData } from "../../context/DataContext";
 import { useEffect, useState } from "react";
-import FormularioEvento from "../forms/FormularioEventoSatelital";
+
+// ----------------------------------------------------------------------- imports internos
 import {
-  buscarNombrePorDni,
-  listarColeccion,
-} from "../../functions/db-functions";
+  formatearFecha,
+  formatearHora,
+  buscarPersona,
+} from "../../functions/dataFunctions";
+import FormEventoSatelital from "../forms/FormEventoSatelital";
+import "./css/Fichas.css";
 
 const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
+  const { personas, tractores, furgones } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
   const [nombre, setNombre] = useState("SIN ASIGNAR");
   const [tractor, setTractor] = useState("SIN ASIGNAR");
@@ -20,12 +25,11 @@ const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
       if (!evento) return null;
 
       if (evento.persona) {
-        const nombrePersona = await buscarNombrePorDni(evento.persona);
+        const nombrePersona = await buscarPersona(personas, evento.persona);
         setNombre(nombrePersona);
       }
 
       if (evento.tractor) {
-        const tractores = await listarColeccion("tractores");
         const dTractor = tractores.find((t) => t.interno === evento.tractor);
         if (dTractor) {
           setTractor(`${dTractor.dominio} (${dTractor.interno})`);
@@ -33,7 +37,6 @@ const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
       }
 
       if (evento.furgon) {
-        const furgones = await listarColeccion("furgones");
         const dFurgon = furgones.find((f) => f.interno === evento.furgon);
         if (dFurgon) {
           setFurgon(`${dFurgon.dominio} (${dFurgon.interno})`);
@@ -100,7 +103,7 @@ const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
           </div>
         </div>
       ) : (
-        <FormularioEvento
+        <FormEventoSatelital
           evento={evento}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}

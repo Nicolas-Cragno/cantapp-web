@@ -11,8 +11,6 @@ import {
 } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
 import FichaEventosGestor from "../fichas/FichaEventosGestor";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Modales.css";
 
 const ModalEventos = ({ tipo = null, onRowClick = null, onClose }) => {

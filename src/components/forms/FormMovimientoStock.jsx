@@ -2,25 +2,22 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Select from "react-select";
-import { FaCirclePlus } from "react-icons/fa6";
-import { FaArrowAltCircleUp, FaArrowAltCircleDown } from "react-icons/fa";
+import { FaCirclePlus as LogoPlus } from "react-icons/fa6";
+import {
+  FaArrowAltCircleUp as LogoUp,
+  FaArrowAltCircleDown as LogoDown,
+} from "react-icons/fa";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
+import { agregarEvento } from "../../functions/eventFunctions";
 import {
   sumarMultiplesCantidades,
-  obtenerNombreUnidad,
   agregarStockADeposito,
 } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- jsons
-import Proveedores from "../../functions/data/proveedores.json";
 import Sectores from "../../functions/data/areas.json";
 import Unidades from "../../functions/data/unidades.json";
-
-// ----------------------------------------------------------------------- visuales
 import "./css/Forms.css";
-import { agregarEvento } from "../../functions/eventFunctions";
 
 const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
   const { stock, proveedores } = useData();
@@ -68,12 +65,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
     const articulo = articulos.find((a) => a.id === articuloSeleccionado);
 
     const nuevoIngreso = {
-      logo:
-        tipoMovimiento === "ALTA" ? (
-          <FaArrowAltCircleUp />
-        ) : (
-          <FaArrowAltCircleDown />
-        ),
+      logo: tipoMovimiento === "ALTA" ? <LogoUp /> : <LogoDown />,
       id: articulo.id,
       descripcion: articulo.descripcion,
       cantidad:
@@ -363,7 +355,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                   type="button"
                   onClick={handleAgregar}
                 >
-                  <FaCirclePlus className="plus-logo" />
+                  <LogoPlus className="plus-logo" />
                 </button>
               </div>
             </div>

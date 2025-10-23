@@ -14,17 +14,13 @@ import {
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
 import FormGestor from "./FormGestor";
-// ----------------------------------------------------------------------- json e info
 import tiposEventos from "../../functions/data/eventos.json";
-import CodigosProv from "../../functions/data/proveedores.json";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-import "./css/Forms.css";
 import PlusLogo from "../../assets/logos/pluslogo.png";
 import RefreshLogo from "../../assets/logos/refreshlogo.png";
 import DropLogo from "../../assets/logos/droplogo.png";
+import "./css/Forms.css";
 
-const FormularioEventoTaller = ({
+const FormEventoTaller = ({
   elemento = {},
   area = "tractores",
   subarea = null,
@@ -619,4 +615,4 @@ const FormularioEventoTaller = ({
   );
 };
 
-export default FormularioEventoTaller;
+export default FormEventoTaller;

@@ -1,7 +1,7 @@
+import { FaUser as LogoPerson } from "react-icons/fa";
+import { FaTruckFront as LogoTruck } from "react-icons/fa6";
+import { PiShippingContainerFill as LogoContainer } from "react-icons/pi";
 import "./css/BigCard.css";
-import { FaUser } from "react-icons/fa";
-import { FaTruckFront } from "react-icons/fa6";
-import { PiShippingContainerFill } from "react-icons/pi";
 
 const BigCard = ({ title, value1, value2, value3, logo }) => {
   return (
@@ -17,14 +17,13 @@ const BigCard = ({ title, value1, value2, value3, logo }) => {
             </div>
             <div className="card-section">
               <p className="big-card-value">
-                {value1} empleados <FaUser className="small-logo" />
+                {value1} empleados <LogoPerson className="small-logo" />
               </p>
               <p className="big-card-value">
-                {value2} tractores <FaTruckFront className="small-logo" />
+                {value2} tractores <LogoTruck className="small-logo" />
               </p>
               <p className="big-card-value">
-                {value3} furgones{" "}
-                <PiShippingContainerFill className="small-logo" />
+                {value3} furgones <LogoContainer className="small-logo" />
               </p>
             </div>
           </div>
@@ -36,19 +35,19 @@ const BigCard = ({ title, value1, value2, value3, logo }) => {
           <div className="col-md small2">
             <div className="big-card-section">
               <p className="big-card-value">
-                <FaUser className="small-logo" />
+                <LogoPerson className="small-logo" />
                 {value1}
               </p>
             </div>
             <div className="big-card-section">
               <p className="big-card-value">
-                <FaTruckFront className="small-logo" />
+                <LogoTruck className="small-logo" />
                 {value2}
               </p>
             </div>
             <div className="big-card-section">
               <p className="big-card-value">
-                <PiShippingContainerFill className="small-logo" />
+                <LogoContainer className="small-logo" />
                 {value2}
               </p>
             </div>

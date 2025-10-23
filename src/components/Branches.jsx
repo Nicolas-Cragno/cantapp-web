@@ -1,8 +1,11 @@
 // ----------------------------------------------------------------------- imports externos
-import "./css/GroupCards.css";
-import MiniCard from "./cards/MiniCard";
 import { useState } from "react";
+
+// ----------------------------------------------------------------------- imports internos
+import MiniCard from "./cards/MiniCard";
 import ModalBranch from "./modales/ModalBranch";
+import "./css/GroupCards.css";
+
 const Branches = () => {
   const [modalTorcuatoVisible, setModalTorcuatoVisible] = useState(false);
 

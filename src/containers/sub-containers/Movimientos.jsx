@@ -1,8 +1,9 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { FaSpinner as LogoLoading } from "react-icons/fa";
+import { IoKeySharp as LogoKey } from "react-icons/io5";
 
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
 import TextButton from "../../components/buttons/TextButton";
@@ -15,18 +16,15 @@ import {
   buscarEmpresa,
   buscarDominio,
 } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- elementos
 import FichaEventoPorteria from "../../components/fichas/FichaEventoPorteria";
 import FichaLlave from "../../components/fichas/FichaLlave";
+
 import FormularioEventoPorteria from "../../components/forms/FormEventoPorteria";
 import FormLlave from "../../components/forms/FormLlave";
+
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalPersona from "../../components/modales/ModalPersona";
 
-// ----------------------------------------------------------------------- visuales, logos, etc
-import { FaSpinner } from "react-icons/fa";
-import { IoKeySharp } from "react-icons/io5";
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
@@ -219,7 +217,7 @@ const Movimientos = () => {
 
       {loading ? (
         <div className="loading-item">
-          <FaSpinner className="spinner" />
+          <LogoLoading className="spinner" />
         </div>
       ) : (
         <TablaColeccion
@@ -307,7 +305,7 @@ const Movimientos = () => {
         </div>
         <div className="table-options-group">
           <LogoButton
-            logo={<IoKeySharp />}
+            logo={<LogoKey />}
             onClick={() => setModalKeyVisible(true)}
           />
           <TextButton

@@ -1,8 +1,11 @@
-import "./css/CardButton.css";
-import { GiAutoRepair } from "react-icons/gi";
-import Swal from "sweetalert2";
+// ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
-import FormularioMovimientoStock from "../forms/FormularioMovimientoStock";
+import { GiAutoRepair as LogoRepair } from "react-icons/gi";
+import Swal from "sweetalert2";
+
+// ----------------------------------------------------------------------- imports internos
+import FormMovimientoStock from "../forms/FormMovimientoStock";
+import "./css/CardButton.css";
 
 const CardButton = ({ title, backColor, state = true }) => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -33,13 +36,13 @@ const CardButton = ({ title, backColor, state = true }) => {
           <h1 className="card-button-title2">{title}</h1>
           {!state && (
             <span className="card-button-alert">
-              no disponible <GiAutoRepair className="card-button-alert-logo" />
+              no disponible <LogoRepair className="card-button-alert-logo" />
             </span>
           )}
         </div>
       </div>
 
-      {mostrarFormulario && <FormularioMovimientoStock onClose={handleClose} />}
+      {mostrarFormulario && <FormMovimientoStock onClose={handleClose} />}
     </>
   );
 };

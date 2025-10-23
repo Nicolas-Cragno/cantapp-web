@@ -1,13 +1,11 @@
 // ----------------------------------------------------------------------- imports externos
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Swal from "sweetalert2";
 
-// ----------------------------------------------------------------------- internos
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import { agregar, modificar } from "../../functions/dbFunctions";
 import { idNuevoProveedor } from "../../functions/dataFunctions";
-
-// ----------------------------------------------------------------------- visuales, logos, etc
 import "./css/Forms.css";
 
 const FormProveedor = ({ onClose, onGuardar }) => {

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner as LogoLoading } from "react-icons/fa";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -9,11 +9,6 @@ import FichaStock from "../../components/fichas/FichaStock";
 import FormStock from "../../components/forms/FormStock";
 import FormMovimientoStock from "../../components/forms/FormMovimientoStock";
 import unidades from "../../functions/data/unidades.json";
-
-// ----------------------------------------------------------------------- elementos
-
-// ----------------------------------------------------------------------- visuales, logos, etc
-
 import LogoStock from "../../assets/logos/logostock-w.png";
 import TextButton from "../../components/buttons/TextButton";
 import ModalEventos from "../../components/modales/ModalEventos";
@@ -98,7 +93,7 @@ const Deposito = ({ taller = null }) => {
 
       {loading ? (
         <div className="loading-item">
-          <FaSpinner className="spinner" />
+          <LogoLoading className="spinner" />
         </div>
       ) : (
         <TablaColeccion

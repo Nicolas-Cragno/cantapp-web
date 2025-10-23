@@ -1,7 +1,12 @@
+// ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
-import { BsPersonDash, BsPersonCheck } from "react-icons/bs";
+import {
+  BsPersonDash as LogoPersonDash,
+  BsPersonCheck as LogoPersonCheck,
+} from "react-icons/bs";
 import Swal from "sweetalert2";
 
+// ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import {
   buscarEmpresa,
@@ -10,12 +15,10 @@ import {
 } from "../../functions/dataFunctions";
 import { altaBaja } from "../../functions/dbFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
-
 import TablaEventosReducida from "../tablas/TablaEventosReducida";
 import FormPersona from "../forms/FormPersona";
 import FichaEventosGestor from "../fichas/FichaEventosGestor";
 import LogoEmpresa from "../logos/LogoEmpresa";
-
 import "./css/Fichas.css";
 
 const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
@@ -115,12 +118,12 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
               <p className="info-minitext">{edad ? edad + " años" : null}</p>
               {persona.estado ? (
                 <p className="info-minitext stateBox" onClick={handleBaja}>
-                  activo <BsPersonCheck className="logoestado logo-active" />
+                  activo <LogoPersonCheck className="logoestado logo-active" />
                 </p>
               ) : (
                 <p className="info-minitext stateBox" onClick={handleAlta}>
                   innactivo{" "}
-                  <BsPersonDash className="logoestado logo-disabled" />
+                  <LogoPersonDash className="logoestado logo-disabled" />
                 </p>
               )}
             </div>
