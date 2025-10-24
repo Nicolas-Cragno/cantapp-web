@@ -270,6 +270,22 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem;
+  
+}
+
+.form-delete{
+  /*
+  */
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+
+.form-buttons-right {
+  width: 100%;
+  justify-content: right !important;
 }
 
 .input-inline {

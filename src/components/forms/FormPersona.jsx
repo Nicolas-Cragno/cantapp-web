@@ -385,6 +385,7 @@ const FormPersona = ({
                         >
                           <h2 className="item-title">{index + 1}° periodo</h2>
                         </div>
+
                         <div
                           key={index}
                           className={
@@ -465,10 +466,43 @@ const FormPersona = ({
                                 }
                               />
                             </label>
+
+                            <button
+                              className="form-delete"
+                              onClick={() =>
+                                setFormData((data) => ({
+                                  ...data,
+                                  periodos: data.periodos.filter(
+                                    (_, i) => i !== index
+                                  ),
+                                }))
+                              }
+                            >
+                              {" "}
+                              ✕{" "}
+                            </button>
+                          </div>
+                          <div className="form-buttons form-buttons-right">
+                            {" "}
                           </div>
                         </div>
                       </>
                     ))}
+                  </div>
+                  <div className="form-buttons form-buttons-right">
+                    <TextButton
+                      text="+ Nuevo periodo"
+                      className="mini-btn"
+                      onClick={() =>
+                        setFormData((data) => ({
+                          ...data,
+                          periodos: [
+                            ...(data.periodos || []),
+                            { inicio: "", fin: "", empresa: "", detalle: "" },
+                          ],
+                        }))
+                      }
+                    />
                   </div>
                 </>
               )}
