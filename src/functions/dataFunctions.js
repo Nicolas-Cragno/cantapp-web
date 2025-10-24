@@ -148,7 +148,87 @@ export const calcularEdad = (fechaNacimiento) => {
   return edad;
 };
 
+export const iniciarPeriodo = async (
+  idPersona,
+  datos
+) => {
+  try {
+    if (!idPersona) throw new Error("ID de persona inválido");
 
+    const personaRef = doc(db, "personas", String(idPersona));
+
+    const nuevoPeriodo = {
+      id: Date.now(), // ID temporal o local
+      empresa: datos.empresa || "",
+      puesto: datos.puesto || "",
+      inicio: normalizarFecha(datos.fechaInicio),
+      fin: null,
+      observaciones: datos.observaciones,
+    };
+
+    await updateDoc(personaRef, {
+      periodos: arrayUnion(nuevoPeriodo),
+    });
+
+    console.log(`Periodo agregado a persona ${idPersona}`);
+    return nuevoPeriodo;
+  } catch (error) {
+    console.error("Error al iniciar periodo:", error);
+    throw error;
+  }
+};
+
+export const finalizarPeriodo = async (idPersona, fechaFin = new Date()) => {
+  try {
+    if (!idPersona) throw new Error("ID de persona inválido");
+
+    const personaRef = doc(db, "personas", String(idPersona));
+    const snap = await getDoc(personaRef);
+
+    if (!snap.exists()) throw new Error("Persona no encontrada");
+
+    const data = snap.data();
+    const periodos = Array.isArray(data.periodos) ? [...data.periodos] : [];
+
+    // Buscar el primer periodo con fin == null (es decir, el activo)
+    const indexActivo = periodos.findIndex((p) => p.fin == null);
+
+    if (indexActivo === -1) {
+      // No hay periodo activo → crear uno nuevo cerrado
+      const nuevoPeriodo = {
+        id: Date.now(),
+        empresa: "",
+        puesto: "",
+        inicio: null,
+        fin: normalizarFecha(fechaFin),
+        observaciones: "Cierre sin inicio",
+      };
+
+      await updateDoc(personaRef, {
+        periodos: arrayUnion(nuevoPeriodo),
+      });
+
+      console.log(
+        `No se encontró periodo activo, se creó uno nuevo cerrado para persona ${idPersona}`
+      );
+      return nuevoPeriodo;
+    }
+
+    // Si hay un periodo activo, cerrarlo
+    periodos[indexActivo] = {
+      ...periodos[indexActivo],
+      fin: normalizarFecha(fechaFin),
+    };
+
+    await updateDoc(personaRef, { periodos });
+
+    console.log(`Periodo finalizado para persona ${idPersona}`);
+    return periodos[indexActivo];
+  } catch (error) {
+    console.error("Error al finalizar periodo:", error);
+    throw error;
+  }
+};
 
 
 // ----------------------------------------------------------------------- Vehiculos

@@ -13,8 +13,10 @@ import {
   formatearFecha,
   calcularEdad,
   calcularTiempo,
+  iniciarPeriodo,
+  finalizarPeriodo,
 } from "../../functions/dataFunctions";
-import { altaBaja } from "../../functions/dbFunctions";
+import { altaBaja, modificar } from "../../functions/dbFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
 import TablaEventosReducida from "../tablas/TablaEventosReducida";
 import FormPersona from "../forms/FormPersona";
@@ -66,10 +68,24 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
           persona: persona.id,
           detalle: motivo,
         };
-        await altaBaja("personas", persona.id, false);
-        elemento.estado = false;
-        elemento.empresa = null;
-        await agregarEvento(datosBaja, "administracion");
+        try {
+          await altaBaja("personas", persona.id, false);
+          elemento.estado = false;
+          elemento.empresa = null;
+          await agregarEvento(datosBaja, "administracion");
+          await finalizarPeriodo(persona.id, new Date());
+          await modificar("personas", persona.id, { estado: false });
+        } catch (error) {
+          console.error("Error al registrar baja:", error);
+          Swal.fire({
+            title: "Error",
+            text: "No se pudo completar la baja.",
+            icon: "error",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "#4161bd",
+          });
+        }
+        onClose();
       }
     });
   };
@@ -99,9 +115,21 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
           persona: persona.id,
           empresa: result.value,
         };
-        await altaBaja("personas", persona.id, datosAlta.empresa, true);
-        elemento.estado = true;
-        await agregarEvento(datosAlta, "administracion");
+        try {
+          await altaBaja("personas", persona.id, datosAlta.empresa, true);
+          elemento.estado = true;
+          await agregarEvento(datosAlta, "administracion");
+          await iniciarPeriodo(persona.id, datosAlta);
+        } catch (error) {
+          console.error("Error al registrar alta:", error);
+          Swal.fire({
+            title: "Error",
+            text: "No se pudo completar el alta.",
+            icon: "error",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "#4161bd",
+          });
+        }
       }
     });
   };
@@ -240,37 +268,40 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                   )}
                 </p>
                 <div className="ficha-info-box special">
-                  {persona.periodos?.map((p, index) => {
-                    const inicio = formatearFecha(p.inicio);
-                    const fin = p.fin ? formatearFecha(p.fin) : "Actualidad";
-                    const duracion = calcularTiempo(p.inicio, p.fin);
+                  {persona.periodos
+                    ?.slice()
+                    .sort((a, b) => new Date(a.inicio) - new Date(b.inicio))
+                    .map((p, index) => {
+                      const inicio = formatearFecha(p.inicio);
+                      const fin = p.fin ? formatearFecha(p.fin) : "Actualidad";
+                      const duracion = calcularTiempo(p.inicio, p.fin);
 
-                    return (
-                      <div key={index} className="special-item">
-                        <div className="special-header">
-                          <span className="list-cant">{index + 1}</span>
-                          <span className="special-fechas">
-                            {inicio} – {fin}{" "}
-                            <span className="special-duracion">
-                              ({duracion})
+                      return (
+                        <div key={index} className="special-item">
+                          <div className="special-header">
+                            <span className="list-cant">{index + 1}</span>
+                            <span className="special-fechas">
+                              {inicio} – {fin}{" "}
+                              <span className="special-duracion">
+                                ({duracion})
+                              </span>
                             </span>
-                          </span>
-                        </div>
+                          </div>
 
-                        <div className="special-body">
-                          <p className="special-detalle">
-                            {p.detalle || "Sin detalle"}
-                          </p>
-                          <div className="special-logo">
-                            <LogoEmpresaTxt
-                              cuitEmpresa={p.empresa}
-                              completo={false}
-                            />
+                          <div className="special-body">
+                            <p className="special-detalle">
+                              {p.detalle || "Sin detalle"}
+                            </p>
+                            <div className="special-logo">
+                              <LogoEmpresaTxt
+                                cuitEmpresa={p.empresa}
+                                completo={false}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
                 </div>
                 {persona.comentario && (
                   <>

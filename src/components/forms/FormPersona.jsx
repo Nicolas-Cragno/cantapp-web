@@ -375,119 +375,124 @@ const FormPersona = ({
                   </p>
 
                   <div className="form-info-box">
-                    {formData.periodos?.map((p, index) => (
-                      <>
-                        <div
-                          className={`form-special-item-header ${
-                            activeIndex !== index ? "margin-bt" : ""
-                          }`}
-                          onClick={() => handleActiveItem(index)}
-                        >
-                          <h2 className="item-title">{index + 1}° periodo</h2>
-                        </div>
-
-                        <div
-                          key={index}
-                          className={
-                            activeIndex === index
-                              ? "form-special-item"
-                              : "form-special-item-innactive"
-                          }
-                        >
+                    {formData.periodos
+                      ?.slice()
+                      .sort((a, b) => new Date(a.inicio) - new Date(b.inicio))
+                      .map((p, index) => (
+                        <>
                           <div
-                            className="special-body"
-                            style={{ flexDirection: "column", gap: "6px" }}
+                            className={`form-special-item-header ${
+                              activeIndex !== index ? "margin-bt" : ""
+                            }`}
+                            onClick={() => handleActiveItem(index)}
                           >
-                            <label>
-                              Inicio:
-                              <input
-                                type="date"
-                                value={p.inicio}
-                                onChange={(e) =>
-                                  handleChangePeriodo(
-                                    index,
-                                    "inicio",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </label>
+                            <h2 className="item-title">{index + 1}° periodo</h2>
+                          </div>
 
-                            <label>
-                              Fin:
-                              <input
-                                type="date"
-                                value={p.fin || ""}
-                                onChange={(e) =>
-                                  handleChangePeriodo(
-                                    index,
-                                    "fin",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </label>
+                          <div
+                            key={index}
+                            className={
+                              activeIndex === index
+                                ? "form-special-item"
+                                : "form-special-item-innactive"
+                            }
+                          >
+                            <div
+                              className="special-body"
+                              style={{ flexDirection: "column", gap: "6px" }}
+                            >
+                              <label>
+                                Inicio:
+                                <input
+                                  type="date"
+                                  value={p.inicio}
+                                  onChange={(e) =>
+                                    handleChangePeriodo(
+                                      index,
+                                      "inicio",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </label>
 
-                            <label>
-                              Empresa:
-                              <select
-                                value={p.empresa || ""}
-                                onChange={(e) =>
-                                  handleChangePeriodo(
-                                    index,
-                                    "empresa",
-                                    e.target.value
-                                  )
+                              <label>
+                                Fin:
+                                <input
+                                  type="date"
+                                  value={p.fin || ""}
+                                  onChange={(e) =>
+                                    handleChangePeriodo(
+                                      index,
+                                      "fin",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </label>
+
+                              <label>
+                                Empresa:
+                                <select
+                                  value={p.empresa || ""}
+                                  onChange={(e) =>
+                                    handleChangePeriodo(
+                                      index,
+                                      "empresa",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option value="">
+                                    Seleccionar empresa...
+                                  </option>
+                                  {empresas
+                                    .filter((e) => e.tipo === "propia")
+                                    .map((e) => (
+                                      <option key={e.cuit} value={e.cuit}>
+                                        {e.nombre}
+                                      </option>
+                                    ))}
+                                </select>
+                              </label>
+
+                              <label>
+                                Detalle:
+                                <textarea
+                                  type="text"
+                                  placeholder="Detalle"
+                                  value={p.detalle || ""}
+                                  onChange={(e) =>
+                                    handleChangePeriodo(
+                                      index,
+                                      "detalle",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </label>
+
+                              <button
+                                className="form-delete"
+                                onClick={() =>
+                                  setFormData((data) => ({
+                                    ...data,
+                                    periodos: data.periodos.filter(
+                                      (_, i) => i !== index
+                                    ),
+                                  }))
                                 }
                               >
-                                <option value="">Seleccionar empresa...</option>
-                                {empresas
-                                  .filter((e) => e.tipo === "propia")
-                                  .map((e) => (
-                                    <option key={e.cuit} value={e.cuit}>
-                                      {e.nombre}
-                                    </option>
-                                  ))}
-                              </select>
-                            </label>
-
-                            <label>
-                              Detalle:
-                              <textarea
-                                type="text"
-                                placeholder="Detalle"
-                                value={p.detalle || ""}
-                                onChange={(e) =>
-                                  handleChangePeriodo(
-                                    index,
-                                    "detalle",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </label>
-
-                            <button
-                              className="form-delete"
-                              onClick={() =>
-                                setFormData((data) => ({
-                                  ...data,
-                                  periodos: data.periodos.filter(
-                                    (_, i) => i !== index
-                                  ),
-                                }))
-                              }
-                            >
+                                {" "}
+                                ✕{" "}
+                              </button>
+                            </div>
+                            <div className="form-buttons form-buttons-right">
                               {" "}
-                              ✕{" "}
-                            </button>
+                            </div>
                           </div>
-                          <div className="form-buttons form-buttons-right">
-                            {" "}
-                          </div>
-                        </div>
-                      </>
-                    ))}
+                        </>
+                      ))}
                   </div>
                   <div className="form-buttons form-buttons-right">
                     <TextButton
