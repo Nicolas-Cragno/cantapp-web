@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BsPersonDash as LogoPersonDash,
   BsPersonCheck as LogoPersonCheck,
@@ -12,6 +12,7 @@ import {
   buscarEmpresa,
   formatearFecha,
   calcularEdad,
+  calcularTiempo,
 } from "../../functions/dataFunctions";
 import { altaBaja } from "../../functions/dbFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
@@ -19,6 +20,7 @@ import TablaEventosReducida from "../tablas/TablaEventosReducida";
 import FormPersona from "../forms/FormPersona";
 import FichaEventosGestor from "../fichas/FichaEventosGestor";
 import LogoEmpresa from "../logos/LogoEmpresa";
+import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import "./css/Fichas.css";
 
 const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
@@ -26,9 +28,19 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
+  const [panelAdminVisible, setPanelAdminVisible] = useState(false);
+  const user = JSON.parse(localStorage.getItem("usuario"));
 
   const { empresas } = useData();
 
+  useEffect(() => {
+    const activarPanelOculto = () => {
+      if (user.rol === "dev" || user.rol === "superadmin")
+        setPanelAdminVisible(true);
+    };
+
+    activarPanelOculto();
+  });
   if (!persona) return null;
 
   const fechaNacimiento = formatearFecha(persona.nacimiento);
@@ -129,7 +141,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
             </div>
 
             <p className="ficha-info-title">
-              <strong>Información Personal</strong>
+              <strong>Información Personal</strong>{" "}
             </p>
             <div className="ficha-info container">
               <div className="row">
@@ -157,6 +169,19 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
 
             <p className="ficha-info-title">
               <strong>Información laboral</strong>
+              {panelAdminVisible && persona.alerta ? (
+                <span
+                  className={`ficha-info-alert ${
+                    persona.alerta === "NO RETOMAR"
+                      ? "alert-red"
+                      : persona.alerta === "RETOMAR"
+                      ? "alert-green"
+                      : ""
+                  }`}
+                >
+                  {persona.alerta}
+                </span>
+              ) : null}
             </p>
             <div className="ficha-info container">
               <div className="row">
@@ -199,6 +224,65 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                   <p>{persona.detalle}</p>
                 </div>
               </>
+            )}
+
+            {panelAdminVisible && (
+              <div className="panel-superadmin">
+                <h2 className="form-info-title2">administración</h2>
+                <br />
+                <p className="ficha-info-title">
+                  <strong>Periodos contratado</strong>
+                  {persona.periodos && persona.periodos.length > 0 && (
+                    <span className="list-cant2">
+                      {persona.periodos.length} periodo
+                      {persona.periodos.length !== 1 && "s"}
+                    </span>
+                  )}
+                </p>
+                <div className="ficha-info-box special">
+                  {persona.periodos?.map((p, index) => {
+                    const inicio = formatearFecha(p.inicio);
+                    const fin = p.fin ? formatearFecha(p.fin) : "Actualidad";
+                    const duracion = calcularTiempo(p.inicio, p.fin);
+
+                    return (
+                      <div key={index} className="special-item">
+                        <div className="special-header">
+                          <span className="list-cant">{index + 1}</span>
+                          <span className="special-fechas">
+                            {inicio} – {fin}{" "}
+                            <span className="special-duracion">
+                              ({duracion})
+                            </span>
+                          </span>
+                        </div>
+
+                        <div className="special-body">
+                          <p className="special-detalle">
+                            {p.detalle || "Sin detalle"}
+                          </p>
+                          <div className="special-logo">
+                            <LogoEmpresaTxt
+                              cuitEmpresa={p.empresa}
+                              completo={false}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {persona.comentario && (
+                  <>
+                    <p className="ficha-info-title">
+                      <strong>Comentarios</strong>
+                    </p>
+                    <div className="ficha-info">
+                      <p>{persona.comentario}</p>
+                    </div>
+                  </>
+                )}
+              </div>
             )}
 
             <TablaEventosReducida

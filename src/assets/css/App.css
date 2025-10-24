@@ -6,6 +6,15 @@
   display: none !important;
 }
 
+.panel-superadmin {
+  background-color: #fff6d2;
+}
+
+.gapp{
+  gap: 1rem;
+}
+
+
 /* Formato de paginas en general*/
 .page{
     display: flex;

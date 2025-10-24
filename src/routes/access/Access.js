@@ -4,16 +4,16 @@ export const Access = {
 
     
     // Solo administradores ["admin", "dev"]
-    "/recursos": ["admin", "dev"],
-    "/stock": ["admin","dev"],                 // talleres
+    "/recursos": ["admin", "superadmin", "dev"],
+    "/stock": ["admin", "superadmin","dev"],                 // talleres
     
     // Usuarios / administradores ["user", "admin","dev"]
-    "/porteria": ["user", "admin","dev"],    // seguridad / porteria
-    "/tractores" : ["user", "admin", "dev"], // taller tractores
-    "/furgones" : ["user", "admin", "dev"],
+    "/porteria": ["user", "admin", "superadmin","dev"],    // seguridad / porteria
+    "/tractores" : ["user", "admin", "superadmin", "dev"], // taller tractores
+    "/furgones" : ["user", "admin", "superadmin", "dev"],
     
     // Todos
-    "/": ["user", "admin", "dev"],
-    "/perfil": ["user", "admin", "dev"],
+    "/": ["user", "admin", "superadmin", "dev"],
+    "/perfil": ["user", "admin", "superadmin", "dev"],
 
 }

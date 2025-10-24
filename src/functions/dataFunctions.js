@@ -58,8 +58,8 @@ export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
   return cuit;
 }
 
-export const verificarDuplicado = (coleccion, dni) => {
-  return coleccion.some((p) => String(p.dni) === String(dni));
+export const verificarDuplicado = (coleccion, idx) => {
+  return coleccion.some((p) => String(p.idx) === String(idx));
 };
 // ----------------------------------------------------------------------- Personas
 
@@ -147,6 +147,9 @@ export const calcularEdad = (fechaNacimiento) => {
 
   return edad;
 };
+
+
+
 
 // ----------------------------------------------------------------------- Vehiculos
 
@@ -391,6 +394,29 @@ export const formatearFechaHoraInput = (fecha) => {
   const min = pad(d.getMinutes());
   const ss = pad(d.getSeconds());
   return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+};
+
+export const calcularTiempo = (inicio, fin = new Date()) => {
+  const fechaInicio = normalizarFecha(inicio);
+  const fechaFin = normalizarFecha(fin);
+
+  if (!fechaInicio || !fechaFin) return null;
+
+  let años = fechaFin.getFullYear() - fechaInicio.getFullYear();
+  let meses = fechaFin.getMonth() - fechaInicio.getMonth();
+
+  if (meses < 0) {
+    años--;
+    meses += 12;
+  }
+
+  if (años < 0) return null;
+
+  let texto = "";
+  if (años > 0) texto += `${años} año${años > 1 ? "s" : ""}`;
+  if (meses > 0) texto += `${años > 0 ? " y " : ""}${meses} mes${meses > 1 ? "es" : ""}`;
+
+  return texto || "menos de un mes";
 };
 
 // ----------------------------------------------------------------------- valores / unidades

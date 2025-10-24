@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 // ----------------------------------------------------------------------- imports internos
 import { Access } from "./Access";
 
-const jerarquia = ["user", "admin", "dev"];
+const jerarquia = ["user", "admin", "superadmin", "dev"];
 
 const RutaProtegida = ({ children }) => {
   const [firebaseUser, setFirebaseUser] = useState(null);

@@ -194,13 +194,32 @@ background-color: #d8252a;
 }
 
 .ficha-info-title{
+  display: flex;
+  justify-content: space-between;
   margin-bottom: -2rem;
+}
+
+.ficha-info-alert{
+  background-color: #ffdd1c;
+  padding-right: .5rem;
+  padding-left: .5rem;
+  font-weight: 600;
+}
+
+.alert-red{
+ background-color: #e55e62;
+}
+
+.alert-green{
+ background-color: #2ecc71;
 }
 
 .ficha-info-item{
   display: flex;
   padding-left: 2.3rem;
 }
+
+
 
 .ficha-info-item-txt{
   padding-left: 0.8rem;
@@ -221,6 +240,17 @@ background-color: #d8252a;
   justify-content: center;
 }
 
+.ficha-info-item-txt3{
+  border-radius: 5rem;
+  text-transform: uppercase;
+  font-size:x-small;
+  font-weight: 800;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .ficha-info {
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -231,6 +261,88 @@ background-color: #d8252a;
   border-width: 0.1rem;
   border-color: #888; 
 }
+
+.ficha-info.special {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.special{
+  background-color: #e2dbbb;
+}
+
+.special-item {
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 8px 12px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.special-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.list-cant {
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.list-cant2 {
+  font-weight: bold;
+  background-color: #000;
+  color: white;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  font-size: 1rem;
+}
+
+
+.special-fechas {
+  font-weight: 500;
+  color: #333;
+}
+
+.special-duracion {
+  color: #666;
+  font-style: italic;
+  margin-left: 4px;
+}
+
+.special-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.special-detalle {
+  flex: 1;
+  margin: 0;
+  color: #444;
+}
+
+.special-logo {
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+
 
 .ficha-info-box{
   margin-top: 2rem;
