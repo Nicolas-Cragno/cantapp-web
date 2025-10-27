@@ -91,7 +91,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
           tipo: Codigos[formData.tipo]?.tipo,
           unidad: formData.unidad?.toUpperCase() || "UNIDADES",
           proveedor: formData.proveedor || null,
-          codigoProveedor: formData.codigoProveedor || null,
+          codigoProveedor: formData.codigoProveedor.toUpperCase() || null,
           marca: formData.marca?.toUpperCase() || null,
           cantidad: Number(formData.cantidad) || 0,
           detalle: formData.detalle?.toUpperCase() || null,

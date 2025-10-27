@@ -27,6 +27,7 @@ const FichaEventoTaller = ({
   const [mecanico, setMecanico] = useState("");
   const [chofer, setChofer] = useState("");
   const [tractor, setTractor] = useState("SIN ASIGNAR");
+  const [kilometraje, setKilometraje] = useState(null);
   const [furgon, setFurgon] = useState("SIN ASIGNAR");
   const [repuestos, setRepuestos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -111,9 +112,14 @@ const FichaEventoTaller = ({
               </p>
 
               {tipoVehiculo === "tractores" ? (
-                <p>
-                  <strong>Tractor: </strong> {tractor}
-                </p>
+                <>
+                  <p>
+                    <strong>Tractor: </strong> {tractor}
+                  </p>
+                  <p>
+                    <strong>Kilometraje: </strong> {evento.kilometraje}
+                  </p>
+                </>
               ) : tipoVehiculo === "furgones" ? (
                 <p>
                   <strong>Furgón: </strong>

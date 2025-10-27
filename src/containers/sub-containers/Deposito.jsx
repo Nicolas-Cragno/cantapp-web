@@ -38,7 +38,11 @@ const Deposito = ({ taller = null }) => {
     { titulo: "ID", campo: "id", offresponsive: true },
     { titulo: "DESCRIPCION", campo: "descripcion" },
     { titulo: "MARCA", campo: "marca" },
-    { titulo: "COD. PROVEEDOR", campo: "codigoProveedor", offresponsive: true },
+    {
+      titulo: "COD. PROVEEDOR",
+      campo: "codigoProveedor",
+      offresponsive: true,
+    },
     {
       titulo: "CANTIDAD",
       campo: "cantidad",

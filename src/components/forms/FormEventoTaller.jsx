@@ -13,6 +13,7 @@ import {
   marcaPorCodigo,
   buscarPersona,
   buscarDominio,
+  abreviarUnidad,
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
 import FormGestor from "./FormGestor";
@@ -88,6 +89,8 @@ const FormEventoTaller = ({
         evento.repuestos.map((r) => ({
           id: r.id,
           descripcion: r.descripcion,
+          marca: r.marca,
+          codigoProveedor: r.codigoProveedor,
           cantidad: r.cantidad,
           unidad: r.unidad,
         }))
@@ -101,7 +104,6 @@ const FormEventoTaller = ({
     cargarMecanicos();
     cargarChoferes();
   }, [evento.id, articuloSeleccionado, stock, evento, personas]);
-
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
     setIngresos([]); // limpiar ingresos agregados manualmente
@@ -130,6 +132,8 @@ const FormEventoTaller = ({
       const repuestos = listaArticulosFinal.map((item) => ({
         id: item.id,
         descripcion: item.descripcion,
+        marca: item.marca,
+        codigoProveedor: item.codigoProveedor,
         cantidad: item.cantidad,
         unidad: item.unidad,
       }));
@@ -239,7 +243,6 @@ const FormEventoTaller = ({
       setUploading(false);
     }
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -259,6 +262,8 @@ const FormEventoTaller = ({
     const nuevoIngreso = {
       id: articulo.id,
       descripcion: articulo.descripcion,
+      marca: articulo.marca,
+      codigoProveedor: articulo.codigoProveedor,
       cantidad: Number(cantidad),
       unidad: articulo.unidad,
     };
@@ -539,7 +544,7 @@ const FormEventoTaller = ({
             </label>
           </div>
           <div className="form-right">
-            <div className="form-box">
+            <div className="form-box overflow-visible">
               <label>
                 Cargar repuesto
                 <div className="select-with-button">
@@ -551,21 +556,34 @@ const FormEventoTaller = ({
                         label: `${a.id} - ${a.descripcion} (${marcaPorCodigo(
                           stock,
                           a.id
-                        ).toUpperCase()})`,
+                        ).toUpperCase()}${
+                          a.codigoProveedor
+                            ? " " + a.codigoProveedor.toUpperCase()
+                            : ""
+                        })`,
                       }))
                       .sort((a, b) => a.label.localeCompare(b.label))}
                     value={
                       articuloSeleccionado
-                        ? {
-                            value: articuloSeleccionado,
-                            label: `${
-                              stock.find((a) => a.id === articuloSeleccionado)
-                                ?.descripcion || ""
-                            } (${
-                              stock.find((a) => a.id === articuloSeleccionado)
-                                ?.marca || ""
-                            })`,
-                          }
+                        ? (() => {
+                            const articulo = stock.find(
+                              (a) => a.id === articuloSeleccionado
+                            );
+                            if (!articulo) return null;
+                            return {
+                              value: articulo.id,
+                              label: `${articulo.id} - ${
+                                articulo.descripcion
+                              } (${marcaPorCodigo(
+                                stock,
+                                articulo.id
+                              ).toUpperCase()}${
+                                articulo.codigoProveedor
+                                  ? " " + articulo.codigoProveedor.toUpperCase()
+                                  : ""
+                              })`,
+                            };
+                          })()
                         : null
                     }
                     onChange={(opt) => {
@@ -625,10 +643,18 @@ const FormEventoTaller = ({
                     <div className="item-info">
                       <strong>{item.id}</strong>
                     </div>
-                    <div className="item-info">{item.descripcion}</div>
+                    <div className="item-info">
+                      {item.descripcion}
+                      {item.marca ? " | " + item.marca.toUpperCase() : ""}
+                      {item.codigoProveedor
+                        ? ` (${item.codigoProveedor.toUpperCase()})`
+                        : ""}
+                    </div>
+
                     <div className="item-actions">
-                      <span className="list-cant">
-                        + {item.cantidad} {item.unidad.toUpperCase()}
+                      <span className="list-cant3">
+                        + {item.cantidad}
+                        {" " + abreviarUnidad(item.unidad)}
                       </span>
 
                       <button

@@ -55,7 +55,7 @@ const FichaStock = ({ articulo, onClose, onGuardar }) => {
                 <p>
                   <strong>Proveedor</strong>
                   <br />
-                  {articulo.proveedor}
+                  {articulo.proveedor.toUpperCase()}
                 </p>
               ) : null}
               {articulo.codigoProveedor ? (

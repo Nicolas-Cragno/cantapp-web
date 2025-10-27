@@ -230,6 +230,16 @@
   font-size: 1rem;
 }
 
+.list-cant3 {
+  font-size: smaller;
+  font-weight: bold;
+  background-color: #000;
+  color: white;
+  padding-left: .2rem;
+  padding-right: .2rem ;
+  border-radius: 1rem;
+  }
+
 
 .special-fechas {
   font-weight: 500;
@@ -380,11 +390,14 @@
   min-height: 25vh;
   max-width: 100%;
   max-height: 25vh;
-  overflow: visible;
+  overflow: auto;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;  /* IE y Edge */
 }
 
+.overflow-visible{
+  overflow: visible !important;
+}
 
 .form-box2{
   border-style: solid;
