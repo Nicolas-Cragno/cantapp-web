@@ -380,7 +380,7 @@
   min-height: 25vh;
   max-width: 100%;
   max-height: 25vh;
-  overflow: auto;
+  overflow: visible;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;  /* IE y Edge */
 }
@@ -560,6 +560,11 @@ padding-top: 1rem;}
 .select-grow {
   flex: 1;               /* hace que el Select crezca al máximo */
 }
+
+.select-grow .react-select__menu {
+  z-index: 9999 !important;
+}
+
 
 .doble-select {
   display: flex;

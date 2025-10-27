@@ -11,6 +11,8 @@ import {
   formatearHora,
   unidadArticulo,
   marcaPorCodigo,
+  buscarPersona,
+  buscarDominio,
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
 import FormGestor from "./FormGestor";
@@ -29,7 +31,7 @@ const FormEventoTaller = ({
 }) => {
   const evento = elemento || {};
 
-  const { tractores, furgones, personas, stock } = useData();
+  const { tractores, furgones, vehiculos, personas, stock } = useData();
 
   const [formData, setFormData] = useState({
     tipo: evento?.tipo || "",
@@ -135,9 +137,13 @@ const FormEventoTaller = ({
       const datosAGuardar = {
         ...formData,
         fecha: fechaParaGuardar,
+        chofer: formData.chofer ? Number(formData.chofer) : null,
+        mecanico: formData.mecanico ? Number(formData.mecanico) : null,
         subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
+        tractor: formData.tractor ? Number(formData.tractor) : null,
+        furgon: formData.furgon ? Number(formData.furgon) : null,
         kilometraje: formData.kilometraje ? Number(formData.kilometraje) : null,
         area: formData.area || area,
         subarea: formData.subarea || subarea,
@@ -145,6 +151,63 @@ const FormEventoTaller = ({
         usuario: evento.id ? evento.usuario || usuarioDeCarga : usuarioDeCarga,
         repuestos,
       };
+
+      const confirmacion = await Swal.fire({
+        title: "Confirmar datos",
+        html: `
+        <b>Fecha:</b> ${fechaParaGuardar.toLocaleString()}<hr>
+        <b>Mecanico:</b> ${
+          buscarPersona(personas, datosAGuardar.mecanico) || "-"
+        }<br>
+        <b>Chofer:</b> ${
+          buscarPersona(personas, datosAGuardar.chofer) || "-"
+        }<br>
+        <b>Vehículo:</b> ${
+          datosAGuardar.tractor
+            ? datosAGuardar.tractor +
+              " (" +
+              buscarDominio(datosAGuardar.tractor, tractores) +
+              ")"
+            : datosAGuardar.furgon
+            ? datosAGuardar.furgon +
+              " (" +
+              buscarDominio(datosAGuardar.furgon, furgones) +
+              ")"
+            : datosAGuardar.vehiculo
+            ? datosAGuardar.vehiculo +
+              " (" +
+              buscarDominio(datosAGuardar.vehiculo, vehiculos) +
+              ")"
+            : "-"
+        }<br>
+        <b>Kilometraje:</b> ${datosAGuardar.kilometraje || "-"}<br><hr>
+        <b>Detalle:</b> ${datosAGuardar.detalle || "-"}<hr>
+        <b>Repuestos:</b><hr> ${
+          repuestos.length > 0
+            ? `<ul style="text-align:left; padding-left:25px;">
+            ${repuestos
+              .map(
+                (r) => `
+                <li style="font-size:smaller; list-style:none">
+                  <b>${r.id}</b> - ${r.descripcion} (${r.cantidad} ${r.unidad})
+                </li>`
+              )
+              .join("")}
+          </ul>`
+            : "<i>Sin repuestos</i>"
+        }      `,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#4161bd",
+        cancelButtonColor: "#999",
+      });
+
+      if (!confirmacion.isConfirmed) {
+        setUploading(false);
+        return; // Si cancela, no guarda
+      }
 
       const eventoGuardado = evento.id
         ? await agregarEvento(datosAGuardar, area, evento.id)
@@ -370,7 +433,7 @@ const FormEventoTaller = ({
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          kilometraje: e ? e.value : 0,
+                          kilometraje: e ? Number(e.target.value) : 0,
                         })
                       }
                       min="1"
