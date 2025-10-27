@@ -36,6 +36,7 @@ const FormEventoTaller = ({
     chofer: evento?.chofer ? String(evento.chofer) : "",
     mecanico: evento?.mecanico ? String(evento.mecanico) : "",
     tractor: evento?.tractor || "",
+    kilometraje: evento?.kmTractor || "",
     furgon: evento?.furgon || "",
     detalle: evento?.detalle || "",
     area: evento?.area || area,
@@ -137,6 +138,7 @@ const FormEventoTaller = ({
         subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
+        kilometraje: formData.kilometraje ? Number(formData.kilometraje) : null,
         area: formData.area || area,
         subarea: formData.subarea || subarea,
         detalle: formData.detalle?.toUpperCase() || null,
@@ -318,46 +320,63 @@ const FormEventoTaller = ({
 
             {area === "tractores" ? (
               <>
-                <label>
-                  Tractor *
-                  <div className="select-with-button">
-                    <Select
-                      className="select-grow"
-                      options={tractores
-                        .map((t) => ({
-                          value: t.interno,
-                          label: `${t.dominio} (${t.interno})`,
-                          int: t.interno,
-                        }))
-                        .sort((a, b) => a.int - b.int)}
-                      value={
-                        formData.tractor
-                          ? {
-                              value: formData.tractor,
-                              label:
-                                tractores.find(
-                                  (t) => t.interno === formData.tractor
-                                )?.dominio + ` (${formData.tractor})`,
-                            }
-                          : null
-                      }
-                      onChange={(opt) =>
+                <div className="doble-select">
+                  <label>
+                    Tractor *
+                    <div className="select-with-button">
+                      <Select
+                        className="select-grow"
+                        options={tractores
+                          .map((t) => ({
+                            value: t.interno,
+                            label: `${t.dominio} (${t.interno})`,
+                            int: t.interno,
+                          }))
+                          .sort((a, b) => a.int - b.int)}
+                        value={
+                          formData.tractor
+                            ? {
+                                value: formData.tractor,
+                                label:
+                                  tractores.find(
+                                    (t) => t.interno === formData.tractor
+                                  )?.dominio + ` (${formData.tractor})`,
+                              }
+                            : null
+                        }
+                        onChange={(opt) =>
+                          setFormData({
+                            ...formData,
+                            tractor: opt ? opt.value : "",
+                          })
+                        }
+                        placeholder=""
+                        isClearable
+                        required={area === "tractores"}
+                      />
+                      <TextButton
+                        text="+"
+                        className="mini-btn"
+                        onClick={handleClickVehiculo}
+                      />
+                    </div>
+                  </label>
+                  <label>
+                    Kilometraje
+                    <input
+                      className="input-grow"
+                      type="number"
+                      value={formData.kilometraje}
+                      onChange={(e) =>
                         setFormData({
                           ...formData,
-                          tractor: opt ? opt.value : "",
+                          kilometraje: e ? e.value : 0,
                         })
                       }
-                      placeholder=""
-                      isClearable
-                      required={area === "tractores"}
+                      min="1"
                     />
-                    <TextButton
-                      text="+"
-                      className="mini-btn"
-                      onClick={handleClickVehiculo}
-                    />
-                  </div>
-                </label>
+                  </label>
+                </div>
               </>
             ) : null}
 

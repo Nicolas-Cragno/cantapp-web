@@ -559,6 +559,33 @@ padding-top: 1rem;}
 
 .select-grow {
   flex: 1;               /* hace que el Select crezca al máximo */
+}
+
+.doble-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.doble-select label {
+    display: flex;
+
+  flex-direction: column;
+  flex: 1;
+}
+
+.doble-select label:first-child {
+  flex: 2;
+}
+
+.doble-select label:last-child {
+  flex: 1;
+}
+
+.input-grow {
+  width: 100%;
+  box-sizing: border-box;
   
 }
 

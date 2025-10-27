@@ -29,7 +29,7 @@ const SideBar = () => {
       to: "/",
       icon: <LogoHome className="nav-icon" />,
       label: "Inicio",
-      roles: ["dev", "admin", "user"],
+      roles: ["dev", "superadmin", "admin", "user"],
     },
   ];
   const linksManagement = [
@@ -37,13 +37,13 @@ const SideBar = () => {
       to: "/recursos",
       icon: <LogoResources className="nav-icon" />,
       label: "Recursos",
-      roles: ["dev", "admin"],
+      roles: ["dev", "superadmin", "admin"],
     },
     {
       to: "/stock",
       icon: <LogoSettings className="nav-icon" />,
       label: "Stock",
-      roles: ["dev", "admin"],
+      roles: ["dev", "superadmin", "admin"],
     },
   ];
 
@@ -52,19 +52,19 @@ const SideBar = () => {
       to: "/porteria",
       icon: <LogoOut className="nav-icon" />,
       label: "Portería",
-      roles: ["dev", "admin", "user"],
+      roles: ["dev", "superadmin", "admin", "user"],
     },
     {
       to: "/tractores",
       icon: <LogoTruck className="nav-icon" />,
       label: "Tractores",
-      roles: ["dev", "admin", "user"],
+      roles: ["dev", "superadmin", "admin", "user"],
     },
     {
       to: "/furgones",
       icon: <LogoContainer className="nav-icon" />,
       label: "Furgones",
-      roles: ["dev", "admin", "user"],
+      roles: ["dev", "superadmin", "admin", "user"],
     },
     {
       to: "/combustible",
