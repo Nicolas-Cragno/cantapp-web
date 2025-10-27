@@ -397,7 +397,9 @@ const FormEventoTaller = ({
                         options={tractores
                           .map((t) => ({
                             value: t.interno,
-                            label: `${t.dominio} (${t.interno})`,
+                            label: `${t.dominio} (${t.interno}) ${
+                              t.chasis ? "- " + t.chasis : ""
+                            }`,
                             int: t.interno,
                           }))
                           .sort((a, b) => a.int - b.int)}

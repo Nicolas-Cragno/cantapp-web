@@ -147,6 +147,17 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                 <strong>Modelo: </strong>
                 {vehiculo.modelo || ""}
               </p>
+              {vehiculo.motor && (
+                <p>
+                  <strong>Motor: </strong> {vehiculo.motor}
+                </p>
+              )}
+              {vehiculo.chasis && (
+                <p>
+                  <strong>Chasis: </strong> {vehiculo.chasis}
+                </p>
+              )}
+
               {vehiculo.empresa ? (
                 <p>
                   <strong>Empresa: </strong>

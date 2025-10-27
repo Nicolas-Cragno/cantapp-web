@@ -34,6 +34,8 @@ const FormVehiculo = ({
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
   const [empresa, setEmpresa] = useState("");
+  const [motor, setMotor] = useState("");
+  const [chasis, setChasis] = useState("");
   const [persona, setPersona] = useState("");
   const [detalle, setDetalle] = useState("");
   const [loading, setLoading] = useState(false);
@@ -46,6 +48,8 @@ const FormVehiculo = ({
       setDominio(vehiculo.dominio || "");
       setMarca(vehiculo.marca || "");
       setModelo(vehiculo.modelo || "");
+      setMotor(vehiculo.motor || "");
+      setChasis(vehiculo.chasis || "");
       setEmpresa(buscarEmpresa(empresas, vehiculo.empresa) || "");
       setDetalle(vehiculo.detalle || "");
       setPersona(vehiculo.persona || "");
@@ -89,6 +93,8 @@ const FormVehiculo = ({
       dominio: dominio.toUpperCase().trim(),
       marca: marca.toUpperCase().trim(),
       modelo: modelo,
+      motor: motor.toUpperCase(),
+      chasis: chasis.toUpperCase(),
       empresa: buscarCuitEmpresa(empresas, empresa) || null,
       estado: empresa ? true : false,
       detalle: detalle.toUpperCase().trim(),
@@ -249,6 +255,29 @@ const FormVehiculo = ({
               disabled={modoEdicion || loading}
             />
           </label>
+
+          {tipoSeleccionado === "tractores" && (
+            <>
+              <label>
+                Motor
+                <input
+                  type="text"
+                  value={motor}
+                  onChange={(e) => setMotor(e.target.value)}
+                  disabled={loading}
+                />
+              </label>
+              <label>
+                Chasis
+                <input
+                  type="text"
+                  value={chasis}
+                  onChange={(e) => setChasis(e.target.value)}
+                  disabled={loading}
+                />
+              </label>
+            </>
+          )}
 
           <label>
             Empresa
