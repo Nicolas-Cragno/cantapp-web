@@ -11,7 +11,8 @@ import {
 import FormEventoSatelital from "../forms/FormEventoSatelital";
 import "./css/Fichas.css";
 
-const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
+const FichaEventoSatelital = ({ elemento, onClose, onGuardar }) => {
+  const evento = elemento;
   const { personas, tractores, furgones } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
   const [nombre, setNombre] = useState("SIN ASIGNAR");
@@ -42,6 +43,8 @@ const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
           setFurgon(`${dFurgon.dominio} (${dFurgon.interno})`);
         }
       }
+
+      console.log(`  ~ Carga de la ficha del evento ${elemento.id}  ✓️`);
     };
     cargarDatos();
   }, [evento]);
@@ -51,6 +54,7 @@ const FichaEventoSatelital = ({ evento, onClose, onGuardar }) => {
   const handleGuardado = async (eventoModificado) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(eventoModificado);
+    console.log(`  ~ Se guardan cambios del evento ${elemento.id}  ✓️`);
   };
 
   return (

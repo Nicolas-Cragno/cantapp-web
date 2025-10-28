@@ -27,6 +27,10 @@ import "./css/Fichas.css";
 
 const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const persona = elemento;
+  const usuario = JSON.parse(localStorage.getItem("usuario")) || {
+    rol: "",
+  };
+
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
@@ -50,88 +54,104 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const edad = calcularEdad(persona.nacimiento);
 
   const handleBaja = () => {
-    Swal.fire({
-      title: `BAJA ${persona.puesto}`,
-      text: `${persona.apellido}, ${persona.nombres}`,
-      icon: "warning",
-      input: "text",
-      inputPlaceholder: "Motivo de la baja",
-      showCancelButton: true,
-      confirmButtonText: "CONFIRMAR",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const motivo = result.value?.trim() || "Sin motivo";
-        const datosBaja = {
-          fecha: new Date(),
-          tipo: "baja",
-          persona: persona.id,
-          detalle: motivo,
-        };
-        try {
-          await finalizarPeriodo(persona.id, persona.empresa, new Date());
-          await altaBaja("personas", persona.id, false);
-          elemento.estado = false;
-          elemento.empresa = null;
-          await agregarEvento(datosBaja, "administracion");
-          await modificar("personas", persona.id, { estado: false });
-        } catch (error) {
-          console.error("Error al registrar baja:", error);
-          Swal.fire({
-            title: "Error",
-            text: "No se pudo completar la baja.",
-            icon: "error",
-            confirmButtonText: "Entendido",
-            confirmButtonColor: "#4161bd",
-          });
+    if (usuario.rol === "superadmin") {
+      Swal.fire({
+        title: `BAJA ${persona.puesto}`,
+        text: `${persona.apellido}, ${persona.nombres}`,
+        icon: "warning",
+        input: "text",
+        inputPlaceholder: "Motivo de la baja",
+        showCancelButton: true,
+        confirmButtonText: "CONFIRMAR",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const motivo = result.value?.trim() || "Sin motivo";
+          const datosBaja = {
+            fecha: new Date(),
+            tipo: "baja",
+            persona: persona.id,
+            detalle: motivo,
+          };
+          try {
+            await finalizarPeriodo(persona.id, persona.empresa, new Date());
+            await altaBaja("personas", persona.id, false);
+            elemento.estado = false;
+            elemento.empresa = null;
+            await agregarEvento(datosBaja, "administracion");
+            await modificar("personas", persona.id, { estado: false });
+          } catch (error) {
+            console.error("Error al registrar baja:", error);
+            Swal.fire({
+              title: "Error",
+              text: "No se pudo completar la baja.",
+              icon: "error",
+              confirmButtonText: "Entendido",
+              confirmButtonColor: "#4161bd",
+            });
+          }
+          onClose();
         }
-        onClose();
-      }
-    });
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No posee autorización para esta acción.",
+      });
+    }
   };
 
   const handleAlta = () => {
-    const empresasPropias = empresas.filter((e) => e.tipo === "propia");
-    const empresasOptions = {};
-    empresasPropias.forEach((e) => {
-      empresasOptions[e.id] = e.nombre;
-    });
+    if (usuario.rol === "superadmin") {
+      const empresasPropias = empresas.filter((e) => e.tipo === "propia");
+      const empresasOptions = {};
+      empresasPropias.forEach((e) => {
+        empresasOptions[e.id] = e.nombre;
+      });
 
-    Swal.fire({
-      title: `ALTA ${persona.puesto}`,
-      text: `${persona.apellido}, ${persona.nombres}`,
-      icon: "question",
-      input: "select",
-      inputOptions: empresasOptions,
-      inputPlaceholder: "Seleccionar una empresa",
-      showCancelButton: true,
-      confirmButtonText: "CONFIRMAR",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const datosAlta = {
-          fecha: new Date(),
-          tipo: "alta",
-          persona: persona.id,
-          empresa: result.value,
-        };
-        try {
-          await altaBaja("personas", persona.id, datosAlta.empresa, true);
-          elemento.estado = true;
-          await agregarEvento(datosAlta, "administracion");
-          await iniciarPeriodo(persona.id, datosAlta);
-        } catch (error) {
-          console.error("Error al registrar alta:", error);
-          Swal.fire({
-            title: "Error",
-            text: "No se pudo completar el alta.",
-            icon: "error",
-            confirmButtonText: "Entendido",
-            confirmButtonColor: "#4161bd",
-          });
+      Swal.fire({
+        title: `ALTA ${persona.puesto}`,
+        text: `${persona.apellido}, ${persona.nombres}`,
+        icon: "question",
+        input: "select",
+        inputOptions: empresasOptions,
+        inputPlaceholder: "Seleccionar una empresa",
+        showCancelButton: true,
+        confirmButtonText: "CONFIRMAR",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const datosAlta = {
+            fecha: new Date(),
+            tipo: "alta",
+            persona: persona.id,
+            empresa: result.value,
+          };
+          try {
+            await altaBaja("personas", persona.id, datosAlta.empresa, true);
+            elemento.estado = true;
+            await agregarEvento(datosAlta, "administracion");
+            await iniciarPeriodo(persona.id, datosAlta);
+          } catch (error) {
+            console.error("Error al registrar alta:", error);
+            Swal.fire({
+              title: "Error",
+              text: "No se pudo completar el alta.",
+              icon: "error",
+              confirmButtonText: "Entendido",
+              confirmButtonColor: "#4161bd",
+            });
+          }
         }
-      }
-    });
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No posee autorización para esta acción.",
+      });
+    }
   };
 
   const handleGuardado = async (personaModificada) => {

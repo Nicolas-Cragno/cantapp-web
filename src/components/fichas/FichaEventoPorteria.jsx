@@ -53,6 +53,7 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
       }
 
       setModificaciones(modificacionesArray);
+      console.log(`  ~ Carga de la ficha del evento ${elemento.id}  ✓️`);
     };
     cargarDatos();
   }, [elemento]);
@@ -64,10 +65,12 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
   const handleGuardado = async (eventoModificado) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(eventoModificado);
+    console.log(`  ~ Se guardan cambios del evento ${elemento.id}  ✓️`);
   };
 
   const onCloseFormEdit = () => {
     setModoEdicion(false);
+    console.log(`  ~ Se cierra ficha del evento ${elemento.id}`);
   };
 
   return (
@@ -75,7 +78,13 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
       {!modoEdicion ? (
         <div className="ficha">
           <div className="ficha-content">
-            <button className="ficha-close" onClick={onClose}>
+            <button
+              className="ficha-close"
+              onClick={() => {
+                console.log(`  ~ Se cierra la ficha del evento ${elemento.id}`);
+                onClose?.();
+              }}
+            >
               ✕
             </button>
             <h1 className="event-subtipo">
@@ -83,8 +92,8 @@ const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
             </h1>
             <hr />
             <div className="hora">
-              <spam>{fechaFormateada}</spam>
-              <spam>{horaFormateada} HS</spam>
+              <span>{fechaFormateada}</span>
+              <span>{horaFormateada} HS</span>
             </div>
             <div className="ficha-info">
               <p className="ficha-type">

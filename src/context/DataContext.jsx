@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
@@ -31,6 +31,7 @@ export const DataProvider = ({ children }) => {
   const [estaciones, setEstaciones] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  let cargaInicial = useRef(true); // bandera para carga inicial de la app.
 
   useEffect(() => {
     const unsubscribers = [];
@@ -58,19 +59,22 @@ export const DataProvider = ({ children }) => {
       { name: "estaciones", setter: setEstaciones },
     ];
 
+    console.log(`Iniciando carga de datos desde Firestore Firebase...`);
+
     coleccionesFirestore.forEach(({ name, setter }) => {
       const q = query(collection(db, name));
+
       const unsubscribe = onSnapshot(q, (snapshot) => {
         let data;
 
-        // Si es ubicaciones, convierte a objeto {id: doc.data()}
+        // ubicaciones consta de docs con info en formato json
         if (name === "ubicaciones") {
           data = snapshot.docs.reduce((acc, doc) => {
             acc[doc.id] = doc.data();
             return acc;
           }, {});
         } else {
-          // para todas las demás colecciones  array
+          // para el resto   array
           data = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
@@ -78,10 +82,29 @@ export const DataProvider = ({ children }) => {
         }
 
         setter(data);
+        if (cargaInicial.current) {
+          console.log(
+            `  ~ ${name} (${snapshot.size} ${
+              snapshot.size === 1 ? "doc" : "docs"
+            })  ✓️`
+          );
+        } else {
+          console.log(`  ~ Actualizadación en ${name}  ✓️`);
+        }
 
         coleccionesCargadas++;
-        if (coleccionesCargadas === coleccionesFirestore.length)
+
+        if (coleccionesCargadas === coleccionesFirestore.length) {
+          console.log(
+            `Carga finalizada (${coleccionesCargadas}/${
+              coleccionesFirestore.length
+            } ${
+              coleccionesFirestore.length === 1 ? "coleccion" : "colecciones"
+            }).`
+          );
+          cargaInicial.current = false;
           setLoading(false);
+        }
       });
       unsubscribers.push(unsubscribe);
     });

@@ -379,7 +379,7 @@ const FormPersona = ({
                       ?.slice()
                       .sort((a, b) => new Date(a.inicio) - new Date(b.inicio))
                       .map((p, index) => (
-                        <>
+                        <div key={index}>
                           <div
                             className={`form-special-item-header ${
                               activeIndex !== index ? "margin-bt" : ""
@@ -390,7 +390,6 @@ const FormPersona = ({
                           </div>
 
                           <div
-                            key={index}
                             className={
                               activeIndex === index
                                 ? "form-special-item"
@@ -491,7 +490,7 @@ const FormPersona = ({
                               {" "}
                             </div>
                           </div>
-                        </>
+                        </div>
                       ))}
                   </div>
                   <div className="form-buttons form-buttons-right">

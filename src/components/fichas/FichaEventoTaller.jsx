@@ -81,12 +81,14 @@ const FichaEventoTaller = ({
       }
     };
     cargarDatos();
+    console.log(`  ~ Carga de la ficha del evento ${elemento.id}  ✓️`);
   }, [evento]);
 
   if (!evento) return null;
 
   const handleGuardado = async (eventoModificado) => {
     setModoEdicion(false);
+    console.log(`  ~ Se guardan cambios del evento ${elemento.id}  ✓️`);
     if (onGuardar) await onGuardar(eventoModificado);
   };
 

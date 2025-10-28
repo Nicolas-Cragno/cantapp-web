@@ -23,9 +23,11 @@ const FichaEventosGestor = ({ tipo, elemento, onClose, onGuardar }) => {
 
   const Ficha = fichas[tipoLower];
   if (!Ficha) {
-    console.log("Error al buscar ficha para el tipo ", tipo);
+    console.log(`[Error] no se encontro ficha para el tipo  `, tipo);
     return null;
   }
+
+  console.log(`Selección ficha del tipo ${tipoLower}`);
 
   const props = { elemento, onClose, onGuardar };
 

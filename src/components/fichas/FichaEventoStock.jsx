@@ -20,7 +20,12 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
   const { proveedores, stock } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
 
-  if (!elemento) return null;
+  if (!elemento) {
+    console.log(
+      "[Error] se esperaba recibir un elemento (evento) por parámetro."
+    );
+    return null;
+  }
 
   const fechaFormateada = formatearFecha(elemento.fecha);
   const horaFormateada = formatearHora(elemento.fecha);

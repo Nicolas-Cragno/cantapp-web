@@ -62,29 +62,20 @@ const FormEventoTaller = ({
   const [modalArticuloVisible, setModalArticuloVisible] = useState(false);
 
   useEffect(() => {
-    const cargarMecanicos = async () => {
-      try {
-        const data = personas.filter((p) => p.puesto === "MECANICO");
+    const listadoMecanicos = personas.filter((p) => p.puesto === "MECANICO");
+    setMecanicos(listadoMecanicos);
 
-        setMecanicos(data);
-      } catch (error) {
-        console.error("Error al cargar Mecanicos: ", error);
-      }
-    };
-    const cargarChoferes = async () => {
-      try {
-        const data = personas.filter(
-          (p) =>
-            p.puesto === "CHOFER LARGA DISTANCIA" ||
-            p.puesto === "CHOFER MOVIMIENTO" ||
-            p.puesto === "FLETERO"
-        );
-        setChoferes(data);
-      } catch (error) {
-        console.error("Error al carga choferes: ", error);
-      }
-    };
+    const listadoChoferes = personas.filter(
+      (p) =>
+        p.puesto === "CHOFER LARGA DISTANCIA" ||
+        p.puesto === "CHOFER MOVIMIENTO" ||
+        p.puesto === "CHOFER FLETERO" ||
+        p.puesto === "FLETERO"
+    );
+    setChoferes(listadoChoferes);
+  }, [personas]);
 
+  useEffect(() => {
     if (evento.id && evento.repuestos) {
       setArticulosUsados(
         evento.repuestos.map((r) => ({
@@ -98,13 +89,7 @@ const FormEventoTaller = ({
       );
       setArticulosUsadosBackUp(evento.repuestos); // para poder restaurar
     }
-    if (articuloSeleccionado) {
-      const articulo = stock.find((a) => a.id === articuloSeleccionado);
-    }
-
-    cargarMecanicos();
-    cargarChoferes();
-  }, [evento.id, articuloSeleccionado, stock, evento, personas]);
+  }, [evento.id]);
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
     setIngresos([]); // limpiar ingresos agregados manualmente
