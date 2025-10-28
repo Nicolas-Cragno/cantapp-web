@@ -65,6 +65,7 @@ const FormEventoTaller = ({
     const cargarMecanicos = async () => {
       try {
         const data = personas.filter((p) => p.puesto === "MECANICO");
+
         setMecanicos(data);
       } catch (error) {
         console.error("Error al cargar Mecanicos: ", error);
