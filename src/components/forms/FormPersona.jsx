@@ -40,7 +40,7 @@ const FormPersona = ({
     empresa: persona?.empresa ? buscarEmpresa(empresas, persona.empresa) : "",
     tipo: persona?.tipo || "",
     puesto: persona?.puesto || "",
-    ingreso: persona?.ingreso ? formatearFecha(persona.ingreso) : "",
+    ingreso: persona?.ingreso ? formatearFechaInput(persona.ingreso) : "",
     legajo: persona?.legajo || "",
     sucursal: persona?.sucursal || "",
     estado: persona?.estado ? "Activo" : "Inactivo",

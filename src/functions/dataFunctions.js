@@ -218,7 +218,6 @@ export const finalizarPeriodo = async (idPersona, cuitEmpresa=null, fechaFin = n
       }
 
       const nuevoPeriodo = {
-        
         empresa: cuitEmpresa ? cuitEmpresa : "",
         puesto: "",
         inicio: inicioPeriodo !== null ? normalizarFecha(new Date(inicioPeriodo)) : null,
@@ -478,9 +477,19 @@ export const formatearHora = (fechaInput) => {
 export const formatearFechaInput = (fecha) => {
   if (!fecha) return "";
 
-  const f = new Date(fecha);
+  let f;
 
-  if (isNaN(f.getTime())) return ""; 
+  if (fecha.seconds !== undefined && fecha.nanoseconds !== undefined) {
+    // Caso Firestore Timestamp
+    f = new Date(fecha.seconds * 1000 + fecha.nanoseconds / 1000000);
+  } else if (typeof fecha.toDate === "function") {
+    // Caso Timestamp con método .toDate()
+    f = fecha.toDate();
+  } else {
+    f = new Date(fecha);
+  }
+
+  if (isNaN(f.getTime())) return "";
 
   return f.toISOString().split("T")[0]; // yyyy-mm-dd
 };
