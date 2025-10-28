@@ -3,6 +3,7 @@ import unidades from "./data/unidades.json";
 import { useData } from "../context/DataContext";
 import {  doc,updateDoc, getDoc,arrayUnion } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
+import Swal from "sweetalert2";
 
 
 // ----------------------------------------------------------------------- Nombre de empresas
@@ -178,7 +179,7 @@ export const iniciarPeriodo = async (
   }
 };
 
-export const finalizarPeriodo = async (idPersona, fechaFin = new Date()) => {
+export const finalizarPeriodo = async (idPersona, cuitEmpresa=null, fechaFin = new Date()) => {
   try {
     if (!idPersona) throw new Error("ID de persona inválido");
 
@@ -190,18 +191,39 @@ export const finalizarPeriodo = async (idPersona, fechaFin = new Date()) => {
     const data = snap.data();
     const periodos = Array.isArray(data.periodos) ? [...data.periodos] : [];
 
-    // Buscar el primer periodo con fin == null (es decir, el activo)
+    // Buscar el primer periodo con fin == null
     const indexActivo = periodos.findIndex((p) => p.fin == null);
+    let inicioPeriodo;
 
     if (indexActivo === -1) {
-      // No hay periodo activo → crear uno nuevo cerrado
+      const { value: fechaInicio } = await Swal.fire({
+        title: "Periodo no encontrado",
+        text: "La baja no puede asignarse a otro periodo de contratación registrado. Por favor, ingrese la fecha de inicio del mismo:",
+        input: "date",
+        inputValue: new Date().toISOString().split("T")[0],
+        showCancelButton: true,
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Finalizar sin fecha de inicio",
+        inputValidator: (value) => {
+          if (!value) return "Debe ingresar una fecha válida";
+        },
+      });
+
+      // Si el usuario cancela, abortar la operación
+      if (!fechaInicio) {
+        console.log("Operación cancelada por el usuario");
+        inicioPeriodo = null;
+      } else {
+        inicioPeriodo = fechaInicio;
+      }
+
       const nuevoPeriodo = {
-        id: Date.now(),
-        empresa: "",
+        
+        empresa: cuitEmpresa ? cuitEmpresa : "",
         puesto: "",
-        inicio: null,
+        inicio: inicioPeriodo !== null ? normalizarFecha(new Date(inicioPeriodo)) : null,
         fin: normalizarFecha(fechaFin),
-        observaciones: "Cierre sin inicio",
+        observaciones: "Periodo creado para registrar baja sin periodo previo",
       };
 
       await updateDoc(personaRef, {

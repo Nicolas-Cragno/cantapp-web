@@ -69,11 +69,11 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
           detalle: motivo,
         };
         try {
+          await finalizarPeriodo(persona.id, persona.empresa, new Date());
           await altaBaja("personas", persona.id, false);
           elemento.estado = false;
           elemento.empresa = null;
           await agregarEvento(datosBaja, "administracion");
-          await finalizarPeriodo(persona.id, new Date());
           await modificar("personas", persona.id, { estado: false });
         } catch (error) {
           console.error("Error al registrar baja:", error);
