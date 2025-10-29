@@ -27,7 +27,8 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
   useEffect(() => {
     const depo = depositos.find((d) => d.id === idDepo);
     const stockDepo = depo?.stock || [];
-    setArticulos(stockDepo);
+    //setArticulos(stockDepo);
+    setArticulos(stock); //Por el momento no estamos manejando stock, listo TODO
   }, []);
 
   const columnas = [
@@ -84,12 +85,12 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
         </button>
         <div className="modal-header">
           <h1 className="modal-title">
-            <strong>{taller.toUpperCase()}</strong>
+            <strong>REPUESTOS</strong>
           </h1>
           <hr />
           <input
             type="text"
-            placeholder="Filtrar vehículos..."
+            placeholder="Filtrar repuestos..."
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
             className="modal-input-filtro"
