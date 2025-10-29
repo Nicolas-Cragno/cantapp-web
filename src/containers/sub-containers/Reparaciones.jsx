@@ -165,6 +165,12 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
     filtrados = filtrados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
+    // --- dividir el texto del filtro en palabras separadas por coma ---
+    const filtros = filtro
+      .split(",")
+      .map((f) => f.trim().toLowerCase())
+      .filter((f) => f.length > 0);
+
     return filtrados.filter((e) => {
       const fechaTxt = formatearFecha(e.fecha);
       const horaTxt = formatearHora(e.fecha);
@@ -173,16 +179,22 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       const servicio = buscarEmpresa(empresas, e.servicio) || e.servicio || "";
       const tractorDominio = buscarDominio(e.tractor, tractores);
       const furgonDominio = buscarDominio(e.furgon, furgones);
+
       const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
         e.furgon || ""
       } ${fechaTxt} ${horaTxt} ${e.tipo || ""} ${e.usuario} ${
         e.operador
       } ${operador} ${servicio} ${
         e.vehiculo
-      } ${tractorDominio} ${furgonDominio} ${e.persona} ${e.servicio}`;
-      return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
+      } ${tractorDominio} ${furgonDominio} ${e.persona} ${
+        e.servicio
+      }`.toLowerCase();
+
+      // Debe incluir *todos* los términos
+      return filtros.every((term) => textoFiltro.includes(term));
     });
-  });
+  }, [eventos, filtro, personas, empresas, tractores, furgones, AREA]);
+
   return (
     <section className="table-container">
       <div className="table-header">

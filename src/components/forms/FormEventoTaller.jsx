@@ -37,7 +37,12 @@ const FormEventoTaller = ({
   const [formData, setFormData] = useState({
     tipo: evento?.tipo || "",
     chofer: evento?.chofer ? String(evento.chofer) : "",
-    mecanico: evento?.mecanico ? String(evento.mecanico) : "",
+    //mecanico: evento?.mecanico ? String(evento.mecanico) : "", // mecanico individual
+    mecanico: evento?.mecanico
+      ? Array.isArray(evento.mecanico)
+        ? evento.mecanico
+        : [evento.mecanico]
+      : [], // 1 o varios mecanico/s
     tractor: evento?.tractor || "",
     kilometraje: evento?.kmTractor || "",
     furgon: evento?.furgon || "",
@@ -128,7 +133,8 @@ const FormEventoTaller = ({
         ...formData,
         fecha: fechaParaGuardar,
         chofer: formData.chofer ? Number(formData.chofer) : null,
-        mecanico: formData.mecanico ? Number(formData.mecanico) : null,
+        //mecanico: formData.mecanico ? Number(formData.mecanico) : null,
+        mecanico: formData.mecanico ? formData.mecanico.map(Number) : [], // array de dni
         subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
@@ -147,7 +153,7 @@ const FormEventoTaller = ({
         html: `
         <b>Fecha:</b> ${fechaParaGuardar.toLocaleString()}<hr>
         <b>Mecanico:</b> ${
-          buscarPersona(personas, datosAGuardar.mecanico) || "-"
+          datosAGuardar.mecanico.map((m) => buscarPersona(personas, m)) || "-"
         }<br>
         <b>Chofer:</b> ${
           buscarPersona(personas, datosAGuardar.chofer) || "-"
@@ -330,9 +336,8 @@ const FormEventoTaller = ({
                 required
               />
             </label>
-
             <label>
-              Mecanico
+              Mecánico
               <div className="select-with-button">
                 <Select
                   className="select-grow"
@@ -344,24 +349,24 @@ const FormEventoTaller = ({
                     }))
                     .sort((a, b) => a.apellido.localeCompare(b.apellido))}
                   value={
-                    formData.mecanico
-                      ? {
-                          value: formData.mecanico,
-                          label:
-                            mecanicos.find((p) => p.id === formData.mecanico)
-                              ?.apellido +
-                            " " +
-                            mecanicos.find((p) => p.id === formData.mecanico)
-                              ?.nombres +
-                            ` (DNI: ${formData.mecanico})`,
-                        }
-                      : null
+                    formData.mecanico && Array.isArray(formData.mecanico)
+                      ? mecanicos
+                          .filter((p) => formData.mecanico.includes(p.id))
+                          .map((p) => ({
+                            value: p.id,
+                            label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                          }))
+                      : []
                   }
-                  onChange={(opt) =>
-                    setFormData({ ...formData, mecanico: opt ? opt.value : "" })
+                  onChange={(opts) =>
+                    setFormData({
+                      ...formData,
+                      mecanico: opts ? opts.map((o) => o.value) : [],
+                    })
                   }
                   placeholder=""
                   isClearable
+                  isMulti
                   required
                 />
                 <TextButton
