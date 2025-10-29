@@ -29,6 +29,9 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
   const [proveedor, setProveedor] = useState(null);
   const [cantidad, setCantidad] = useState("");
   const [unidad, setUnidad] = useState("");
+  const [valor, setValor] = useState(0);
+  const [valorFinal, setValorFinal] = useState(0);
+  const [moneda, setMoneda] = useState("pesos");
   const [ingresos, setIngresos] = useState([]);
   const [esFactura, setEsFactura] = useState(false);
   const [tipoMovimiento, setTipoMovimiento] = useState("ALTA");
@@ -73,13 +76,19 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           ? Number(cantidad)
           : -Math.abs(Number(cantidad)),
       unidad: articulo.unidad,
+      valor: Number(valor) || 0,
+      //moneda: moneda, //moneda asignada globalmente
       tipo: tipoMovimiento,
     };
 
     setIngresos((prev) => [...prev, nuevoIngreso]);
 
+    setValorFinal((prev) => prev + nuevoIngreso.valor * nuevoIngreso.cantidad);
+
     setArticuloSeleccionado("");
     setCantidad("");
+    setValor(0);
+    setMoneda("pesos");
   };
   const handleEliminar = (indexEliminar) => {
     setIngresos((ing) => ing.filter((_, i) => i !== indexEliminar));
@@ -96,10 +105,14 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
     const resumenIngresos = ingresos
       .map(
         (i) =>
-          `<p><strong style="background-color:black; color:#fff; padding:.3rem;border-radius:5rem;font-size:small;">${
+          `<p style="font-size:smaller;"><strong style="background-color:black; color:#fff; padding:.3rem;border-radius:5rem;font-size:smaller;">${
             i.cantidad
           } ${Unidades[i.unidad.toUpperCase()]}</strong> ${i.descripcion} ${
             i.codigoProveedor ? "(" + i.codigoProveedor + ")" : ""
+          }${
+            esFactura
+              ? (moneda === "pesos" ? "- AR$ " : "- U$D ") + i.valor + " c/u"
+              : ""
           }</p>`
       )
       .join("<br>");
@@ -111,6 +124,11 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
         ${resumenIngresos}
       </div>
       <p>Sector: ${area}</p>
+      <p>${
+        esFactura
+          ? "Total: " + (moneda === "pesos" ? " AR$ " : " U$D ") + valorFinal
+          : ""
+      }</p>
     `,
       icon: "question",
       showCancelButton: true,
@@ -151,6 +169,8 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           id: i.id,
           cantidad: i.cantidad,
           unidad: i.unidad,
+          valor: i.valor,
+          moneda: i.moneda,
         })),
       };
 
@@ -217,13 +237,33 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                   name="remito"
                 ></input>
                 <label>Factura</label>
-                <input
-                  type="text"
-                  style={{ textTransform: "uppercase" }}
-                  value={factura}
-                  onChange={(e) => setFactura(e.target.value)}
-                  name="factura"
-                ></input>
+                <div className="select-with-button">
+                  <input
+                    type="text"
+                    style={{ textTransform: "uppercase" }}
+                    value={factura}
+                    onChange={(e) => setFactura(e.target.value)}
+                    name="factura"
+                  ></input>
+                  <button
+                    type="button"
+                    className={
+                      moneda === "pesos" ? "type-btn active" : "type-btn"
+                    }
+                    onClick={() => setMoneda("pesos")}
+                  >
+                    AR$
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      moneda === "dolares" ? "type-btn active" : "type-btn"
+                    }
+                    onClick={() => setMoneda("dolares")}
+                  >
+                    USD
+                  </button>
+                </div>
                 <label>Proveedor</label>
                 <Select
                   options={proveedores.map((opt) => ({
@@ -256,9 +296,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           )}
           {/* carga de ingresos*/}
           <br />
-          <label className="form-title">
-            Registro articulos, repuestos, etc
-          </label>
+          <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
             <label>
               Area / Sector
@@ -275,6 +313,12 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                 disabled={taller}
               />
             </label>
+          </div>
+          <br />
+          <label className="form-title">
+            Registro articulos, repuestos, etc
+          </label>
+          <div className="form-box2">
             <br />
             {!esFactura && (
               <div className="type-container">
@@ -350,6 +394,20 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
               </label>
               <div className="unidad-display">
                 <input type="text" value={unidad.toUpperCase()} disabled />
+              </div>
+            </div>
+            <div className="input-inline">
+              <label>
+                Valor / Precio
+                <input
+                  type="number"
+                  value={valor}
+                  onChange={(e) => setValor(e.target.value)}
+                  min="0"
+                />
+              </label>
+
+              <div className="type-container">
                 <button
                   className="plus-btn"
                   type="button"
@@ -363,6 +421,11 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           <br />
           {/* listado de ingresos */}
           <label className="form-title">Movimiento a registrar</label>
+          {esFactura && (
+            <label className="form-title">
+              {moneda === "pesos" ? "AR$" : "U$D"} {valorFinal}
+            </label>
+          )}
           <div className="form-box2">
             {ingresos.length === 0 ? (
               <p>...</p>
@@ -382,8 +445,8 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                     </div>
                     <div className="item-info-smaller">{item.descripcion}</div>
                     <div className="item-actions">
-                      <span className="list-cant">
-                        {item.cantidad} {Unidades[item.unidad.toUpperCase()]}
+                      <span className="list-cant3">
+                        {item.cantidad} {Unidades[item.unidad.toUpperCase()]}{" "}
                       </span>
 
                       <button

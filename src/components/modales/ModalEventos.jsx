@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -82,9 +82,21 @@ const ModalEventos = ({ tipo = null, onRowClick = null, onClose }) => {
       columnasFinal = columnas;
   }
 
-  const listadoEventos = tipo
-    ? eventos.filter((e) => e.tipo === tipo)
-    : eventos;
+  const eventosFiltrados = useMemo(() => {
+    const listadoEventos = tipo
+      ? eventos.filter((e) => e.tipo === tipo)
+      : eventos;
+
+    return listadoEventos.filter((e) => {
+      const fecha = formatearFecha(e.fecha);
+      const textoFiltro = `${e.id} ${e.tipo} ${e.fecha} ${fecha} ${e.area} ${
+        e.carga
+      } ${e.factura} ${e.remito} ${e.valor} ${e.moneda} ${
+        e.proveedor
+      } ${buscarEmpresa(proveedores, e.proveedor)}`;
+      return textoFiltro.toLocaleLowerCase().includes(filtro.toLowerCase());
+    });
+  });
 
   const cerrarModalFicha = () => {
     setModalFichaVisible(false);
@@ -117,7 +129,7 @@ const ModalEventos = ({ tipo = null, onRowClick = null, onClose }) => {
         </div>
         <TablaColeccion
           columnas={columnasFinal}
-          datos={listadoEventos}
+          datos={eventosFiltrados}
           onRowClick={(evento) => {
             setEventoSeleccionado(evento);
             setModalFichaVisible(true);

@@ -470,6 +470,7 @@ export const agregarFaltante = async (coleccion, idDoc, repuestoId, cantidad, un
   }
 };
 
+
 // ----------------------------------------------------------------------- Validaciones
 
 export const verificarEstado = (empresa) => {
