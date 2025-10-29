@@ -58,7 +58,20 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     {
       titulo: "TIPO",
       campo: "tipo",
-      render: (v) => v.toUpperCase(),
+      render: (v) => (
+        <span
+          style={{
+            backgroundColor:
+              v?.toUpperCase() === "SERVICE" ? "#fff59d" : "transparent",
+            padding: "2px 6px",
+            borderRadius: "4px",
+            fontWeight: v?.toUpperCase() === "SERVICE" ? "bolder" : "",
+            display: "inline-block",
+          }}
+        >
+          {v.toUpperCase()}
+        </span>
+      ),
     },
     {
       titulo: "MECANICO",
@@ -103,7 +116,15 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         return valor;
       },
     },
-
+    {
+      titulo: "KM",
+      campo: "kilometraje",
+      render: (k) => {
+        if (!k) return "";
+        const valor = k + " km";
+        return valor;
+      },
+    },
     {
       titulo: "DETALLE",
       campo: "detalle",
@@ -265,7 +286,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
             >
               <img src={LogoTractor} alt="" className="table-logo2" />
             </button>
-          ) : AREA == "furgones" ? (
+          ) : AREA === "furgones" ? (
             <button
               className="table-agregar"
               onClick={() => setModalFurgonVisible(true)}

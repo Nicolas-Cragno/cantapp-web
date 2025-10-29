@@ -193,6 +193,7 @@
   opacity: 1;
 }
 
+
 /* Laptops medianas y tablets horizontales */
 @media (max-width: 1280px) {
   .table-container {

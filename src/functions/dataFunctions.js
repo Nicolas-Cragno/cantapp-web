@@ -11,33 +11,44 @@ export const useNombreEmpresa = (cuit) => {
   const { empresas } = useData();
   const nombreError = "SIN ASIGNAR";
 
-  if (!cuit) return nombreError;
+  if (!cuit){
+    console.log(`[Error] useNombreEmpresa espera un 'cuit' por parámetro.`);
+    return nombreError;
+  }
 
   const empresa = empresas.find((e) => e.id === cuit || e.cuit === cuit);
   return empresa ? empresa.nombre : nombreError;
 }
-
 export const useObtenerCuitPorNombre = (nombreEmpresa) => {
   const {empresas} = useData();
   const valorError = 0;
 
-  if(!nombreEmpresa || typeof nombreEmpresa !== "string") return valorError;
+  if(!nombreEmpresa || typeof nombreEmpresa !== "string") {
+    console.log(`[Error] useObtenerCuitPorNombre esperaba un nombreEmpresa(string) por parámetro.`);
+    return valorError;
+  }
 
   const empresa = empresas.find((e) => e.nombre === nombreEmpresa);
   return empresa ? empresa.cuit : valorError;
 }
-
 export const buscarEmpresa = (coleccion, cuit, completo=true) => {
-  if (!cuit || !Array.isArray(coleccion)) return "";
+  if (!cuit || !Array.isArray(coleccion)){
+    console.log(`[Error] buscarEmpresa esperaba una colección y un cuit(id) como parámetros.`)
+    return "";
+  }
   const empresa = coleccion.find((e) => e.cuit === cuit || e.id === cuit);
-  if (!empresa) return "";
+  if (!empresa){
+    console.log(`[Error] buscarEmpresa no encontró una empresa con el cuit ${cuit}.`) 
+    return "";}
   const nombreCompleto = `${empresa.nombre}`;
   const abreviatura = `${empresa.abreviatura}`;
   return completo ? nombreCompleto : abreviatura;
 }
-
 export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
-  if(!nombre) return 0;
+  if(!nombre){
+    console.log(`[Error] buscarCuitEmpresa esperaba un nombre.`)
+    return 0;
+  } 
 
   const empresa = coleccion.find((e) => e.nombre.toUpperCase() === nombre.toUpperCase());
 
@@ -53,12 +64,13 @@ export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
     }
   }
   
-  if(!empresa) 
+  if(!empresa) {
+    console.log(`[Error] buscarCuitEmpresa no encontró una empresa con el nombre ${String(nombre)}`)
     return 0;
+  }
   const cuit = empresa.cuit || empresa.id;
   return cuit;
 }
-
 export const verificarDuplicado = (coleccion, idx) => {
   return coleccion.some((p) => String(p.idx) === String(idx));
 };
@@ -68,32 +80,44 @@ export const useBuscarDni = (nombrePersona) => {
   const {personas} = useData();
   const valorError = 0;
 
-  if(!nombrePersona || typeof nombrePersona !== "string") return valorError;
+  if(!nombrePersona || typeof nombrePersona !== "string") 
+  {
+    console.log(`[Error] useBuscarDni esperaba un nombrePersona(string) como parametro.`)
+    return valorError;
+  }
 
   const persona = personas.find((p) => p.apellido + ", " + p.nombres === nombrePersona || p.apellido + ", " + p.nombres[0] + "." === nombrePersona);
   return persona ? persona.dni : valorError;
 }
-
 export const useBuscarPersona = (dni, completo=true) => {
   const {personas} = useData();
   const valorError = "";
 
-  if(!dni) return valorError;
+  if(!dni){
+    console.log(`[Error] useBuscarPersona esperaba un dni como parámetro`);
+    return valorError;
+  } 
 
   const persona = personas.find((p) => p.dni === dni || p.id === dni);
-  if(!persona) return valorError;
+  if(!persona){ 
+    console.log(`[Error] useBuscarPersona no encontró persona con dni/id igual a ${String(dni)} `)
+    return valorError;}
   const nombreCompleto = `${persona.apellido}, ${persona.nombres}`;
   const nombreAbreviado = `${persona.apellido}, ${persona.nombres[0]}`;
 
   return completo ? nombreCompleto : nombreAbreviado;
 }
-
 export const buscarPersona = (coleccion, dni, completo = true) => {
-  if (!dni) return "";
+  if (!dni){ 
+    console.log(`[Error] buscarPersona esperaba un dni como parámetro.`);
+    return "";}
 
   const dniStr = String(dni);
   const persona = coleccion.find((p) => p.dni === dniStr || p.id === dniStr);
-  if (!persona) return "";
+  if (!persona){
+    console.log(`[Error] buscarPersona no encontró una persona con dni/id ${String(dni)}`);
+    return "";
+  } 
 
   // Usar 'nombres' si existe, si no fallback a 'nombre', si no ""
   const nombres = persona.nombres ?? persona.nombre ?? "";
@@ -105,9 +129,11 @@ export const buscarPersona = (coleccion, dni, completo = true) => {
 
   return completo ? nombreCompleto : nombreAbreviado;
 };
-
 export const normalizarFecha = (valor) => {
-  if (!valor) return null;
+  if (!valor){
+    console.log(`[Error] normalizarFecha esperaba un valor como parámetro.`);
+    return null;
+  }
 
   if (valor.toDate) {
     return valor.toDate(); // Timestamp Firestore
@@ -133,10 +159,12 @@ export const normalizarFecha = (valor) => {
 
   return null;
 };
-
 export const calcularEdad = (fechaNacimiento) => {
   const fecha = normalizarFecha(fechaNacimiento);
-  if (!fecha) return null;
+  if (!fecha){
+    console.log(`[Error] calcularEdad esperaba una fechaNacimiento válida como parámetro.`);
+    return null;
+  } 
 
   const hoy = new Date();
   let edad = hoy.getFullYear() - fecha.getFullYear();
@@ -148,13 +176,12 @@ export const calcularEdad = (fechaNacimiento) => {
 
   return edad;
 };
-
 export const iniciarPeriodo = async (
   idPersona,
   datos
 ) => {
   try {
-    if (!idPersona) throw new Error("ID de persona inválido");
+    if (!idPersona) throw new Error(`[Error] iniciarPeriodo espera un idPersona válido.`);
 
     const personaRef = doc(db, "personas", String(idPersona));
 
@@ -174,19 +201,19 @@ export const iniciarPeriodo = async (
     console.log(`Periodo agregado a persona ${idPersona}`);
     return nuevoPeriodo;
   } catch (error) {
-    console.error("Error al iniciar periodo:", error);
+    console.error("[Error] al iniciar periodo:", error);
     throw error;
   }
 };
-
 export const finalizarPeriodo = async (idPersona, cuitEmpresa=null, fechaFin = new Date()) => {
   try {
-    if (!idPersona) throw new Error("ID de persona inválido");
+    if (!idPersona) throw new Error(`[Error] finalizarPeriodo esperaba un idPersona válido por parámetro.`);
+   
 
     const personaRef = doc(db, "personas", String(idPersona));
     const snap = await getDoc(personaRef);
 
-    if (!snap.exists()) throw new Error("Persona no encontrada");
+    if (!snap.exists()) throw new Error(`[Error] finalizarPeriodo no encontró persona con dni/id ${String(idPersona)}`);
 
     const data = snap.data();
     const periodos = Array.isArray(data.periodos) ? [...data.periodos] : [];
@@ -205,13 +232,13 @@ export const finalizarPeriodo = async (idPersona, cuitEmpresa=null, fechaFin = n
         confirmButtonText: "Confirmar",
         cancelButtonText: "Finalizar sin fecha de inicio",
         inputValidator: (value) => {
-          if (!value) return "Debe ingresar una fecha válida";
+          if (!value) return "[Error] finalizarPeriodo espera una fecha de inicio válida.";
         },
       });
 
       // Si el usuario cancela, abortar la operación
       if (!fechaInicio) {
-        console.log("Operación cancelada por el usuario");
+        console.log(`Finalización de periodo del dni ${String(idPersona)} cancelada`);
         inicioPeriodo = null;
       } else {
         inicioPeriodo = fechaInicio;
@@ -230,7 +257,7 @@ export const finalizarPeriodo = async (idPersona, cuitEmpresa=null, fechaFin = n
       });
 
       console.log(
-        `No se encontró periodo activo, se creó uno nuevo cerrado para persona ${idPersona}`
+        `[Aviso] No se encontró periodo activo, se creó uno nuevo cerrado para persona ${String(idPersona)}`
       );
       return nuevoPeriodo;
     }
@@ -246,12 +273,10 @@ export const finalizarPeriodo = async (idPersona, cuitEmpresa=null, fechaFin = n
     console.log(`Periodo finalizado para persona ${idPersona}`);
     return periodos[indexActivo];
   } catch (error) {
-    console.error("Error al finalizar periodo:", error);
+    console.error("[Error] Error al finalizar periodo: ", error);
     throw error;
   }
 };
-
-
 // ----------------------------------------------------------------------- Vehiculos
 
 export const useBuscarDominio = (interno, tipo = "tractor") => {
@@ -259,7 +284,10 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
   const valorError = "";
   let vehiculo = null;
 
-  if(!interno) return valorError;
+  if(!interno){
+    console.log(`[Error] useBuscarDominio esperaba un interno válido.`);
+    return valorError;
+  } 
 
   if(tipo==="tractor"){
    vehiculo = tractores.find((t) => String(t.interno) === String(interno) || String(t.id) === String(interno)); 
@@ -269,28 +297,36 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
 
   return vehiculo ? vehiculo.dominio : valorError;
 }
-
 export const buscarDominio = (interno, coleccion = []) => {
-  if (!interno || !Array.isArray(coleccion)) return "";
+  if (!interno || !Array.isArray(coleccion))
+  {
+    console.log(`[Error] buscarDominio esperaba un interno válido y/o una colección(array) válida`);
+    return "";
+  }
 
   const vehiculo = coleccion.find((v) => String(v.interno) === String(interno) || String(v.id) === String(interno));
+  if(!vehiculo) console.log(`[Error] buscarDominio no encontró un vehículo con interno ${String(interno)}`);
 
   return vehiculo ? vehiculo.dominio : "";
 };
-
 export const minimizarVehiculo = (tipoVehiculo) => {
+  if(!tipoVehiculo) {
+    console.log(`[Error] minimizarVehiculo esperaba un tipoVehiculo como parámetro`);
+    return "";
+  }
   let tipo;
   switch(tipoVehiculo.toUpperCase()){
     case "TRACTORES": tipo = "TRACTOR"; break;
     case "FURGONES": tipo = "FURGON"; break;
     default: tipo = "VEHICULO"; break;
-
   }
   return tipo;
 }
-
 export const buscarMarca = (id, coleccion = []) => {
-  if (!id || !Array.isArray(coleccion)) return "";
+  if (!id || !Array.isArray(coleccion)){
+    console.log(`[Error] buscarMarca esperaba un id y/o una colección(array) valido/s`)
+    return "";
+  } 
 
   const vehiculo = coleccion.find((v) => String(v.id) === String(id) || String(v.dominio) === String(id));
 
