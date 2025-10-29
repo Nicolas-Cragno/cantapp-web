@@ -143,6 +143,8 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
 
         await agregar("stock", nuevoArticulo, nuevoArticulo.codigo);
         onGuardar?.(nuevoArticulo);
+
+        //en caso de recuperación, el faltante se le va a restar al vehiculo desde el eventotaller
       }
       onClose();
     } catch (error) {

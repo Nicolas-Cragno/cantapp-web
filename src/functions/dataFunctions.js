@@ -4,6 +4,7 @@ import { useData } from "../context/DataContext";
 import {  doc,updateDoc, getDoc,arrayUnion } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import Swal from "sweetalert2";
+import { modificar } from "./dbFunctions";
 
 
 // ----------------------------------------------------------------------- Nombre de empresas
@@ -441,6 +442,31 @@ export const agregarStockADeposito = async (idDeposito, nuevoItem) => {
   } catch (error) {
     console.error("Error al agregar stock al depósito:", error);
     throw error;
+  }
+};
+export const agregarFaltante = async (coleccion, idDoc, repuestoId, cantidad, unidad) => {
+  try {
+    const docRef = doc(db, coleccion, String(idDoc));
+    const snap = await getDoc(docRef);
+
+    const data = snap.exists() ? snap.data() : {};
+    const faltantesActuales = Array.isArray(data.faltante) ? data.faltante : [];
+
+    const index = faltantesActuales.findIndex((r) => r.id === repuestoId);
+
+    if (index !== -1) {
+      // Si ya existe, se suma
+      faltantesActuales[index].cantidad += cantidad;
+    } else {
+      // Si no existe se agrega
+      faltantesActuales.push({ id: repuestoId, cantidad, unidad });
+    }
+
+    await modificar(coleccion, idDoc, { faltante: faltantesActuales });
+    return true;
+  } catch (err) {
+    console.error(`[Error] Agregando repuesto ${repuestoId} a ${coleccion}/${idDoc}:`, err);
+    throw err;
   }
 };
 

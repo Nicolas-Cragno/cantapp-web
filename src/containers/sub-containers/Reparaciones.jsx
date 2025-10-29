@@ -17,8 +17,10 @@ import {
 import FichaGestor from "../../components/fichas/FichaGestor";
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalStock from "../../components/modales/ModalStock";
+import ModalEventos from "../../components/modales/ModalEventos";
 import FormGestor from "../../components/forms/FormGestor";
 import FormLlave from "../../components/forms/FormLlave";
+import TextButton from "../../components/buttons/TextButton";
 import LogoButton from "../../components/buttons/LogoButton";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
@@ -36,6 +38,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalStockVisible, setModalStockVisible] = useState(false);
+  const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
 
   const columnasTractores = [
     {
@@ -155,13 +158,19 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     setModalStockVisible(false);
   };
 
+  const cerrarModalIngresos = () => {
+    setModalIngresosVisible(false);
+  };
+
   const handleGuardar = async () => {
     setModalAgregarVisible(false);
     setEventoSeleccionado(null);
   };
 
   const eventosFiltrados = useMemo(() => {
-    let filtrados = eventos.filter((e) => e.area === AREA);
+    let filtrados = eventos.filter(
+      (e) => e.area === AREA && e.tipo !== "STOCK"
+    );
 
     filtrados = filtrados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
@@ -212,7 +221,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           />
           TALLER {AREA.toUpperCase()}
         </h1>
-
+        <TextButton
+          text="Ver ingresos"
+          onClick={() => setModalIngresosVisible(true)}
+        />
         <input
           type="text"
           placeholder="Buscar..."
@@ -287,6 +299,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
       {modalStockVisible && (
         <ModalStock taller={AREA} onClose={cerrarModalStock} />
+      )}
+
+      {modalIngresosVisible && (
+        <ModalEventos tipo="STOCK" onClose={cerrarModalIngresos} />
       )}
 
       <div className="table-options">

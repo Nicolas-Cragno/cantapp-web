@@ -56,6 +56,14 @@ const ModalEventos = ({ tipo = null, onRowClick = null, onClose }) => {
   const columnasMovimientoStock = [
     ...columnas,
     {
+      titulo: "FACTURA",
+      campo: "factura",
+    },
+    {
+      titulo: "REMITO",
+      campo: "remito",
+    },
+    {
       titulo: "PROVEEDOR",
       campo: "proveedor",
       render: (e) => buscarEmpresa(proveedores, e),
@@ -69,6 +77,7 @@ const ModalEventos = ({ tipo = null, onRowClick = null, onClose }) => {
     case "STOCK":
       columnasFinal = columnasMovimientoStock;
       break;
+
     default:
       columnasFinal = columnas;
   }

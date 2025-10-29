@@ -101,7 +101,7 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                         {stock.find((s) => s.id === i.id).descripcion}
                       </div>
                       <div className="item-actions">
-                        <span className="list-cant">
+                        <span className="list-cant3">
                           {i.cantidad} {Unidades[i.unidad.toUpperCase()]}
                         </span>
                       </div>

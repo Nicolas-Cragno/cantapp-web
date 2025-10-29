@@ -14,6 +14,7 @@ import {
   buscarPersona,
   buscarDominio,
   abreviarUnidad,
+  agregarFaltante,
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
 import FormGestor from "./FormGestor";
@@ -211,7 +212,40 @@ const FormEventoTaller = ({
 
       const idEvento = eventoGuardado.id;
 
+      for (const item of listaArticulosFinal) {
+        if (item.tipo === "RC" || item.tipo === "RECUPERACION") {
+          const codigoRepuesto = item.id;
+          const cantidad = item.cantidad;
+          const unidad = item.unidad;
+
+          let coleccion = null;
+          let idDocu = null;
+
+          if (formData.tractor) {
+            coleccion = "tractores";
+            idDocu = formData.tractor;
+          } else if (formData.furgon) {
+            coleccion = "furgones";
+            idDocu = formData.furgon;
+          } else if (formData.vehiculo) {
+            coleccion = "vehiculos";
+            idDocu = formData.vehiculo;
+          }
+
+          if (coleccion && idDocu) {
+            await agregarFaltante(
+              coleccion,
+              idDocu,
+              codigoRepuesto,
+              cantidad,
+              unidad
+            );
+          }
+        }
+      }
+
       if (onGuardar) onGuardar();
+
       Swal.fire({
         title: `Evento guardado: ${idEvento}`,
         text: "Se ha completado el registro exitosamente.",
