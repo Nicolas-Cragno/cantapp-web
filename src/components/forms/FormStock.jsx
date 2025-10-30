@@ -155,7 +155,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
         confirmButtonText: "Entendido",
         confirmButtonColor: "#4161bd",
       });
-      console.error("Error al guardar articulo:", error);
+      console.error("[Error] al guardar articulo:", error);
     } finally {
       setLoading(false);
     }

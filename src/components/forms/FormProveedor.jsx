@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 // ----------------------------------------------------------------------- imports internos
@@ -8,18 +8,21 @@ import { agregar, modificar } from "../../functions/dbFunctions";
 import { idNuevoProveedor } from "../../functions/dataFunctions";
 import "./css/Forms.css";
 
-const FormProveedor = ({ onClose, onGuardar }) => {
+const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
   const { proveedores } = useData();
   const [formData, setFormData] = useState({
-    nombre: "",
-    cuit: null,
-    marca: "",
-    codigo: null,
-    detalle: "",
+    nombre: elemento?.nombre || "",
+    cuit: elemento?.cuit || "",
+    marca: elemento?.marca || "",
+    codigo: elemento?.codigo ? elemento.codigo : elemento.id || "",
+    detalle: elemento?.detalle || "",
   });
   const [modoEdicion, setModoEdicion] = useState(false);
   const [uploading, setUploading] = useState(false);
 
+  useEffect(() => {
+    if (elemento) setModoEdicion(true);
+  }, [elemento]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((data) => ({ ...data, [name]: value }));
@@ -30,20 +33,35 @@ const FormProveedor = ({ onClose, onGuardar }) => {
     setUploading(true);
 
     try {
-      const nuevoProveedor = {
-        nombre: formData.nombre.toUpperCase(),
-        cuit: formData.cuit,
-        marca: formData.marca.toUpperCase(),
-        codigo: idNuevoProveedor(proveedores),
-        detalle: formData.detalle.toUpperCase(),
-      };
+      if (!modoEdicion) {
+        const nuevoProveedor = {
+          ...formData,
+          nombre: formData.nombre.toUpperCase(),
+          cuit: formData.cuit,
+          marca: formData.marca.toUpperCase(),
+          codigo: idNuevoProveedor(proveedores),
+          detalle: formData.detalle.toUpperCase() || "",
+        };
 
-      await agregar(
-        "proveedores",
-        nuevoProveedor,
-        String(nuevoProveedor.codigo)
-      );
-      onGuardar?.(nuevoProveedor);
+        await agregar(
+          "proveedores",
+          nuevoProveedor,
+          String(nuevoProveedor.codigo)
+        );
+        onGuardar?.(nuevoProveedor);
+      } else {
+        const proveedorEditado = {
+          ...formData,
+          nombre: formData.nombre.toUpperCase(),
+          cuit: formData.cuit,
+          marca: formData.marca.toUpperCase(),
+          detalle: formData.detalle.toUpperCase() || "",
+        };
+
+        await modificar("proveedores", String(elemento.id), proveedorEditado);
+
+        onGuardar?.(proveedorEditado);
+      }
 
       onClose();
     } catch (error) {
@@ -70,6 +88,15 @@ const FormProveedor = ({ onClose, onGuardar }) => {
             <strong>Información</strong>
           </p>
           <div className="ficha-info">
+            <label>Codigo</label>
+            <input
+              type="text"
+              name="nombre"
+              value={formData.codigo}
+              onChange={handleChange}
+              style={{ textTransform: "uppercase" }}
+              disabled={true}
+            />
             <label>Nombre legal</label>
             <input
               type="text"

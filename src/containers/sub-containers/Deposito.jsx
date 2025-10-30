@@ -10,8 +10,11 @@ import FormStock from "../../components/forms/FormStock";
 import FormMovimientoStock from "../../components/forms/FormMovimientoStock";
 import unidades from "../../functions/data/unidades.json";
 import LogoStock from "../../assets/logos/logostock-w.png";
+import LogoProveedor from "../../assets/logos/logoproveedor-grey.png";
 import TextButton from "../../components/buttons/TextButton";
+import LogoButton from "../../components/buttons/LogoButton";
 import ModalEventos from "../../components/modales/ModalEventos";
+import ModalProveedor from "../../components/modales/ModalProveedor";
 
 // --asf asfas
 
@@ -23,7 +26,7 @@ const Deposito = ({ taller = null }) => {
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
   const [modalEventosVisible, setModalEventosVisible] = useState(false);
-
+  const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
   const { stock } = useData();
 
   // sincronizar stock con estado local
@@ -140,8 +143,17 @@ const Deposito = ({ taller = null }) => {
         />
       )}
 
+      {modalProveedorVisible && (
+        <ModalProveedor onClose={() => setModalProveedorVisible(false)} />
+      )}
+
       <div className="table-options">
-        <div className="table-options-group"></div>
+        <div className="table-options-group">
+          <LogoButton
+            logo={LogoProveedor}
+            onClick={() => setModalProveedorVisible(true)}
+          />
+        </div>
         <div className="table-options-group">
           <TextButton
             text="↓↑ MOVIMIENTO"
