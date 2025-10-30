@@ -382,13 +382,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
               <LogoKey className="button-logo" />
             </button>
           )}
-
-          <button
-            className="table-agregar"
+          <TextButton
+            text="+ AGREGAR"
             onClick={() => setModalAgregarVisible(true)}
-          >
-            + AGREGAR
-          </button>
+          />
         </div>
       </div>
     </section>

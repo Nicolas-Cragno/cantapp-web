@@ -696,6 +696,11 @@ padding-top: 1rem;}
   z-index: 999;
 }
 
+.form-null{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .doble-form-content {
   background: white;
   padding: 20px;

@@ -33,7 +33,8 @@ const FormEventoTaller = ({
 }) => {
   const evento = elemento || {};
 
-  const { tractores, furgones, vehiculos, personas, stock } = useData();
+  const { tractores, furgones, vehiculos, personas, stock, proveedores } =
+    useData();
 
   const [formData, setFormData] = useState({
     tipo: evento?.tipo || "",
@@ -44,6 +45,7 @@ const FormEventoTaller = ({
         ? evento.mecanico
         : [evento.mecanico]
       : [], // 1 o varios mecanico/s
+    proveedor: evento?.proveedor ? String(evento.proveedor) : "",
     tractor: evento?.tractor || "",
     kilometraje: evento?.kmTractor || "",
     furgon: evento?.furgon || "",
@@ -56,7 +58,7 @@ const FormEventoTaller = ({
 
   const [mecanicos, setMecanicos] = useState([]);
   const [choferes, setChoferes] = useState([]);
-
+  const [servicios, setServicios] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState(null);
   const [articulosUsados, setArticulosUsados] = useState([]);
   const [articulosUsadosBackUp, setArticulosUsadosBackUp] = useState([]);
@@ -66,6 +68,7 @@ const FormEventoTaller = ({
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
   const [modalArticuloVisible, setModalArticuloVisible] = useState(false);
+  const [esServicio, setEsServicio] = useState(false);
 
   useEffect(() => {
     const listadoMecanicos = personas.filter((p) => p.puesto === "MECANICO");
@@ -82,6 +85,11 @@ const FormEventoTaller = ({
   }, [personas]);
 
   useEffect(() => {
+    const listadoServicios = proveedores.filter((p) => p.id !== "01");
+    setServicios(listadoServicios);
+  }, [proveedores]);
+
+  useEffect(() => {
     if (evento.id && evento.repuestos) {
       setArticulosUsados(
         evento.repuestos.map((r) => ({
@@ -96,6 +104,18 @@ const FormEventoTaller = ({
       setArticulosUsadosBackUp(evento.repuestos); // para poder restaurar
     }
   }, [evento.id]);
+
+  useEffect(() => {
+    if (evento.servicio) setEsServicio(true);
+  }, [evento.servicio]);
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      mecanico: esServicio ? [] : prev.mecanico,
+      proveedor: esServicio ? prev.proveedor : "",
+    }));
+  }, [esServicio]);
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
     setIngresos([]); // limpiar ingresos agregados manualmente
@@ -136,6 +156,7 @@ const FormEventoTaller = ({
         chofer: formData.chofer ? Number(formData.chofer) : null,
         //mecanico: formData.mecanico ? Number(formData.mecanico) : null,
         mecanico: formData.mecanico ? formData.mecanico.map(Number) : [], // array de dni
+        proveedor: formData.proveedor ? formData.proveedor : null,
         subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
@@ -146,7 +167,7 @@ const FormEventoTaller = ({
         subarea: formData.subarea || subarea,
         detalle: formData.detalle?.toUpperCase() || null,
         usuario: evento.id ? evento.usuario || usuarioDeCarga : usuarioDeCarga,
-        repuestos,
+        repuestos: esServicio ? [] : repuestos,
       };
 
       const confirmacion = await Swal.fire({
@@ -334,7 +355,6 @@ const FormEventoTaller = ({
       <div className="doble-form-content">
         <div className="form-header">
           <h2>{evento.id ? "Editar Trabajo" : "Nuevo Trabajo"}</h2>
-          {area}
           <h2 className="black-txt">
             {evento.id
               ? formatearFecha(evento.fecha) +
@@ -343,11 +363,30 @@ const FormEventoTaller = ({
                 " hs"
               : new Date().toLocaleDateString()}
           </h2>{" "}
-          {evento.id}
           <p>* campo obligatorio</p>
         </div>
         <form onSubmit={handleSubmit} className="modal-formulario-doble">
           <div className="form-left">
+            <div className="type-container-small">
+              <button
+                type="button"
+                className={
+                  !esServicio ? "type-btn positive-active-black" : "type-btn"
+                }
+                onClick={() => setEsServicio(false)}
+              >
+                REALIZADO EN TALLER {!esServicio ? " *" : null}
+              </button>
+              <button
+                type="button"
+                className={
+                  esServicio ? "type-btn positive-active-black" : "type-btn"
+                }
+                onClick={() => setEsServicio(true)}
+              >
+                REALIZADO AFUERA {esServicio ? " *" : null}
+              </button>
+            </div>
             <label>
               Tipo *
               <Select
@@ -371,46 +410,89 @@ const FormEventoTaller = ({
                 required
               />
             </label>
-            <label>
-              Mecánico
-              <div className="select-with-button">
-                <Select
-                  className="select-grow"
-                  options={mecanicos
-                    .map((p) => ({
-                      value: p.id,
-                      label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                      apellido: p.apellido,
-                    }))
-                    .sort((a, b) => a.apellido.localeCompare(b.apellido))}
-                  value={
-                    formData.mecanico && Array.isArray(formData.mecanico)
-                      ? mecanicos
-                          .filter((p) => formData.mecanico.includes(p.id))
-                          .map((p) => ({
-                            value: p.id,
-                            label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                          }))
-                      : []
-                  }
-                  onChange={(opts) =>
-                    setFormData({
-                      ...formData,
-                      mecanico: opts ? opts.map((o) => o.value) : [],
-                    })
-                  }
-                  placeholder=""
-                  isClearable
-                  isMulti
-                  required
-                />
-                <TextButton
-                  text="+"
-                  className="mini-btn"
-                  onClick={handleClickPersona}
-                />
-              </div>
-            </label>
+            {!esServicio ? (
+              <label>
+                Mecánico
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={mecanicos
+                      .map((p) => ({
+                        value: p.id,
+                        label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                        apellido: p.apellido,
+                      }))
+                      .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+                    value={
+                      formData.mecanico && Array.isArray(formData.mecanico)
+                        ? mecanicos
+                            .filter((p) => formData.mecanico.includes(p.id))
+                            .map((p) => ({
+                              value: p.id,
+                              label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                            }))
+                        : []
+                    }
+                    onChange={(opts) =>
+                      setFormData({
+                        ...formData,
+                        mecanico: opts ? opts.map((o) => o.value) : [],
+                      })
+                    }
+                    placeholder=""
+                    isClearable
+                    isMulti
+                    required
+                  />
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    onClick={handleClickPersona}
+                  />
+                </div>
+              </label>
+            ) : (
+              <label>
+                Proveedor del servicio
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={servicios.map((opt) => ({
+                      value: String(opt.id),
+                      label: opt.id + " - " + opt.nombre,
+                      cuit: opt.cuit,
+                    }))}
+                    value={
+                      formData.proveedor
+                        ? servicios
+                            .map((opt) => ({
+                              value: String(opt.id),
+                              label: opt.id + " - " + opt.nombre,
+                              cuit: opt.cuit,
+                            }))
+                            .find(
+                              (opt) => opt.value === String(formData.proveedor)
+                            )
+                        : null
+                    }
+                    onChange={(opt) =>
+                      setFormData({
+                        ...formData,
+                        proveedor: opt ? opt.value : "",
+                      })
+                    }
+                    placeholder=""
+                    isClearable
+                    required
+                  />
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    onClick={handleClickPersona}
+                  />
+                </div>
+              </label>
+            )}
 
             {area === "tractores" ? (
               <>
@@ -572,7 +654,11 @@ const FormEventoTaller = ({
             </label>
           </div>
           <div className="form-right">
-            <div className="form-box overflow-visible">
+            <div
+              className={`form-box overflow-visible ${
+                esServicio ? "form-null" : ""
+              }`}
+            >
               <label>
                 Cargar repuesto
                 <div className="select-with-button">
@@ -664,7 +750,7 @@ const FormEventoTaller = ({
                 </div>
               </div>
             </div>
-            <div className="form-box">
+            <div className={`form-box ${esServicio ? "form-null" : ""}`}>
               <ul className="list">
                 {[...articulosUsados, ...ingresos].map((item, index) => (
                   <li key={index} className="list-item">
@@ -697,7 +783,8 @@ const FormEventoTaller = ({
                 ))}
               </ul>
             </div>
-            <div className="form-box-footer">
+
+            <div className={`form-box-footer ${esServicio ? "form-null" : ""}`}>
               {evento.id ? (
                 <img
                   src={RefreshLogo}
