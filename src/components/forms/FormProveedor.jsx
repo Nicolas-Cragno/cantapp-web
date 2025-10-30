@@ -14,7 +14,7 @@ const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
     nombre: elemento?.nombre || "",
     cuit: elemento?.cuit || "",
     marca: elemento?.marca || "",
-    codigo: elemento?.codigo ? elemento.codigo : elemento.id || "",
+    codigo: elemento?.codigo || "",
     detalle: elemento?.detalle || "",
   });
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -88,15 +88,20 @@ const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
             <strong>Información</strong>
           </p>
           <div className="ficha-info">
-            <label>Codigo</label>
-            <input
-              type="text"
-              name="nombre"
-              value={formData.codigo}
-              onChange={handleChange}
-              style={{ textTransform: "uppercase" }}
-              disabled={true}
-            />
+            {modoEdicion && (
+              <>
+                {" "}
+                <label>Codigo</label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={formData.codigo}
+                  onChange={handleChange}
+                  style={{ textTransform: "uppercase" }}
+                  disabled={true}
+                />
+              </>
+            )}
             <label>Nombre legal</label>
             <input
               type="text"

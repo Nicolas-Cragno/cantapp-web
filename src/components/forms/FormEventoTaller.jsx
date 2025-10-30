@@ -101,7 +101,7 @@ const FormEventoTaller = ({
     setIngresos([]); // limpiar ingresos agregados manualmente
   };
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
     setUploading(true);
 
     try {
@@ -730,21 +730,21 @@ const FormEventoTaller = ({
           tipo={"vehiculo"}
           filtroVehiculo={"tractores"}
           onClose={cerrarModalVehiculo}
-          onGuardar={handleSubmit}
+          //onGuardar={handleSubmit}
         />
       )}
       {modalPersonaVisible && (
         <FormGestor
           tipo={"persona"}
           onClose={cerrarModalPersona}
-          onGuardar={handleSubmit}
+          //onGuardar={handleSubmit}
         />
       )}
       {modalArticuloVisible && (
         <FormGestor
           tipo={"stock"}
           onClose={cerrarModalArticulo}
-          onGuardar={handleSubmit}
+          //onGuardar={handleSubmit}
         />
       )}
     </div>
