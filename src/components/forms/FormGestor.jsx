@@ -20,6 +20,7 @@ const FormGestor = ({
   tipo,
   filtroSector = null,
   filtroVehiculo = null,
+  filtroVehiculoArea = null,
   elemento = null,
   onClose,
   onGuardar,
@@ -33,6 +34,7 @@ const FormGestor = ({
   const props = { elemento, onClose, onGuardar };
   if (filtroVehiculo) props.tipoVehiculo = filtroVehiculo; // si se manda el parametro de tipo vehiculo, se agrega el prop
   if (filtroSector) props.sector = filtroSector; // para el filtro de las llaves porteria/tractores
+  if (filtroVehiculoArea) props.area = filtroVehiculoArea;
 
   return (
     <Suspense fallback={<div>Cargando...</div>}>

@@ -334,7 +334,7 @@ const FormEventoTaller = ({
       <div className="doble-form-content">
         <div className="form-header">
           <h2>{evento.id ? "Editar Trabajo" : "Nuevo Trabajo"}</h2>
-
+          {area}
           <h2 className="black-txt">
             {evento.id
               ? formatearFecha(evento.fecha) +
@@ -342,7 +342,8 @@ const FormEventoTaller = ({
                 formatearHora(evento.fecha) +
                 " hs"
               : new Date().toLocaleDateString()}
-          </h2>
+          </h2>{" "}
+          {evento.id}
           <p>* campo obligatorio</p>
         </div>
         <form onSubmit={handleSubmit} className="modal-formulario-doble">

@@ -15,13 +15,13 @@ import "./css/Fichas.css";
 
 const FichaEventoTaller = ({
   elemento,
-  tipoVehiculo = "Vehiculo",
+  tipoVehiculo = "vehiculo",
   onClose,
   onGuardar,
 }) => {
   const { tractores, furgones, personas, usoStock, stock } = useData();
   const evento = elemento;
-  const AREA = elemento.area;
+  const AREA = elemento.area || tipoVehiculo;
   const [modoEdicion, setModoEdicion] = useState(false);
   const [persona, setPersona] = useState("");
   const [mecanico, setMecanico] = useState("");

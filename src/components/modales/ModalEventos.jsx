@@ -13,7 +13,12 @@ import TablaColeccion from "../tablas/TablaColeccion";
 import FichaEventosGestor from "../fichas/FichaEventosGestor";
 import "./css/Modales.css";
 
-const ModalEventos = ({ tipo = null, onRowClick = null, onClose }) => {
+const ModalEventos = ({
+  tipo = null,
+  filtroSector = null,
+  onRowClick = null,
+  onClose,
+}) => {
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
@@ -83,9 +88,15 @@ const ModalEventos = ({ tipo = null, onRowClick = null, onClose }) => {
   }
 
   const eventosFiltrados = useMemo(() => {
-    const listadoEventos = tipo
-      ? eventos.filter((e) => e.tipo === tipo)
+    const listadoArea = filtroSector
+      ? eventos.filter(
+          (e) => e.area.toLowerCase() === filtroSector.toLowerCase()
+        )
       : eventos;
+
+    const listadoEventos = tipo
+      ? listadoArea.filter((e) => e.tipo === tipo)
+      : listadoArea;
 
     return listadoEventos.filter((e) => {
       const fecha = formatearFecha(e.fecha);

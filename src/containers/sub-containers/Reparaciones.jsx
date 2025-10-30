@@ -40,7 +40,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
   const [modalStockVisible, setModalStockVisible] = useState(false);
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
 
-  const columnasTractores = [
+  const columnasGenerales = [
     {
       titulo: "#",
       campo: "id",
@@ -104,6 +104,9 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       },
       onresponsive: true,
     },
+  ];
+  const columnasTractores = [
+    ...columnasGenerales,
     {
       titulo: "INT",
       campo: "tractor",
@@ -135,6 +138,44 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       offresponsive: true,
     },
   ];
+
+  const columnasFurgones = [
+    ...columnasGenerales,
+    {
+      titulo: "INT",
+      campo: "furgon",
+      render: (t, fila) => {
+        const valor = fila.furgon;
+
+        if (!valor) return "";
+
+        if (Array.isArray(valor)) {
+          return valor.length ? valor.join(", ") : "";
+        }
+
+        return valor;
+      },
+    },
+    {
+      titulo: "DETALLE",
+      campo: "detalle",
+
+      offresponsive: true,
+    },
+  ];
+
+  let columnas;
+
+  switch (filtroSector) {
+    case "tractores":
+      columnas = columnasTractores;
+      break;
+    case "furgones":
+      columnas = columnasFurgones;
+      break;
+    default:
+      columnas = columnasGenerales;
+  }
 
   const cerrarModal = () => {
     setEventoSeleccionado(null);
@@ -240,7 +281,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         </div>
       ) : (
         <TablaColeccion
-          columnas={columnasTractores}
+          columnas={columnas}
           datos={eventosFiltrados}
           onRowClick={(evento) => setEventoSeleccionado(evento)}
         />
@@ -268,6 +309,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       {modalAgregarVisible && (
         <FormGestor
           tipo={AREA}
+          filtroVehiculoArea={AREA} // para que llege como area=furgones por ej
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
         />
@@ -302,7 +344,11 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       )}
 
       {modalIngresosVisible && (
-        <ModalEventos tipo="STOCK" onClose={cerrarModalIngresos} />
+        <ModalEventos
+          tipo="STOCK"
+          filtroSector={AREA}
+          onClose={cerrarModalIngresos}
+        />
       )}
 
       <div className="table-options">
