@@ -44,15 +44,15 @@ const TablaColeccion = ({ columnas, datos, onRowClick = false }) => {
       <div className="table-body-wrapper">
         <table className="table-lista">
           <tbody className="table-body">
-            {datosOrdenados.map((item) => (
+            {datosOrdenados.map((item, index) => (
               <tr
-                key={item.id}
+                key={item.id || index}
                 onClick={() => onRowClick && onRowClick(item)}
                 className="table-item"
               >
-                {columnas.map((col, index) => (
+                {columnas.map((col, colIndex) => (
                   <td
-                    key={index}
+                    key={colIndex}
                     className={
                       col.offresponsive
                         ? "off-responsive"

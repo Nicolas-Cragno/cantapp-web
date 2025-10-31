@@ -18,12 +18,13 @@ import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import "./css/Fichas.css";
 
 const FichaEventoPorteria = ({ elemento, onClose, onGuardar }) => {
-  const { personas, tractores, furgones, vehiculos } = useData();
-  const [modoEdicion, setModoEdicion] = useState(false);
   const [cargado, setCargado] = useState(false);
+  const [modoEdicion, setModoEdicion] = useState(false);
   const [distincion, setDistincion] = useState("tractor");
   const [esFletero, setEsFletero] = useState(false);
   const [modificaciones, setModificaciones] = useState([]);
+  // Informacion desde Firestore
+  const { personas, tractores, furgones, vehiculos } = useData();
 
   useEffect(() => {
     const cargarDatos = async () => {

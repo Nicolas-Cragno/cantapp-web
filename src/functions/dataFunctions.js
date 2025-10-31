@@ -13,6 +13,8 @@ export const buscarId = (coleccion, campo, valor) => {
   const valorStr = String(valor);
   const resultado = coleccion.find((element) => element[campoStr] === String(valorStr));
 
+  if(!resultado) console.log("[Error] No se encontró un id");
+
   return resultado ? resultado.id : "";
 }
 
@@ -22,11 +24,11 @@ export const useNombreEmpresa = (cuit) => {
   const nombreError = "SIN ASIGNAR";
 
   if (!cuit){
-    console.log(`[Error] useNombreEmpresa espera un 'cuit' por parámetro.`);
     return nombreError;
   }
 
   const empresa = empresas.find((e) => e.id === cuit || e.cuit === cuit);
+  if(!empresa) {console.log(`[Error] useNombreEmpresa espera un 'cuit' por parámetro.`);}
   return empresa ? empresa.nombre : nombreError;
 }
 export const useObtenerCuitPorNombre = (nombreEmpresa) => {
@@ -34,16 +36,16 @@ export const useObtenerCuitPorNombre = (nombreEmpresa) => {
   const valorError = 0;
 
   if(!nombreEmpresa || typeof nombreEmpresa !== "string") {
-    console.log(`[Error] useObtenerCuitPorNombre esperaba un nombreEmpresa(string) por parámetro.`);
     return valorError;
   }
 
   const empresa = empresas.find((e) => e.nombre === nombreEmpresa);
+  if(!empresa){    console.log(`[Error] useObtenerCuitPorNombre esperaba un nombreEmpresa(string) por parámetro.`);
+}
   return empresa ? empresa.cuit : valorError;
 }
 export const buscarEmpresa = (coleccion, cuit, completo=true) => {
   if (!cuit || !Array.isArray(coleccion)){
-    console.log(`[Error] buscarEmpresa esperaba una colección y un cuit(id) como parámetros.`)
     return "";
   }
   const empresa = coleccion.find((e) => e.cuit === cuit || e.id === cuit);
@@ -56,7 +58,6 @@ export const buscarEmpresa = (coleccion, cuit, completo=true) => {
 }
 export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
   if(!nombre){
-    console.log(`[Error] buscarCuitEmpresa esperaba un nombre.`)
     return 0;
   } 
 
@@ -94,11 +95,12 @@ export const useBuscarDni = (nombrePersona) => {
 
   if(!nombrePersona || typeof nombrePersona !== "string") 
   {
-    console.log(`[Error] useBuscarDni esperaba un nombrePersona(string) como parametro.`)
     return valorError;
   }
 
   const persona = personas.find((p) => p.apellido + ", " + p.nombres === nombrePersona || p.apellido + ", " + p.nombres[0] + "." === nombrePersona);
+  if(!persona){    console.log(`[Error] useBuscarDni esperaba un nombrePersona(string) como parametro.`)
+};
   return persona ? persona.dni : valorError;
 }
 export const useBuscarPersona = (dni, completo=true) => {
@@ -106,7 +108,6 @@ export const useBuscarPersona = (dni, completo=true) => {
   const valorError = "";
 
   if(!dni){
-    console.log(`[Error] useBuscarPersona esperaba un dni como parámetro`);
     return valorError;
   } 
 
@@ -121,13 +122,11 @@ export const useBuscarPersona = (dni, completo=true) => {
 }
 export const buscarPersona = (coleccion, dni, completo = true) => {
   if (!dni){ 
-    console.log(`[Error] buscarPersona esperaba un dni como parámetro.`);
     return "";}
 
   const dniStr = String(dni);
   const persona = coleccion.find((p) => p.dni === dniStr || p.id === dniStr);
   if (!persona){
-    console.log(`[Error] buscarPersona no encontró una persona con dni/id ${String(dni)}`);
     return "";
   } 
 
@@ -143,7 +142,6 @@ export const buscarPersona = (coleccion, dni, completo = true) => {
 };
 export const normalizarFecha = (valor) => {
   if (!valor){
-    console.log(`[Error] normalizarFecha esperaba un valor como parámetro.`);
     return null;
   }
 
@@ -174,7 +172,6 @@ export const normalizarFecha = (valor) => {
 export const calcularEdad = (fechaNacimiento) => {
   const fecha = normalizarFecha(fechaNacimiento);
   if (!fecha){
-    console.log(`[Error] calcularEdad esperaba una fechaNacimiento válida como parámetro.`);
     return null;
   } 
 
@@ -185,6 +182,8 @@ export const calcularEdad = (fechaNacimiento) => {
   if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
     edad--;
   }
+
+  
 
   return edad;
 };
@@ -297,7 +296,6 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
   let vehiculo = null;
 
   if(!interno){
-    console.log(`[Error] useBuscarDominio esperaba un interno válido.`);
     return valorError;
   } 
 
@@ -312,18 +310,16 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
 export const buscarDominio = (interno, coleccion = []) => {
   if (!interno || !Array.isArray(coleccion))
   {
-    console.log(`[Error] buscarDominio esperaba un interno válido y/o una colección(array) válida`);
     return "";
   }
 
   const vehiculo = coleccion.find((v) => String(v.interno) === String(interno) || String(v.id) === String(interno));
-  if(!vehiculo) console.log(`[Error] buscarDominio no encontró un vehículo con interno ${String(interno)}`);
+ ;
 
   return vehiculo ? vehiculo.dominio : "";
 };
 export const minimizarVehiculo = (tipoVehiculo) => {
   if(!tipoVehiculo) {
-    console.log(`[Error] minimizarVehiculo esperaba un tipoVehiculo como parámetro`);
     return "";
   }
   let tipo;
@@ -336,12 +332,12 @@ export const minimizarVehiculo = (tipoVehiculo) => {
 }
 export const buscarMarca = (id, coleccion = []) => {
   if (!id || !Array.isArray(coleccion)){
-    console.log(`[Error] buscarMarca esperaba un id y/o una colección(array) valido/s`)
     return "";
   } 
 
   const vehiculo = coleccion.find((v) => String(v.id) === String(id) || String(v.dominio) === String(id));
-
+if(!vehiculo) {    console.log(`[Error] buscarMarca esperaba un id y/o una colección(array) valido/s`)
+};
   return vehiculo ? vehiculo.marca : "";
 };
 
