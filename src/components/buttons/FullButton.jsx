@@ -8,7 +8,7 @@ const TextButton = ({
   onClick,
 }) => {
   return (
-    <button className="btn-body" onClick={onClick}>
+    <button className="btn-body" type={type} onClick={onClick}>
       <img src={logo} alt="" className="btn-logo" /> {text}
     </button>
   );

@@ -14,6 +14,7 @@ import { agregarEvento } from "../../functions/eventFunctions";
 import {
   sumarMultiplesCantidades,
   agregarStockADeposito,
+  buscarId,
 } from "../../functions/dataFunctions";
 import Sectores from "../../functions/data/areas.json";
 import Unidades from "../../functions/data/unidades.json";
@@ -47,14 +48,23 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
 
   useEffect(() => {
     const fetchArticulos = async () => {
-      setArticulos(stock);
+      setLoading(true);
+
+      let filtrados = stock;
+
+      if (proveedor !== null) {
+        filtrados = stock.filter(
+          (a) => a.proveedor === buscarId(proveedores, "cuit", proveedor)
+        );
+      }
+
+      setArticulos(filtrados);
       setLoading(false);
     };
 
-    //if (taller) setArea(Sectores[taller]);
-
     fetchArticulos();
-  }, [ingresos]);
+  }, [ingresos, proveedor, stock]);
+
   const handleAgregar = () => {
     if (!articuloSeleccionado || !cantidad || isNaN(cantidad)) {
       Swal.fire(
@@ -265,12 +275,15 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                   </button>
                 </div>
                 <label>Proveedor</label>
+
                 <Select
-                  options={proveedores.map((opt) => ({
-                    value: String(opt.id),
-                    label: opt.id + " - " + opt.nombre,
-                    cuit: opt.cuit,
-                  }))}
+                  options={proveedores
+                    .filter((pr) => pr.id !== "01")
+                    .map((opt) => ({
+                      value: String(opt.id),
+                      label: opt.id + " - " + opt.nombre,
+                      cuit: opt.cuit,
+                    }))}
                   value={
                     proveedor
                       ? proveedores

@@ -53,11 +53,11 @@ const ModalProveedor = ({ onClose }) => {
       const textoFiltro = `${e.id} ${e.cuit} ${e.detalle} ${e.marca} ${e.nombre}`;
       return textoFiltro.toLocaleLowerCase().includes(filtro.toLowerCase());
     });
-  });
+  }, [proveedores, filtro]);
 
   const handleGuardar = async () => {
     setModalFichaVisible(false);
-    setProveedorSeleccionado(false);
+    setProveedorSeleccionado(null);
   };
 
   return (

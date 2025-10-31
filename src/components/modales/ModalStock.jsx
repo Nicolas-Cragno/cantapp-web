@@ -17,19 +17,11 @@ import "./css/Modales.css";
 const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
   const idDepo = taller;
   const [filtro, setFiltro] = useState("");
-  const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
   const { stock, depositos } = useData();
-
-  useEffect(() => {
-    const depo = depositos.find((d) => d.id === idDepo);
-    const stockDepo = depo?.stock || [];
-    //setArticulos(stockDepo);
-    setArticulos(stock); //Por el momento no estamos manejando stock, listo TODO
-  }, []);
 
   const columnas = [
     {
@@ -38,8 +30,7 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
     },
     {
       titulo: "DESCRIPCION",
-      campo: "id",
-      render: (a) => buscarRepuestoPorID(stock, a),
+      campo: "descripcion",
     },
     {
       titulo: "STOCK",
@@ -62,19 +53,17 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
     setModalMovimientoVisible(false);
   };
   const articulosFiltrados = useMemo(() => {
-    let ordenados = [...articulos].sort((a, b) =>
-      a.descripcion.localeCompare(b.descripcion)
-    );
+    return [...stock]
+      .sort((a, b) => a.descripcion.localeCompare(b.descripcion))
+      .filter((e) => {
+        const textoFiltro = `${e.codigo} ${e.id} ${e.descripcion} ${e.unidad}`;
+        return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
+      });
+  }, [stock, filtro]);
 
-    return ordenados.filter((e) => {
-      const textoFiltro = `${e.codigo} ${e.id} ${e.descripcion} ${e.unidad}`;
-      return textoFiltro.toLocaleLowerCase().includes(filtro.toLowerCase());
-    });
-  });
-
-  const handleGuardar = async () => {
+  const handleGuardar = async (e) => {
     setModalFichaVisible(false);
-    setArticuloSeleccionado(false);
+    setArticuloSeleccionado(null);
   };
 
   return (

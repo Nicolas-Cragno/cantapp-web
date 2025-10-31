@@ -5,10 +5,11 @@ import "./css/Buttons.css";
 const AlertButton = ({
   txtFront = "Hay actualizaciones",
   txtBack = "Actualizar",
+  type = "button",
   onClick,
 }) => {
   return (
-    <button className="alert-btn" onClick={onClick}>
+    <button type={type} className="alert-btn" onClick={onClick}>
       <span className="btn-text visible">
         <AlertLogo />
         {txtFront}

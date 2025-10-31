@@ -7,6 +7,15 @@ import Swal from "sweetalert2";
 import { modificar } from "./dbFunctions";
 
 
+export const buscarId = (coleccion, campo, valor) => {
+  if(!coleccion || !campo || !valor) return "";
+  const campoStr = String(campo);
+  const valorStr = String(valor);
+  const resultado = coleccion.find((element) => element[campoStr] === String(valorStr));
+
+  return resultado ? resultado.id : "";
+}
+
 // ----------------------------------------------------------------------- Nombre de empresas
 export const useNombreEmpresa = (cuit) => {
   const { empresas } = useData();
@@ -75,6 +84,8 @@ export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
 export const verificarDuplicado = (coleccion, idx) => {
   return coleccion.some((p) => String(p.idx) === String(idx));
 };
+
+
 // ----------------------------------------------------------------------- Personas
 
 export const useBuscarDni = (nombrePersona) => {
