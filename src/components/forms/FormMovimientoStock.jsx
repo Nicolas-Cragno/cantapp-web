@@ -77,7 +77,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           : -Math.abs(Number(cantidad)),
       unidad: articulo.unidad,
       valor: Number(valor) || 0,
-      //moneda: moneda, //moneda asignada globalmente
+      moneda: moneda, //moneda asignada globalmente pero tiraba error, restauré
       tipo: tipoMovimiento,
     };
 
