@@ -6,6 +6,8 @@
   "EL": { "tipo": "ELECTRICIDAD", "descripcion": "Sistema eléctrico, iluminación y sensores" },
   "FR": { "tipo": "FRENOS", "descripcion": "Componentes del sistema de frenos y aire" },
   "HI": { "tipo": "HIDRAULICA", "descripcion": "Sistemas hidráulicos y neumáticos auxiliares" },
+  "HE": { "tipo": "HERRAMIENTA", "descripcion": "Todo tipo de elementos, utensilios y equipos utilizados para el mantenimiento, reparación o ajuste de los vehículos"},
+  "IN": { "tipo": "INSUMO", "descripcion": "Materiales y productos de uso recurrente en tareas de mantenimiento, limpieza o reparación de los vehículos" },
   "MT": { "tipo": "MOTOR", "descripcion": "Partes y accesorios del motor" },
   "RC": { "tipo": "RECUPERADO", "descripcion": "Componente, elemento, parte o accesorio tomado de un vehiculo para usar en otro."},
   "RF": { "tipo": "REFRIGERACION", "descripcion": "Sistema de enfriamiento del motor y radiadores" },
