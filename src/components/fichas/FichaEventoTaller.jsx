@@ -9,6 +9,7 @@ import {
   buscarPersona,
   buscarRepuestoPorID,
   abreviarUnidad,
+  buscarNombre,
 } from "../../functions/dataFunctions";
 import FormGestor from "../forms/FormGestor";
 import "./css/Fichas.css";
@@ -19,7 +20,7 @@ const FichaEventoTaller = ({
   onClose,
   onGuardar,
 }) => {
-  const { tractores, furgones, personas, usoStock, stock } = useData();
+  const { tractores, furgones, personas, usoStock, stock, ubicaciones } = useData();
   const evento = elemento;
   const AREA = elemento.area || tipoVehiculo;
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -27,6 +28,7 @@ const FichaEventoTaller = ({
   const [mecanico, setMecanico] = useState("");
   const [chofer, setChofer] = useState("");
   const [tractor, setTractor] = useState("SIN ASIGNAR");
+  const [sucursal, setSucursal] = useState("DON TORCUATO");
   const [kilometraje, setKilometraje] = useState(null);
   const [furgon, setFurgon] = useState("SIN ASIGNAR");
   const [repuestos, setRepuestos] = useState([]);
@@ -66,6 +68,14 @@ const FichaEventoTaller = ({
           if (dTractor) {
             setTractor(`${dTractor.dominio} (${dTractor.interno})`);
           }
+        }
+
+        if(evento.sucursal){
+          const sucu = buscarNombre(ubicaciones, evento.sucursal);
+
+          setSucursal(sucu);
+        } else {
+          setSucursal("DON TORCUATO");
         }
 
         if (evento.furgon) {
@@ -109,6 +119,7 @@ const FichaEventoTaller = ({
               <span>{horaFormateada} HS</span>
             </div>
             <div className="ficha-info">
+              <p><strong>Sucursal: </strong>{sucursal}</p>
               <p>
                 <strong>Mecanico: </strong> {mecanico}
               </p>

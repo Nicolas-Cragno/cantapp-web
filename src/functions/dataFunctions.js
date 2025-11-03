@@ -85,7 +85,11 @@ export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
 export const verificarDuplicado = (coleccion, idx) => {
   return coleccion.some((p) => String(p.idx) === String(idx));
 };
+export const buscarNombre = (coleccion, idx) => {
+  const valor = coleccion.find((v) => v.id === String(idx));
 
+  return valor ? valor.nombre : "";
+}
 
 // ----------------------------------------------------------------------- Personas
 

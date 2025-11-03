@@ -147,6 +147,8 @@ const FormPersona = ({
           return;
         }
 
+        const esChoferFletero = formData.puesto === "CHOFER FLETERO" || formData.puesto === "FLETERO" ? true : false;
+
         const nuevaPersona = {
           ...formData,
           dni: String(formData.dni),
@@ -161,10 +163,10 @@ const FormPersona = ({
           ingreso: new Date(),
           legajo: formData.legajo || null,
           sucursal: formData.sucursal || null,
-          estado: true,
+          estado: !esChoferFletero, // para que sea false si es fletero
           detalle: formData.detalle?.toUpperCase() || null,
           // super admin
-          periodos: [
+          periodos: esChoferFletero ? [] : [
             ...(formData.periodos || []), // mantiene los existentes si hubiera
             {
               inicio: new Date(), // fecha actual
