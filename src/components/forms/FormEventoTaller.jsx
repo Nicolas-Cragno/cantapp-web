@@ -184,10 +184,10 @@ const FormEventoTaller = ({
         fecha: fechaParaGuardar,
         chofer: formData.chofer ? Number(formData.chofer) : null,
         //mecanico: formData.mecanico ? Number(formData.mecanico) : null,
-        mecanico: evento?.mecanico
-          ? Array.isArray(evento.mecanico)
-            ? evento.mecanico.map((m) => Number(m))
-            : [Number(evento.mecanico)]
+        mecanico: formData?.mecanico
+          ? Array.isArray(formData.mecanico)
+            ? formData.mecanico.map((m) => Number(m))
+            : [Number(formData.mecanico)]
           : [],
         proveedor: formData.proveedor ? String(formData.proveedor) : null,
         subtipo: formData.subtipo?.toUpperCase() || null,

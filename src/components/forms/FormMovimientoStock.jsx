@@ -15,13 +15,20 @@ import {
   sumarMultiplesCantidades,
   agregarStockADeposito,
   buscarId,
+  buscarNombre,
+  buscarRepuestoPorID,
 } from "../../functions/dataFunctions";
 import Sectores from "../../functions/data/areas.json";
 import Unidades from "../../functions/data/unidades.json";
 import "./css/Forms.css";
 
-const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
-  const { stock, proveedores } = useData();
+const FormMovimientoStock = ({
+  elemento = null,
+  taller = null,
+  onClose,
+  onGuardar,
+}) => {
+  const { stock, proveedores, sectores } = useData();
   const [area, setArea] = useState("administracion"); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
@@ -33,11 +40,47 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
   const [valor, setValor] = useState(0);
   const [valorFinal, setValorFinal] = useState(0);
   const [moneda, setMoneda] = useState("pesos");
-  const [ingresos, setIngresos] = useState([]);
+  const [ingresos, setIngresos] = useState(
+    elemento?.ingresos?.map((ings) => ({
+      ...ings,
+      logo: ings.cantidad < 0 ? <LogoDown /> : <LogoUp />,
+    })) || []
+  );
   const [esFactura, setEsFactura] = useState(false);
   const [tipoMovimiento, setTipoMovimiento] = useState("ALTA");
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [formData, setFormData] = useState({
+    area: elemento?.area ? elemento.area : "administracion",
+    ingresos: elemento?.ingresos?.map((ings) => ({
+      ...ings,
+      id: ings.id,
+      cantidad: ings.cantidad,
+      descripcion: stock.find((s) => s.id === ings.id).descripcion,
+      unidad: ings.unidad,
+      valor: ings.valor,
+      moneda: ings.moneda,
+      logo: ings.cantidad < 0 ? <LogoDown /> : <LogoPlus />,
+    })),
+    moneda: elemento?.moneda ? elemento.moneda : "pesos",
+    remito: elemento?.remito ? elemento.remito : "",
+    factura: elemento?.factura ? elemento.factura : "",
+    proveedor: elemento?.proveedor ? elemento.proveedor : "",
+  });
+
+  useEffect(() => {
+    const nuevoValorFinal = ingresos.reduce(
+      (total, i) => total + i.cantidad * (i.valor || 0),
+      0
+    );
+    setValorFinal(nuevoValorFinal);
+  }, [ingresos]);
+
+  useEffect(() => {
+    if (elemento?.proveedor) {
+      setEsFactura(true);
+    }
+  }, [elemento]);
 
   console.log("Ingresos:", ingresos);
 
@@ -64,6 +107,14 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
 
     fetchArticulos();
   }, [ingresos, proveedor, stock]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((data) => ({ ...data, [name]: value }));
+  };
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, moneda }));
+  }, [moneda]);
 
   const handleAgregar = () => {
     if (!articuloSeleccionado || !cantidad || isNaN(cantidad)) {
@@ -175,6 +226,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
         proveedor: proveedor ? proveedor : null,
         remito: remito ? remito : null,
         factura: factura ? factura : null,
+        moneda: factura ? moneda : null,
         ingresos: ingresos.map((i) => ({
           id: i.id,
           cantidad: i.cantidad,
@@ -217,7 +269,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <h2>MOVIMIENTO DE STOCK</h2>
-        {area}
+
         <hr />
         <form>
           <div className="type-container">
@@ -243,17 +295,17 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                 <input
                   type="text"
                   style={{ textTransform: "uppercase" }}
-                  value={remito}
-                  onChange={(e) => setRemito(e.target.value)}
+                  value={formData.remito}
+                  onChange={handleChange}
                   name="remito"
                 ></input>
-                <label>Factura</label>
+                <label>Factura</label> {formData.moneda}
                 <div className="select-with-button">
                   <input
                     type="text"
                     style={{ textTransform: "uppercase" }}
-                    value={factura}
-                    onChange={(e) => setFactura(e.target.value)}
+                    value={formData.factura}
+                    onChange={handleChange}
                     name="factura"
                   ></input>
                   <button
@@ -268,15 +320,16 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                   <button
                     type="button"
                     className={
-                      moneda === "dolares" ? "type-btn active" : "type-btn"
+                      moneda === "dolares"
+                        ? "type-btn active-green"
+                        : "type-btn"
                     }
                     onClick={() => setMoneda("dolares")}
                   >
-                    USD
+                    U$D
                   </button>
                 </div>
                 <label>Proveedor</label>
-
                 <Select
                   options={proveedores
                     .filter((pr) => pr.id !== "01")
@@ -286,7 +339,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                       cuit: opt.cuit,
                     }))}
                   value={
-                    proveedor
+                    formData.proveedor
                       ? proveedores
                           .map((opt) => ({
                             value: String(opt.id),
@@ -295,12 +348,19 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                           }))
                           .find(
                             (opt) =>
-                              opt.cuit === proveedor ||
+                              opt.cuit === formData.proveedor ||
                               String(opt.value) === String(proveedor)
                           )
                       : null
                   }
-                  onChange={(opt) => setProveedor(opt ? opt.cuit : null)}
+                  onChange={(selectedProv) =>
+                    handleChange({
+                      target: {
+                        name: "proveedor",
+                        value: selectedProv ? selectedProv.value : "",
+                      },
+                    })
+                  }
                   placeholder=""
                   isClearable
                   required
@@ -313,15 +373,25 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
             <label>
-              Area / Sector
+              Area / Sector {formData.area}
               <Select
-                options={sectoresDisponibles}
+                options={sectores.map((opt) => ({
+                  value: opt.nombre,
+                  label: opt.id + " - " + opt.nombre,
+                }))}
                 value={
-                  area
-                    ? sectoresDisponibles.find((opt) => opt.value === area)
+                  formData.area
+                    ? sectores.find((opt) => opt.value === formData.area)
                     : null
                 }
-                onChange={(opt) => setArea(opt ? opt.label : null)}
+                onChange={(selectedArea) =>
+                  handleChange({
+                    target: {
+                      name: "area",
+                      value: selectedArea ? selectedArea.value : "",
+                    },
+                  })
+                }
                 placeholder="Seleccionar sector..."
                 noOptionsMessage={() => "No hay sectores disponibles"}
                 disabled={taller}
@@ -437,7 +507,11 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           <label className="form-title">Movimiento a registrar</label>
           {esFactura && (
             <label className="form-title">
-              {moneda === "pesos" ? "AR$" : "U$D"} {valorFinal}
+              {moneda === "pesos" ? "AR$" : "U$D"}{" "}
+              {valorFinal.toLocaleString("es-AR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </label>
           )}
           <div className="form-box2">
@@ -449,7 +523,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                   <li key={index} className="list-item">
                     <div
                       className={`item-info ${
-                        item.tipo === "BAJA" ? "item-rojo" : "item-verde"
+                        item.cantidad < 0 ? "item-rojo" : "item-verde"
                       }`}
                     >
                       {item.logo}
@@ -457,7 +531,11 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
                     <div className="item-info-small">
                       <strong>{item.id}</strong>
                     </div>
-                    <div className="item-info-smaller">{item.descripcion}</div>
+                    <div className="item-info-smaller">
+                      {item.descripcion
+                        ? item.descripcion
+                        : stock.find((s) => s.id === item.id).descripcion}
+                    </div>
                     <div className="item-actions">
                       <span className="list-cant3">
                         {item.cantidad} {Unidades[item.unidad.toUpperCase()]}{" "}

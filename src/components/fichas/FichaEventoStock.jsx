@@ -12,6 +12,7 @@ import {
   formatearHora,
   buscarEmpresa,
 } from "../../functions/dataFunctions";
+import FormGestor from "../forms/FormGestor";
 import TextButton from "../buttons/TextButton";
 import Unidades from "../../functions/data/unidades.json";
 import "./css/Fichas.css";
@@ -162,11 +163,18 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
             )}
 
             <div className="ficha-buttons">
-              <TextButton text="Cerrar" onClick={onClose} />
+              <TextButton text="Editar" onClick={() => setModoEdicion(true)} />
             </div>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <FormGestor
+          tipo={"movimientoStock"}
+          elemento={elemento}
+          onClose={() => setModoEdicion(false)}
+          onGuardar={handleGuardado}
+        />
+      )}
     </>
   );
 };

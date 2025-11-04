@@ -535,7 +535,12 @@ padding-top: 1rem;}
 .type-btn.active{
   background-color: #007bff; /* Verde para ALTA */
   color: white;
+  opacity: 1;
+}
 
+.type-btn.active-green{
+  background-color: #2ecc71;
+  color: white;
   opacity: 1;
 }
 
