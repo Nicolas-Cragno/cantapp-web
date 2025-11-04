@@ -43,6 +43,10 @@ const FormEventoTaller = ({
     ubicaciones,
   } = useData();
 
+  useEffect(() => {
+    if (evento.proveedor) setEsServicio(true);
+  }, [evento.proveedor]);
+
   const [formData, setFormData] = useState({
     tipo: evento?.tipo || "",
     chofer: evento?.chofer ? String(evento.chofer) : "",
@@ -135,14 +139,10 @@ const FormEventoTaller = ({
   }, [evento.id]);
 
   useEffect(() => {
-    if (evento.servicio) setEsServicio(true);
-  }, [evento.servicio]);
-
-  useEffect(() => {
     setFormData((prev) => ({
       ...prev,
       mecanico: esServicio ? [] : prev.mecanico,
-      proveedor: esServicio ? prev.proveedor : "",
+      //proveedor: esServicio ? prev.proveedor : "", // no me cargaba el proveedor
     }));
   }, [esServicio]);
   const handleRestore = () => {
@@ -189,7 +189,7 @@ const FormEventoTaller = ({
             ? evento.mecanico.map((m) => Number(m))
             : [Number(evento.mecanico)]
           : [],
-        proveedor: formData.proveedor ? formData.proveedor : null,
+        proveedor: formData.proveedor ? String(formData.proveedor) : null,
         subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
@@ -536,7 +536,8 @@ const FormEventoTaller = ({
                               cuit: opt.cuit,
                             }))
                             .find(
-                              (opt) => opt.value === String(formData.proveedor)
+                              (opt) =>
+                                String(opt.value) === String(formData.proveedor)
                             )
                         : null
                     }

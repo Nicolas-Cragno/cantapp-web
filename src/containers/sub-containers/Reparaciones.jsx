@@ -30,8 +30,17 @@ import LogoStock from "../../assets/logos/logostock-w.png";
 
 const Reparaciones = ({ filtroSector = "tractores" }) => {
   const AREA = filtroSector;
-  const { eventos, stock, personas, empresas, tractores, furgones, loading, ubicaciones } =
-    useData();
+  const {
+    eventos,
+    stock,
+    proveedores,
+    personas,
+    empresas,
+    tractores,
+    furgones,
+    loading,
+    ubicaciones,
+  } = useData();
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
@@ -78,44 +87,59 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       ),
     },
     {
-      titulo: "MECANICO",
+      titulo: "MECÁNICO / PROVEEDOR",
       campo: "mecanico",
       render: (p, fila) => {
-        const valor =
-          fila.mecanico !== null ? buscarPersona(personas, fila.mecanico) : "";
+        // Si hay mecánico
+        if (fila.mecanico && fila.mecanico !== "") {
+          const mecanicoNombre = buscarPersona(personas, fila.mecanico);
+          if (mecanicoNombre) return mecanicoNombre;
+        }
 
-        if (!valor) return "";
+        // Si no hay mecánico pero hay proveedor
+        if (fila.proveedor && fila.proveedor !== "") {
+          const prov = proveedores.find(
+            (prov) => String(prov.id) === String(fila.proveedor)
+          );
+          if (prov) return prov.nombre;
+        }
 
-        return valor;
+        // Si no hay ninguno
+        return "";
       },
       offresponsive: true,
     },
     {
-      titulo: "MEC",
+      titulo: "MEC / PROV",
       campo: "mecanico",
       render: (p, fila) => {
-        const valor =
-          fila.mecanico !== null
-            ? buscarPersona(personas, fila.mecanico, false)
-            : "";
+        if (fila.mecanico && fila.mecanico !== "") {
+          const mecanicoNombre = buscarPersona(personas, fila.mecanico, false);
+          if (mecanicoNombre) return mecanicoNombre;
+        }
 
-        if (!valor) return "";
+        if (fila.proveedor && fila.proveedor !== "") {
+          const prov = proveedores.find(
+            (prov) => String(prov.id) === String(fila.proveedor)
+          );
+          if (prov) return prov.nombre;
+        }
 
-        return valor;
+        return "";
       },
       onresponsive: true,
     },
   ];
   const columnasFinal = [
-  {
-    titulo: "SUCURSAL",
-    campo: "sucursal",
-    render: (row) => {
-      // row.sucursal puede ser null o vacío
-      return row ? buscarNombre(ubicaciones, row) : "DON TORCUATO";
+    {
+      titulo: "SUCURSAL",
+      campo: "sucursal",
+      render: (row) => {
+        // row.sucursal puede ser null o vacío
+        return row ? buscarNombre(ubicaciones, row) : "DON TORCUATO";
+      },
     },
-  },
-];
+  ];
   const columnasTractores = [
     ...columnasGenerales,
     {
