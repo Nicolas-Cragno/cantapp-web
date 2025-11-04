@@ -470,19 +470,32 @@ const FormEventoTaller = ({
                     className="select-grow"
                     options={mecanicos
                       .map((p) => ({
-                        value: p.id,
+                        value: p.dni, // usamos DNI como identificador
                         label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
                         apellido: p.apellido,
                       }))
                       .sort((a, b) => a.apellido.localeCompare(b.apellido))}
                     value={
-                      formData.mecanico && Array.isArray(formData.mecanico)
-                        ? mecanicos
-                            .filter((p) => formData.mecanico.includes(p.id))
-                            .map((p) => ({
-                              value: p.id,
-                              label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                            }))
+                      formData.mecanico
+                        ? (Array.isArray(formData.mecanico)
+                            ? formData.mecanico
+                            : [formData.mecanico]
+                          ).map((dni) =>
+                            personas.find((p) => p.dni === dni)
+                              ? {
+                                  value: dni,
+                                  label: `${
+                                    personas.find((p) => p.dni === dni).apellido
+                                  } ${
+                                    personas.find((p) => p.dni === dni).nombres
+                                  } (DNI: ${dni})${
+                                    !mecanicos.some((m) => m.dni === dni)
+                                      ? " [INACTIVO]"
+                                      : ""
+                                  }`,
+                                }
+                              : { value: dni, label: `DNI: ${dni} [INACTIVO]` }
+                          )
                         : []
                     }
                     onChange={(opts) =>

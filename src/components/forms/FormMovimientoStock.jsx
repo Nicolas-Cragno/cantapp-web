@@ -195,6 +195,7 @@ const FormMovimientoStock = ({ taller = null, onClose, onGuardar }) => {
           id: ingreso.id,
           cantidad: ingreso.cantidad,
           unidad: ingreso.unidad,
+          evento: idEvento,
         });
       }
 
