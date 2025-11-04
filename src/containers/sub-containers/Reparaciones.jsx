@@ -13,6 +13,7 @@ import {
   buscarPersona,
   buscarEmpresa,
   buscarDominio,
+  buscarNombre,
 } from "../../functions/dataFunctions";
 import FichaGestor from "../../components/fichas/FichaGestor";
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
@@ -29,7 +30,7 @@ import LogoStock from "../../assets/logos/logostock-w.png";
 
 const Reparaciones = ({ filtroSector = "tractores" }) => {
   const AREA = filtroSector;
-  const { eventos, stock, personas, empresas, tractores, furgones, loading } =
+  const { eventos, stock, personas, empresas, tractores, furgones, loading, ubicaciones } =
     useData();
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
@@ -105,6 +106,16 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       onresponsive: true,
     },
   ];
+  const columnasFinal = [
+  {
+    titulo: "SUCURSAL",
+    campo: "sucursal",
+    render: (row) => {
+      // row.sucursal puede ser null o vacío
+      return row ? buscarNombre(ubicaciones, row) : "DON TORCUATO";
+    },
+  },
+];
   const columnasTractores = [
     ...columnasGenerales,
     {
@@ -137,6 +148,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
       offresponsive: true,
     },
+    ...columnasFinal,
   ];
 
   const columnasFurgones = [
@@ -162,6 +174,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
       offresponsive: true,
     },
+    ...columnasFinal,
   ];
 
   let columnas;

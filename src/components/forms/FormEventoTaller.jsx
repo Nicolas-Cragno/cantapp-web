@@ -33,8 +33,15 @@ const FormEventoTaller = ({
 }) => {
   const evento = elemento || {};
 
-  const { tractores, furgones, vehiculos, personas, stock, proveedores } =
-    useData();
+  const {
+    tractores,
+    furgones,
+    vehiculos,
+    personas,
+    stock,
+    proveedores,
+    ubicaciones,
+  } = useData();
 
   const [formData, setFormData] = useState({
     tipo: evento?.tipo || "",
@@ -47,11 +54,12 @@ const FormEventoTaller = ({
       : [], // 1 o varios mecanico/s
     proveedor: evento?.proveedor ? String(evento.proveedor) : "",
     tractor: evento?.tractor || "",
-    kilometraje: evento?.kmTractor || "",
+    kilometraje: evento?.kilometraje || "",
     furgon: evento?.furgon || "",
     detalle: evento?.detalle || "",
     area: evento?.area || area,
     subarea: evento?.subarea || subarea,
+    sucursal: evento?.sucursal ? evento.sucursal : "01",
   });
 
   const subtiposDisponibles = tiposEventos[area.toUpperCase()];
@@ -59,6 +67,7 @@ const FormEventoTaller = ({
   const [mecanicos, setMecanicos] = useState([]);
   const [choferes, setChoferes] = useState([]);
   const [servicios, setServicios] = useState([]);
+  const [sucursales, setSucursales] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState(null);
   const [articulosUsados, setArticulosUsados] = useState([]);
   const [articulosUsadosBackUp, setArticulosUsadosBackUp] = useState([]);
@@ -69,6 +78,9 @@ const FormEventoTaller = ({
   const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
   const [modalArticuloVisible, setModalArticuloVisible] = useState(false);
   const [esServicio, setEsServicio] = useState(false);
+  const usuarioJSON = JSON.parse(localStorage.usuario); // asumimos que ya lo guardaste
+  const esSuperAdmin =
+    usuarioJSON?.rol === "superadmin" || usuarioJSON?.rol === "dev";
 
   useEffect(() => {
     const listadoMecanicos = personas.filter((p) => p.puesto === "MECANICO");
@@ -83,6 +95,16 @@ const FormEventoTaller = ({
     );
     setChoferes(listadoChoferes);
   }, [personas]);
+
+  useEffect(() => {
+    if (ubicaciones && typeof ubicaciones === "object") {
+      const opciones = Object.entries(ubicaciones).map(([id, data]) => ({
+        value: id,
+        label: data.nombre,
+      }));
+      setSucursales(opciones);
+    }
+  }, [ubicaciones]);
 
   useEffect(() => {
     const listadoServicios = proveedores.filter((p) => p.id !== "01");
@@ -155,7 +177,11 @@ const FormEventoTaller = ({
         fecha: fechaParaGuardar,
         chofer: formData.chofer ? Number(formData.chofer) : null,
         //mecanico: formData.mecanico ? Number(formData.mecanico) : null,
-        mecanico: formData.mecanico ? formData.mecanico.map(Number) : [], // array de dni
+        mecanico: evento?.mecanico
+          ? Array.isArray(evento.mecanico)
+            ? evento.mecanico.map((m) => Number(m))
+            : [Number(evento.mecanico)]
+          : [],
         proveedor: formData.proveedor ? formData.proveedor : null,
         subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
@@ -168,6 +194,7 @@ const FormEventoTaller = ({
         detalle: formData.detalle?.toUpperCase() || null,
         usuario: evento.id ? evento.usuario || usuarioDeCarga : usuarioDeCarga,
         repuestos: esServicio ? [] : repuestos,
+        sucursal: formData.sucursal,
       };
 
       const confirmacion = await Swal.fire({
@@ -368,6 +395,24 @@ const FormEventoTaller = ({
         <form onSubmit={handleSubmit} className="modal-formulario-doble">
           <div className="form-left">
             <div className="type-container-small">
+              <label>
+                Sucursal
+                <Select
+                  options={sucursales}
+                  value={
+                    sucursales.find(
+                      (s) => s.value === String(formData.sucursal)
+                    ) || null
+                  }
+                  onChange={(opt) =>
+                    setFormData({ ...formData, sucursal: opt ? opt.value : "" })
+                  }
+                  placeholder="Seleccionar sucursal"
+                  isClearable
+                  isDisabled={!esSuperAdmin}
+                  required
+                />
+              </label>
               <button
                 type="button"
                 className={

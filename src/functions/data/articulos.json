@@ -4,6 +4,7 @@
   "CA": { "tipo": "CARROCERIA", "descripcion": "Partes externas y estructurales del camión" },
   "CB": { "tipo": "COMBUSTIBLE", "descripcion": "Elementos del sistema de alimentación y filtrado de combustible" },
   "EL": { "tipo": "ELECTRICIDAD", "descripcion": "Sistema eléctrico, iluminación y sensores" },
+  "FL": { "tipo": "FLUIDO", "descripcion": "Aceites, grasas y todo líquido destinado al mantenimiento/funcionamiento del vehículo."},
   "FR": { "tipo": "FRENOS", "descripcion": "Componentes del sistema de frenos y aire" },
   "HI": { "tipo": "HIDRAULICA", "descripcion": "Sistemas hidráulicos y neumáticos auxiliares" },
   "HE": { "tipo": "HERRAMIENTA", "descripcion": "Todo tipo de elementos, utensilios y equipos utilizados para el mantenimiento, reparación o ajuste de los vehículos"},

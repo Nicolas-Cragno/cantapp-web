@@ -233,7 +233,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                 className="select-grow"
                 options={proveedores.map((opt) => ({
                   value: String(opt.id),
-                  label: opt.id + " - " + opt.nombre,
+                  label: opt.id + " - " + opt.marca + " (" + opt.nombre + ")",
                   cuit: opt.cuit,
                 }))}
                 value={
@@ -243,8 +243,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                     ? proveedores
                         .map((opt) => ({
                           value: String(opt.id),
-                          label: opt.id + " - " + opt.nombre,
-                          cuit: opt.cuit,
+label: opt.id + " - " + opt.marca + " (" + opt.nombre + ")",                          cuit: opt.cuit,
                         }))
                         .find((opt) => opt.value === String(formData.proveedor))
                     : null
