@@ -20,12 +20,21 @@ const FichaEventoTaller = ({
   onClose,
   onGuardar,
 }) => {
-  const { tractores, furgones, personas, usoStock, stock, ubicaciones } = useData();
+  const {
+    tractores,
+    furgones,
+    personas,
+    proveedores,
+    usoStock,
+    stock,
+    ubicaciones,
+  } = useData();
   const evento = elemento;
   const AREA = elemento.area || tipoVehiculo;
   const [modoEdicion, setModoEdicion] = useState(false);
   const [persona, setPersona] = useState("");
   const [mecanico, setMecanico] = useState("");
+  const [proveedor, setProveedor] = useState("");
   const [chofer, setChofer] = useState("");
   const [tractor, setTractor] = useState("SIN ASIGNAR");
   const [sucursal, setSucursal] = useState("DON TORCUATO");
@@ -63,6 +72,11 @@ const FichaEventoTaller = ({
           setMecanico(nombreMecanico);
         }
 
+        if (evento.proveedor) {
+          const nombreProveedor = buscarNombre(proveedores, evento.proveedor);
+          setProveedor(nombreProveedor);
+        }
+
         if (evento.tractor) {
           const dTractor = tractores.find((t) => t.interno === evento.tractor);
           if (dTractor) {
@@ -70,7 +84,7 @@ const FichaEventoTaller = ({
           }
         }
 
-        if(evento.sucursal){
+        if (evento.sucursal) {
           const sucu = buscarNombre(ubicaciones, evento.sucursal);
 
           setSucursal(sucu);
@@ -119,10 +133,21 @@ const FichaEventoTaller = ({
               <span>{horaFormateada} HS</span>
             </div>
             <div className="ficha-info">
-              <p><strong>Sucursal: </strong>{sucursal}</p>
               <p>
-                <strong>Mecanico: </strong> {mecanico}
+                <strong>Sucursal: </strong>
+                {sucursal}
               </p>
+              {mecanico !== "" && (
+                <p>
+                  <strong>Mecanico: </strong> {mecanico}
+                </p>
+              )}
+
+              {proveedor !== "" && (
+                <p>
+                  <strong>Proveedor: </strong> {proveedor}
+                </p>
+              )}
 
               {tipoVehiculo === "tractores" ? (
                 <>

@@ -27,6 +27,28 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
     return null;
   }
 
+  let totalValor = 0;
+  let monedaValor = "";
+
+  if (elemento.ingresos) {
+    totalValor = elemento.ingresos?.reduce(
+      (acum, ingreso) => acum + (Number(ingreso.valor) || 0),
+      0
+    );
+    const moneda = elemento.ingresos[0].moneda;
+
+    switch (moneda) {
+      case "pesos":
+        monedaValor = "AR$";
+        break;
+      case "dolares":
+        monedaValor = "U$D";
+        break;
+      default:
+        monedaValor = "AR$";
+    }
+  }
+
   const fechaFormateada = formatearFecha(elemento.fecha);
   const horaFormateada = formatearHora(elemento.fecha);
 
@@ -71,9 +93,14 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                 </p>
               )}
               {elemento.factura && (
-                <p>
-                  <strong>Factura: </strong> {elemento.factura.toUpperCase()}
-                </p>
+                <>
+                  <p>
+                    <strong>Factura: </strong> {elemento.factura.toUpperCase()}
+                  </p>
+                  <p>
+                    <strong>Valor: </strong> {monedaValor} {totalValor}
+                  </p>
+                </>
               )}
             </div>
 
