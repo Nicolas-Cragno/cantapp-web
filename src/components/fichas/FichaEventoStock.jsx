@@ -28,6 +28,7 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
   }
 
   let totalValor = 0;
+  let valorFinal = 0;
   let monedaValor = "";
 
   if (elemento.ingresos) {
@@ -35,6 +36,11 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
       (acum, ingreso) => acum + (Number(ingreso.valor) || 0),
       0
     );
+
+    valorFinal = totalValor.toLocaleString("es-AR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     const moneda = elemento.ingresos[0].moneda;
 
     switch (moneda) {
@@ -98,7 +104,18 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                     <strong>Factura: </strong> {elemento.factura.toUpperCase()}
                   </p>
                   <p>
-                    <strong>Valor: </strong> {monedaValor} {totalValor}
+                    <strong>Valor: </strong>{" "}
+                    <span
+                      style={{
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                        fontSize: "smaller",
+                        marginLeft: "5px",
+                      }}
+                    >
+                      {monedaValor}
+                    </span>{" "}
+                    {valorFinal}
                   </p>
                 </>
               )}
