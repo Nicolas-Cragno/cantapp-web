@@ -299,7 +299,7 @@ const FormMovimientoStock = ({
                   onChange={handleChange}
                   name="remito"
                 ></input>
-                <label>Factura</label> {formData.moneda}
+                <label>Factura</label>
                 <div className="select-with-button">
                   <input
                     type="text"
@@ -373,15 +373,23 @@ const FormMovimientoStock = ({
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
             <label>
-              Area / Sector {formData.area}
+              Area / Sector
               <Select
                 options={sectores.map((opt) => ({
-                  value: opt.nombre,
+                  value: opt.nombre, // o opt.id si querés usar el id
                   label: opt.id + " - " + opt.nombre,
                 }))}
                 value={
                   formData.area
-                    ? sectores.find((opt) => opt.value === formData.area)
+                    ? {
+                        value: formData.area,
+                        label:
+                          sectores.find(
+                            (opt) => opt.nombre === formData.area.toUpperCase()
+                          )?.id +
+                            " - " +
+                            formData.area.toUpperCase() || "",
+                      }
                     : null
                 }
                 onChange={(selectedArea) =>
