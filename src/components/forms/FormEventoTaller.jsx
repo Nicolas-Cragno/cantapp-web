@@ -83,14 +83,21 @@ const FormEventoTaller = ({
     usuarioJSON?.rol === "superadmin" || usuarioJSON?.rol === "dev";
 
   useEffect(() => {
-    const listadoMecanicos = personas.filter((p) => p.puesto === "MECANICO");
+    const listadoMecanicos = personas.filter(
+      (p) =>
+        p.puesto === "MECANICO" &&
+        (p.estado === true || p.estado === "1" || p.estado === 1)
+    );
     setMecanicos(listadoMecanicos);
 
     const listadoChoferes = personas.filter(
       (p) =>
-        p.puesto === "CHOFER LARGA DISTANCIA" ||
-        p.puesto === "CHOFER MOVIMIENTO" ||
-        p.puesto === "CHOFER FLETERO" ||
+        (p.puesto === "CHOFER LARGA DISTANCIA" &&
+          (p.estado === true || p.estado === "1" || p.estado === 1)) ||
+        (p.puesto === "CHOFER MOVIMIENTO" &&
+          (p.estado === true || p.estado === "1" || p.estado === 1)) ||
+        (p.puesto === "CHOFER FLETERO" &&
+          (p.estado === true || p.estado === "1" || p.estado === 1)) ||
         p.puesto === "FLETERO"
     );
     setChoferes(listadoChoferes);
