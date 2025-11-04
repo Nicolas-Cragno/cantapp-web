@@ -15,6 +15,7 @@ import TextButton from "../../components/buttons/TextButton";
 import LogoButton from "../../components/buttons/LogoButton";
 import ModalEventos from "../../components/modales/ModalEventos";
 import ModalProveedor from "../../components/modales/ModalProveedor";
+import { buscarNombre } from "../../functions/dataFunctions";
 
 // --asf asfas
 
@@ -27,7 +28,7 @@ const Deposito = ({ taller = null }) => {
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
   const [modalEventosVisible, setModalEventosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
-  const { stock } = useData();
+  const { stock, proveedores } = useData();
 
   // sincronizar stock con estado local
   useEffect(() => {
@@ -41,6 +42,11 @@ const Deposito = ({ taller = null }) => {
     { titulo: "ID", campo: "id", offresponsive: true },
     { titulo: "DESCRIPCION", campo: "descripcion" },
     { titulo: "MARCA", campo: "marca" },
+    {
+      titulo: "PROVEEDOR",
+      campo: "proveedor",
+      render: (p) => buscarNombre(proveedores, p),
+    },
     {
       titulo: "COD. PROVEEDOR",
       campo: "codigoProveedor",
