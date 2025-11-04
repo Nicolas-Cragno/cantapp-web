@@ -86,8 +86,22 @@ export const verificarDuplicado = (coleccion, idx) => {
   return coleccion.some((p) => String(p.idx) === String(idx));
 };
 export const buscarNombre = (coleccion, idx) => {
+  if (!coleccion) {
+    console.error("[Error] buscarNombre recibió un valor nulo o indefinido");
+    return "";
+  }
+
+  // Si es un objeto, lo convertimos a array de { id, ...valores }
+  if (!Array.isArray(coleccion) && typeof coleccion === "object") {
+    coleccion = Object.entries(coleccion).map(([id, data]) => ({
+      id,
+      ...data,
+    }));
+  }
+
+  // Si sigue sin ser un array, no se puede continuar
   if (!Array.isArray(coleccion)) {
-    console.error("[Error] buscarNombre esperaba un array, pero recibió:", coleccion);
+    console.error("[Error] buscarNombre esperaba un array u objeto válido, pero recibió:", coleccion);
     return "";
   }
 
@@ -95,10 +109,12 @@ export const buscarNombre = (coleccion, idx) => {
 
   if (!valor) {
     console.warn(`[Aviso] buscarNombre no encontró coincidencia para id ${idx}`);
+    return "";
   }
 
-  return valor ? valor.nombre || valor.descripcion || "" : "";
+  return valor.nombre || valor.descripcion || "";
 };
+
 
 
 // ----------------------------------------------------------------------- Personas
