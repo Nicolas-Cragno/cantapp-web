@@ -86,34 +86,53 @@ export const verificarDuplicado = (coleccion, idx) => {
   return coleccion.some((p) => String(p.idx) === String(idx));
 };
 export const buscarNombre = (coleccion, idx) => {
-  if (!coleccion) {
-    console.error("[Error] buscarNombre recibió un valor nulo o indefinido");
+  try {
+    if (!coleccion) {
+      console.warn("[Aviso] buscarNombre recibió una colección nula o indefinida");
+      return "";
+    }
+
+    let array = [];
+
+    // Si es un array
+    if (Array.isArray(coleccion)) {
+      array = coleccion;
+    }
+
+    // Si es un objeto, lo convertimos a array de { id, ...data }
+    else if (typeof coleccion === "object" && Object.keys(coleccion).length > 0) {
+      array = Object.entries(coleccion).map(([id, data]) => ({
+        id,
+        ...data,
+      }));
+    }
+
+    // Si no logramos obtener un array válido
+    else {
+      console.error(
+        "[Error] buscarNombre recibió un tipo no manejable:",
+        typeof coleccion,
+        coleccion
+      );
+      return "";
+    }
+
+    // Buscar por id
+    const valor = array.find((v) => String(v.id) === String(idx));
+
+    if (!valor) {
+      console.warn(`[Aviso] buscarNombre no encontró coincidencia para id ${idx}`);
+      return "";
+    }
+
+    // Devolver el campo más representativo
+    return valor.nombre || valor.descripcion || valor.razonSocial || "";
+  } catch (err) {
+    console.error("[Error en buscarNombre]:", err);
     return "";
   }
-
-  // Si es un objeto, lo convertimos a array de { id, ...valores }
-  if (!Array.isArray(coleccion) && typeof coleccion === "object") {
-    coleccion = Object.entries(coleccion).map(([id, data]) => ({
-      id,
-      ...data,
-    }));
-  }
-
-  // Si sigue sin ser un array, no se puede continuar
-  if (!Array.isArray(coleccion)) {
-    console.error("[Error] buscarNombre esperaba un array u objeto válido, pero recibió:", coleccion);
-    return "";
-  }
-
-  const valor = coleccion.find((v) => String(v.id) === String(idx));
-
-  if (!valor) {
-    console.warn(`[Aviso] buscarNombre no encontró coincidencia para id ${idx}`);
-    return "";
-  }
-
-  return valor.nombre || valor.descripcion || "";
 };
+
 
 
 
