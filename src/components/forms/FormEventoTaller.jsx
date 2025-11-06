@@ -525,7 +525,8 @@ const FormEventoTaller = ({
                     className="select-grow"
                     options={servicios.map((opt) => ({
                       value: String(opt.id),
-                      label: opt.id + " - " + opt.nombre,
+                      label:
+                        opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
                       cuit: opt.cuit,
                     }))}
                     value={
@@ -533,7 +534,13 @@ const FormEventoTaller = ({
                         ? servicios
                             .map((opt) => ({
                               value: String(opt.id),
-                              label: opt.id + " - " + opt.nombre,
+                              label:
+                                opt.id +
+                                " - " +
+                                opt.nombre +
+                                " (" +
+                                opt.marca +
+                                ")",
                               cuit: opt.cuit,
                             }))
                             .find(
@@ -741,7 +748,7 @@ const FormEventoTaller = ({
                           a.codigoProveedor
                             ? " " + a.codigoProveedor.toUpperCase()
                             : ""
-                        })`,
+                        }) ${a.detalle ? " | " + a.detalle.toUpperCase() : ""}`,
                       }))
                       .sort((a, b) => a.label.localeCompare(b.label))}
                     value={
@@ -762,7 +769,11 @@ const FormEventoTaller = ({
                                 articulo.codigoProveedor
                                   ? " " + articulo.codigoProveedor.toUpperCase()
                                   : ""
-                              })`,
+                              }) ${
+                                articulo.detalle
+                                  ? " | " + articulo.detalle.toUpperCase()
+                                  : ""
+                              }`,
                             };
                           })()
                         : null
@@ -826,9 +837,19 @@ const FormEventoTaller = ({
                     </div>
                     <div className="item-info">
                       {item.descripcion}
-                      {item.marca ? " | " + item.marca.toUpperCase() : ""}
-                      {item.codigoProveedor
-                        ? ` (${item.codigoProveedor.toUpperCase()})`
+                      {item.marca
+                        ? " (" +
+                          item.marca.toUpperCase() +
+                          ` ${
+                            item.codigoProveedor &&
+                            item.codigoProveedor.toUpperCase()
+                          }` +
+                          ")" +
+                          `${
+                            item.detalle
+                              ? " | " + item.detalle.toUpperCase()
+                              : ""
+                          }`
                         : ""}
                     </div>
 
