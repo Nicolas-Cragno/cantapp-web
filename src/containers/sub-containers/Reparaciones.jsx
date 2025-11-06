@@ -174,7 +174,6 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     },
     ...columnasFinal,
   ];
-
   const columnasFurgones = [
     ...columnasGenerales,
     {

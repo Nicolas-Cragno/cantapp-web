@@ -5,6 +5,7 @@ const fichas = {
   porteria: lazy(() => import("./FichaEventoPorteria")),
   satelital: lazy(() => import("./FichaEventoSatelital")),
   tractores: lazy(() => import("./FichaEventoTaller")),
+  furgones: lazy(() => import("./FichaEventoTaller")),
   llave: lazy(() => import("./FichaLlave")),
   perfil: lazy(() => import("./FichaPerfil")),
   personal: lazy(() => import("./FichaPersonal")),
