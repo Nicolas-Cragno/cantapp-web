@@ -220,6 +220,7 @@ const FichaEventoTaller = ({
       ) : (
         <FormGestor
           tipo={AREA}
+          filtroVehiculo={AREA}
           elemento={elemento}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}

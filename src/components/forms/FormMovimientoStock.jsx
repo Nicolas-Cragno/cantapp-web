@@ -24,12 +24,12 @@ import "./css/Forms.css";
 
 const FormMovimientoStock = ({
   elemento = null,
-  taller = null,
+  taller = "tractores",
   onClose,
   onGuardar,
 }) => {
   const { stock, proveedores, sectores } = useData();
-  const [area, setArea] = useState("administracion"); //para saber a que sector atribuir el evento
+  const [area, setArea] = useState(null); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
   const [remito, setRemito] = useState("");
@@ -51,7 +51,7 @@ const FormMovimientoStock = ({
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
-    area: elemento?.area ? elemento.area : "administracion",
+    area: elemento?.area ? elemento.area : taller,
     ingresos: elemento?.ingresos?.map((ings) => ({
       ...ings,
       id: ings.id,
@@ -67,6 +67,10 @@ const FormMovimientoStock = ({
     factura: elemento?.factura ? elemento.factura : "",
     proveedor: elemento?.proveedor ? elemento.proveedor : "",
   });
+
+  useEffect(() => {
+    setArea(taller);
+  }, []);
 
   useEffect(() => {
     const nuevoValorFinal = ingresos.reduce(
@@ -184,7 +188,7 @@ const FormMovimientoStock = ({
       <div style="text-align:center;margin-top:10px;" class="form-box2">
         ${resumenIngresos}
       </div>
-      <p>Sector: ${area}</p>
+      <p>Sector: ${formData.area}</p>
       <p>${
         esFactura
           ? "Total: " + (moneda === "pesos" ? " AR$ " : " U$D ") + valorFinal
@@ -373,7 +377,7 @@ const FormMovimientoStock = ({
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
             <label>
-              Area / Sector
+              Area / Sector {formData.area}
               <Select
                 options={sectores.map((opt) => ({
                   value: opt.nombre, // o opt.id si querés usar el id

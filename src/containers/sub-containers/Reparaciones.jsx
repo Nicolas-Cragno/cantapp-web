@@ -345,7 +345,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       {modalAgregarVisible && (
         <FormGestor
           tipo={AREA}
-          filtroVehiculoArea={AREA} // para que llege como area=furgones por ej
+          filtroVehiculo={AREA} // para que llege como area=furgones por ej
           onClose={cerrarModalAgregar}
           onGuardar={handleGuardar}
         />

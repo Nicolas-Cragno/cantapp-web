@@ -27,12 +27,13 @@ import "./css/Forms.css";
 const FormEventoTaller = ({
   elemento = {},
   area = "tractores",
+  tipoVehiculo = null,
   subarea = null,
   onClose,
   onGuardar,
 }) => {
   const evento = elemento || {};
-  area = elemento.area;
+  area = tipoVehiculo ? tipoVehiculo : "tractores";
   const {
     tractores,
     furgones,
@@ -388,9 +389,7 @@ const FormEventoTaller = ({
     <div className="doble-form">
       <div className="doble-form-content">
         <div className="form-header">
-          <h2>
-            {evento.id ? "Editar Trabajo" : "Nuevo Trabajo"} {area}
-          </h2>
+          <h2>{evento.id ? "Editar Trabajo" : "Nuevo Trabajo"}</h2>
           <h2 className="black-txt">
             {evento.id
               ? formatearFecha(evento.fecha) +
