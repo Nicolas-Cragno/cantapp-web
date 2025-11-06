@@ -90,13 +90,26 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       titulo: "MECÁNICO / PROVEEDOR",
       campo: "mecanico",
       render: (p, fila) => {
-        // Si hay mecánico
+        // Si hay mecánico(s)
         if (fila.mecanico && fila.mecanico !== "") {
-          const mecanicoNombre = buscarPersona(personas, fila.mecanico);
+          const valor = fila.mecanico;
+
+          // Caso: es un array de IDs
+          if (Array.isArray(valor)) {
+            return valor.length
+              ? valor
+                  .map((id) => buscarPersona(personas, id))
+                  .filter(Boolean)
+                  .join(", ")
+              : "";
+          }
+
+          // Caso: es un solo mecánico
+          const mecanicoNombre = buscarPersona(personas, valor);
           if (mecanicoNombre) return mecanicoNombre;
         }
 
-        // Si no hay mecánico pero hay proveedor
+        // Si no hay mecánico pero sí proveedor
         if (fila.proveedor && fila.proveedor !== "") {
           const prov = proveedores.find(
             (prov) => String(prov.id) === String(fila.proveedor)
@@ -114,7 +127,16 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       campo: "mecanico",
       render: (p, fila) => {
         if (fila.mecanico && fila.mecanico !== "") {
-          const mecanicoNombre = buscarPersona(personas, fila.mecanico, false);
+          const valor = fila.mecanico;
+
+          if (Array.isArray(valor)) {
+            return valor
+              .map((id) => buscarPersona(personas, id, false))
+              .filter(Boolean)
+              .join(", ");
+          }
+
+          const mecanicoNombre = buscarPersona(personas, valor, false);
           if (mecanicoNombre) return mecanicoNombre;
         }
 
@@ -265,6 +287,16 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       const servicio = buscarEmpresa(empresas, e.servicio) || e.servicio || "";
       const tractorDominio = buscarDominio(e.tractor, tractores);
       const furgonDominio = buscarDominio(e.furgon, furgones);
+      let mecanicoTxt = "";
+
+      if (Array.isArray(e.mecanico)) {
+        mecanicoTxt = e.mecanico
+          .map((id) => buscarPersona(personas, id))
+          .filter(Boolean)
+          .join(" ");
+      } else if (e.mecanico) {
+        mecanicoTxt = buscarPersona(personas, e.mecanico) || e.mecanico;
+      }
 
       const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
         e.furgon || ""
@@ -274,7 +306,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         e.vehiculo
       } ${tractorDominio} ${furgonDominio} ${e.persona} ${
         e.servicio
-      }`.toLowerCase();
+      } ${mecanicoTxt} ${e.proveedor}`.toLowerCase();
 
       // Debe incluir *todos* los términos
       return filtros.every((term) => textoFiltro.includes(term));
