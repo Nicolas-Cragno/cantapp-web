@@ -116,8 +116,8 @@
 
 /* login */
 .login{
-  background-image: url("../images/catamarca.png");
-  background-size: cover; 
+  background-image: url("../images/cabina-top.png");
+  background-size:cover;
   background-position: center;
   background-repeat: no-repeat; 
   height: 100vh;
