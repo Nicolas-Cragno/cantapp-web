@@ -33,10 +33,11 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
   let monedaValor = "";
 
   if (elemento.ingresos) {
-    totalValor = elemento.ingresos?.reduce(
-      (acum, ingreso) => acum + (Number(ingreso.valor) || 0),
-      0
-    );
+    totalValor = elemento.ingresos?.reduce((acum, ingreso) => {
+      const cantidad = Number(ingreso.cantidad) || 0;
+      const valor = Number(ingreso.valor) || 0;
+      return acum + cantidad * valor;
+    }, 0);
 
     valorFinal = totalValor.toLocaleString("es-AR", {
       minimumFractionDigits: 2,
