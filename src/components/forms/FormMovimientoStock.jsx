@@ -357,7 +357,8 @@ const FormMovimientoStock = ({
                     .filter((pr) => pr.id !== "01")
                     .map((opt) => ({
                       value: String(opt.id),
-                      label: opt.id + " - " + opt.nombre,
+                      label:
+                        opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
                       cuit: opt.cuit,
                     }))}
                   value={
@@ -365,7 +366,13 @@ const FormMovimientoStock = ({
                       ? proveedores
                           .map((opt) => ({
                             value: String(opt.id),
-                            label: opt.id + " - " + opt.nombre,
+                            label:
+                              opt.id +
+                              " - " +
+                              opt.nombre +
+                              " (" +
+                              opt.marca +
+                              ")",
                             cuit: opt.cuit,
                           }))
                           .find(
