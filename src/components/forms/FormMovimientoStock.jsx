@@ -30,11 +30,9 @@ const FormMovimientoStock = ({
   onGuardar,
 }) => {
   const { stock, proveedores, sectores } = useData();
-  const [area, setArea] = useState(null); //para saber a que sector atribuir el evento
+  //const [area, setArea] = useState(null); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
-  const [remito, setRemito] = useState("");
-  const [factura, setFactura] = useState("");
   const [proveedor, setProveedor] = useState(null);
   const [cantidad, setCantidad] = useState("");
   const [unidad, setUnidad] = useState("");
@@ -76,9 +74,11 @@ const FormMovimientoStock = ({
     }
   }, []);
 
+  /*
   useEffect(() => {
     setArea(taller);
   }, []);
+  */
 
   useEffect(() => {
     const nuevoValorFinal = ingresos.reduce(
@@ -234,11 +234,11 @@ const FormMovimientoStock = ({
       const datosEvento = {
         fecha: new Date(),
         tipo: "STOCK",
-        area: formData.area,
-        proveedor: formData.proveedor ? formData.proveedor : null,
-        remito: formData.remito ? formData.remito : null,
-        factura: formData.factura ? formData.factura : null,
-        moneda: formData.factura ? moneda : null,
+        area: formData.area || null,
+        proveedor: formData.proveedor || null,
+        remito: formData.remito || null,
+        factura: formData.factura || null,
+        moneda: moneda || "pesos",
         ingresos: ingresos.map((i) => ({
           id: i.id,
           cantidad: i.cantidad,
@@ -253,7 +253,7 @@ const FormMovimientoStock = ({
       if (!modoEdicion) {
         const { id: idNuevo } = await agregarEvento(
           datosEvento,
-          area.toLowerCase()
+          formData.area.toLowerCase()
         );
 
         idEvento = idNuevo;
@@ -262,7 +262,7 @@ const FormMovimientoStock = ({
         idEvento = elemento.id;
       }
 
-      const idDeposito = area.toLowerCase();
+      const idDeposito = formData.area.toLowerCase();
       for (const ingreso of ingresos) {
         await agregarStockADeposito(idDeposito, {
           id: ingreso.id,
@@ -395,7 +395,7 @@ const FormMovimientoStock = ({
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
             <label>
-              Area / Sector {formData.area}
+              Area / Sector
               <Select
                 options={sectores.map((opt) => ({
                   value: opt.nombre, // o opt.id si querés usar el id

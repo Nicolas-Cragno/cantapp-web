@@ -74,6 +74,32 @@ const ModalEventos = ({
       render: (e) => buscarEmpresa(proveedores, e),
       offresponsive: true,
     },
+    {
+      titulo: "TOTAL",
+      campo: "ingresos",
+      render: (ingresos) => {
+        if (!Array.isArray(ingresos) || ingresos.length === 0) return "";
+
+        const total = ingresos.reduce((acc, item) => {
+          const cantidad = parseFloat(item.cantidad) || 0;
+          const valor = parseFloat(item.valor) || 0;
+          return acc + cantidad * valor;
+        }, 0);
+
+        const moneda = ingresos.find((i) => i.moneda)?.moneda || "pesos";
+        const simbolo = moneda === "pesos" ? "AR$" : "U$D";
+
+        return (
+          <span>
+            <strong style={{ fontSize: "0.8em" }}>{simbolo}</strong>{" "}
+            {total.toLocaleString("es-AR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
+        );
+      },
+    },
   ];
 
   let columnasFinal;
