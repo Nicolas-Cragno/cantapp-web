@@ -126,7 +126,7 @@ const ModalEventos = ({
         </button>
         <div className="modal-header">
           <h1 className="modal-title">
-            <strong>{tipo ? tipo.toUpperCase() : "LISTADO DE EVENTOS"}</strong>
+            <strong>{tipo ? tipo.toUpperCase() : "LISTADO DE EVENTOS"}</strong>{" "}
           </h1>
           <div className="modal-input-filtro">
             <label className="modal-label">FILTRO </label>

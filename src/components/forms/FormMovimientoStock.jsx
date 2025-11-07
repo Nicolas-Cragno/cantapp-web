@@ -18,6 +18,7 @@ import {
   buscarNombre,
   buscarRepuestoPorID,
 } from "../../functions/dataFunctions";
+import { modificar } from "../../functions/dbFunctions";
 import Sectores from "../../functions/data/areas.json";
 import Unidades from "../../functions/data/unidades.json";
 import "./css/Forms.css";
@@ -40,6 +41,7 @@ const FormMovimientoStock = ({
   const [valor, setValor] = useState(0);
   const [valorFinal, setValorFinal] = useState(0);
   const [moneda, setMoneda] = useState("pesos");
+  const [modoEdicion, setModoEdicion] = useState(false);
   const [ingresos, setIngresos] = useState(
     elemento?.ingresos?.map((ings) => ({
       ...ings,
@@ -67,6 +69,12 @@ const FormMovimientoStock = ({
     factura: elemento?.factura ? elemento.factura : "",
     proveedor: elemento?.proveedor ? elemento.proveedor : "",
   });
+
+  useEffect(() => {
+    if (elemento?.id) {
+      setModoEdicion(true);
+    }
+  }, []);
 
   useEffect(() => {
     setArea(taller);
@@ -226,11 +234,11 @@ const FormMovimientoStock = ({
       const datosEvento = {
         fecha: new Date(),
         tipo: "STOCK",
-        area: area,
-        proveedor: proveedor ? proveedor : null,
-        remito: remito ? remito : null,
-        factura: factura ? factura : null,
-        moneda: factura ? moneda : null,
+        area: formData.area,
+        proveedor: formData.proveedor ? formData.proveedor : null,
+        remito: formData.remito ? formData.remito : null,
+        factura: formData.factura ? formData.factura : null,
+        moneda: formData.factura ? moneda : null,
         ingresos: ingresos.map((i) => ({
           id: i.id,
           cantidad: i.cantidad,
@@ -240,10 +248,19 @@ const FormMovimientoStock = ({
         })),
       };
 
-      const { id: idEvento } = await agregarEvento(
-        datosEvento,
-        area.toLowerCase()
-      );
+      let idEvento;
+
+      if (!modoEdicion) {
+        const { id: idNuevo } = await agregarEvento(
+          datosEvento,
+          area.toLowerCase()
+        );
+
+        idEvento = idNuevo;
+      } else {
+        await modificar("eventos", elemento.id, datosEvento);
+        idEvento = elemento.id;
+      }
 
       const idDeposito = area.toLowerCase();
       for (const ingreso of ingresos) {
@@ -273,7 +290,7 @@ const FormMovimientoStock = ({
     <div className="form">
       <div className="form-content">
         <h2>MOVIMIENTO DE STOCK</h2>
-
+        {formData.factura}
         <hr />
         <form>
           <div className="type-container">
@@ -334,6 +351,7 @@ const FormMovimientoStock = ({
                   </button>
                 </div>
                 <label>Proveedor</label>
+
                 <Select
                   options={proveedores
                     .filter((pr) => pr.id !== "01")
@@ -352,7 +370,7 @@ const FormMovimientoStock = ({
                           }))
                           .find(
                             (opt) =>
-                              opt.cuit === formData.proveedor ||
+                              opt.value === formData.proveedor ||
                               String(opt.value) === String(proveedor)
                           )
                       : null
