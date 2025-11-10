@@ -135,13 +135,25 @@
   background-color: #2563eb;
   color: white;
   border: none;
-  padding: 0.6rem 1rem;
+  padding: 0.6rem .8rem;
   font-size: 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background 0.3s ease;
   white-space: nowrap;
+  display: flex;
+  justify-content: space-around;
 }
+
+.table-logo-span{
+  display: flex;
+  font-size: small;
+  align-items: center;
+  font-weight: bolder;
+  text-transform: uppercase;
+  margin: .2rem;
+}
+
 
 .table-agregar:hover {
   background-color: #1d4ed8;
@@ -218,6 +230,8 @@
   .table-agregar {
     font-size: 1.4rem;
   }
+
+
 
   .table-lista th,
   .table-lista td {

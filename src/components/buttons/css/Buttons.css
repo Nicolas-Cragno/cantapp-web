@@ -31,6 +31,8 @@
   white-space: nowrap;
 }
 
+
+
 .visible {
   opacity: 1;
   pointer-events: auto;
@@ -68,6 +70,26 @@
   cursor: pointer;
   transition: background 0.3s ease;
   white-space: nowrap;
+}
+
+.btn-body-doble {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+  display: grid;
+  
+}
+
+.btn-doble-text{
+  font-size: smaller;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .btn-body-mini{

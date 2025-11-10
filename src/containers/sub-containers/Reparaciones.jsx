@@ -329,11 +329,13 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
             className="table-logo"
           />
           TALLER {AREA.toUpperCase()}
-        </h1>
-        <TextButton
-          text="Ver ingresos"
+        </h1>{" "}
+        <button
+          className="table-agregar"
           onClick={() => setModalIngresosVisible(true)}
-        />
+        >
+          <span className="table-logo-span">Ingresos stock</span>
+        </button>
         <input
           type="text"
           placeholder="Buscar..."
@@ -427,6 +429,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
               onClick={() => setModalTractorVisible(true)}
             >
               <img src={LogoTractor} alt="" className="table-logo2" />
+              <span className="table-logo-span">Tractores</span>
             </button>
           ) : AREA === "furgones" ? (
             <button
@@ -434,12 +437,16 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
               onClick={() => setModalFurgonVisible(true)}
             >
               <img src={LogoFurgon} alt="" className="table-logo2" />
+              <span className="table-logo-span">Furgones</span>
             </button>
           ) : null}
-          <LogoButton
-            logo={LogoStock}
+          <button
+            className="table-agregar"
             onClick={() => setModalStockVisible(true)}
-          />
+          >
+            <img src={LogoStock} alt="" className="table-logo2" />
+            <span className="table-logo-span">Repuestos</span>
+          </button>
         </div>
         <div className="table-options-group">
           {filtroSector === "tractores" && (
@@ -451,7 +458,9 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
             </button>
           )}
           <TextButton
-            text="+ AGREGAR"
+            doble={true}
+            text="AGREGAR"
+            text2="TRABAJO"
             onClick={() => setModalAgregarVisible(true)}
           />
         </div>
