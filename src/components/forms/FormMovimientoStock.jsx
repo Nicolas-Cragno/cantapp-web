@@ -21,6 +21,8 @@ import {
 import { modificar } from "../../functions/dbFunctions";
 import Sectores from "../../functions/data/areas.json";
 import Unidades from "../../functions/data/unidades.json";
+import FormProveedor from "./FormProveedor";
+import TextButton from "../buttons/TextButton";
 import "./css/Forms.css";
 
 const FormMovimientoStock = ({
@@ -33,6 +35,7 @@ const FormMovimientoStock = ({
   //const [area, setArea] = useState(null); //para saber a que sector atribuir el evento
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
+  const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
   const [proveedor, setProveedor] = useState(null);
   const [cantidad, setCantidad] = useState("");
   const [unidad, setUnidad] = useState("");
@@ -127,7 +130,12 @@ const FormMovimientoStock = ({
   useEffect(() => {
     setFormData((prev) => ({ ...prev, moneda }));
   }, [moneda]);
-
+  const handleClickProveedor = async () => {
+    setModalProveedorVisible(true);
+  };
+  const cerrarModalProveedor = async () => {
+    setModalProveedorVisible(false);
+  };
   const handleAgregar = () => {
     if (!articuloSeleccionado || !cantidad || isNaN(cantidad)) {
       Swal.fire(
@@ -352,48 +360,56 @@ const FormMovimientoStock = ({
                 </div>
                 <label>Proveedor</label>
 
-                <Select
-                  options={proveedores
-                    .filter((pr) => pr.id !== "01")
-                    .map((opt) => ({
-                      value: String(opt.id),
-                      label:
-                        opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
-                      cuit: opt.cuit,
-                    }))}
-                  value={
-                    formData.proveedor
-                      ? proveedores
-                          .map((opt) => ({
-                            value: String(opt.id),
-                            label:
-                              opt.id +
-                              " - " +
-                              opt.nombre +
-                              " (" +
-                              opt.marca +
-                              ")",
-                            cuit: opt.cuit,
-                          }))
-                          .find(
-                            (opt) =>
-                              opt.value === formData.proveedor ||
-                              String(opt.value) === String(proveedor)
-                          )
-                      : null
-                  }
-                  onChange={(selectedProv) =>
-                    handleChange({
-                      target: {
-                        name: "proveedor",
-                        value: selectedProv ? selectedProv.value : "",
-                      },
-                    })
-                  }
-                  placeholder=""
-                  isClearable
-                  required
-                />
+                <div className="select-with-button">
+                  <Select
+                    className="select-grow"
+                    options={proveedores
+                      .filter((pr) => pr.id !== "01")
+                      .map((opt) => ({
+                        value: String(opt.id),
+                        label:
+                          opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
+                        cuit: opt.cuit,
+                      }))}
+                    value={
+                      formData.proveedor
+                        ? proveedores
+                            .map((opt) => ({
+                              value: String(opt.id),
+                              label:
+                                opt.id +
+                                " - " +
+                                opt.nombre +
+                                " (" +
+                                opt.marca +
+                                ")",
+                              cuit: opt.cuit,
+                            }))
+                            .find(
+                              (opt) =>
+                                opt.value === formData.proveedor ||
+                                String(opt.value) === String(proveedor)
+                            )
+                        : null
+                    }
+                    onChange={(selectedProv) =>
+                      handleChange({
+                        target: {
+                          name: "proveedor",
+                          value: selectedProv ? selectedProv.value : "",
+                        },
+                      })
+                    }
+                    placeholder=""
+                    isClearable
+                    required
+                  />
+                  <TextButton
+                    text="+"
+                    className="mini-btn"
+                    onClick={handleClickProveedor}
+                  />
+                </div>
               </div>
             </>
           )}
@@ -591,6 +607,12 @@ const FormMovimientoStock = ({
               </ul>
             )}
           </div>
+          {modalProveedorVisible && (
+            <FormProveedor
+              onClose={cerrarModalProveedor}
+              onGuardar={onGuardar}
+            />
+          )}
 
           <div className="form-buttons">
             <button type="submit" disabled={uploading} onClick={handleGuardar}>
