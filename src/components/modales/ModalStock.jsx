@@ -6,6 +6,7 @@ import { useData } from "../../context/DataContext";
 import {
   abreviarUnidad,
   buscarRepuestoPorID,
+  buscarNombre,
 } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
 import TextButton from "../buttons/TextButton";
@@ -21,7 +22,7 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
-  const { stock, depositos } = useData();
+  const { stock, depositos, proveedores } = useData();
 
   const columnas = [
     {
@@ -31,6 +32,11 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
     {
       titulo: "DESCRIPCION",
       campo: "descripcion",
+    },
+    {
+      titulo: "PROVEEDOR",
+      campo: "proveedor",
+      render: (p) => buscarNombre(proveedores, p),
     },
     {
       titulo: "STOCK",
@@ -56,7 +62,8 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
     return [...stock]
       .sort((a, b) => a.descripcion.localeCompare(b.descripcion))
       .filter((e) => {
-        const textoFiltro = `${e.codigo} ${e.id} ${e.descripcion} ${e.unidad}`;
+        const proveedor = buscarNombre(proveedores, e.proveedor);
+        const textoFiltro = `${e.codigo} ${e.id} ${e.descripcion} ${e.unidad} ${proveedor}`;
         return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
       });
   }, [stock, filtro]);
@@ -68,7 +75,7 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
 
   return (
     <div className="modal">
-      <div className="modal-content">
+      <div className="modal-content-2">
         <button className="modal-close" onClick={onClose}>
           ✕
         </button>

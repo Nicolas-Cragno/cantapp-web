@@ -22,6 +22,7 @@ import { modificar } from "../../functions/dbFunctions";
 import Sectores from "../../functions/data/areas.json";
 import Unidades from "../../functions/data/unidades.json";
 import FormProveedor from "./FormProveedor";
+import FormStock from "./FormStock";
 import TextButton from "../buttons/TextButton";
 import "./css/Forms.css";
 
@@ -36,6 +37,7 @@ const FormMovimientoStock = ({
   const [articulos, setArticulos] = useState([]);
   const [articuloSeleccionado, setArticuloSeleccionado] = useState("");
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
+  const [modalArticuloVisible, setModalArticuloVisible] = useState(false);
   const [proveedor, setProveedor] = useState(null);
   const [cantidad, setCantidad] = useState("");
   const [unidad, setUnidad] = useState("");
@@ -135,6 +137,12 @@ const FormMovimientoStock = ({
   };
   const cerrarModalProveedor = async () => {
     setModalProveedorVisible(false);
+  };
+  const handleClickArticulo = async () => {
+    setModalArticuloVisible(true);
+  };
+  const cerrarModalArticulo = async () => {
+    setModalArticuloVisible(false);
   };
   const handleAgregar = () => {
     if (!articuloSeleccionado || !cantidad || isNaN(cantidad)) {
@@ -408,6 +416,7 @@ const FormMovimientoStock = ({
                     text="+"
                     className="mini-btn"
                     onClick={handleClickProveedor}
+                    type="button"
                   />
                 </div>
               </div>
@@ -483,41 +492,51 @@ const FormMovimientoStock = ({
             )}
             <label>
               Artículo
-              <Select
-                className="select-grow"
-                isDisabled={loading}
-                options={articulos
-                  .map((a) => ({
-                    value: a.id,
-                    label: `${a.id} - ${a.descripcion} ${
-                      a.codigoProveedor ? "(" + a.codigoProveedor + ")" : ""
-                    }`,
-                  }))
-                  .sort((a, b) => a.label.localeCompare(b.label))}
-                value={
-                  articuloSeleccionado
-                    ? {
-                        value: articuloSeleccionado,
-                        label: `${articuloSeleccionado} - ${
-                          articulos.find((a) => a.id === articuloSeleccionado)
-                            ?.descripcion || ""
-                        }`,
-                      }
-                    : null
-                }
-                onChange={(opt) => {
-                  if (opt) {
-                    setArticuloSeleccionado(opt.value);
-                    const articulo = articulos.find((a) => a.id === opt.value);
-                    setUnidad(articulo ? articulo.unidad : "");
-                  } else {
-                    setArticuloSeleccionado("");
-                    setUnidad("");
+              <div className="select-with-button">
+                <Select
+                  className="select-grow"
+                  isDisabled={loading}
+                  options={articulos
+                    .map((a) => ({
+                      value: a.id,
+                      label: `${a.id} - ${a.descripcion} ${
+                        a.codigoProveedor ? "(" + a.codigoProveedor + ")" : ""
+                      }`,
+                    }))
+                    .sort((a, b) => a.label.localeCompare(b.label))}
+                  value={
+                    articuloSeleccionado
+                      ? {
+                          value: articuloSeleccionado,
+                          label: `${articuloSeleccionado} - ${
+                            articulos.find((a) => a.id === articuloSeleccionado)
+                              ?.descripcion || ""
+                          }`,
+                        }
+                      : null
                   }
-                }}
-                placeholder="Seleccionar artículo..."
-                noOptionsMessage={() => "No hay artículos disponibles"}
-              />
+                  onChange={(opt) => {
+                    if (opt) {
+                      setArticuloSeleccionado(opt.value);
+                      const articulo = articulos.find(
+                        (a) => a.id === opt.value
+                      );
+                      setUnidad(articulo ? articulo.unidad : "");
+                    } else {
+                      setArticuloSeleccionado("");
+                      setUnidad("");
+                    }
+                  }}
+                  placeholder="Seleccionar artículo..."
+                  noOptionsMessage={() => "No hay artículos disponibles"}
+                />
+                <TextButton
+                  text="+"
+                  className="mini-btn"
+                  onClick={handleClickArticulo}
+                  type="button"
+                />
+              </div>
             </label>
             <div className="input-inline">
               <label>
@@ -612,6 +631,9 @@ const FormMovimientoStock = ({
               onClose={cerrarModalProveedor}
               onGuardar={onGuardar}
             />
+          )}
+          {modalArticuloVisible && (
+            <FormStock onClose={cerrarModalArticulo} onGuardar={onGuardar} />
           )}
 
           <div className="form-buttons">
