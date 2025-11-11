@@ -243,7 +243,14 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                     ? proveedores
                         .map((opt) => ({
                           value: String(opt.id),
-label: opt.id + " - " + opt.marca + " (" + opt.nombre + ")",                          cuit: opt.cuit,
+                          label:
+                            opt.id +
+                            " - " +
+                            opt.marca +
+                            " (" +
+                            opt.nombre +
+                            ")",
+                          cuit: opt.cuit,
                         }))
                         .find((opt) => opt.value === String(formData.proveedor))
                     : null
@@ -484,7 +491,10 @@ label: opt.id + " - " + opt.marca + " (" + opt.nombre + ")",                    
         </form>
 
         {modalProveedorVisible && (
-          <FormProveedor onClose={cerrarModalProveedor} onGuardar={onGuardar} />
+          <FormProveedor
+            onClose={cerrarModalProveedor}
+            onGuardar={cerrarModalProveedor}
+          />
         )}
       </div>
     </div>

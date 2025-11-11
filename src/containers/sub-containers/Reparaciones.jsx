@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { FaSpinner as LogoLoading } from "react-icons/fa";
 import { IoKeySharp as LogoKey } from "react-icons/io5";
 
@@ -42,6 +42,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     ubicaciones,
   } = useData();
   const [filtro, setFiltro] = useState("");
+  const [eventosTotales, setEventosTotales] = useState({});
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalKeyVisible, setModalKeyVisible] = useState(false);
@@ -49,6 +50,38 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalStockVisible, setModalStockVisible] = useState(false);
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
+
+  useEffect(() => {
+    if (!eventos.length) return;
+
+    const cargados = eventos.map((e) => {
+      // Calcular texto de mecánicos
+      let mecanicoTxt = "";
+      if (Array.isArray(e.mecanico)) {
+        mecanicoTxt = e.mecanico
+          .map((id) => buscarPersona(personas, id))
+          .filter(Boolean)
+          .join(" ");
+      } else if (e.mecanico) {
+        mecanicoTxt = buscarPersona(personas, e.mecanico) || e.mecanico;
+      }
+
+      // Retornar el evento enriquecido
+      return {
+        ...e,
+        fechaFormateada: formatearFecha(e.fecha),
+        horaFormateada: formatearHora(e.fecha),
+        nombrePersona: buscarPersona(personas, e.persona) || "",
+        nombreOperador: buscarPersona(personas, e.operador) || "",
+        nombreServicio: buscarEmpresa(empresas, e.servicio) || "",
+        dominioTractor: buscarDominio(e.tractor, tractores),
+        dominioFurgon: buscarDominio(e.furgon, furgones),
+        mecanicoTxt, // 👈 acá queda el texto combinado de los mecánicos
+      };
+    });
+
+    setEventosTotales(cargados);
+  }, [eventos, personas, empresas, tractores, furgones]);
 
   const columnasGenerales = [
     {
@@ -263,6 +296,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
   const handleGuardar = async () => {
     setModalAgregarVisible(false);
+
     setEventoSeleccionado(null);
   };
 
@@ -280,33 +314,15 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       .filter((f) => f.length > 0);
 
     return filtrados.filter((e) => {
-      const fechaTxt = formatearFecha(e.fecha);
-      const horaTxt = formatearHora(e.fecha);
-      const nombre = buscarPersona(personas, e.persona) || e.persona || "";
-      const operador = buscarPersona(personas, e.operador) || e.operador || "";
-      const servicio = buscarEmpresa(empresas, e.servicio) || e.servicio || "";
-      const tractorDominio = buscarDominio(e.tractor, tractores);
-      const furgonDominio = buscarDominio(e.furgon, furgones);
-      let mecanicoTxt = "";
-
-      if (Array.isArray(e.mecanico)) {
-        mecanicoTxt = e.mecanico
-          .map((id) => buscarPersona(personas, id))
-          .filter(Boolean)
-          .join(" ");
-      } else if (e.mecanico) {
-        mecanicoTxt = buscarPersona(personas, e.mecanico) || e.mecanico;
-      }
-
-      const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
-        e.furgon || ""
-      } ${fechaTxt} ${horaTxt} ${e.tipo || ""} ${e.usuario} ${
-        e.operador
-      } ${operador} ${servicio} ${
+      const textoFiltro = `${e.subtipo || ""} ${e.nombrePersona} ${
+        e.tractor || ""
+      } ${e.furgon || ""} ${e.fechaFormateada} ${e.horaFormateada} ${
+        e.tipo || ""
+      } ${e.usuario} ${e.operador} ${e.nombreOperador} ${e.nombreServicio} ${
         e.vehiculo
-      } ${tractorDominio} ${furgonDominio} ${e.persona} ${
-        e.servicio
-      } ${mecanicoTxt} ${e.proveedor}`.toLowerCase();
+      } ${e.dominioTractor} ${e.dominioFurgon} ${e.persona} ${e.servicio} ${
+        e.mecanicoTxt
+      } ${e.proveedor} ${e.detalle}`.toLowerCase();
 
       // Debe incluir *todos* los términos
       return filtros.every((term) => textoFiltro.includes(term));

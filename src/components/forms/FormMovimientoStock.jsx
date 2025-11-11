@@ -144,6 +144,7 @@ const FormMovimientoStock = ({
   const cerrarModalArticulo = async () => {
     setModalArticuloVisible(false);
   };
+
   const handleAgregar = () => {
     if (!articuloSeleccionado || !cantidad || isNaN(cantidad)) {
       Swal.fire(
@@ -182,7 +183,7 @@ const FormMovimientoStock = ({
   const handleEliminar = (indexEliminar) => {
     setIngresos((ing) => ing.filter((_, i) => i !== indexEliminar));
   };
-  const handleGuardar = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
 
@@ -306,7 +307,7 @@ const FormMovimientoStock = ({
     <div className="form">
       <div className="form-content">
         <h2>MOVIMIENTO DE STOCK</h2>
-        {formData.factura}
+
         <hr />
         <form>
           <div className="type-container">
@@ -412,12 +413,14 @@ const FormMovimientoStock = ({
                     isClearable
                     required
                   />
+                  {/*
                   <TextButton
                     text="+"
                     className="mini-btn"
                     onClick={handleClickProveedor}
                     type="button"
                   />
+                   */}
                 </div>
               </div>
             </>
@@ -530,12 +533,14 @@ const FormMovimientoStock = ({
                   placeholder="Seleccionar artículo..."
                   noOptionsMessage={() => "No hay artículos disponibles"}
                 />
+                {/*
                 <TextButton
                   text="+"
                   className="mini-btn"
                   onClick={handleClickArticulo}
                   type="button"
                 />
+                 */}
               </div>
             </label>
             <div className="input-inline">
@@ -629,15 +634,18 @@ const FormMovimientoStock = ({
           {modalProveedorVisible && (
             <FormProveedor
               onClose={cerrarModalProveedor}
-              onGuardar={onGuardar}
+              onGuardar={cerrarModalProveedor}
             />
           )}
           {modalArticuloVisible && (
-            <FormStock onClose={cerrarModalArticulo} onGuardar={onGuardar} />
+            <FormStock
+              onClose={cerrarModalArticulo}
+              onGuardar={cerrarModalArticulo}
+            />
           )}
 
           <div className="form-buttons">
-            <button type="submit" disabled={uploading} onClick={handleGuardar}>
+            <button type="submit" disabled={uploading} onClick={handleSubmit}>
               {uploading ? "Guardando..." : "Guardar"}
             </button>
             <button type="button" onClick={onClose} disabled={loading}>
