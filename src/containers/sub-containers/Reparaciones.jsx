@@ -19,8 +19,10 @@ import FichaGestor from "../../components/fichas/FichaGestor";
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalStock from "../../components/modales/ModalStock";
 import ModalEventos from "../../components/modales/ModalEventos";
+import ModalProveedor from "../../components/modales/ModalProveedor";
 import FormGestor from "../../components/forms/FormGestor";
 import FormLlave from "../../components/forms/FormLlave";
+import LogoProveedor from "../../assets/logos/logoproveedor-grey.png";
 import TextButton from "../../components/buttons/TextButton";
 import LogoButton from "../../components/buttons/LogoButton";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
@@ -50,6 +52,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalStockVisible, setModalStockVisible] = useState(false);
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
+  const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
 
   useEffect(() => {
     if (!eventos.length) return;
@@ -294,6 +297,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     setModalIngresosVisible(false);
   };
 
+  const cerrarModalProveedor = () => {
+    setModalProveedorVisible(false);
+  };
+
   const handleGuardar = async () => {
     setModalAgregarVisible(false);
 
@@ -429,6 +436,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         <ModalStock taller={AREA} onClose={cerrarModalStock} />
       )}
 
+      {modalProveedorVisible && (
+        <ModalProveedor onClose={() => setModalProveedorVisible(false)} />
+      )}
+
       {modalIngresosVisible && (
         <ModalEventos
           tipo="STOCK"
@@ -462,6 +473,13 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           >
             <img src={LogoStock} alt="" className="table-logo2" />
             <span className="table-logo-span">Repuestos</span>
+          </button>
+          <button
+            className="table-agregar"
+            onClick={() => setModalProveedorVisible(true)}
+          >
+            <img src={LogoProveedor} alt="" className="table-logo2" />
+            <span className="table-logo-span">Proveedores</span>
           </button>
         </div>
         <div className="table-options-group">
