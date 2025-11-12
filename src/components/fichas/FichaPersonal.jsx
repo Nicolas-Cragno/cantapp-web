@@ -179,16 +179,18 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
             <hr />
             <div className="info-subname">
               <p className="info-minitext">{edad ? edad + " años" : null}</p>
-              {persona.estado ? (
-                <p className="info-minitext stateBox" onClick={handleBaja}>
-                  activo <LogoPersonCheck className="logoestado logo-active" />
-                </p>
-              ) : (
-                <p className="info-minitext stateBox" onClick={handleAlta}>
-                  innactivo{" "}
-                  <LogoPersonDash className="logoestado logo-disabled" />
-                </p>
-              )}
+              {usuario["rol"] !== "user" &&
+                (persona.estado ? (
+                  <p className="info-minitext stateBox" onClick={handleBaja}>
+                    activo{" "}
+                    <LogoPersonCheck className="logoestado logo-active" />
+                  </p>
+                ) : (
+                  <p className="info-minitext stateBox" onClick={handleAlta}>
+                    innactivo{" "}
+                    <LogoPersonDash className="logoestado logo-disabled" />
+                  </p>
+                ))}
             </div>
 
             <p className="ficha-info-title">
@@ -266,7 +268,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
               </div>
             </div>
 
-            {persona.herramientas && (
+            {persona.puesto === "MECANICO" && (
               <>
                 <p className="ficha-info-title">
                   <strong>Herramientas asignadas</strong>
@@ -279,32 +281,36 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                 </p>
                 <div className="ficha-info-box special2">
                   {persona.herramientas
-                    ?.slice()
-                    .sort((a, b) => a.id.localeCompare(b.id))
-                    .map((h, index) => {
-                      return (
-                        <div key={index} className="special-item">
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <span className="special-fechas">
-                              <strong>{h.id}</strong> | {h.descripcion}{" "}
-                            </span>
-                            <span className="list-cant3">x{h.cantidad}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
+                    ? persona.herramientas
+                        ?.slice()
+                        .sort((a, b) => a.id.localeCompare(b.id))
+                        .map((h, index) => {
+                          return (
+                            <div key={index} className="special-item">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <span className="special-fechas">
+                                  <strong>{h.id}</strong> | {h.descripcion}{" "}
+                                </span>
+                                <span className="list-cant3">
+                                  x{h.cantidad}
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })
+                    : "Sin herramientas asignadas"}
                 </div>
                 <div className="ficha-info-footer">
                   <p
                     className="info-minitext info-minibtn"
                     onClick={handleTools}
                   >
-                    Modificar
+                    EDITAR
                   </p>
                 </div>
               </>

@@ -19,6 +19,7 @@ import FichaGestor from "../../components/fichas/FichaGestor";
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalStock from "../../components/modales/ModalStock";
 import ModalEventos from "../../components/modales/ModalEventos";
+import ModalPersona from "../../components/modales/ModalPersona";
 import ModalProveedor from "../../components/modales/ModalProveedor";
 import FormGestor from "../../components/forms/FormGestor";
 import FormLlave from "../../components/forms/FormLlave";
@@ -29,6 +30,7 @@ import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoDefault from "../../assets/logos/logo.svg";
 import LogoStock from "../../assets/logos/logostock-w.png";
+import LogoPersona from "../../assets/logos/logopersonal-b.png";
 
 const Reparaciones = ({ filtroSector = "tractores" }) => {
   const AREA = filtroSector;
@@ -51,6 +53,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalStockVisible, setModalStockVisible] = useState(false);
+  const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
 
@@ -301,6 +304,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     setModalProveedorVisible(false);
   };
 
+  const cerrarModalPersona = () => {
+    setModalPersonaVisible(false);
+  };
+
   const handleGuardar = async () => {
     setModalAgregarVisible(false);
 
@@ -437,7 +444,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       )}
 
       {modalProveedorVisible && (
-        <ModalProveedor onClose={() => setModalProveedorVisible(false)} />
+        <ModalProveedor onClose={cerrarModalProveedor} />
       )}
 
       {modalIngresosVisible && (
@@ -446,6 +453,10 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           filtroSector={AREA}
           onClose={cerrarModalIngresos}
         />
+      )}
+
+      {modalPersonaVisible && (
+        <ModalPersona puesto={"mecanico"} onClose={cerrarModalPersona} />
       )}
 
       <div className="table-options">
@@ -480,6 +491,13 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           >
             <img src={LogoProveedor} alt="" className="table-logo2" />
             <span className="table-logo-span">Proveedores</span>
+          </button>
+          <button
+            className="table-agregar"
+            onClick={() => setModalPersonaVisible(true)}
+          >
+            <img src={LogoPersona} alt="" className="table-logo2" />
+            <span className="table-logo-span">Mecánicos</span>
           </button>
         </div>
         <div className="table-options-group">

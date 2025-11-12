@@ -16,6 +16,7 @@ import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import "./css/Modales.css";
 
 const ModalPersona = ({ puesto = null, onClose }) => {
+  const filtroPuesto = String(puesto).toUpperCase();
   const [filtro, setFiltro] = useState("");
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
@@ -70,8 +71,10 @@ const ModalPersona = ({ puesto = null, onClose }) => {
   };
 
   const personasFiltradas = useMemo(() => {
-    let datos = puesto
-      ? personas.filter((p) => p.puesto.toUpperCase() === puesto.toUpperCase())
+    let datos = filtroPuesto
+      ? personas.filter(
+          (p) => p.puesto === filtroPuesto && (p.estado === 1 || p.estado)
+        )
       : personas;
 
     if (filtro) {
