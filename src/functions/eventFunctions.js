@@ -12,6 +12,19 @@ import {
 } from "firebase/firestore";
 import codigosArea from "./data/areas.json";
 
+function limpiarUndefined(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(limpiarUndefined);
+  } else if (obj && typeof obj === "object") {
+    const limpio = {};
+    for (const [k, v] of Object.entries(obj)) {
+      limpio[k] = v === undefined ? null : limpiarUndefined(v);
+    }
+    return limpio;
+  }
+  return obj;
+}
+
 export const agregarEvento = async (evento, area, idExistente = null) => {
   const usuarioJson = JSON.parse(localStorage.getItem("usuario"));
   let usuarioCarga = usuarioJson.apellido + ", " + usuarioJson.nombres;
@@ -22,7 +35,7 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
     }
     const codigoArea = codigosArea[area];
 
-    // --- Normalizar fecha ---
+    
     let fecha = evento.fecha;
     if (fecha) {
       if (fecha.toDate) {
@@ -38,7 +51,7 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       fecha = new Date();
     }
 
-    // Si no hay ID existente, generar uno nuevo
+  
     let idEvento = idExistente;
     if (!idEvento) {
       const q = query(collection(db, "eventos"), where("area", "==", area));
@@ -64,21 +77,21 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
 
     if (!idExistente) {
       // 👉 Evento nuevo
-      const dataAGuardar = {
+      const dataAGuardar = limpiarUndefined({
         ...evento,
         area,
         fecha: Timestamp.fromDate(fecha),
-        usuario: usuarioCarga, // creador
+        usuario: usuarioCarga, 
         modificaciones: [],    // historial vacío
-      };
+      });
 
       await setDoc(docRef, dataAGuardar);
     } else {
-      // 👉 Evento existente → actualizar sin tocar usuario ni fecha
-      let dataAGuardar = {
+      // actualizacionn
+      let dataAGuardar = limpiarUndefined({
         ...evento,
         area,
-      };
+      });
 
       delete dataAGuardar.fecha;
       delete dataAGuardar.usuario;
@@ -92,13 +105,13 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       });
     }
 
-    // --- Actualizar cache local ---
+    // actualizar cache
     const cache = localStorage.getItem("eventos");
     const cacheActual = cache ? JSON.parse(cache) : [];
 
     const indiceExistente = cacheActual.findIndex((item) => item.id === idEvento);
     if (indiceExistente >= 0) {
-      // ya existe → lo actualizo y agrego mod
+      // actualizar
       cacheActual[indiceExistente] = {
         ...cacheActual[indiceExistente],
         ...evento,
@@ -109,7 +122,7 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
         ],
       };
     } else {
-      // nuevo → lo agrego
+      // agregar nuevo
       cacheActual.push({
         id: idEvento,
         ...evento,

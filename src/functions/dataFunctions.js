@@ -56,32 +56,44 @@ export const buscarEmpresa = (coleccion, cuit, completo=true) => {
   const abreviatura = `${empresa.abreviatura}`;
   return completo ? nombreCompleto : abreviatura;
 }
-export const buscarCuitEmpresa = (coleccion, nombre, verificar=false) => {
-  if(!nombre){
-    return 0;
-  } 
+export const buscarCuitEmpresa = (coleccion, nombre, verificar = false) => {
+  // Verificación inicial
+  if (!nombre || typeof nombre !== "string") {
+    console.warn(`[Aviso] buscarCuitEmpresa recibió un nombre inválido:`, nombre);
+    return verificar ? false : 0;
+  }
 
-  const empresa = coleccion.find((e) => e.nombre.toUpperCase() === nombre.toUpperCase());
+  // Normalizo el nombre a comparar
+  const nombreNormalizado = nombre.toUpperCase().trim();
 
-  if(verificar){
-    if(empresa){
-      if(empresa.tipo === "propia") {
-        return true
-      } else {
-        return false
-      }
+  // Busco la empresa
+  const empresa = coleccion.find(
+    (e) =>
+      e.nombre &&
+      typeof e.nombre === "string" &&
+      e.nombre.toUpperCase().trim() === nombreNormalizado
+  );
+
+  // Modo verificación
+  if (verificar) {
+    if (empresa) {
+      return empresa.tipo === "propia";
     } else {
-      return false
+      return false;
     }
   }
-  
-  if(!empresa) {
-    console.log(`[Error] buscarCuitEmpresa no encontró una empresa con el nombre ${String(nombre)}`)
+
+  // Si no la encontró
+  if (!empresa) {
+    console.warn(`[Error] buscarCuitEmpresa no encontró una empresa con el nombre "${nombre}"`);
     return 0;
   }
-  const cuit = empresa.cuit || empresa.id;
+
+  // Devuelvo el CUIT o el ID
+  const cuit = empresa.cuit || empresa.id || 0;
   return cuit;
-}
+};
+
 export const verificarDuplicado = (coleccion, idx) => {
   return coleccion.some((p) => String(p.idx) === String(idx));
 };
@@ -118,11 +130,16 @@ export const buscarNombre = (coleccion, idx) => {
     }
 
     // Buscar por id
+    const evitarError0X = idx === "0X" ? true :false;
+
     const valor = array.find((v) => String(v.id) === String(idx));
 
-    if (!valor) {
-      console.warn(`[Aviso] buscarNombre no encontró coincidencia para id ${idx}`);
-      return "";
+    if(!evitarError0X){
+      if (!valor) {
+        console.warn(`[Aviso] buscarNombre no encontró coincidencia para id ${idx}`);
+        return "";
+      }
+
     }
 
     // Devolver el campo más representativo

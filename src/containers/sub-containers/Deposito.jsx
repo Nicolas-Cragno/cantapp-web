@@ -1,12 +1,14 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useEffect } from "react";
 import { FaSpinner as LogoLoading } from "react-icons/fa";
+import { FaTools as LogoTool } from "react-icons/fa";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../../components/tablas/TablaColeccion";
 import FichaStock from "../../components/fichas/FichaStock";
 import FormStock from "../../components/forms/FormStock";
+import FormHerramienta from "../../components/forms/FormHerramienta";
 import FormMovimientoStock from "../../components/forms/FormMovimientoStock";
 import unidades from "../../functions/data/unidades.json";
 import LogoStock from "../../assets/logos/logostock-w.png";
@@ -28,7 +30,9 @@ const Deposito = ({ taller = null }) => {
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
   const [modalEventosVisible, setModalEventosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
-  const { stock, proveedores } = useData();
+  const [modalHerramientasVisible, setModalHerramientasVisible] =
+    useState(false);
+  const { stock, proveedores, personas } = useData();
 
   // sincronizar stock con estado local
   useEffect(() => {
@@ -142,6 +146,14 @@ const Deposito = ({ taller = null }) => {
         />
       )}
 
+      {modalHerramientasVisible && (
+        <FormHerramienta
+          sector={taller}
+          onClose={() => setModalHerramientasVisible(false)}
+          onGuardar={() => setModalHerramientasVisible(false)}
+        />
+      )}
+
       {modalEventosVisible && (
         <ModalEventos
           tipo={"STOCK"}
@@ -155,12 +167,21 @@ const Deposito = ({ taller = null }) => {
 
       <div className="table-options">
         <div className="table-options-group">
-          <LogoButton
-            logo={LogoProveedor}
+          <button
+            className="table-agregar"
             onClick={() => setModalProveedorVisible(true)}
-          />
+          >
+            <img src={LogoProveedor} alt="" className="table-logo2" />
+            <span className="table-logo-span">Proveedores</span>
+          </button>
         </div>
         <div className="table-options-group">
+          <button
+            className="table-agregar"
+            onClick={() => setModalHerramientasVisible(true)}
+          >
+            <LogoTool className="button-logo" />
+          </button>
           <TextButton
             text="↓↑ MOVIMIENTO"
             onClick={() => setModalMovimientoVisible(true)}

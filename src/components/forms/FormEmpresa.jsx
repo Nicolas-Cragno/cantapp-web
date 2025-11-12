@@ -4,12 +4,13 @@ import Swal from "sweetalert2";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
+import InputValidator from "../devs/InputValidator";
 import { agregar, modificar } from "../../functions/dbFunctions";
 import { verificarDuplicado } from "../../functions/dataFunctions";
 import "./css/Forms.css";
 
 const FormEmpresa = ({ empresa = null, onClose, onGuardar }) => {
-  const { empresas } = useData();
+  const { usuario, empresas } = useData();
   const [formData, setFormData] = useState({
     nombre: "",
     cuit: null,
@@ -17,6 +18,12 @@ const FormEmpresa = ({ empresa = null, onClose, onGuardar }) => {
   });
   const [modoEdicion, setModoEdicion] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  const [esDev, setEsDev] = useState(false);
+
+  useEffect(() => {
+    if (usuario.rol === "dev") setEsDev(true);
+  }, []);
 
   useEffect(() => {
     if (empresa) {
@@ -80,7 +87,10 @@ const FormEmpresa = ({ empresa = null, onClose, onGuardar }) => {
             <strong>Información</strong>
           </p>
           <div className="ficha-info">
-            <label>Nombre</label>
+            <div className="dev">
+              <label>Nombre</label>
+              {esDev && <InputValidator campo={formData.nombre} />}
+            </div>
             <input
               type="text"
               name="nombre"
@@ -89,7 +99,10 @@ const FormEmpresa = ({ empresa = null, onClose, onGuardar }) => {
               style={{ textTransform: "uppercase" }}
               required
             />
-            <label>CUIT</label>
+            <div className="dev">
+              <label>CUIT</label>
+              {esDev && <InputValidator campo={formData.cuit} />}
+            </div>
             <input
               type="number"
               name="cuit"
@@ -103,7 +116,10 @@ const FormEmpresa = ({ empresa = null, onClose, onGuardar }) => {
           </div>
 
           <div className="form-group">
-            <label>Detalle</label>
+            <div className="dev">
+              <label>Detalle</label>
+              {esDev && <InputValidator campo={formData.detalle} />}
+            </div>
             <textarea
               name="detalle"
               value={formData.detalle}

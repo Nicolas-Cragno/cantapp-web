@@ -5,6 +5,7 @@ import { db } from "../firebase/firebaseConfig";
 const DataContext = createContext({});
 
 export const DataProvider = ({ children }) => {
+  const [usuario, setUsuario] = useState(null);
   // -------------------- Listado de tablas/colecciones de Firestore:
   // ------- empresas / clientes
   const [empresas, setEmpresas] = useState([]);
@@ -32,6 +33,17 @@ export const DataProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
   let cargaInicial = useRef(true); // bandera para carga inicial de la app.
+
+  useEffect(() => {
+    const usuarioLS = localStorage.getItem("usuario");
+    if (usuarioLS) {
+      try {
+        setUsuario(JSON.parse(usuarioLS));
+      } catch (error) {
+        console.log("[Error] No se obtuvo USUARIO del local storage.");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const unsubscribers = [];
@@ -117,6 +129,7 @@ export const DataProvider = ({ children }) => {
   return (
     <DataContext.Provider
       value={{
+        usuario,
         empresas,
         sectores,
         satelitales,

@@ -4,6 +4,7 @@ const formularios = {
   // elementos (personas, vehiculos, etc)
   persona: lazy(() => import("./FormPersona")),
   vehiculo: lazy(() => import("./FormVehiculo")),
+  herramamienta: lazy(() => import("./FormHerramienta")),
   // eventos, viajes, etc
   porteria: lazy(() => import("./FormEventoPorteria")),
   satelital: lazy(() => import("./FormEventoSatelital")),

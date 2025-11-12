@@ -178,16 +178,26 @@ const FormLlave = ({
       if (datosAGuardar.tipo === "ENTREGA" || datosAGuardar === "DEJA") {
         // eliminar llave/s de otros depositos
         for (const otroDepo of otrosDepositos) {
-          quitarItem(SUCURSAL, otroDepo, datosAGuardar.tractor);
+          quitarItem(SUCURSAL, "ubicaciones", otroDepo, datosAGuardar.tractor);
         }
         // agregar llave/s al deposito correcto
-        await agregarItem(SUCURSAL, deposito, datosAGuardar.tractor);
+        await agregarItem(
+          SUCURSAL,
+          "ubicaciones",
+          deposito,
+          datosAGuardar.tractor
+        );
       } else if (datosAGuardar.tipo === "RETIRA") {
-        await quitarItem(SUCURSAL, deposito, datosAGuardar.tractor);
+        await quitarItem(
+          SUCURSAL,
+          "ubicaciones",
+          deposito,
+          datosAGuardar.tractor
+        );
       } else if (datosAGuardar.tipo === "INVENTARIO") {
         // eliminar llave/s de otros depositos
         for (const otroDepo of otrosDepositos) {
-          quitarItem(SUCURSAL, otroDepo, datosAGuardar.tractor);
+          quitarItem(SUCURSAL, "ubicaciones", otroDepo, datosAGuardar.tractor);
         }
         // definir inventario
         await reemplazarItems(SUCURSAL, deposito, datosAGuardar.tractor);

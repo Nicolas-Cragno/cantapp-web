@@ -20,6 +20,7 @@ import { altaBaja, modificar } from "../../functions/dbFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
 import TablaEventosReducida from "../tablas/TablaEventosReducida";
 import FormPersona from "../forms/FormPersona";
+import FormHerramienta from "../forms/FormHerramienta";
 import FichaEventosGestor from "../fichas/FichaEventosGestor";
 import LogoEmpresa from "../logos/LogoEmpresa";
 import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
@@ -30,10 +31,11 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const usuario = JSON.parse(localStorage.getItem("usuario")) || {
     rol: "",
   };
-
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
+  const [modalHerramientasVisible, setModalHerramientasVisible] =
+    useState(false);
   const [panelAdminVisible, setPanelAdminVisible] = useState(false);
   const user = JSON.parse(localStorage.getItem("usuario"));
 
@@ -46,7 +48,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
     };
 
     activarPanelOculto();
-  });
+  }, []);
   if (!persona) return null;
 
   const fechaNacimiento = formatearFecha(persona.nacimiento);
@@ -101,7 +103,6 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
       });
     }
   };
-
   const handleAlta = () => {
     if (usuario.rol === "superadmin") {
       const empresasPropias = empresas.filter((e) => e.tipo === "propia");
@@ -153,7 +154,9 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
       });
     }
   };
-
+  const handleTools = () => {
+    setModalHerramientasVisible(true);
+  };
   const handleGuardado = async (personaModificada) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(personaModificada);
@@ -263,6 +266,50 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
               </div>
             </div>
 
+            {persona.herramientas && (
+              <>
+                <p className="ficha-info-title">
+                  <strong>Herramientas asignadas</strong>
+                  {persona.herramientas && persona.herramientas.length > 0 && (
+                    <span className="list-cant2">
+                      {persona.herramientas.length} herramienta
+                      {persona.herramientas.length !== 1 && "s"}
+                    </span>
+                  )}
+                </p>
+                <div className="ficha-info-box special2">
+                  {persona.herramientas
+                    ?.slice()
+                    .sort((a, b) => a.id.localeCompare(b.id))
+                    .map((h, index) => {
+                      return (
+                        <div key={index} className="special-item">
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <span className="special-fechas">
+                              <strong>{h.id}</strong> | {h.descripcion}{" "}
+                            </span>
+                            <span className="list-cant3">x{h.cantidad}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+                <div className="ficha-info-footer">
+                  <p
+                    className="info-minitext info-minibtn"
+                    onClick={handleTools}
+                  >
+                    Modificar
+                  </p>
+                </div>
+              </>
+            )}
+
             {persona.detalle && (
               <>
                 <p className="ficha-info-title">
@@ -323,6 +370,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                       );
                     })}
                 </div>
+
                 {persona.comentario && (
                   <>
                     <p className="ficha-info-title">
@@ -344,6 +392,14 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                 setModalFichaVisible(true);
               }}
             />
+            {modalHerramientasVisible && (
+              <FormHerramienta
+                elemento={persona}
+                sector={usuario.area}
+                onClose={() => setModalHerramientasVisible(false)}
+                onGuardar={onGuardar}
+              />
+            )}
             {modalFichaVisible && (
               <FichaEventosGestor
                 tipo={

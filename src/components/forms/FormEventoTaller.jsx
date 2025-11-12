@@ -259,7 +259,7 @@ const FormEventoTaller = ({
 
       if (!confirmacion.isConfirmed) {
         setUploading(false);
-        return; // Si cancela, no guarda
+        return;
       }
 
       const eventoGuardado = evento.id

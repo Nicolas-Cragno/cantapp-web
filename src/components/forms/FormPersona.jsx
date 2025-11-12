@@ -16,6 +16,7 @@ import {
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
 import FormEmpresa from "./FormEmpresa";
+import InputValidator from "../devs/InputValidator";
 import puestos from "../../functions/data/puestos.json";
 import "./css/Forms.css";
 
@@ -25,7 +26,7 @@ const FormPersona = ({
   onClose,
   onGuardar,
 }) => {
-  const { personas, empresas } = useData();
+  const { usuario, personas, empresas } = useData();
   const [panelAdminVisible, setPanelAdminVisible] = useState(false);
   const user = JSON.parse(localStorage.getItem("usuario"));
   const [activeIndex, setActiveIndex] = useState(null);
@@ -37,7 +38,7 @@ const FormPersona = ({
     nombres: persona?.nombres?.toUpperCase() || "",
     ubicacion: persona?.ubicacion?.toUpperCase() || "",
     edad: persona?.nacimiento ? calcularEdad(persona.nacimiento) : "",
-    empresa: persona?.empresa ? buscarEmpresa(empresas, persona.empresa) : "",
+    empresa: persona?.empresa ? persona.empresa : "",
     tipo: persona?.tipo || "",
     puesto: persona?.puesto || "",
     ingreso: persona?.ingreso ? formatearFechaInput(persona.ingreso) : "",
@@ -55,9 +56,14 @@ const FormPersona = ({
     comentario: persona?.comentario || "",
     alerta: persona?.alerta || "",
   });
-
   const [modoEdicion, setModoEdicion] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  const [esDev, setEsDev] = useState(false);
+
+  useEffect(() => {
+    if (usuario.rol === "dev") setEsDev(true);
+  }, []);
 
   useEffect(() => {
     if (persona) setModoEdicion(true);
@@ -112,9 +118,7 @@ const FormPersona = ({
           nombres: formData.nombres?.toUpperCase() || null,
           ubicacion: formData.ubicacion?.toUpperCase() || null,
           edad: formData.nacimiento ? calcularEdad(formData.nacimiento) : null,
-          empresa: formData.empresa
-            ? buscarCuitEmpresa(empresas, formData.empresa)
-            : null,
+          empresa: formData.empresa ? formData.empresa : null,
           tipo: formData.tipo || null,
           puesto: formData.puesto || null,
           ingreso: formData.ingreso ? formatearFecha(formData.ingreso) : null,
@@ -147,7 +151,10 @@ const FormPersona = ({
           return;
         }
 
-        const esChoferFletero = formData.puesto === "CHOFER FLETERO" || formData.puesto === "FLETERO" ? true : false;
+        const esChoferFletero =
+          formData.puesto === "CHOFER FLETERO" || formData.puesto === "FLETERO"
+            ? true
+            : false;
 
         const nuevaPersona = {
           ...formData,
@@ -166,17 +173,19 @@ const FormPersona = ({
           estado: !esChoferFletero, // para que sea false si es fletero
           detalle: formData.detalle?.toUpperCase() || null,
           // super admin
-          periodos: esChoferFletero ? [] : [
-            ...(formData.periodos || []), // mantiene los existentes si hubiera
-            {
-              inicio: new Date(), // fecha actual
-              fin: null, // todavía no tiene fin
-              empresa: formData.empresa
-                ? buscarCuitEmpresa(empresas, formData.empresa)
-                : null,
-              detalle: null,
-            },
-          ],
+          periodos: esChoferFletero
+            ? []
+            : [
+                ...(formData.periodos || []), // mantiene los existentes si hubiera
+                {
+                  inicio: new Date(), // fecha actual
+                  fin: null, // todavía no tiene fin
+                  empresa: formData.empresa
+                    ? buscarCuitEmpresa(empresas, formData.empresa)
+                    : null,
+                  detalle: null,
+                },
+              ],
           comentario: formData.comentario?.toUpperCase() || null,
           alerta: formData.alerta?.toUpperCase() || null,
         };
@@ -209,7 +218,10 @@ const FormPersona = ({
             <strong>Información personal</strong>
           </p>
           <div className="ficha-info">
-            <label>DNI</label>
+            <div className="dev">
+              <label>DNI</label>{" "}
+              {esDev && <InputValidator campo={formData.dni} />}
+            </div>
             <input
               type="number"
               name="dni"
@@ -220,8 +232,10 @@ const FormPersona = ({
               disabled={modoEdicion}
               required
             />
-
-            <label>Apellido</label>
+            <div className="dev">
+              <label>Apellido</label>
+              {esDev && <InputValidator campo={formData.apellido} />}
+            </div>
             <input
               type="text"
               name="apellido"
@@ -231,7 +245,10 @@ const FormPersona = ({
               required
             />
 
-            <label>Nombres</label>
+            <div className="dev">
+              <label>Nombres</label>
+              {esDev && <InputValidator campo={formData.nombres} />}
+            </div>
             <input
               type="text"
               name="nombres"
@@ -240,7 +257,11 @@ const FormPersona = ({
               style={{ textTransform: "uppercase" }}
               required
             />
-            <label>Ubicación</label>
+
+            <div className="dev">
+              <label>Ubicación</label>
+              {esDev && <InputValidator campo={formData.ubicacion} />}
+            </div>
             <input
               type="text"
               name="ubicacion"
@@ -254,8 +275,12 @@ const FormPersona = ({
             <strong>Información laboral</strong>
           </p>
           <div className="ficha-info">
-            <label>Tipo</label>
+            <div className="dev">
+              <label>Tipo</label>
+              {esDev && <InputValidator campo={formData.tipo} />}
+            </div>
             <Select
+              className="select-grow"
               name="tipo"
               value={
                 tiposDisponibles.find((opt) => opt.value === formData.tipo) ||
@@ -283,8 +308,10 @@ const FormPersona = ({
               placeholder="Seleccionar tipo..."
             />
 
-            <label>Empresa</label>
-
+            <div className="dev">
+              <label>Empresa</label>
+              {esDev && <InputValidator campo={formData.empresa} />}
+            </div>
             <div className="select-with-button">
               <Select
                 className="select-grow"
@@ -293,7 +320,7 @@ const FormPersona = ({
                   formData.empresa
                     ? {
                         value: formData.empresa,
-                        label: formData.empresa.nombre,
+                        label: buscarEmpresa(empresas, formData.empresa), // devuelve nombre
                       }
                     : null
                 }
@@ -306,18 +333,17 @@ const FormPersona = ({
                   })
                 }
                 options={[
-                  { value: null, label: "..." }, // opción para no elegir nada
+                  { value: "", label: "..." },
                   ...empresas
                     .filter(
                       esProveedor
                         ? (e) => e.tipo === "proveedor"
                         : (e) => e.tipo === "propia"
                     )
-                    .map((p) => ({ value: p, label: p.nombre })),
+                    .map((e) => ({ value: e.cuit, label: e.nombre })), // 👈 acá value=cuit
                 ]}
-                isDisabled={uploading}
-                placeholder="Seleccionar empresa..."
               />
+
               {esProveedor && (
                 <TextButton
                   text="+"
@@ -327,9 +353,12 @@ const FormPersona = ({
                 />
               )}
             </div>
-
-            <label>Puesto</label>
+            <div className="dev">
+              <label>Puesto</label>{" "}
+              {esDev && <InputValidator campo={formData.puesto} />}
+            </div>
             <Select
+              className="select-grow"
               name="puesto"
               value={
                 esProveedor
@@ -353,7 +382,10 @@ const FormPersona = ({
           </div>
 
           <div className="form-group">
-            <label>Detalle</label>
+            <div className="dev">
+              <label>Detalle</label>
+              {esDev && <InputValidator campo={formData.detalle} />}
+            </div>
 
             <textarea
               name="detalle"
@@ -366,6 +398,7 @@ const FormPersona = ({
             <div className="panel-superadmin">
               <h2 className="form-info-title2">administración</h2>
               <br />
+
               {modoEdicion && (
                 <>
                   <p className="ficha-info-title">
@@ -512,8 +545,13 @@ const FormPersona = ({
                   </div>
                 </>
               )}
+              <br />
               <div className="form-group">
-                <label>Comentarios</label>
+                <div className="dev">
+                  <label>Comentarios</label>
+
+                  {esDev && <InputValidator campo={formData.comentario} />}
+                </div>
                 <textarea
                   name="comentario"
                   value={formData.comentario}

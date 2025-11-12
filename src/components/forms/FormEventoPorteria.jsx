@@ -13,6 +13,7 @@ import FormVehiculo from "./FormVehiculo";
 import FormPersona from "./FormPersona";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import tiposEventos from "../../functions/data/eventos.json";
+import InputValidator from "../devs/InputValidator";
 import TextButton from "../buttons/TextButton";
 import "./css/Forms.css";
 

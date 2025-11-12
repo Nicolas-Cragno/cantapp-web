@@ -102,6 +102,8 @@
   box-sizing: border-box;
 }
 
+
+
 .form-content form textarea {
   height: 7rem;
   resize: none; /* El usuario puede agrandarlo */
@@ -238,6 +240,8 @@
   padding-left: .2rem;
   padding-right: .2rem ;
   border-radius: 1rem;
+  max-height: max-content;
+  max-width: max-content;
   }
 
 
@@ -456,6 +460,12 @@ padding-top: 1rem;}
   gap: 1rem;
 }
 
+.form-footer{
+  display: flex;
+  justify-content: right;
+  margin-top: -1.6rem;
+}
+
 .form-info-title{
   display: flex;
   justify-content: space-between;
@@ -579,7 +589,8 @@ padding-top: 1rem;}
 .select-grow {
   flex: 1;               /* hace que el Select crezca al máximo */
   min-width: 0;
-  
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
 }
 
 .select-grow .react-select__menu {

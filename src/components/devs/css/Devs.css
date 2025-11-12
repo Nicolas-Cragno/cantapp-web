@@ -1,0 +1,17 @@
+.dev{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.dev-item{
+  display: flex;
+  align-items: center;
+  font-family: Consolas, "Menlo", "Monaco", "DejaVu Sans Mono", "Courier New", monospace;
+  font-size: small;
+  margin-right: 1rem;
+  padding-right: .35rem;
+  padding-left: .35rem;
+  background-color: #000;
+  color: #fff;
+}
