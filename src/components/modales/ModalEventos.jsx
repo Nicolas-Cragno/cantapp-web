@@ -8,6 +8,7 @@ import {
   formatearFechaCorta,
   formatearHora,
   buscarEmpresa,
+  buscarNombre,
 } from "../../functions/dataFunctions";
 import TablaColeccion from "../tablas/TablaColeccion";
 import FichaEventosGestor from "../fichas/FichaEventosGestor";
@@ -22,8 +23,15 @@ const ModalEventos = ({
   const [filtro, setFiltro] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
-  const { eventos, proveedores, personas } = useData();
-
+  const { eventos, proveedores, personas, stock } = useData();
+  const columnasDerecha = [
+    {
+      titulo: "CARGA",
+      campo: "usuario",
+      render: (u) => u.toUpperCase(),
+      offresponsive: true,
+    },
+  ];
   const columnas = [
     {
       titulo: "ID",
@@ -41,23 +49,21 @@ const ModalEventos = ({
       render: (v) => formatearFecha(v) + " - " + formatearHora(v) + " hs",
       offresponsive: true,
     },
+    /*
     {
       titulo: "TIPO",
       campo: "tipo",
     },
+    */
     {
       titulo: "AREA/SECTOR",
       campo: "area",
       render: (a) => a.toUpperCase(),
       offresponsive: true,
     },
-    {
-      titulo: "CARGA",
-      campo: "usuario",
-      render: (u) => u.toUpperCase(),
-      offresponsive: true,
-    },
+    ...columnasDerecha,
   ];
+
   const columnasMovimientoStock = [
     ...columnas,
     {
@@ -100,6 +106,20 @@ const ModalEventos = ({
         );
       },
     },
+    {
+      titulo: "ITEMS",
+      campo: "ingresos",
+      render: (ingresos) => {
+        if (!Array.isArray(ingresos) || ingresos.length === 0) return "-";
+
+        return (
+          <span style={{ fontSize: "0.75em" }}>
+            {ingresos.map((i) => buscarNombre(stock, i.id)).join(", ")}
+          </span>
+        );
+      },
+    },
+    ...columnasDerecha,
   ];
 
   let columnasFinal;

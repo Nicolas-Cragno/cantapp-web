@@ -613,6 +613,13 @@ const FormMovimientoStock = ({
                         ? item.descripcion
                         : stock.find((s) => s.id === item.id).descripcion}
                     </div>
+                    <div className="item-info-small">
+                      <strong>$ </strong>{" "}
+                      {item.valor.toLocaleString("es-AR", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </div>
                     <div className="item-actions">
                       <span className="list-cant3">
                         {item.cantidad} {Unidades[item.unidad.toUpperCase()]}{" "}
