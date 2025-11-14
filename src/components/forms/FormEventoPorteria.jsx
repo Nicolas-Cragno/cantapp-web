@@ -277,9 +277,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
             Operador *
             <Select
               options={personas
-                .filter(
-                  (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
-                )
+                .filter((o) => o.especialicacion === "SERENO")
                 .map((o) => ({
                   value: o.id,
                   label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,

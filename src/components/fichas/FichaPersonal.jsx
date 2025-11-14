@@ -256,6 +256,12 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                     </span>
                   </p>
                   <p className="ficha-info-item">
+                    <strong>Especialización</strong>
+                    <span className="ficha-info-item-txt">
+                      {persona.especializacion}
+                    </span>
+                  </p>
+                  <p className="ficha-info-item">
                     <strong>Sucursal</strong>
                     <span className="ficha-info-item-txt">
                       {persona.sucursal}

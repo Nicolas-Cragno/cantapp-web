@@ -69,11 +69,11 @@ export default function FormViaje({ elemento = {}, onClose, onGuardar }) {
   }, [tramos]);
 
   const choferes = personas.filter(
-    (p) => p.puesto === "CHOFER LARGA DISTANCIA" && p.estado
+    (p) => p.especializacion === "LARGA DISTANCIA" && p.estado
   );
 
   const choferesMov = personas.filter(
-    (p) => p.puesto === "CHOFER MOVIMIENTO" && p.estado
+    (p) => p.especializacion === "MOVIMIENTO" && p.estado
   );
 
   const cerrarModalTractor = () => {

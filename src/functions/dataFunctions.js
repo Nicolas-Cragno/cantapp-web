@@ -106,21 +106,18 @@ export const buscarNombre = (coleccion, idx) => {
 
     let array = [];
 
-    // Si es un array
+    // array
     if (Array.isArray(coleccion)) {
       array = coleccion;
     }
 
-    // Si es un objeto, lo convertimos a array de { id, ...data }
+    // objeto, convertir a array
     else if (typeof coleccion === "object" && Object.keys(coleccion).length > 0) {
       array = Object.entries(coleccion).map(([id, data]) => ({
         id,
         ...data,
       }));
-    }
-
-    // Si no logramos obtener un array válido
-    else {
+    } else {
       console.error(
         "[Error] buscarNombre recibió un tipo no manejable:",
         typeof coleccion,
@@ -143,7 +140,7 @@ export const buscarNombre = (coleccion, idx) => {
     }
 
     // Devolver el campo más representativo
-    return valor.nombre || valor.descripcion || valor.razonSocial || "";
+    return valor.nombre || valor.descripcion || valor.razonSocial || valor.nombres || "";
   } catch (err) {
     console.error("[Error en buscarNombre]:", err);
     return "";

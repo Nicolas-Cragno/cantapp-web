@@ -72,7 +72,6 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         mecanicoTxt = buscarPersona(personas, e.mecanico) || e.mecanico;
       }
 
-      // Retornar el evento enriquecido
       return {
         ...e,
         fechaFormateada: formatearFecha(e.fecha),
@@ -82,7 +81,8 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         nombreServicio: buscarEmpresa(empresas, e.servicio) || "",
         dominioTractor: buscarDominio(e.tractor, tractores),
         dominioFurgon: buscarDominio(e.furgon, furgones),
-        mecanicoTxt, // 👈 acá queda el texto combinado de los mecánicos
+        nombreSucursal: buscarNombre(ubicaciones, e.sucursal),
+        mecanicoTxt,
       };
     });
 
@@ -321,14 +321,14 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
 
     filtrados = filtrados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
-    // --- dividir el texto del filtro en palabras separadas por coma ---
+    // dividir con coma
     const filtros = filtro
       .split(",")
       .map((f) => f.trim().toLowerCase())
       .filter((f) => f.length > 0);
 
     return filtrados.filter((e) => {
-      const textoFiltro = `${e.subtipo || ""} ${e.nombrePersona} ${
+      const textoFiltro = `${e.id} ${e.subtipo || ""} ${e.nombrePersona} ${
         e.tractor || ""
       } ${e.furgon || ""} ${e.fechaFormateada} ${e.horaFormateada} ${
         e.tipo || ""
@@ -336,7 +336,9 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         e.vehiculo
       } ${e.dominioTractor} ${e.dominioFurgon} ${e.persona} ${e.servicio} ${
         e.mecanicoTxt
-      } ${e.proveedor} ${e.detalle}`.toLowerCase();
+      } ${e.proveedor} ${e.detalle} ${e.sucursal} ${
+        e.nombreSucursal
+      }`.toLowerCase();
 
       // Debe incluir *todos* los términos
       return filtros.every((term) => textoFiltro.includes(term));

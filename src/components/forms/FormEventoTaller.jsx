@@ -90,20 +90,20 @@ const FormEventoTaller = ({
   useEffect(() => {
     const listadoMecanicos = personas.filter(
       (p) =>
-        p.puesto === "MECANICO" &&
+        p.puesto === "TALLER" &&
         (p.estado === true || p.estado === "1" || p.estado === 1)
     );
     setMecanicos(listadoMecanicos);
 
     const listadoChoferes = personas.filter(
       (p) =>
-        (p.puesto === "CHOFER LARGA DISTANCIA" &&
+        (p.especializacion === "LARGA DISTANCIA" &&
           (p.estado === true || p.estado === "1" || p.estado === 1)) ||
-        (p.puesto === "CHOFER MOVIMIENTO" &&
+        (p.especializacion === "MOVIMIENTO" &&
           (p.estado === true || p.estado === "1" || p.estado === 1)) ||
-        (p.puesto === "CHOFER FLETERO" &&
+        (p.especializacion === "FLETERO" &&
           (p.estado === true || p.estado === "1" || p.estado === 1)) ||
-        p.puesto === "FLETERO"
+        p.especializacion === "FLETERO"
     );
     setChoferes(listadoChoferes);
   }, [personas]);

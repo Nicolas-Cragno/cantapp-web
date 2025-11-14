@@ -41,6 +41,7 @@ const FormPersona = ({
     empresa: persona?.empresa ? persona.empresa : "",
     tipo: persona?.tipo || "",
     puesto: persona?.puesto || "",
+    especializacion: persona?.especializacion || "",
     ingreso: persona?.ingreso ? formatearFechaInput(persona.ingreso) : "",
     legajo: persona?.legajo || "",
     sucursal: persona?.sucursal || "",
@@ -121,6 +122,7 @@ const FormPersona = ({
           empresa: formData.empresa ? formData.empresa : null,
           tipo: formData.tipo || null,
           puesto: formData.puesto || null,
+          especializacion: formData.especializacion || null,
           ingreso: formData.ingreso ? formatearFecha(formData.ingreso) : null,
           legajo: formData.legajo || null,
           sucursal: formData.sucursal || null,
@@ -167,6 +169,7 @@ const FormPersona = ({
             : null,
           tipo: formData.tipo || null,
           puesto: formData.puesto || null,
+          especializacion: formData.especializacion || null,
           ingreso: new Date(),
           legajo: formData.legajo || null,
           sucursal: formData.sucursal || null,
@@ -378,6 +381,18 @@ const FormPersona = ({
               options={puestos.map((p) => ({ value: p, label: p }))}
               isDisabled={uploading || esProveedor}
               placeholder="Seleccionar puesto..."
+            />
+            <div className="dev">
+              <label>Especializacion</label>
+              {esDev && <InputValidator campo={formData.especializacion} />}
+            </div>
+            <input
+              type="text"
+              name="especializacion"
+              value={formData.especializacion}
+              onChange={handleChange}
+              style={{ textTransform: "uppercase" }}
+              required
             />
           </div>
 

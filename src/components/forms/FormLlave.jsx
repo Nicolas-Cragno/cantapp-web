@@ -45,7 +45,7 @@ const FormLlave = ({
   });
 
   const operadoresPorteria = personas.filter(
-    (o) => o.puesto === "VIGILANCIA" || o.puesto === "SEGURIDAD"
+    (o) => o.especializacion === "SERENO"
   );
 
   const operadoresTallerTractores = personas.filter(

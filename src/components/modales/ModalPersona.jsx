@@ -16,7 +16,7 @@ import LogoEmpresaTxt from "../logos/LogoEmpresaTxt";
 import "./css/Modales.css";
 
 const ModalPersona = ({ puesto = null, onClose }) => {
-  const filtroPuesto = String(puesto).toUpperCase();
+  const filtroPuesto = puesto ? String(puesto).toUpperCase() : null;
   const [filtro, setFiltro] = useState("");
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
@@ -36,6 +36,7 @@ const ModalPersona = ({ puesto = null, onClose }) => {
     {
       titulo: "PUESTO",
       campo: "puesto",
+
       offresponsive: true,
     },
     {
@@ -73,7 +74,9 @@ const ModalPersona = ({ puesto = null, onClose }) => {
   const personasFiltradas = useMemo(() => {
     let datos = filtroPuesto
       ? personas.filter(
-          (p) => p.puesto === filtroPuesto && (p.estado === 1 || p.estado)
+          (p) =>
+            (p.puesto === filtroPuesto || p.especializacion === filtroPuesto) &&
+            (p.estado === 1 || p.estado)
         )
       : personas;
 
@@ -81,7 +84,7 @@ const ModalPersona = ({ puesto = null, onClose }) => {
       datos = datos.filter((p) => {
         const estado = p.estado ? "activo" : "inactivo";
         const texto =
-          `${p.apellido} ${p.nombres} ${p.dni} ${p.puesto} ${estado}`.toLowerCase();
+          `${p.apellido} ${p.nombres} ${p.dni} ${p.puesto} ${p.especializacion} ${estado}`.toLowerCase();
         return texto.includes(filtro.toLowerCase());
       });
     }
