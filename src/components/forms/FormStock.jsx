@@ -18,7 +18,6 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
   const [tipoSeleccionado, setTipoSeleccionado] = useState("tractor");
   const [modoEdicion, setModoEdicion] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
-
   const [formData, setFormData] = useState({
     codigo: articulo?.codigo || "",
     descripcion: articulo?.descripcion || "",
@@ -34,7 +33,6 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
     furgon: articulo?.furgon || "",
     vehiculo: articulo?.vehiculo || "",
   });
-
   const tiposDisponibles = Object.entries(Codigos).map(([key, value]) => ({
     value: key,
     tipo: value.tipo,
@@ -42,11 +40,9 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
     descripcion: value.descripcion,
     tipotxt: value.tipo,
   }));
-
   useEffect(() => {
     if (articulo) setModoEdicion(true);
   }, [articulo]);
-
   useEffect(() => {
     if (formData.tipo === "RC") {
       setFormData((prev) => ({ ...prev, proveedor: "0X" }));
@@ -54,20 +50,16 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
       setFormData((prev) => ({ ...prev, proveedor: "" }));
     }
   }, [formData.tipo]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((data) => ({ ...data, [name]: value }));
   };
-
   const handleClickProveedor = () => {
     setModalProveedorVisible(true);
   };
-
   const cerrarModalProveedor = () => {
     setModalProveedorVisible(false);
   };
-
   const handleTipoSeleccionado = (tipoSelect) => {
     setTipoSeleccionado(tipoSelect);
 
@@ -78,7 +70,6 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
       vehiculo: tipoSelect === "vehiculo" ? prev.vehiculo : "",
     }));
   };
-
   const handleSubmit = async (e) => {
     if (e?.preventDefault) e.preventDefault(); // para evitar el error al abrirlo desde otro form como modal
     setLoading(true);
@@ -165,7 +156,9 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <h2>
-          {modoEdicion ? "MODIFICAR " + formData.tipo.toUpperCase() : "NUEVO"}
+          {modoEdicion
+            ? "MODIFICAR ELEMENTO" + formData.tipo.toUpperCase()
+            : "NUEVO ELEMENTO"}
         </h2>
         <hr />
         <form onSubmit={handleSubmit}>

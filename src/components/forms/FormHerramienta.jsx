@@ -17,6 +17,7 @@ import {
   agregarItem,
   actualizarHerramientas,
 } from "../../functions/stockFunctions";
+import FormStock from "./FormStock";
 import InputValidator from "../devs/InputValidator";
 import TextButton from "../buttons/TextButton";
 import PlusLogo from "../../assets/logos/pluslogo.png";
@@ -49,7 +50,7 @@ const FormHerramienta = ({
   const [articulosUsadosBackUp, setArticulosUsadosBackUp] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [listadoHerramientas, setListadoHerramientas] = useState([]);
-
+  const [modalStockVisible, setModalStockVisible] = useState(false);
   const [esDev, setEsDev] = useState(false);
 
   useEffect(() => {
@@ -79,7 +80,6 @@ const FormHerramienta = ({
       }
     }
   }, [usuario, personas]);
-
   useEffect(() => {
     const listaEmpleados = personas.filter(
       (p) => p.estado === 1 || p.estado === true
@@ -107,12 +107,14 @@ const FormHerramienta = ({
       setArticulosUsadosBackUp(elemento.herramientas);
     }
   }, [elemento]);
-
   useEffect(() => {
     // Combina herramientas originales (Firestore) + nuevas agregadas
     const combinadas = [...articulosUsados, ...ingresos];
     setFormData((data) => ({ ...data, herramientas: combinadas }));
   }, [articulosUsados, ingresos]);
+  const cerrarModalStock = () => {
+    setModalStockVisible(false);
+  };
   const handleRestore = () => {
     setArticulosUsados(articulosUsadosBackUp); // restablecer al listado original de firestore
     setIngresos([]); // limpiar ingresos agregados manualmente
@@ -448,13 +450,12 @@ const FormHerramienta = ({
                 placeholder="Seleccionar repuesto..."
                 isClearable
               />
-              {/*
-                  <TextButton
-                    text="+"
-                    className="mini-btn"
-                    onClick={handleClickArticulo}
-                  />
-                  */}
+
+              <TextButton
+                text="+"
+                className="mini-btn"
+                onClick={() => setModalStockVisible(true)}
+              />
             </div>
 
             <div className="dev">
@@ -569,6 +570,12 @@ const FormHerramienta = ({
               onChange={handleChange}
             />
           </div>
+          {modalStockVisible && (
+            <FormStock
+              onGuardar={cerrarModalStock}
+              onClose={cerrarModalStock}
+            />
+          )}
           {/* BOTONES */}
           <div className="form-buttons">
             <button type="submit" className="btn-guardar" disabled={uploading}>
