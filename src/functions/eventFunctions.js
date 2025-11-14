@@ -36,22 +36,9 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
     const codigoArea = codigosArea[area];
 
     
-    let fecha = evento.fecha;
-    if (fecha) {
-      if (fecha.toDate) {
-        fecha = fecha.toDate();
-      } else if (typeof fecha === "string") {
-        fecha = new Date(fecha);
-      }
-      if (!(fecha instanceof Date) || isNaN(fecha.getTime())) {
-        console.warn("⚠ Fecha inválida detectada, usando fecha actual:", evento.fecha);
-        fecha = new Date();
-      }
-    } else {
-      fecha = new Date();
-    }
+    const fecha = new Date();
 
-  
+    // calcular ID
     let idEvento = idExistente;
     if (!idEvento) {
       const q = query(collection(db, "eventos"), where("area", "==", area));

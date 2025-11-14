@@ -140,11 +140,20 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                       >
                         {i.cantidad > 0 ? <LogoUp /> : <LogoDown />}
                       </div>
+                      {/*
                       <div className="item-info-small">
                         <strong>{i.id}</strong>
                       </div>
+                      */}
                       <div className="item-info-smaller">
                         {stock.find((s) => s.id === i.id).descripcion}
+                      </div>
+                      <div className="item">
+                        <strong>$ </strong>{" "}
+                        {i.valor.toLocaleString("es-AR", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </div>
                       <div className="item-actions">
                         <span className="list-cant3">

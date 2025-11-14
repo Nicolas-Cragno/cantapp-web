@@ -155,17 +155,18 @@ const FormEventoTaller = ({
     setUploading(true);
 
     try {
-      // --- Preparar fecha ---
+      /*
       let fechaParaGuardar;
       if (evento.id) {
         fechaParaGuardar = evento.fecha?.toDate
-          ? evento.fecha.toDate()
-          : new Date(evento.fecha);
+        ? evento.fecha.toDate()
+        : new Date(evento.fecha);
       } else {
         fechaParaGuardar = new Date();
-      }
-      if (isNaN(fechaParaGuardar.getTime()))
-        throw new Error("La fecha es inválida");
+    }
+    if (isNaN(fechaParaGuardar.getTime()))
+    throw new Error("La fecha es inválida");
+    */
 
       const usuarioJSON = JSON.parse(localStorage.usuario);
       const usuarioDeCarga = `${usuarioJSON.apellido} ${usuarioJSON.nombres}`;
@@ -182,7 +183,7 @@ const FormEventoTaller = ({
 
       const datosAGuardar = {
         ...formData,
-        fecha: fechaParaGuardar,
+        //fecha: elemento?.id ? elemento.fecha : fechaParaGuardar,
         chofer: formData.chofer ? Number(formData.chofer) : null,
         //mecanico: formData.mecanico ? Number(formData.mecanico) : null,
         mecanico: formData?.mecanico
@@ -208,7 +209,7 @@ const FormEventoTaller = ({
       const confirmacion = await Swal.fire({
         title: "Confirmar datos",
         html: `
-        <b>Fecha:</b> ${fechaParaGuardar.toLocaleString()}<hr>
+        <b>Fecha:</b> ${formatearFecha(new Date())}<hr>
         <b>Mecanico:</b> ${
           datosAGuardar.mecanico.map((m) => buscarPersona(personas, m)) || "-"
         }<br>
