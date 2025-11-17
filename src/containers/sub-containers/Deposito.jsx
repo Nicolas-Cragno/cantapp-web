@@ -5,7 +5,7 @@ import { FaTools as LogoTool } from "react-icons/fa";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
-import TablaColeccion from "../../components/tablas/TablaColeccion";
+import TablaVirtual from "../../components/tablas/TablaVirtual";
 import FichaStock from "../../components/fichas/FichaStock";
 import FormStock from "../../components/forms/FormStock";
 import FormHerramienta from "../../components/forms/FormHerramienta";
@@ -113,7 +113,7 @@ const Deposito = ({ taller = null }) => {
           <LogoLoading className="spinner" />
         </div>
       ) : (
-        <TablaColeccion
+        <TablaVirtual
           columnas={columnas}
           datos={articulosFiltrados}
           onRowClick={(art) => setArticuloSeleccionado(art)}

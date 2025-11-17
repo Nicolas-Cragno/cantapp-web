@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+
+import { createContext, useContext, useState, useEffect, useRef, useMemo } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
@@ -6,152 +7,185 @@ const DataContext = createContext({});
 
 export const DataProvider = ({ children }) => {
   const [usuario, setUsuario] = useState(null);
-  // -------------------- Listado de tablas/colecciones de Firestore:
-  // ------- empresas / clientes
-  const [empresas, setEmpresas] = useState([]);
-  const [sectores, setSectores] = useState([]);
-  const [satelitales, setSatelitales] = useState([]);
-
-  // ------- recursos
-  const [users, setUsers] = useState([]);
-  const [personas, setPersonas] = useState([]);
-  const [furgones, setFurgones] = useState([]);
-  const [tractores, setTractores] = useState([]);
-  const [vehiculos, setVehiculos] = useState([]);
-  const [utilitarios, setUtilitarios] = useState([]);
-  const [stock, setStock] = useState([]);
-  const [proveedores, setProveedores] = useState([]);
-
-  // ------- eventos
-  const [eventos, setEventos] = useState([]);
-  const [usoStock, setUsoStock] = useState([]);
-
-  // ------- informativos
-  const [ubicaciones, setUbicaciones] = useState({}); // ahora será un objeto
-  const [depositos, setDepositos] = useState([]);
-  const [estaciones, setEstaciones] = useState([]);
-
+  const [data, setData] = useState({
+    empresas: [],
+    sectores: [],
+    satelitales: [],
+    users: [],
+    personas: [],
+    furgones: [],
+    tractores: [],
+    vehiculos: [],
+    utilitarios: [],
+    stock: [],
+    proveedores: [],
+    eventos: [],
+    usoStock: [],
+    ubicaciones: {}, // objeto
+    depositos: [],
+    estaciones: [],
+  });
   const [loading, setLoading] = useState(true);
-  let cargaInicial = useRef(true); // bandera para carga inicial de la app.
+  const cargaInicial = useRef(true);
+  const coleccionesTotales = useRef(0);
 
+  // useEffect usuario
   useEffect(() => {
     const usuarioLS = localStorage.getItem("usuario");
     if (usuarioLS) {
       try {
         setUsuario(JSON.parse(usuarioLS));
       } catch (error) {
-        console.log("[Error] No se obtuvo USUARIO del local storage.");
+        console.warn("[DataContext] no se pudo parsear usuario en localStorage");
       }
     }
   }, []);
-
+  // useEffect colecciones
   useEffect(() => {
-    const unsubscribers = [];
-    let coleccionesCargadas = 0;
-
     const coleccionesFirestore = [
-      { name: "empresas", setter: setEmpresas },
-      { name: "sectores", setter: setSectores },
-      { name: "satelitales", setter: setSatelitales },
-
-      { name: "users", setter: setUsers },
-      { name: "personas", setter: setPersonas },
-      { name: "furgones", setter: setFurgones },
-      { name: "tractores", setter: setTractores },
-      { name: "vehiculos", setter: setVehiculos },
-      { name: "utilitarios", setter: setUtilitarios },
-      { name: "stock", setter: setStock },
-      { name: "proveedores", setter: setProveedores },
-
-      { name: "eventos", setter: setEventos },
-      { name: "usoStock", setter: setUsoStock },
-
-      { name: "ubicaciones", setter: setUbicaciones }, // objeto
-      { name: "depositos", setter: setDepositos },
-      { name: "estaciones", setter: setEstaciones },
+      "empresas",
+      "sectores",
+      "satelitales",
+      "users",
+      "personas",
+      "furgones",
+      "tractores",
+      "vehiculos",
+      "utilitarios",
+      "stock",
+      "proveedores",
+      "eventos",
+      "usoStock",
+      "ubicaciones", // objeto
+      "depositos",
+      "estaciones",
     ];
 
-    console.log(`Iniciando carga de datos desde Firestore Firebase...`);
+    coleccionesTotales.current = coleccionesFirestore.length;
 
-    coleccionesFirestore.forEach(({ name, setter }) => {
+    console.log(`[DataContext] Iniciando carga de colecciones firestore ...`);
+
+    const unsubscribers = [];
+
+    function shallowDiffers(oldVal, newVal) {
+      try {
+        if (!oldVal && newVal) return true;
+        if (Array.isArray(oldVal) && Array.isArray(newVal)) {
+          if (oldVal.length !== newVal.length) return true;
+          const oldIds = oldVal.map((d) => d.id).join("|");
+          const newIds = newVal.map((d) => d.id).join("|");
+          return oldIds !== newIds;
+        }
+        if (typeof oldVal === "object" && typeof newVal === "object") {
+          const oldKeys = Object.keys(oldVal || {}).join("|");
+          const newKeys = Object.keys(newVal || {}).join("|");
+          return oldKeys !== newKeys;
+        }
+        return JSON.stringify(oldVal) !== JSON.stringify(newVal);
+      } catch (err) {
+        return true;
+      }
+    }
+    let inicialCargadas = 0;
+
+    coleccionesFirestore.forEach((name) => {
       const q = query(collection(db, name));
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          let nuevaData;
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        let data;
+          if (name === "ubicaciones") {
+            // transformar a objeto
+            nuevaData = snapshot.docs.reduce((acc, doc) => {
+              acc[doc.id] = doc.data();
+              return acc;
+            }, {});
+          } else {
+            nuevaData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          }
 
-        // ubicaciones consta de docs con info en formato json
-        if (name === "ubicaciones") {
-          data = snapshot.docs.reduce((acc, doc) => {
-            acc[doc.id] = doc.data();
-            return acc;
-          }, {});
-        } else {
-          // para el resto   array
-          data = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
+          const actual = data[name];
+          if (!shallowDiffers(actual, nuevaData)) {
+            return;
+          }
+
+          setData((prev) => {
+            // actualizar solo coleccion necesaria
+            return { ...prev, [name]: nuevaData };
+          });
+
+          if (cargaInicial.current) {
+            inicialCargadas++;
+            console.log(`  ~ ${name} (${snapshot.size} ${snapshot.size === 1 ? "doc" : "docs"}) cargada.`);
+            if (inicialCargadas === coleccionesTotales.current) {
+              cargaInicial.current = false;
+              setLoading(false);
+              console.log(`[DataContext] Carga inicial finalizada.`);
+            }
+          } else {
+            // actualizaciones posteriores
+            console.log(`  ~ Actualización en ${name} (${snapshot.size}).`);
+          }
+        },
+        (error) => {
+          console.error(`[DataContext] Error en onSnapshot(${name}):`, error);
         }
+      );
 
-        setter(data);
-        if (cargaInicial.current) {
-          console.log(
-            `  ~ ${name} (${snapshot.size} ${
-              snapshot.size === 1 ? "doc" : "docs"
-            })  ✓️`
-          );
-        } else {
-          console.log(`  ~ Actualizadación en ${name}  ✓️`);
-        }
-
-        coleccionesCargadas++;
-
-        if (coleccionesCargadas === coleccionesFirestore.length) {
-          console.log(
-            `Carga finalizada (${coleccionesCargadas}/${
-              coleccionesFirestore.length
-            } ${
-              coleccionesFirestore.length === 1 ? "coleccion" : "colecciones"
-            }).`
-          );
-          cargaInicial.current = false;
-          setLoading(false);
-        }
-      });
       unsubscribers.push(unsubscribe);
     });
 
     return () => {
-      unsubscribers.forEach((unsub) => unsub());
+      unsubscribers.forEach((u) => u && u());
     };
-  }, []);
+  }, []); 
 
-  return (
-    <DataContext.Provider
-      value={{
-        usuario,
-        empresas,
-        sectores,
-        satelitales,
-        users,
-        personas,
-        furgones,
-        tractores,
-        vehiculos,
-        utilitarios,
-        stock,
-        proveedores,
-        eventos,
-        usoStock,
-        ubicaciones, // objeto
-        depositos,
-        estaciones,
-        loading,
-      }}
-    >
-      {children}
-    </DataContext.Provider>
-  );
+  const value = useMemo(() => {
+    return {
+      usuario,
+      loading,
+      empresas: data.empresas,
+      sectores: data.sectores,
+      satelitales: data.satelitales,
+      users: data.users,
+      personas: data.personas,
+      furgones: data.furgones,
+      tractores: data.tractores,
+      vehiculos: data.vehiculos,
+      utilitarios: data.utilitarios,
+      stock: data.stock,
+      proveedores: data.proveedores,
+      eventos: data.eventos,
+      usoStock: data.usoStock,
+      ubicaciones: data.ubicaciones,
+      depositos: data.depositos,
+      estaciones: data.estaciones,
+    };
+  }, [
+    usuario,
+    loading,
+    data.empresas,
+    data.sectores,
+    data.satelitales,
+    data.users,
+    data.personas,
+    data.furgones,
+    data.tractores,
+    data.vehiculos,
+    data.utilitarios,
+    data.stock,
+    data.proveedores,
+    data.eventos,
+    data.usoStock,
+    data.ubicaciones,
+    data.depositos,
+    data.estaciones,
+  ]);
+
+  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 };
 
 export const useData = () => useContext(DataContext);
+
+export default DataContext;

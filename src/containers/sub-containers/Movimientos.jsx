@@ -5,7 +5,7 @@ import { IoKeySharp as LogoKey } from "react-icons/io5";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
-import TablaColeccion from "../../components/tablas/TablaColeccion";
+import TablaVirtual from "../../components/tablas/TablaVirtual";
 import TextButton from "../../components/buttons/TextButton";
 import LogoButton from "../../components/buttons/LogoButton";
 import {
@@ -220,7 +220,7 @@ const Movimientos = () => {
           <LogoLoading className="spinner" />
         </div>
       ) : (
-        <TablaColeccion
+        <TablaVirtual
           columnas={columnasPorteria}
           datos={eventosFiltrados}
           onRowClick={(evento) => setEventoSeleccionado(evento)}
