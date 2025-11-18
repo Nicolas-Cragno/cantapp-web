@@ -16,7 +16,7 @@ import {
   buscarNombre,
 } from "../../../functions/dataFunctions";
 
-export default function useReparaciones() {
+export default function useReparaciones(AREA = "tractores") {
   const personas = usePersonas();
   const tractores = useTractores();
   const furgones = useFurgones();
@@ -40,7 +40,9 @@ export default function useReparaciones() {
   const reparaciones = useMemo(() => {
     if (!eventos.data || eventos.data.length === 0) return [];
 
-    return eventos.data.map((e) => {
+    const filtrados = eventos.data.filter((e) => e.area.toLowerCase() === AREA && e.tipo !== "STOCK");
+
+    return filtrados.map((e) => {
       let mecanicoTxt = "";
       if (Array.isArray(e.mecanico)) {
         mecanicoTxt = e.mecanico
@@ -57,10 +59,12 @@ export default function useReparaciones() {
       const dominioTractor = buscarDominio(e.tractor, tractores.data);
       const dominioFurgon = buscarDominio(e.furgon, furgones.data);
       const nombreSucursal = buscarNombre(ubicaciones.data, e.sucursal);
+      const fechaFormateada = formatearFecha(e.fecha);
+      const horaFormateada = formatearHora(e.fecha);
 
       const searchText = `
         ${e.id} ${e.subtipo || ""} ${nombrePersona} ${e.tractor || ""}
-        ${e.furgon || ""} ${formatearFecha(e.fecha)} ${formatearHora(e.fecha)}
+        ${e.furgon || ""} ${fechaFormateada} ${horaFormateada}
         ${e.tipo || ""} ${e.usuario || ""} ${e.operador || ""} ${nombreOperador}
         ${nombreServicio} ${e.vehiculo || ""} ${dominioTractor || ""} ${dominioFurgon || ""}
         ${e.persona || ""} ${e.servicio || ""} ${mecanicoTxt || ""} ${e.proveedor || ""}

@@ -99,10 +99,10 @@ export const verificarDuplicado = (coleccion, idx) => {
 };
 export const buscarNombre = (coleccion, idx) => {
   try {
-    if (!coleccion) {
-      console.warn("[Aviso] buscarNombre recibió una colección nula o indefinida");
-      return "";
-    }
+    // Si el id no tiene valor, devolvemos vacío SIN LOGUEAR
+    if (idx === undefined || idx === null || idx === "") return "";
+
+    if (!coleccion) return "";
 
     let array = [];
 
@@ -111,41 +111,35 @@ export const buscarNombre = (coleccion, idx) => {
       array = coleccion;
     }
 
-    // objeto, convertir a array
+    // objeto → convertir a array
     else if (typeof coleccion === "object" && Object.keys(coleccion).length > 0) {
       array = Object.entries(coleccion).map(([id, data]) => ({
         id,
         ...data,
       }));
     } else {
-      console.error(
-        "[Error] buscarNombre recibió un tipo no manejable:",
-        typeof coleccion,
-        coleccion
-      );
       return "";
     }
 
-    // Buscar por id
-    const evitarError0X = idx === "0X" ? true :false;
-
+    // Buscar coincidencia
     const valor = array.find((v) => String(v.id) === String(idx));
 
-    if(!evitarError0X){
-      if (!valor) {
-        console.warn(`[Aviso] buscarNombre no encontró coincidencia para id ${idx}`);
-        return "";
-      }
+    if (!valor) return "";
 
-    }
-
-    // Devolver el campo más representativo
-    return valor.nombre || valor.descripcion || valor.razonSocial || valor.nombres || "";
+    // devolver campo representativo
+    return (
+      valor.nombre ||
+      valor.descripcion ||
+      valor.razonSocial ||
+      valor.nombres ||
+      ""
+    );
   } catch (err) {
     console.error("[Error en buscarNombre]:", err);
     return "";
   }
 };
+
 
 
 

@@ -2,24 +2,30 @@ import React from "react";
 import { FixedSizeList as List } from "react-window";
 import "./css/Tables.css";
 
-const TablaVirtual = ({ data, columnas, alto = 400, rowHeight = 45 }) => {
+const TablaVirtual = ({ data = [], columnas, alto = 400}) => {
+  const lista = Array.isArray(data) ? data : [];
+
   const Row = ({ index, style }) => {
-    const item = data[index];
+    const item = lista[index] ?? {};
     return (
-      <tr
+      <div
         className="table-item"
-        style={{ ...style, display: "flex", width: "100%" }}
+        style={{ 
+          ...style,
+          display: "flex",
+          width: "100%"
+        }}
       >
         {columnas.map((col, i) => (
-          <td
+          <div
             key={i}
-            className={col.offresponsive ? "off-responsive" : "on-responsive"}
-            style={{ flex: col.flex ?? 1 }}
+            className={col.offresponsive ? "off-responsive" : col.onresponsive ? "on-responsive" : ""}
+            style={{ flex: col.flex ?? 1, padding: "8px" }}
           >
-            {col.render ? col.render(item[col.campo], item) : item[col.campo]}
-          </td>
+            {col.render ? col.render(item[col.campo], item) : item[col.campo] ?? ""}
+          </div>
         ))}
-      </tr>
+      </div>
     );
   };
 
@@ -27,11 +33,14 @@ const TablaVirtual = ({ data, columnas, alto = 400, rowHeight = 45 }) => {
     <div className="table-scroll-wrapper">
       <table className="table-lista">
         <thead>
-          <tr className="table-titles" style={{ display: "flex", width: "100%" }}>
+          <tr 
+            className="table-titles"
+            style={{ display: "flex", width: "100%" }}
+          >
             {columnas.map((col, i) => (
               <th
                 key={i}
-                className={col.offresponsive ? "off-responsive" : "on-responsive"}
+                className={col.offresponsive ? "off-responsive" : col.onresponsive ? "on-responsive" : ""}
                 style={{ flex: col.flex ?? 1 }}
               >
                 {col.titulo}
@@ -44,8 +53,8 @@ const TablaVirtual = ({ data, columnas, alto = 400, rowHeight = 45 }) => {
       <div className="table-body-wrapper">
         <List
           height={alto}
-          itemCount={data.length}
-          itemSize={rowHeight}
+          itemCount={lista.length}
+          itemSize={100}
           width="100%"
         >
           {Row}

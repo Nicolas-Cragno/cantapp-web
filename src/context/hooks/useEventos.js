@@ -3,5 +3,7 @@ import { buildCollectionHook } from "./helpers/collectionHelpers";
 
 export default function useEventos() {
   const { eventos, loading } = useData();
-  return buildCollectionHook("eventos", eventos, loading);
+
+  const eventosOrdenados = eventos.sort((a,b) => b.fecha - a.fecha);
+  return buildCollectionHook("eventos", eventosOrdenados, loading);
 }

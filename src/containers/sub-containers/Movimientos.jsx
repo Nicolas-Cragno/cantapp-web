@@ -1,21 +1,14 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { FaSpinner as LogoLoading } from "react-icons/fa";
 import { IoKeySharp as LogoKey } from "react-icons/io5";
 
 // ----------------------------------------------------------------------- imports internos
-import { useData } from "../../context/DataContext";
+import useMovimientos from "../../context/hooks/compounds/useMovimientos";
 import TablaVirtual from "../../components/tablas/TablaVirtual";
 import TextButton from "../../components/buttons/TextButton";
 import LogoButton from "../../components/buttons/LogoButton";
-import {
-  formatearFecha,
-  formatearFechaCorta,
-  formatearHora,
-  buscarPersona,
-  buscarEmpresa,
-  buscarDominio,
-} from "../../functions/dataFunctions";
+
 import FichaEventoPorteria from "../../components/fichas/FichaEventoPorteria";
 import FichaLlave from "../../components/fichas/FichaLlave";
 
@@ -32,17 +25,18 @@ import LogoPersona from "../../assets/logos/logopersonal-w.png";
 import LogoAuto from "../../assets/logos/logoutilitario-w.png";
 
 const Movimientos = () => {
-  const AREA = "porteria";
   const {
-    eventos,
+    loading,
+    filtro,
+    setFiltro,
+    movimientos,
     personas,
     empresas,
     tractores,
     furgones,
     vehiculos,
-    loading,
-  } = useData();
-  const [filtro, setFiltro] = useState("");
+  } = useMovimientos();
+
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalKeyVisible, setModalKeyVisible] = useState(false);
@@ -50,153 +44,23 @@ const Movimientos = () => {
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
-  const [modalStockVisible, setModalStockVisible] = useState(false);
 
-  const columnasPorteria = [
-    {
-      titulo: "#",
-      campo: "id",
-      offresponsive: true,
-    },
-    {
-      titulo: "FECHA",
-      campo: "fecha",
-      render: (v) => formatearFechaCorta(v),
-      onresponsive: true,
-    },
-    {
-      titulo: "FECHA",
-      campo: "fecha",
-      render: (v) => formatearFecha(v) + " - " + formatearHora(v) + " hs",
-      offresponsive: true,
-    },
-    {
-      titulo: "TIPO",
-      campo: "tipo",
-      render: (v) =>
-        v === "ENTREGA" || v === "DEJA" || v === "RETIRA" ? v + " LLAVES" : v,
-    },
-    {
-      titulo: "PERSONA",
-      campo: "persona",
-      render: (p, fila) => {
-        const valor =
-          fila.persona !== null
-            ? buscarPersona(personas, fila.persona)
-            : fila.servicio !== null
-            ? buscarEmpresa(empresas, fila.servicio)
-            : "";
-
-        if (!valor) return "";
-
-        return valor;
-      },
-      offresponsive: true,
-    },
-    {
-      titulo: "PERS",
-      campo: "persona",
-      render: (p, fila) => {
-        const valor =
-          fila.persona !== null
-            ? buscarPersona(personas, fila.persona, false)
-            : fila.servicio !== null
-            ? buscarEmpresa(empresas, fila.servicio)
-            : "";
-
-        if (!valor) return "";
-
-        return valor;
-      },
-      onresponsive: true,
-    },
-    {
-      titulo: "VEHICULO",
-      campo: "tractor",
-      render: (t, fila) => {
-        const valor = fila.tractor || fila.vehiculo;
-
-        if (!valor) return "";
-
-        if (Array.isArray(valor)) {
-          return valor.length ? valor.join(", ") : "";
-        }
-
-        return valor;
-      },
-    },
-
-    {
-      titulo: "CARGA / FURGON",
-      campo: "furgon",
-      offresponsive: true,
-    },
-    {
-      titulo: "CARGA",
-      campo: "operador",
-      render: (p) => buscarPersona(personas, p, false),
-      offresponsive: true,
-    },
+  const columnas = [
+    { titulo: "#", campo: "id", offresponsive: true },
+    { titulo: "FECHA", campo: "fechaCorta", onresponsive: true },
+    { titulo: "FECHA", campo: "fechaHora", offresponsive: true },
+    { titulo: "TIPO", campo: "tipo" },
+    { titulo: "PERSONA", campo: "nombrePersona", offresponsive: true },
+    { titulo: "PERS", campo: "nombrePersonaCorto", onresponsive: true },
+    { titulo: "VEHICULO", campo: "vehiculo" },
+    { titulo: "CARGA / FURGON", campo: "furgon", offresponsive: true },
+    { titulo: "CARGA", campo: "operador", offresponsive: true },
   ];
 
-  const cerrarModal = () => {
-    setEventoSeleccionado(null);
-  };
-  const cerrarModalAgregar = () => {
-    setModalAgregarVisible(false);
-  };
-  const cerrarModalKey = () => {
-    setModalKeyVisible(false);
-  };
-
-  const cerrarModalTractor = () => {
-    setModalTractorVisible(false);
-  };
-
-  const cerrarModalFurgon = () => {
-    setModalFurgonVisible(false);
-  };
-
-  const cerrarModalPersona = () => {
-    setModalPersonaVisible(false);
-  };
-
-  const cerrarModalVehiculo = () => {
-    setModalVehiculoVisible(false);
-  };
-
-  const cerrarModalStock = () => {
-    setModalStockVisible(false);
-  };
-
-  const handleGuardar = async () => {
+  const handleGuardar = () => {
     setModalAgregarVisible(false);
     setEventoSeleccionado(null);
   };
-
-  const eventosFiltrados = useMemo(() => {
-    let filtrados = eventos.filter((e) => e.area === AREA);
-
-    filtrados = filtrados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-
-    return filtrados.filter((e) => {
-      const fechaTxt = formatearFecha(e.fecha);
-      const horaTxt = formatearHora(e.fecha);
-      const nombre = buscarPersona(personas, e.persona) || e.persona || "";
-      const operador = buscarPersona(personas, e.operador) || e.operador || "";
-      const servicio = buscarEmpresa(empresas, e.servicio) || e.servicio || "";
-      const tractorDominio = buscarDominio(e.tractor, tractores);
-      const furgonDominio = buscarDominio(e.furgon, furgones);
-      const textoFiltro = `${e.subtipo || ""} ${nombre} ${e.tractor || ""} ${
-        e.furgon || ""
-      } ${fechaTxt} ${horaTxt} ${e.tipo || ""} ${e.usuario} ${
-        e.operador
-      } ${operador} ${servicio} ${
-        e.vehiculo
-      } ${tractorDominio} ${furgonDominio} ${e.persona} ${e.servicio} ${e.id}`;
-      return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
-    });
-  });
 
   return (
     <section className="table-container">
@@ -221,9 +85,9 @@ const Movimientos = () => {
         </div>
       ) : (
         <TablaVirtual
-          columnas={columnasPorteria}
-          datos={eventosFiltrados}
-          onRowClick={(evento) => setEventoSeleccionado(evento)}
+          columnas={columnas}
+          datos={movimientos || []}
+          onRowClick={(e) => setEventoSeleccionado(e)}
         />
       )}
 
@@ -232,20 +96,20 @@ const Movimientos = () => {
         eventoSeleccionado.tipo === "ENTREGA" ? (
           <FichaLlave
             elemento={eventoSeleccionado}
-            onClose={cerrarModal}
+            onClose={() => setEventoSeleccionado(null)}
             onGuardar={handleGuardar}
           />
         ) : (
           <FichaEventoPorteria
             elemento={eventoSeleccionado}
-            onClose={cerrarModal}
+            onClose={() => setEventoSeleccionado(null)}
             onGuardar={handleGuardar}
           />
         ))}
 
       {modalAgregarVisible && (
         <FormularioEventoPorteria
-          onClose={cerrarModalAgregar}
+          onClose={() => setModalAgregarVisible(false)}
           onGuardar={handleGuardar}
         />
       )}
@@ -253,7 +117,7 @@ const Movimientos = () => {
       {modalKeyVisible && (
         <FormLlave
           sector="porteria"
-          onClose={cerrarModalKey}
+          onClose={() => setModalKeyVisible(false)}
           onGuardar={handleGuardar}
         />
       )}
@@ -261,26 +125,28 @@ const Movimientos = () => {
       {modalTractorVisible && (
         <ModalVehiculo
           coleccion={tractores}
-          tipo={"tractores"}
-          onClose={cerrarModalTractor}
+          tipo="tractores"
+          onClose={() => setModalTractorVisible(false)}
         />
       )}
 
-      {modalPersonaVisible && <ModalPersona onClose={cerrarModalPersona} />}
+      {modalPersonaVisible && (
+        <ModalPersona onClose={() => setModalPersonaVisible(false)} />
+      )}
 
       {modalFurgonVisible && (
         <ModalVehiculo
           coleccion={furgones}
-          tipo={"furgones"}
-          onClose={cerrarModalFurgon}
+          tipo="furgones"
+          onClose={() => setModalFurgonVisible(false)}
         />
       )}
 
       {modalVehiculoVisible && (
         <ModalVehiculo
           coleccion={vehiculos}
-          tipo={"vehiculos"}
-          onClose={cerrarModalVehiculo}
+          tipo="vehiculos"
+          onClose={() => setModalVehiculoVisible(false)}
         />
       )}
 
@@ -303,15 +169,10 @@ const Movimientos = () => {
             onClick={() => setModalPersonaVisible(true)}
           />
         </div>
+
         <div className="table-options-group">
-          <LogoButton
-            logo={<LogoKey />}
-            onClick={() => setModalKeyVisible(true)}
-          />
-          <TextButton
-            text="+ AGREGAR"
-            onClick={() => setModalAgregarVisible(true)}
-          />
+          <LogoButton logo={<LogoKey />} onClick={() => setModalKeyVisible(true)} />
+          <TextButton text="+ AGREGAR" onClick={() => setModalAgregarVisible(true)} />
         </div>
       </div>
     </section>
