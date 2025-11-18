@@ -75,7 +75,9 @@ const Header = () => {
         <div
           className="header-user"
           ref={menuRef}
-          onClick={() => setMenuAbierto(!menuAbierto)}
+          //onClick={() => setMenuAbierto(!menuAbierto)}
+          onMouseEnter={()=> setMenuAbierto(true)}
+          onMouseLeave={()=> setMenuAbierto(false)}
         >
           {userName} <LogoUser />
           {menuAbierto && (

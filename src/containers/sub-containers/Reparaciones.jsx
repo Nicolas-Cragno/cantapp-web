@@ -1,12 +1,9 @@
+// ----------------------------------------------------------------------- imports externos
 import { useState, useMemo, useCallback } from "react";
 import { FaSpinner as LogoLoading } from "react-icons/fa";
 import { FaKey as LogoKey} from "react-icons/fa";
 
-
-import useReparaciones from "../../context/hooks/compounds/useReparaciones";
-import useTractores from "../../context/hooks/useTractores";
-import useFurgones from "../../context/hooks/useFurgones";
-
+// ----------------------------------------------------------------------- imports internos
 import TablaVirtual from "../../components/tablas/TablaVirtual";
 import FichaGestor from "../../components/fichas/FichaGestor";
 import FormGestor from "../../components/forms/FormGestor";
@@ -17,22 +14,27 @@ import ModalEventos from "../../components/modales/ModalEventos";
 import ModalPersona from "../../components/modales/ModalPersona";
 import ModalProveedor from "../../components/modales/ModalProveedor";
 import TextButton from "../../components/buttons/TextButton";
-
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoDefault from "../../assets/logos/logo.svg";
 import LogoStock from "../../assets/logos/logostock-w.png";
 import LogoProveedor from "../../assets/logos/logoproveedor-grey.png";
-import LogoPersona from "../../assets/logos/logopersonal.png";
+import LogoPersona from "../../assets/logos/logopersonal-w.png";
 import "../css/Sections.css";
-import { formatearFecha, formatearFechaCorta, formatearHora, buscarNombre } from "../../functions/dataFunctions";
-import useUbicaciones from "../../context/hooks/useUbicaciones";
+
+
+// ----------------------------------------------------------------------- data
+import { useData } from "../../context/DataContext";
+import useReparaciones from "../../context/hooks/compounds/useReparaciones";
+import useTractores from "../../context/hooks/useTractores";
+import useFurgones from "../../context/hooks/useFurgones";
+import { formatearFecha, formatearFechaCorta, formatearHora } from "../../functions/dataFunctions";
 
 const Reparaciones = ({ filtroSector = "tractores" }) => {
   const AREA = filtroSector.toLocaleLowerCase();
 
   const {reparaciones, loading } = useReparaciones(filtroSector);
-  const {ubicaciones} = useUbicaciones();
+
   //const { reparaciones: eventos, loading } = useReparaciones(filtroSector);
   const { tractores } = useTractores();
   const { furgones } = useFurgones();
@@ -50,20 +52,20 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
 
-  useMemo(() => {
-    const t = setTimeout(() => setFiltroDebounced(filtro), 300);
-    return () => clearTimeout(t);
-  }, [filtro]);
+    useMemo(() => {
+      const t = setTimeout(() => setFiltroDebounced(filtro), 300);
+      return () => clearTimeout(t);
+    }, [filtro]);
 
     const columnas = useMemo(() => {
     let columnasTotal;
     const columnasInicio = [
       { titulo: "#", campo: "id", offresponsive: true },
-      { titulo: "FECHA", campo: "fecha", render: (v) => formatearFecha(v) + " - " + formatearHora(v) + " hs", offresponsive: true },
-      { titulo: "FECHA", campo: "fecha", render: (v) => formatearFechaCorta(v), onresponsive: true },
+      { titulo: "FECHA", campo: "fecha", render: (v, ev) => ev.fechaFormateada + " - " + ev.horaFormateada + " hs", offresponsive: true },
+      { titulo: "FECHA", campo: "fecha", render: (v, ev) => ev.fechaReducida, onresponsive: true },
       { titulo: "TIPO", campo: "tipo"},
       { titulo: "MECÁNICO / PROVEEDOR", campo: "mecanicoTxt"},
-      /// responsive
+
     ];
     const columnasFinal = [
       { titulo: "DETALLE", campo: "detalle", offresponsive: true },
@@ -195,12 +197,12 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           </button>
         </div>
         <div className="table-options-group">
-          <button
+          {filtroSector === "tractores" && (<button
             className="table-agregar"
             onClick={() => setModalKeyVisible(true)}
           >
             <LogoKey className="button-logo" />
-          </button>
+          </button>)}
 
           <TextButton
             text="+ AGREGAR"

@@ -1,4 +1,18 @@
+// ----------------------------------------------------------------------- imports externos
 import { useMemo } from "react";
+
+// ----------------------------------------------------------------------- imports internos
+import {
+  formatearFecha,
+  formatearHora,
+  buscarPersona,
+  buscarEmpresa,
+  buscarDominio,
+  buscarNombre,
+  formatearFechaCorta,
+} from "../../../functions/dataFunctions";
+
+// ----------------------------------------------------------------------- data
 import usePersonas from "../usePersonas";
 import useTractores from "../useTractores";
 import useFurgones from "../useFurgones";
@@ -7,14 +21,7 @@ import useEventos from "../useEventos";
 import useProveedores from "../useProveedores";
 import useEmpresas from "../useEmpresas";
 import useUbicaciones from "../useUbicaciones";
-import {
-  formatearFecha,
-  formatearHora,
-  buscarPersona,
-  buscarEmpresa,
-  buscarDominio,
-  buscarNombre,
-} from "../../../functions/dataFunctions";
+
 
 export default function useReparaciones(AREA = "tractores") {
   const personas = usePersonas();
@@ -61,10 +68,11 @@ export default function useReparaciones(AREA = "tractores") {
       const nombreSucursal = buscarNombre(ubicaciones.data, e.sucursal);
       const fechaFormateada = formatearFecha(e.fecha);
       const horaFormateada = formatearHora(e.fecha);
+      const fechaReducida = formatearFechaCorta(e.fecha);
 
       const searchText = `
         ${e.id} ${e.subtipo || ""} ${nombrePersona} ${e.tractor || ""}
-        ${e.furgon || ""} ${fechaFormateada} ${horaFormateada}
+        ${e.furgon || ""} ${fechaFormateada} ${horaFormateada} ${fechaReducida}
         ${e.tipo || ""} ${e.usuario || ""} ${e.operador || ""} ${nombreOperador}
         ${nombreServicio} ${e.vehiculo || ""} ${dominioTractor || ""} ${dominioFurgon || ""}
         ${e.persona || ""} ${e.servicio || ""} ${mecanicoTxt || ""} ${e.proveedor || ""}
@@ -78,6 +86,7 @@ export default function useReparaciones(AREA = "tractores") {
         ...e,
         fechaFormateada: formatearFecha(e.fecha),
         horaFormateada: formatearHora(e.fecha),
+        fechaReducida: formatearFechaCorta(e.fecha),
         nombrePersona,
         nombreOperador,
         nombreServicio,

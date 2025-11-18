@@ -1,42 +1,39 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { FaSpinner as LogoLoading } from "react-icons/fa";
 import { IoKeySharp as LogoKey } from "react-icons/io5";
 
 // ----------------------------------------------------------------------- imports internos
-import useMovimientos from "../../context/hooks/compounds/useMovimientos";
 import TablaVirtual from "../../components/tablas/TablaVirtual";
 import TextButton from "../../components/buttons/TextButton";
 import LogoButton from "../../components/buttons/LogoButton";
-
 import FichaEventoPorteria from "../../components/fichas/FichaEventoPorteria";
 import FichaLlave from "../../components/fichas/FichaLlave";
-
 import FormularioEventoPorteria from "../../components/forms/FormEventoPorteria";
 import FormLlave from "../../components/forms/FormLlave";
-
 import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalPersona from "../../components/modales/ModalPersona";
-
 import LogoPorteria from "../../assets/logos/logoporteria-w.png";
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoPersona from "../../assets/logos/logopersonal-w.png";
 import LogoAuto from "../../assets/logos/logoutilitario-w.png";
 
-const Movimientos = () => {
-  const {
-    loading,
-    filtro,
-    setFiltro,
-    movimientos,
-    personas,
-    empresas,
-    tractores,
-    furgones,
-    vehiculos,
-  } = useMovimientos();
+// ----------------------------------------------------------------------- data
+import useMovimientos from "../../context/hooks/compounds/useMovimientos";
+import useTractores from "../../context/hooks/useTractores";
+import useFurgones from "../../context/hooks/useFurgones";
+import useVehiculos from "../../context/hooks/useVehiculos";
 
+const Movimientos = () => {
+  const AREA = "porteria";
+
+  const { movimientos, loading} = useMovimientos();
+  const tractores = useTractores();
+  const furgones = useFurgones();
+  const vehiculos = useVehiculos();
+  const [filtro, setFiltro] = useState("");
+  const [filtroDebounced, setFiltroDebounced] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
   const [modalKeyVisible, setModalKeyVisible] = useState(false);
@@ -45,29 +42,55 @@ const Movimientos = () => {
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
 
-  const columnas = [
-    { titulo: "#", campo: "id", offresponsive: true },
-    { titulo: "FECHA", campo: "fechaCorta", onresponsive: true },
-    { titulo: "FECHA", campo: "fechaHora", offresponsive: true },
-    { titulo: "TIPO", campo: "tipo" },
-    { titulo: "PERSONA", campo: "nombrePersona", offresponsive: true },
-    { titulo: "PERS", campo: "nombrePersonaCorto", onresponsive: true },
-    { titulo: "VEHICULO", campo: "vehiculo" },
-    { titulo: "CARGA / FURGON", campo: "furgon", offresponsive: true },
-    { titulo: "CARGA", campo: "operador", offresponsive: true },
-  ];
+  useMemo(() => {
+    const t = setTimeout(() => setFiltroDebounced(filtro), 300);
+    return () => clearTimeout(t);
+  }, [filtro]);
+
+  
+  const columnas = useMemo(() => {
+        const columnasPorteria = [
+          { titulo: "#", campo: "id", offresponsive: true },
+          { titulo: "FECHA", campo: "fecha", render: (v, ev) => ev.fechaFormateada + " - " + ev.horaFormateada + " hs", offresponsive: true },
+          { titulo: "FECHA", campo: "fecha", render: (v, ev) => ev.fechaReducida, onresponsive: true },
+          { titulo: "TIPO", campo: "tipo" },
+          { titulo: "PERSONA", campo: "persona", render: (p, ev)=> ev.nombrePersona},          
+          { titulo: "VEHICULO", campo: "movil", render: (p, ev) => ev.internoMovil ? ev.internoMovil + " (" + ev.dominioMovil + ")" : ev.dominioMovil },
+          { titulo: "CARGA / FURGON", campo: "furgon", offresponsive: true },
+          { titulo: "CARGA", campo: "operador", offresponsive: true },
+        ];
+
+      return columnasPorteria;
+    }, [AREA]);
+  
+  const cerrarModal = useCallback(() => setEventoSeleccionado(null), []);
+  const cerrarModalAgregar = useCallback(() => setModalAgregarVisible(false), []);
+  const cerrarModalKey = useCallback(() => setModalKeyVisible(false), []);
+  const cerrarModalTractor = useCallback(() => setModalTractorVisible(false), []);
+  const cerrarModalFurgon = useCallback(() => setModalFurgonVisible(false), []);
+  const cerrarModalPersona = useCallback(() => setModalPersonaVisible(false), []);
 
   const handleGuardar = () => {
     setModalAgregarVisible(false);
     setEventoSeleccionado(null);
   };
 
+  const movimientosFiltrados = useMemo(() => {
+  if (!filtroDebounced.trim()) return movimientos;
+
+  const f = filtroDebounced.toLowerCase();
+
+  return movimientos.filter(ev =>
+    JSON.stringify(ev).toLowerCase().includes(f)
+  );
+}, [filtroDebounced, movimientos]);
+
   return (
     <section className="table-container">
       <div className="table-header">
         <h1 className="table-logo-box">
           <img src={LogoPorteria} alt="" className="table-logo" />
-          Porteria
+          PORTERIA
         </h1>
 
         <input
@@ -86,7 +109,7 @@ const Movimientos = () => {
       ) : (
         <TablaVirtual
           columnas={columnas}
-          datos={movimientos || []}
+          data={movimientosFiltrados || []}
           onRowClick={(e) => setEventoSeleccionado(e)}
         />
       )}

@@ -2,7 +2,7 @@ import React from "react";
 import { FixedSizeList as List } from "react-window";
 import "./css/Tables.css";
 
-const TablaVirtual = ({ data = [], columnas, alto = 400}) => {
+const TablaVirtual = ({ data = [], columnas, alto = 400, onRowClick}) => {
   const lista = Array.isArray(data) ? data : [];
 
   const Row = ({ index, style }) => {
@@ -15,6 +15,7 @@ const TablaVirtual = ({ data = [], columnas, alto = 400}) => {
           display: "flex",
           width: "100%"
         }}
+        onClick={()=>onRowClick && onRowClick(item, index)}
       >
         {columnas.map((col, i) => (
           <div
