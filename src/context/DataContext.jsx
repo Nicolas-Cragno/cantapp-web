@@ -26,11 +26,10 @@ const coleccionesFirestore = [
 export function DataProvider({ children }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
-  const [usuario, setUsuario] = useState(() => {
+ const [usuario, setUsuario] = useState(() => {
     // Lo sacamos de localStorage solo una vez al iniciar
     return JSON.parse(localStorage.getItem("usuario")) || { rol: "" };
   });
-
   useEffect(() => {
     const unsubscribers = [];
 
@@ -38,29 +37,30 @@ export function DataProvider({ children }) {
       const ref = collection(db, nombreColeccion);
 
       const unsubscribe = onSnapshot(ref, (snapshot) => {
-        setData((prev) => ({
-          ...prev,
-          [nombreColeccion]: snapshot.docs.map((d) => ({
-            id: d.id,
-            ...d.data(),
-          })),
-        }));
+        setData((prev) => {
+          const nuevoData = {
+            ...prev,
+            [nombreColeccion]: snapshot.docs.map((d) => ({ id: d.id, ...d.data() })),
+          };
+
+          // Si ya se cargaron todas las colecciones, ponemos loading false
+          if (Object.keys(nuevoData).length === coleccionesFirestore.length) {
+            setLoading(false);
+          }
+
+          return nuevoData;
+        });
       });
 
       unsubscribers.push(unsubscribe);
     });
 
-    setLoading(false);
-
     return () => unsubscribers.forEach((fn) => fn());
   }, []);
 
-  return (
-    <DataContext.Provider value={{ loading, usuario, ...data }}>
-      {children}
-    </DataContext.Provider>
-  );
+  return <DataContext.Provider value={{ ...data, usuario, loading }}>{children}</DataContext.Provider>;
 }
+
 
 
 export const useData = () => useContext(DataContext);

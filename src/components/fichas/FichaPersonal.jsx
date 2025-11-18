@@ -28,27 +28,30 @@ import "./css/Fichas.css";
 
 const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const persona = elemento;
-  const usuario = JSON.parse(localStorage.getItem("usuario")) || {
-    rol: "",
-  };
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
+  const [mostrarHerramientas, setMostrarHerramientas] = useState(false);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
   const [modalHerramientasVisible, setModalHerramientasVisible] =
     useState(false);
   const [panelAdminVisible, setPanelAdminVisible] = useState(false);
-  const user = JSON.parse(localStorage.getItem("usuario"));
 
-  const { empresas } = useData();
+  const { empresas, usuario } = useData();
 
   useEffect(() => {
     const activarPanelOculto = () => {
-      if (user.rol === "dev" || user.rol === "superadmin")
+      if (usuario.rol === "dev" || usuario.rol === "superadmin")
         setPanelAdminVisible(true);
     };
 
     activarPanelOculto();
   }, []);
+
+  useEffect(()=> {
+    const valor = elemento.herramientas || elemento.puesto === "MECANICO" ? true : false;
+
+    setMostrarHerramientas(valor);
+  }, [])
   if (!persona) return null;
 
   const fechaNacimiento = formatearFecha(persona.nacimiento);
@@ -105,7 +108,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   };
   const handleAlta = () => {
     if (usuario.rol === "superadmin") {
-      const empresasPropias = empresas.filter((e) => e.tipo === "propia");
+      const empresasPropias = empresas?.filter((e) => e.tipo === "propia");
       const empresasOptions = {};
       empresasPropias.forEach((e) => {
         empresasOptions[e.id] = e.nombre;
@@ -274,9 +277,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
               </div>
             </div>
 
-            {persona.herramientas && (
-              <>
-                <p className="ficha-info-title">
+            <p className="ficha-info-title">
                   <strong>Herramientas asignadas</strong>
                   {persona.herramientas && persona.herramientas.length > 0 && (
                     <span className="list-cant2">
@@ -319,8 +320,6 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
                     EDITAR
                   </p>
                 </div>
-              </>
-            )}
 
             {persona.detalle && (
               <>
