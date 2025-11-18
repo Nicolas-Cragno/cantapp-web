@@ -1,19 +1,22 @@
 // ----------------------------------------------------------------------- imports externos
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { FaSpinner as LogoLoading } from "react-icons/fa";
-import { FaKey as LogoKey} from "react-icons/fa";
+import { FaKey as LogoKey } from "react-icons/fa";
 
 // ----------------------------------------------------------------------- imports internos
+import { useData } from "../../context/DataContext";
 import TablaVirtual from "../../components/tablas/TablaVirtual";
 import FichaGestor from "../../components/fichas/FichaGestor";
 import FormGestor from "../../components/forms/FormGestor";
 import FormLlave from "../../components/forms/FormLlave";
-import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import ModalStock from "../../components/modales/ModalStock";
 import ModalEventos from "../../components/modales/ModalEventos";
 import ModalPersona from "../../components/modales/ModalPersona";
 import ModalProveedor from "../../components/modales/ModalProveedor";
+import ModalVehiculo from "../../components/modales/ModalVehiculo";
 import TextButton from "../../components/buttons/TextButton";
+import FullButton from "../../components/buttons/FullButton";
+
 import LogoTractor from "../../assets/logos/logotractor-w.png";
 import LogoFurgon from "../../assets/logos/logopuertafurgon.png";
 import LogoDefault from "../../assets/logos/logo.svg";
@@ -22,105 +25,86 @@ import LogoProveedor from "../../assets/logos/logoproveedor-grey.png";
 import LogoPersona from "../../assets/logos/logopersonal-w.png";
 import "../css/Sections.css";
 
-
 // ----------------------------------------------------------------------- data
-import { useData } from "../../context/DataContext";
-import useReparaciones from "../../context/hooks/compounds/useReparaciones";
-import useTractores from "../../context/hooks/useTractores";
-import useFurgones from "../../context/hooks/useFurgones";
-import { formatearFecha, formatearFechaCorta, formatearHora } from "../../functions/dataFunctions";
+import useReparaciones from "../../context/hooks/useReparaciones";
 
 const Reparaciones = ({ filtroSector = "tractores" }) => {
-  const AREA = filtroSector.toLocaleLowerCase();
+  const AREA = filtroSector.toLowerCase();
 
-  const {reparaciones, loading } = useReparaciones(filtroSector);
-
-  //const { reparaciones: eventos, loading } = useReparaciones(filtroSector);
-  const { tractores } = useTractores();
-  const { furgones } = useFurgones();
+  const { reparaciones, loading } = useReparaciones(filtroSector);
+  const {tractores, furgones} = useData();
 
   const [filtro, setFiltro] = useState("");
   const [filtroDebounced, setFiltroDebounced] = useState("");
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
-
-  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
-  const [modalKeyVisible, setModalKeyVisible] = useState(false);
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
+  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [modalKeyVisible, setModalKeyVisible] = useState(false);
   const [modalStockVisible, setModalStockVisible] = useState(false);
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
 
-    useMemo(() => {
-      const t = setTimeout(() => setFiltroDebounced(filtro), 300);
-      return () => clearTimeout(t);
-    }, [filtro]);
+  // ------------------------------------------------ Debounce eficiente
+  useEffect(() => {
+    const t = setTimeout(() => setFiltroDebounced(filtro), 200);
+    return () => clearTimeout(t);
+  }, [filtro]);
 
-    const columnas = useMemo(() => {
-    let columnasTotal;
-    const columnasInicio = [
+  // ------------------------------------------------ Columnas memoizadas
+  const columnas = useMemo(() => {
+    const base = [
       { titulo: "#", campo: "id", offresponsive: true },
-      { titulo: "FECHA", campo: "fecha", render: (v, ev) => ev.fechaFormateada + " - " + ev.horaFormateada + " hs", offresponsive: true },
-      { titulo: "FECHA", campo: "fecha", render: (v, ev) => ev.fechaReducida, onresponsive: true },
-      { titulo: "TIPO", campo: "tipo"},
-      { titulo: "MECÁNICO / PROVEEDOR", campo: "mecanicoTxt"},
-
+      {
+        titulo: "FECHA",
+        campo: "fecha",
+        render: (v, ev) => ev.fechaFormateada + " - " + ev.horaFormateada + " hs",
+        offresponsive: true,
+      },
+      {
+        titulo: "FECHA",
+        campo: "fecha",
+        render: (v, ev) => ev.fechaReducida,
+        onresponsive: true,
+      },
+      { titulo: "TIPO", campo: "tipo" },
+      { titulo: "MECÁNICO / PROVEEDOR", campo: "mecanicoTxt" },
     ];
-    const columnasFinal = [
+
+    const fin = [
       { titulo: "DETALLE", campo: "detalle", offresponsive: true },
-      { titulo: "SUCURSAL", campo: "sucursal", render: (s, ev) => ev.nombreSucursal},
-
-    ]
-    const columnasTractores = [
-      ...columnasInicio,
-      { titulo: "TRACTOR", campo: "tractor", render: (t, ev) => t + " (" + ev.dominioTractor + ")"},
-      { titulo: "KM", campo: "kilometraje", offresponsive: true},
-
-      ...columnasFinal,
-
+      { titulo: "SUCURSAL", campo: "sucursal", render: (v, ev) => ev.nombreSucursal },
     ];
-      const columnasFurgones = [
-        ...columnasInicio,
-        { titulo: "FURGON", campo: "furgon", render: (f, ev) => f + " (" + ev.dominioFurgon + ") "},
-        /// responsive
-        ...columnasFinal,
+
+    if (AREA === "tractores") {
+      return [
+        ...base,
+        { titulo: "TRACTOR", campo: "tractor", render: (t, ev) => `${t} (${ev.dominioTractor})` },
+        { titulo: "KM", campo: "kilometraje", offresponsive: true },
+        ...fin,
       ];
-    
-    switch(AREA)
-    {
-      case "tractores": columnasTotal=columnasTractores;break;
-      case "furgones": columnasTotal=columnasFurgones;break;
-      default: columnasTotal=columnasInicio + columnasFinal;break;
     }
 
-    return columnasTotal;
+    if (AREA === "furgones") {
+      return [
+        ...base,
+        { titulo: "FURGÓN", campo: "furgon", render: (f, ev) => `${f} (${ev.dominioFurgon})` },
+        ...fin,
+      ];
+    }
+
+    return [...base, ...fin];
   }, [AREA]);
 
-  const cerrarModal = useCallback(() => setEventoSeleccionado(null), []);
-  const cerrarModalAgregar = useCallback(() => setModalAgregarVisible(false), []);
-  const cerrarModalKey = useCallback(() => setModalKeyVisible(false), []);
-  const cerrarModalTractor = useCallback(() => setModalTractorVisible(false), []);
-  const cerrarModalFurgon = useCallback(() => setModalFurgonVisible(false), []);
-  const cerrarModalStock = useCallback(() => setModalStockVisible(false), []);
-  const cerrarModalIngresos = useCallback(() => setModalIngresosVisible(false), []);
-  const cerrarModalProveedor = useCallback(() => setModalProveedorVisible(false), []);
-  const cerrarModalPersona = useCallback(() => setModalPersonaVisible(false), []);
-
-  const handleGuardar = useCallback(() => {
-    setModalAgregarVisible(false);
-    setEventoSeleccionado(null);
-  }, []);
-
+  // ------------------------------------------------ Filtrado rápido usando searchText
   const reparacionesFiltradas = useMemo(() => {
-  if (!filtroDebounced.trim()) return reparaciones;
+    if (!filtroDebounced.trim()) return reparaciones;
+    const f = filtroDebounced.toLowerCase();
+    return reparaciones?.filter((ev) => ev.searchText?.includes(f));
+  }, [filtroDebounced, reparaciones]);
 
-  const f = filtroDebounced.toLowerCase();
-
-  return reparaciones.filter(ev =>
-    JSON.stringify(ev).toLowerCase().includes(f)
-  );
-}, [filtroDebounced, reparaciones]);
+  const cerrar = useCallback(() => setEventoSeleccionado(null), []);
 
   return (
     <section className="table-container">
@@ -134,7 +118,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           TALLER {AREA.toUpperCase()}
         </h1>
 
-        <TextButton text="Ver ingresos" onClick={()=>setModalIngresosVisible(true)}/>
+        <TextButton text="Ver ingresos" onClick={() => setModalIngresosVisible(true)} />
 
         <input
           type="text"
@@ -146,70 +130,54 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       </div>
 
       {loading ? (
-        <div className="loading-item"><LogoLoading className="spinner" /></div>
+        <div className="loading-item">
+          <LogoLoading className="spinner" />
+        </div>
       ) : (
-        <TablaVirtual columnas={columnas} data={reparacionesFiltradas || []} onRowClick={setEventoSeleccionado} />
+        <TablaVirtual columnas={columnas} data={reparacionesFiltradas} onRowClick={setEventoSeleccionado} />
       )}
 
       {eventoSeleccionado && (
         <FichaGestor
-          tipo={["RETIRA","ENTREGA"].includes(eventoSeleccionado.tipo) ? "llave" : AREA}
+          tipo={["RETIRA", "ENTREGA"].includes(eventoSeleccionado.tipo) ? "llave" : AREA}
           filtroVehiculo={AREA}
           elemento={eventoSeleccionado}
-          onClose={cerrarModal}
-          onGuardar={handleGuardar}
+          onClose={cerrar}
+          onGuardar={cerrar}
         />
       )}
 
-      {modalAgregarVisible && <FormGestor tipo={AREA} filtroVehiculo={AREA} onClose={cerrarModalAgregar} onGuardar={handleGuardar} />}
-      {modalKeyVisible && <FormLlave sector="tractores" onClose={cerrarModalKey} onGuardar={handleGuardar} />}
-      {modalTractorVisible && <ModalVehiculo coleccion={tractores} tipo="tractores" onClose={cerrarModalTractor} />}
-      {modalFurgonVisible && <ModalVehiculo coleccion={furgones} tipo="furgones" onClose={cerrarModalFurgon} />}
-      {modalStockVisible && <ModalStock taller={AREA} onClose={cerrarModalStock} />}
-      {modalProveedorVisible && <ModalProveedor onClose={cerrarModalProveedor} />}
-      {modalIngresosVisible && <ModalEventos tipo="STOCK" filtroSector={AREA} onClose={cerrarModalIngresos} />}
-      {modalPersonaVisible && <ModalPersona puesto="mecanico" onClose={cerrarModalPersona} />}
+      {modalAgregarVisible && (
+        <FormGestor tipo={AREA} filtroVehiculo={AREA} onClose={() => setModalAgregarVisible(false)} onGuardar={cerrar} />
+      )}
 
+      {modalKeyVisible && (
+        <FormLlave sector={AREA} onClose={() => setModalKeyVisible(false)} onGuardar={cerrar} />
+      )}
+      {modalTractorVisible && <ModalVehiculo coleccion={tractores} tipo={AREA} onClose={()=>setModalTractorVisible(false)}/>}
+        {modalFurgonVisible && <ModalVehiculo coleccion={furgones} tipo={AREA} onClose={()=>setModalFurgonVisible(false)}/>}
+      {modalStockVisible && <ModalStock taller={AREA} onClose={() => setModalStockVisible(false)} />}
+      {modalProveedorVisible && <ModalProveedor onClose={() => setModalProveedorVisible(false)} />}
+      {modalPersonaVisible && <ModalPersona puesto="mecanico" onClose={() => setModalPersonaVisible(false)} />}
+      {modalIngresosVisible && <ModalEventos tipo="STOCK" filtroSector={AREA} onClose={() => setModalIngresosVisible(false)} />}
+
+      {/* ---------------- OPCIONES ---------------- */}
       <div className="table-options">
         <div className="table-options-group">
-          {filtroSector === "tractores" && (<button className="table-agregar" onClick={()=>setModalTractorVisible(true)}>
-            <img src={LogoTractor} alt="" className="table-logo2"/>
-            <span className="table-logo-span">Tractores</span>
-          </button>)}
-          {filtroSector === "furgones" && (<button className="table-agregar" onClick={()=>setModalFurgonVisible(true)}>
-            <img src={LogoFurgon} alt="" className="table-logo2"/>
-            <span className="table-logo-span">Furgones</span>
-          </button>)}
-          <button className="table-agregar" onClick={()=>setModalStockVisible(true)}>
-            <img src={LogoStock} alt="" className="table-logo2"/>
-            <span className="table-logo-span">Repuestos</span>
-          </button>
-          <button
-            className="table-agregar"
-            onClick={() => setModalProveedorVisible(true)}
-          >
-            <img src={LogoProveedor} alt="" className="table-logo2" />
-            <span className="table-logo-span">Proveedores</span>
-          </button>
-          <button className="table-agregar" onClick={()=>setModalPersonaVisible(true)}>
-            <img src={LogoPersona} alt="" className="table-logo2"/>
-            <span className="table-logo-span">Mecanicos</span>
-          </button>
+          {AREA === "tractores" && (<FullButton logo={LogoTractor} text="TRACTORES" onClick={() => {setModalTractorVisible(true)}}/>)}
+          {AREA === "furgones" && ( <FullButton logo={LogoFurgon} text="FURGONES" onClick={() => {setModalFurgonVisible(true)}} />)}
+          <FullButton logo={LogoStock} text="REPUESTOS" onClick={() => {setModalStockVisible(true)}} />
+          <FullButton logo={LogoPersona} text="MECANICOS" onClick={() => setModalPersonaVisible(true)} />
         </div>
         <div className="table-options-group">
-          {filtroSector === "tractores" && (<button
-            className="table-agregar"
-            onClick={() => setModalKeyVisible(true)}
-          >
-            <LogoKey className="button-logo" />
-          </button>)}
-
-          <TextButton
-            text="+ AGREGAR"
-            onClick={() => setModalAgregarVisible(true)}
-          />
+          {AREA === "tractores" && (
+            <button className="table-agregar" onClick={() => setModalKeyVisible(true)}>
+              <LogoKey className="button-logo" />
+            </button>
+          )}
+          <TextButton text="+ AGREGAR" onClick={() => setModalAgregarVisible(true)} />
         </div>
-        </div>
+      </div>
     </section>
   );
 };

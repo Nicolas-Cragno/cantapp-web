@@ -1,7 +1,7 @@
 import LogoDefault from "../../assets/logos/logo.svg";
 import "./css/Buttons.css";
 
-const TextButton = ({
+const FullButton = ({
   text = "",
   logo = LogoDefault,
   type = "button",
@@ -14,4 +14,4 @@ const TextButton = ({
   );
 };
 
-export default TextButton;
+export default FullButton;

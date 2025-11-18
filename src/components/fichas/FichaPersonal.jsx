@@ -274,7 +274,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
               </div>
             </div>
 
-            {persona.puesto === "MECANICO" && (
+            {persona.herramientas && (
               <>
                 <p className="ficha-info-title">
                   <strong>Herramientas asignadas</strong>

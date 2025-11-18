@@ -1,9 +1,12 @@
+import { useMemo } from "react";
 import { useData } from "../DataContext";
-import { buildCollectionHook } from "./helpers/collectionHelpers";
 
 export default function useEventos() {
-  const { eventos, loading } = useData();
+  const { eventos = [], loading } = useData();
 
-  const eventosOrdenados = [...eventos].sort((a,b) => b.fecha - a.fecha);
-  return buildCollectionHook("eventos", eventosOrdenados, loading);
+  const eventosOrdenados = useMemo(() => {
+    return [...eventos].sort((a, b) => b.fecha - a.fecha);
+  }, [eventos]);
+
+  return { data: eventosOrdenados, loading };
 }
