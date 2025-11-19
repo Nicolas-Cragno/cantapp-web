@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // ----------------------------------------------------------------------- imports internos
 import { rutasProtegidas } from './access/RutasProtegidas.jsx';
-import { DataProvider } from '../context/DataContext.jsx';
+import { DataLayer } from '../context/DataLayer.js';
 import { useLogoutOnClose, useLogoutOnStart } from '../functions/userFunctions.js'; // p/cerrar sesion
 import Login from './Login.jsx';
 import Denied from './Denied.jsx';
@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <DataProvider>
+        <DataLayer>
           <Routes>
           {/* Ruta pública */}
           <Route path="/login" element={<Login />} />
@@ -28,7 +28,7 @@ function App() {
           {rutasProtegidas}
           <Route path="*" element={<Page404 />} />
         </Routes>
-        </DataProvider>
+        </DataLayer>
       </BrowserRouter>
     </div>
   );
