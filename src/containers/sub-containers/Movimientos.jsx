@@ -71,11 +71,15 @@ const [modalTractorVisible, setModalTractorVisible] = useState(false);
     {
       titulo: "VEHICULO",
       campo: "movil",
-      render: (p, ev) =>
-        ev.internoMovil ? `${ev.internoMovil} (${ev.dominioMovil})` : ev.dominioMovil,
+      render: (p, ev) => {
+    if (Array.isArray(ev.movil)) {
+      return ev.movil.join(", "); 
+    }
+    return ev.movil || "";
+  }
     },
     { titulo: "CARGA / FURGON", campo: "furgon", offresponsive: true },
-    { titulo: "CARGA", campo: "operador", offresponsive: true },
+    { titulo: "CARGA", campo: "operador", render: (p, ev) => ev.nombreOperador, offresponsive: true },
   ], []);
 
   // ------------------------------------------------ Filtrado rápido usando searchText

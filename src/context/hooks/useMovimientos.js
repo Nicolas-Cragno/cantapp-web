@@ -47,6 +47,10 @@ export default function useMovimientos() {
 
       const searchText= ` ${e.id || ""}
         ${e.tipo || ""}
+        ${e.fecha}
+        ${e.fechaFormateada}
+        ${e.fechaReducida}
+        ${e.horaFormateada}
         ${nombrePersona || ""}
         ${nombreOperador || ""}
         ${nombreServicio || ""}

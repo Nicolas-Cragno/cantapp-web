@@ -30,16 +30,16 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
 
   const [formData, setFormData] = useState({
-    tipo: elemento.tipo || "",
-    distincion: elemento.distincion || "tractor", // El ingreso puede ser de TRACTOR o PARTICULAR
-    persona: elemento.persona ? String(elemento.persona) : "",
-    operador: elemento.operador ? String(elemento.operador) : "",
-    tractor: elemento.tractor || "",
-    esFletero: elemento.esFletero || false,
-    vehiculo: elemento.vehiculo || "",
-    furgon: elemento.furgon || "",
-    cargado: elemento.cargado || false,
-    detalle: elemento.detalle || "",
+    tipo: elemento?.tipo || "",
+    distincion: elemento?.distincion || "tractor", // El ingreso puede ser de TRACTOR o PARTICULAR
+    persona: elemento?.persona ? String(elemento.persona) : "",
+    operador: elemento?.operador ? String(elemento.operador) : "",
+    tractor: elemento?.tractor || "",
+    esFletero: elemento?.esFletero || false,
+    vehiculo: elemento?.vehiculo || "",
+    furgon: elemento?.furgon || "",
+    cargado: elemento?.cargado || false,
+    detalle: elemento?.detalle || "",
     area: area,
     chequeos: chequeosPorteria.map(
       ({ key }) => elemento?.chequeos?.[key] || false
@@ -56,7 +56,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     const cargarDatos = async () => {
       setFormData({
         tipo: elemento?.tipo ?? "",
-        distincion: elemento.distincion ?? "tractor",
+        distincion: elemento?.distincion ?? "tractor",
         persona: elemento?.persona ? String(elemento.persona) : "",
         operador: elemento?.operador ? String(elemento.operador) : "",
         tractor: elemento?.tractor ?? "",
@@ -96,7 +96,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
 
     try {
       let fechaParaGuardar;
-      if (elemento?.id && elemento.fecha) {
+      if (elemento?.id && elemento?.fecha) {
         fechaParaGuardar = elemento.fecha.toDate
           ? elemento.fecha.toDate()
           : new Date(elemento.fecha);
@@ -217,7 +217,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     <div className="form">
       <div className="form-content">
         <div className="form-header">
-          <h2>{elemento.id ? elemento.id : "Nuevo Evento"}</h2>
+          <h2>{elemento?.id ? elemento.id : "Nuevo Evento"}</h2>
           <p>* campo obligatorio</p>
           <hr />
         </div>
