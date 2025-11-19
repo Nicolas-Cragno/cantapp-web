@@ -112,11 +112,13 @@ const FormMovimientoStock = ({
 
       let filtrados = stock;
 
+      /* bloquado hasta determinar parametro de carga de articulos
       if (proveedor !== null) {
         filtrados = stock.filter(
-          (a) => a.proveedor === buscarId(proveedores, "cuit", proveedor)
+          (a) => a.proveedor === proveedor
         );
       }
+      */
 
       setArticulos(filtrados);
       setLoading(false);
@@ -401,14 +403,18 @@ const FormMovimientoStock = ({
                             )
                         : null
                     }
-                    onChange={(selectedProv) =>
+                    onChange={(selectedProv) => {
+                      const valor = selectedProv ? selectedProv.value : "";
                       handleChange({
                         target: {
                           name: "proveedor",
-                          value: selectedProv ? selectedProv.value : "",
+                          value: valor,
                         },
-                      })
-                    }
+                      });
+
+                      // 2. Actualiza estado proveedor
+                      setProveedor(valor);
+                    }}
                     placeholder=""
                     isClearable
                     required

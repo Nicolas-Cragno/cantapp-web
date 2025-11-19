@@ -14,5 +14,6 @@
   "RF": { "tipo": "REFRIGERACION", "descripcion": "Sistema de enfriamiento del motor y radiadores" },
   "RO": { "tipo": "RODADO", "descripcion": "Ruedas, cubiertas, llantas y rodamientos" },
   "SP": { "tipo": "SUSPENSION", "descripcion": "Amortiguadores, bujes, fuelles y resortes" },
-  "TR": { "tipo": "TRANSMISION", "descripcion": "Embrague, caja de cambios y diferencial" }
+  "TR": { "tipo": "TRANSMISION", "descripcion": "Embrague, caja de cambios y diferencial" },
+  "SV": { "tipo": "SERVICIO", "descripcion" : "Tareas de mantenimiento, revisión, diagnóstico o intervención realizadas sobre el vehículo"}
 }
