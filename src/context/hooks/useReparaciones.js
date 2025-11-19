@@ -29,6 +29,7 @@ export default function useReparaciones(AREA = "tractores") {
     loading
   } = useData();
   const {data: eventosOrdenados} = useEventos();
+  console.log("[Context] Inicio de filtrado de eventos (useReparaciones)");
   // ------------------ Datos extra
   const reparaciones = useMemo(() => {
     if (!eventosOrdenados || eventosOrdenados.length === 0) return [];
@@ -99,6 +100,6 @@ export default function useReparaciones(AREA = "tractores") {
     furgones,
     ubicaciones
   ]);
-
+  console.log("[Context] Filtrado finalizado (useReparaciones) ✓✓");
   return { reparaciones, loading };
 }

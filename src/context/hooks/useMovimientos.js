@@ -21,6 +21,7 @@ export default function useMovimientos() {
     ubicaciones = {},
     loading
   } = useData();
+  console.log("[Context] Inicio de filtrado de eventos (useMovimientos)");
 
   const {data: eventosOrdenados } = useEventos();
 
@@ -96,6 +97,6 @@ export default function useMovimientos() {
     vehiculos,
     ubicaciones
   ]);
-
+  console.log("[Context] Filtrado finalizado (useMovimientos) ✓✓");
   return { movimientos, loading };
 }

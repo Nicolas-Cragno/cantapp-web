@@ -6,7 +6,7 @@ export default function useEventos() {
 
   const eventosOrdenados = useMemo(() => {
     return [...eventos].sort((a, b) => {
-      // Orden descendente: el ID más alto (último evento) arriba
+      console.log("[Context] Eventos ordenados por ID ✓✓");
       return b.id.localeCompare(a.id);
     });
   }, [eventos]);

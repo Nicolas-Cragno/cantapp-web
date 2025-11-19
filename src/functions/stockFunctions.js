@@ -2,6 +2,8 @@ import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from "firebase/firest
 import { db } from "../firebase/firebaseConfig";
 
 export async function agregarItem(idDocumento, nombreColeccion, tipoCampo, valor) {
+  if (valor === undefined || valor === null || valor === "") return; // daba error: Function arrayUnion() called with invalid data. 
+
   const ref = doc(db, nombreColeccion, idDocumento);
   const valores = Array.isArray(valor) ? valor : [valor];
   await updateDoc(ref, {
@@ -10,6 +12,8 @@ export async function agregarItem(idDocumento, nombreColeccion, tipoCampo, valor
 }
 
 export async function quitarItem(idDocumento, nombreColeccion, tipoCampo, valor) {
+  if (valor === undefined || valor === null || valor === "") return; // daba error: Function arrayUnion() called with invalid data. 
+
   const ref = doc(db, nombreColeccion, idDocumento);
   const valores = Array.isArray(valor) ? valor : [valor];
   await updateDoc(ref, {
@@ -18,6 +22,8 @@ export async function quitarItem(idDocumento, nombreColeccion, tipoCampo, valor)
 }
 
 export async function reemplazarItems(idDocumento, nombreColeccion, tipoCampo, valor) {
+  if (valor === undefined || valor === null || valor === "") return; // daba error: Function arrayUnion() called with invalid data. 
+
   const ref = doc(db, nombreColeccion, idDocumento);
   await setDoc(
     ref,

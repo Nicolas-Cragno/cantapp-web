@@ -154,9 +154,13 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         cargado: furgonCargado,
         chequeos: chequeosObjeto,
       };
+      console.log("TRACTOR:", JSON.stringify(datosAGuardar.tractor, null, 2));
+      console.log("FURGON:", JSON.stringify(datosAGuardar.furgon, null, 2));
 
-      await agregarEvento(datosAGuardar, area, elemento.id);
-      if (datosAGuardar.tipo === "ENTRADA") {
+      
+      await agregarEvento(datosAGuardar, area, elemento?.id ?? null);
+      if(datosAGuardar.tractor){
+        if (datosAGuardar.tipo === "ENTRADA") {
         agregarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
         if (datosAGuardar.furgon) {
           agregarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
@@ -166,6 +170,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         if (datosAGuardar.furgon) {
           quitarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
         }
+      }
       }
 
       if (onGuardar) onGuardar();
@@ -277,7 +282,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
             Operador *
             <Select
               options={personas
-                .filter((o) => o.especialicacion === "SERENO")
+                .filter((o) => o.especializacion === "SERENO")
                 .map((o) => ({
                   value: o.id,
                   label: `${o.apellido} ${o.nombres} (DNI: ${o.dni})`,
@@ -597,25 +602,25 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         <FormVehiculo
           tipoVehiculo={"tractores"}
           onClose={cerrarModalTractor}
-          onGuardar={handleSubmit}
+          onGuardar={cerrarModalTractor}
         />
       )}
       {modalFurgonVisible && (
         <FormVehiculo
           tipoVehiculo={"furgones"}
           onClose={cerrarModalFurgon}
-          onGuardar={handleSubmit}
+          onGuardar={cerrarModalFurgon}
         />
       )}
       {modalVehiculoVisible && (
         <FormVehiculo
           tipoVehiculo={"vehiculos"}
           onClose={cerrarModalVehiculo}
-          onGuardar={handleSubmit}
+          onGuardar={cerrarModalVehiculo}
         />
       )}
       {modalPersonaVisible && (
-        <FormPersona onClose={cerrarModalPersona} onGuardar={handleSubmit} />
+        <FormPersona onClose={cerrarModalPersona} onGuardar={cerrarModalPersona} />
       )}
     </div>
   );

@@ -11,6 +11,7 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import codigosArea from "./data/areas.json";
+import { useData } from "../context/DataContext";
 
 function limpiarUndefined(obj) {
   if (Array.isArray(obj)) {
