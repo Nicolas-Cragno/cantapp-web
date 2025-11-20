@@ -69,7 +69,17 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         onresponsive: true,
       },
       { titulo: "TIPO", campo: "tipo" },
-      { titulo: "MECÁNICO / PROVEEDOR", campo: "mecanicoTxt" },
+      { titulo: "MECÁNICO / PROVEEDOR", campo: "mecanicoTxt", render: (v, ev) => (
+    <span
+      style={{
+        backgroundColor: ev.esServicio ? "#efb810" : "transparent",
+        padding: ev.esServicio ? "4px 4px" : undefined,
+        //borderRadius: ev.esServicio ? "4px" : undefined,
+      }}
+    >
+      {v}
+    </span>
+  ), },
     ];
 
     const fin = [
