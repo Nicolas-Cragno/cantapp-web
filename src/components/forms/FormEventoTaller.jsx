@@ -17,6 +17,7 @@ import {
   agregarFaltante,
 } from "../../functions/dataFunctions";
 import TextButton from "../buttons/TextButton";
+import InputValidator from "../devs/InputValidator";
 import FormGestor from "./FormGestor";
 import tiposEventos from "../../functions/data/eventos.json";
 import PlusLogo from "../../assets/logos/pluslogo.png";
@@ -111,7 +112,7 @@ const FormEventoTaller = ({
   useEffect(() => {
     if (ubicaciones && typeof ubicaciones === "object") {
       const opciones = Object.entries(ubicaciones).map(([id, data]) => ({
-        value: id,
+        value: data.id,
         label: data.nombre,
       }));
       setSucursales(opciones);
@@ -405,7 +406,7 @@ const FormEventoTaller = ({
           <div className="form-left">
             <div className="type-container-small">
               <label>
-                Sucursal
+                Sucursal <InputValidator campo={formData.sucursal} />
                 <Select
                   options={sucursales}
                   value={
