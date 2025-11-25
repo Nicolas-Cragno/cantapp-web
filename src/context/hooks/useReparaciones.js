@@ -39,9 +39,11 @@ export default function useReparaciones(AREA = "tractores") {
     );
 
     return filtrados.map((e) => {
-      // ---------------- Mecánicos
+      // ---------------- Mecánicos / servicios
+      const nombreServicio = buscarEmpresa(proveedores, e.proveedor);
       let mecanicoTxt = "";
-      if (Array.isArray(e.mecanico)) {
+      let esServicio = false;
+      if (e.proveedor) {mecanicoTxt = nombreServicio; esServicio=true;} else if (Array.isArray(e.mecanico)) {
         mecanicoTxt = e.mecanico
           .map((id) => buscarPersona(personas, id))
           .filter(Boolean)
@@ -53,7 +55,6 @@ export default function useReparaciones(AREA = "tractores") {
       // ---------------- Enriquecimiento general
       const nombrePersona = buscarPersona(personas, e.persona);
       const nombreOperador = buscarPersona(personas, e.operador);
-      const nombreServicio = buscarEmpresa(empresas, e.servicio);
       const dominioTractor = buscarDominio(e.tractor, tractores);
       const dominioFurgon = buscarDominio(e.furgon, furgones);
       const nombreSucursal = buscarNombre(ubicaciones, e.sucursal);
@@ -90,6 +91,7 @@ export default function useReparaciones(AREA = "tractores") {
         nombreSucursal,
         mecanicoTxt,
         searchText,
+        esServicio,
       };
     });
   }, [

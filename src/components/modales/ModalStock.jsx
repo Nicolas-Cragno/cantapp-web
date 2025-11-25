@@ -39,6 +39,10 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
       render: (p) => buscarNombre(proveedores, p),
     },
     {
+      titulo: "CODIGO PROV.",
+      campo: "codigoProveedor",
+    },
+    {
       titulo: "STOCK",
       campo: "cantidad",
     },
@@ -63,7 +67,7 @@ const ModalStock = ({ sucursal = "01", taller = "tractores", onClose }) => {
       .sort((a, b) => a.descripcion.localeCompare(b.descripcion))
       .filter((e) => {
         const proveedor = buscarNombre(proveedores, e.proveedor);
-        const textoFiltro = `${e.codigo} ${e.id} ${e.descripcion} ${e.unidad} ${proveedor}`;
+        const textoFiltro = `${e.codigo} ${e.id} ${e.descripcion} ${e.unidad} ${proveedor} ${e.codigoProveedor}`;
         return textoFiltro.toLowerCase().includes(filtro.toLowerCase());
       });
   }, [stock, filtro]);
