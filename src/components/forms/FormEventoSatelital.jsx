@@ -7,6 +7,7 @@ import { useData } from "../../context/DataContext";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
 import tiposEventos from "../../functions/data/eventos.json";
+import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
 
 const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
@@ -104,7 +105,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
         </div>
         <form onSubmit={handleSubmit} className="form-submit">
           <label>
-            Tipo*
+            Tipo* <InputValidator campo={formData.tipo} />
             <select
               name="tipo"
               value={formData.tipo}
@@ -120,7 +121,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
             </select>
           </label>
           <label>
-            Persona / Empleado
+            Persona / Empleado <InputValidator campo={formData.persona} />
             <select
               name="persona"
               value={formData.persona}
@@ -137,7 +138,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Tractor
+            Tractor <InputValidator campo={formData.tractor} />
             <select
               type="number"
               name="tractor"
@@ -154,7 +155,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Furgón
+            Furgón <InputValidator campo={formData.furgon} />
             <select
               type="number"
               name="furgon"
@@ -171,7 +172,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
           </label>
 
           <label>
-            Detalle
+            Detalle <InputValidator campo={formData.detalle} />
             <textarea
               name="detalle"
               value={formData.detalle}
@@ -183,6 +184,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
             {evento.usuario ? (
               <p>
                 Cargado por <strong>{evento.usuario}</strong>{" "}
+                <InputValidator campo={evento.usuario} />
               </p>
             ) : (
               " "

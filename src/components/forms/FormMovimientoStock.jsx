@@ -24,6 +24,7 @@ import Unidades from "../../functions/data/unidades.json";
 import FormProveedor from "./FormProveedor";
 import FormStock from "./FormStock";
 import TextButton from "../buttons/TextButton";
+import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
 
 const FormMovimientoStock = ({
@@ -312,6 +313,7 @@ const FormMovimientoStock = ({
 
         <hr />
         <form>
+          <InputValidator campo={esFactura} />
           <div className="type-container">
             <button
               type="button"
@@ -331,7 +333,7 @@ const FormMovimientoStock = ({
             <>
               <label className="form-title">Datos del remito/factura</label>
               <div className="form-box2">
-                <label>Remito</label>
+                <label>Remito</label> <InputValidator campo={formData.remito} />
                 <input
                   type="text"
                   style={{ textTransform: "uppercase" }}
@@ -339,7 +341,9 @@ const FormMovimientoStock = ({
                   onChange={handleChange}
                   name="remito"
                 ></input>
-                <label>Factura</label>
+                <label>Factura</label>{" "}
+                <InputValidator campo={formData.factura} />
+                <InputValidator campo={formData.moneda} />
                 <div className="select-with-button">
                   <input
                     type="text"
@@ -370,7 +374,7 @@ const FormMovimientoStock = ({
                   </button>
                 </div>
                 <label>Proveedor</label>
-
+                <InputValidator campo={formData.proveedor} />
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
@@ -436,7 +440,7 @@ const FormMovimientoStock = ({
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
             <label>
-              Area / Sector
+              Area / Sector <InputValidator campo={formData.area} />
               <Select
                 options={sectores.map((opt) => ({
                   value: opt.nombre, // o opt.id si querés usar el id
@@ -476,31 +480,34 @@ const FormMovimientoStock = ({
           <div className="form-box2">
             <br />
             {!esFactura && (
-              <div className="type-container">
-                <button
-                  type="button"
-                  className={
-                    tipoMovimiento === "ALTA" ? "type-btn active" : "type-btn"
-                  }
-                  onClick={() => setTipoMovimiento("ALTA")}
-                  disabled={esFactura}
-                >
-                  ALTA
-                </button>
-                <button
-                  type="button"
-                  className={
-                    tipoMovimiento === "BAJA" ? "type-btn active" : "type-btn"
-                  }
-                  onClick={() => setTipoMovimiento("BAJA")}
-                  disabled={esFactura}
-                >
-                  BAJA
-                </button>
-              </div>
+              <>
+                <InputValidator campo={tipoMovimiento} />
+                <div className="type-container">
+                  <button
+                    type="button"
+                    className={
+                      tipoMovimiento === "ALTA" ? "type-btn active" : "type-btn"
+                    }
+                    onClick={() => setTipoMovimiento("ALTA")}
+                    disabled={esFactura}
+                  >
+                    ALTA
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      tipoMovimiento === "BAJA" ? "type-btn active" : "type-btn"
+                    }
+                    onClick={() => setTipoMovimiento("BAJA")}
+                    disabled={esFactura}
+                  >
+                    BAJA
+                  </button>
+                </div>
+              </>
             )}
             <label>
-              Artículo
+              Artículo <InputValidator campo={articuloSeleccionado} />
               <div className="select-with-button">
                 <Select
                   className="select-grow"
@@ -551,7 +558,7 @@ const FormMovimientoStock = ({
             </label>
             <div className="input-inline">
               <label>
-                Cantidad
+                Cantidad <InputValidator campo={cantidad} />
                 <input
                   type="number"
                   value={cantidad}
@@ -565,7 +572,7 @@ const FormMovimientoStock = ({
             </div>
             <div className="input-inline">
               <label>
-                Valor / Precio
+                Valor / Precio <InputValidator campo={valor} />
                 <input
                   type="number"
                   value={valor}
@@ -587,7 +594,7 @@ const FormMovimientoStock = ({
           </div>
           <br />
           {/* listado de ingresos */}
-          <label className="form-title">Movimiento a registrar</label>
+          <label className="form-title">Movimiento a registrar</label>{" "}
           {esFactura && (
             <label className="form-title">
               {moneda === "pesos" ? "AR$" : "U$D"}{" "}
@@ -626,6 +633,7 @@ const FormMovimientoStock = ({
                         maximumFractionDigits: 2,
                       })}
                     </div>
+
                     <div className="item-actions">
                       <span className="list-cant3">
                         {item.cantidad} {Unidades[item.unidad.toUpperCase()]}{" "}
@@ -644,6 +652,7 @@ const FormMovimientoStock = ({
               </ul>
             )}
           </div>
+          <InputValidator campo={ingresos} />
           {modalProveedorVisible && (
             <FormProveedor
               onClose={cerrarModalProveedor}
@@ -656,7 +665,6 @@ const FormMovimientoStock = ({
               onGuardar={cerrarModalArticulo}
             />
           )}
-
           <div className="form-buttons">
             <button type="submit" disabled={uploading} onClick={handleSubmit}>
               {uploading ? "Guardando..." : "Guardar"}

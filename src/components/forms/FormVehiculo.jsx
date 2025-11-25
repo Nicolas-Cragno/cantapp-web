@@ -11,6 +11,7 @@ import {
   verificarDuplicado,
   minimizarVehiculo,
 } from "../../functions/dataFunctions";
+import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
 
 const FormVehiculo = ({
@@ -207,7 +208,7 @@ const FormVehiculo = ({
           tipoSeleccionado === "furgones" ? (
             <>
               <label>
-                Interno
+                Interno <InputValidator campo={interno} />
                 <input
                   type="text"
                   inputMode="numeric"
@@ -222,7 +223,7 @@ const FormVehiculo = ({
           ) : null}
 
           <label>
-            Dominio
+            Dominio <InputValidator campo={dominio} />
             <input
               type="text"
               value={dominio}
@@ -234,7 +235,7 @@ const FormVehiculo = ({
           </label>
 
           <label>
-            Marca
+            Marca <InputValidator campo={marca} />
             <input
               type="text"
               value={marca}
@@ -244,7 +245,7 @@ const FormVehiculo = ({
           </label>
 
           <label>
-            Modelo
+            Modelo <InputValidator campo={modelo} />
             <input
               type="text"
               inputMode="numeric"
@@ -259,7 +260,7 @@ const FormVehiculo = ({
           {tipoSeleccionado === "tractores" && (
             <>
               <label>
-                Motor
+                Motor <InputValidator campo={motor} />
                 <input
                   type="text"
                   value={motor}
@@ -268,7 +269,7 @@ const FormVehiculo = ({
                 />
               </label>
               <label>
-                Chasis
+                Chasis <InputValidator campo={chasis} />
                 <input
                   type="text"
                   value={chasis}
@@ -280,7 +281,7 @@ const FormVehiculo = ({
           )}
 
           <label>
-            Empresa
+            Empresa <InputValidator campo={empresa} />
             <select
               value={empresa}
               onChange={(e) => setEmpresa(e.target.value)}
@@ -297,7 +298,7 @@ const FormVehiculo = ({
             </select>
           </label>
           <label>
-            Persona asignada / Dueño
+            Persona asignada / Dueño <InputValidator campo={persona} />
             <select
               value={persona}
               onChange={(e) => setPersona(e.target.value)}
@@ -315,7 +316,7 @@ const FormVehiculo = ({
           </label>
 
           <label>
-            Detalle
+            Detalle <InputValidator campo={detalle} />
             <textarea
               value={detalle}
               onChange={(e) => setDetalle(e.target.value)}

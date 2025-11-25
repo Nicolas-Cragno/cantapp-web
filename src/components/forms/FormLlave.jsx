@@ -14,6 +14,7 @@ import { agregarEvento } from "../../functions/eventFunctions";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
 import tiposEventos from "../../functions/data/eventos.json";
 import TextButton from "../buttons/TextButton";
+import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
 
 const FormLlave = ({
@@ -235,7 +236,7 @@ const FormLlave = ({
         <form onSubmit={handleSubmit}>
           {/* Tipo */}
           <label>
-            Tipo *
+            Tipo * <InputValidator campo={formData.tipo} />
             <Select
               options={subtiposDisponibles.map((sub) =>
                 typeof sub === "string"
@@ -259,7 +260,7 @@ const FormLlave = ({
           </label>
           {/* Operador */}
           <label>
-            Operador *
+            Operador * <InputValidator campo={formData.operador} />
             <Select
               options={listadoOperadores
                 .map((o) => ({
@@ -291,6 +292,7 @@ const FormLlave = ({
           <br />
 
           {/* Chofer o Servicio */}
+          <InputValidator campo={tipoSeleccionado} />
           <div className="type-container-small">
             <button
               type="button"
@@ -323,70 +325,76 @@ const FormLlave = ({
           </div>
           <label>
             {tipoSeleccionado === "chofer" ? (
-              <Select
-                isDisabled={formData.tipo === "INVENTARIO"}
-                options={personas
-                  .map((p) => ({
-                    value: p.id,
-                    label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                    apellido: p.apellido, //para ordenar alfabeticamente
-                  }))
-                  .sort((a, b) => a.apellido.localeCompare(b.apellido))}
-                value={
-                  formData.persona
-                    ? personas
-                        .map((p) => ({
-                          value: p.id,
-                          label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                        }))
-                        .find((opt) => opt.value === formData.persona)
-                    : null
-                }
-                onChange={(opt) =>
-                  handleChange({
-                    target: { name: "persona", value: opt ? opt.value : "" },
-                  })
-                }
-                placeholder=""
-                isClearable
-                required
-              />
+              <>
+                <InputValidator campo={formData.persona} />
+                <Select
+                  isDisabled={formData.tipo === "INVENTARIO"}
+                  options={personas
+                    .map((p) => ({
+                      value: p.id,
+                      label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                      apellido: p.apellido, //para ordenar alfabeticamente
+                    }))
+                    .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+                  value={
+                    formData.persona
+                      ? personas
+                          .map((p) => ({
+                            value: p.id,
+                            label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                          }))
+                          .find((opt) => opt.value === formData.persona)
+                      : null
+                  }
+                  onChange={(opt) =>
+                    handleChange({
+                      target: { name: "persona", value: opt ? opt.value : "" },
+                    })
+                  }
+                  placeholder=""
+                  isClearable
+                  required
+                />
+              </>
             ) : (
-              <Select
-                isDisabled={formData.tipo === "INVENTARIO"}
-                options={empresas
-                  .filter((e) => e.tipo === "proveedor")
-                  .map((s) => ({
-                    value: s.id,
-                    label: `${s.nombre}`,
-                    nombre: s.nombre, //para orden alfabet..
-                  }))
-                  .sort((a, b) => a.nombre.localeCompare(b.nombre))}
-                value={
-                  formData.servicio
-                    ? empresas
-                        .map((s) => ({
-                          value: s.id,
-                          label: `${s.nombre}`,
-                        }))
-                        .find((opt) => opt.value === formData.servicio)
-                    : null
-                }
-                onChange={(opt) =>
-                  handleChange({
-                    target: { name: "servicio", value: opt ? opt.value : "" },
-                  })
-                }
-                placeholder=""
-                isClearable
-                required
-              />
+              <>
+                <InputValidator campo={formData.servicio} />
+                <Select
+                  isDisabled={formData.tipo === "INVENTARIO"}
+                  options={empresas
+                    .filter((e) => e.tipo === "proveedor")
+                    .map((s) => ({
+                      value: s.id,
+                      label: `${s.nombre}`,
+                      nombre: s.nombre, //para orden alfabet..
+                    }))
+                    .sort((a, b) => a.nombre.localeCompare(b.nombre))}
+                  value={
+                    formData.servicio
+                      ? empresas
+                          .map((s) => ({
+                            value: s.id,
+                            label: `${s.nombre}`,
+                          }))
+                          .find((opt) => opt.value === formData.servicio)
+                      : null
+                  }
+                  onChange={(opt) =>
+                    handleChange({
+                      target: { name: "servicio", value: opt ? opt.value : "" },
+                    })
+                  }
+                  placeholder=""
+                  isClearable
+                  required
+                />
+              </>
             )}
           </label>
 
           {/* Tractor */}
           <label>
-            Tractor *
+            Tractor * <InputValidator campo={formData.tractor} />
             <Select
               options={tractores.map((t) => ({
                 value: t.id,
@@ -414,6 +422,7 @@ const FormLlave = ({
               required
             />
           </label>
+          <InputValidator campo={formData.parteTr} />
           <div className="type-container">
             <button
               type="button"
@@ -429,7 +438,7 @@ const FormLlave = ({
           </div>
 
           <label>
-            Detalle
+            Detalle <InputValidator campo={formData.detalle} />
             <textarea
               name="detalle"
               value={formData.detalle}

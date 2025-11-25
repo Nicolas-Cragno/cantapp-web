@@ -11,6 +11,7 @@ import FormProveedor from "./FormProveedor";
 import TextButton from "../buttons/TextButton";
 import Codigos from "../../functions/data/articulos.json";
 import Unidades from "../../functions/data/unidades.json";
+import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
 
 const FormStock = ({ articulo = null, onClose, onGuardar }) => {
@@ -44,7 +45,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
   const unidadesDisponibles = Object.entries(Unidades).map(([key, value]) => ({
     value: key,
     label: key,
-  }))
+  }));
   useEffect(() => {
     if (articulo) setModoEdicion(true);
   }, [articulo]);
@@ -173,7 +174,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
           <div className="ficha-info">
             {/* tipo de articulo */}
             <label>
-              Tipo *
+              Tipo * <InputValidator campo={formData.tipo} />
               <Select
                 options={tiposDisponibles.map((opt) => ({
                   value: String(opt.value), // asegurar string
@@ -204,7 +205,8 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
               />
             </label>
             {/* descripcipon */}
-            <label>Descripción</label>
+            <label>Descripción</label>{" "}
+            <InputValidator campo={formData.descripcion} />
             <input
               type="text"
               style={{ textTransform: "uppercase" }}
@@ -214,36 +216,34 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
             ></input>
             {/* unidad de medida */}
             <label>
-                Unidad de medida
-                <Select
-                  options={unidadesDisponibles}  
-                  value={
-                    formData.unidad
-                      ? unidadesDisponibles.find(
-                          (opt) => String(opt.value) === String(formData.unidad)
-                        )
-                      : null
-                  }
-                  onChange={(opt) =>
-                    handleChange({
-                      target: {
-                        name: "unidad",
-                        value: opt ? String(opt.value) : "",
-                      },
-                    })
-                  }
-                  placeholder=""
-                  isClearable
-                  required
-                  disabled={modoEdicion}
-                />
-              </label>
-
-            
+              Unidad de medida <InputValidator campo={formData.unidad} />
+              <Select
+                options={unidadesDisponibles}
+                value={
+                  formData.unidad
+                    ? unidadesDisponibles.find(
+                        (opt) => String(opt.value) === String(formData.unidad)
+                      )
+                    : null
+                }
+                onChange={(opt) =>
+                  handleChange({
+                    target: {
+                      name: "unidad",
+                      value: opt ? String(opt.value) : "",
+                    },
+                  })
+                }
+                placeholder=""
+                isClearable
+                required
+                disabled={modoEdicion}
+              />
+            </label>
           </div>
           <div className="ficha-info">
             {/* marca */}
-            <label>Marca</label>
+            <label>Marca</label> <InputValidator campo={formData.marca} />
             <input
               type="text"
               style={{ textTransform: "uppercase" }}
@@ -252,8 +252,8 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
               name="marca"
             ></input>
             {/* proveedor */}
-            <label>Proveedor</label>
-
+            <label>Proveedor</label>{" "}
+            <InputValidator campo={formData.proveedor} />
             <div className="select-with-button">
               <Select
                 className="select-grow"
@@ -301,6 +301,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
               />
             </div>
             <label>Codigo Proveedor</label>
+            <InputValidator campo={formData.codigoProveedor} />
             <input
               type="text"
               style={{ textTransform: "uppercase" }}
@@ -313,6 +314,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
             <>
               <label className="ficha-subtitle">Repuesto recuperado</label>
               <div className="ficha-info">
+                <InputValidator campo={tipoSeleccionado} />
                 <div className="type-container-small">
                   <button
                     type="button"
@@ -351,7 +353,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                 <label>
                   {tipoSeleccionado === "tractor" && (
                     <label>
-                      Tractor *
+                      Tractor * <InputValidator campo={formData.tractor} />
                       <div className="select-with-button">
                         <Select
                           className="select-grow"
@@ -396,7 +398,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                   )}
                   {tipoSeleccionado === "furgon" && (
                     <label>
-                      Furgon *
+                      Furgon * <InputValidator campo={formData.furgon} />
                       <div className="select-with-button">
                         <div className="select-with-button">
                           <Select
@@ -443,7 +445,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                   )}
                   {tipoSeleccionado === "vehiculo" && (
                     <label>
-                      Vehiculo *
+                      Vehiculo * <InputValidator campo={formData.vehiculo} />
                       <div className="select-with-button">
                         <div className="select-with-button">
                           <Select
@@ -500,6 +502,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
           <div className="ficha-info">
             {/* detalle */}
             <label>Detalle</label>
+            <InputValidator campo={formData.detalle} />
             <textarea
               name="detalle"
               value={formData.detalle}

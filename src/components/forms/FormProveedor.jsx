@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { useData } from "../../context/DataContext";
 import { agregar, modificar } from "../../functions/dbFunctions";
 import { idNuevoProveedor } from "../../functions/dataFunctions";
+import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
 
 const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
@@ -91,7 +92,7 @@ const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
             {modoEdicion && (
               <>
                 {" "}
-                <label>Codigo</label>
+                <label>Codigo</label> <InputValidator campo={formData.codigo} />
                 <input
                   type="text"
                   name="nombre"
@@ -102,7 +103,8 @@ const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
                 />
               </>
             )}
-            <label>Nombre legal</label>
+            <label>Nombre legal</label>{" "}
+            <InputValidator campo={formData.nombre} />
             <input
               type="text"
               name="nombre"
@@ -111,8 +113,8 @@ const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
               style={{ textTransform: "uppercase" }}
               required
             />
-
             <label>Nombre marca (abreviación/simplificación)</label>
+            <InputValidator campo={formData.marca} />
             <input
               type="text"
               name="marca"
@@ -122,6 +124,7 @@ const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
               required
             />
             <label>CUIT</label>
+            <InputValidator campo={formData.cuit} />
             <input
               type="number"
               name="cuit"
@@ -135,6 +138,7 @@ const FormProveedor = ({ elemento = null, onClose, onGuardar }) => {
 
           <div className="form-group">
             <label>Detalle</label>
+            <InputValidator campo={formData.detalle} />
             <textarea
               name="detalle"
               value={formData.detalle}
