@@ -1,11 +1,15 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState } from "react";
+import Select from "react-select";
 import Swal from "sweetalert2";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
+import FormVehiculo from "./FormVehiculo";
+import FormPersona from "./FormPersona";
+import TextButton from "../buttons/TextButton";
 import tiposEventos from "../../functions/data/eventos.json";
 import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
@@ -13,6 +17,10 @@ import "./css/Forms.css";
 const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   const area = "satelital";
   const { personas, tractores, furgones } = useData();
+  const [modalTractorVisible, setModalTractorVisible] = useState(false);
+  const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
+  const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
+  const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [formData, setFormData] = useState({
     tipo: evento.tipo,
     fecha: formatearFecha(evento.fecha),
@@ -35,6 +43,30 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const cerrarModalTractor = () => {
+    setModalTractorVisible(false);
+  };
+  const handleClickTractor = async () => {
+    setModalTractorVisible(true);
+  };
+  const handleClickFurgon = async () => {
+    setModalFurgonVisible(true);
+  };
+  const handleClickVehiculo = async () => {
+    setModalVehiculoVisible(true);
+  };
+  const handleClickPersona = async () => {
+    setModalPersonaVisible(true);
+  };
+  const cerrarModalFurgon = () => {
+    setModalFurgonVisible(false);
+  };
+  const cerrarModalVehiculo = () => {
+    setModalVehiculoVisible(false);
+  };
+  const cerrarModalPersona = () => {
+    setModalPersonaVisible(false);
   };
 
   const handleSubmit = async (e) => {
@@ -105,70 +137,154 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
         </div>
         <form onSubmit={handleSubmit} className="form-submit">
           <label>
-            Tipo* <InputValidator campo={formData.tipo} />
-            <select
-              name="tipo"
-              value={formData.tipo}
-              onChange={handleChange}
+            Tipo * <InputValidator campo={formData.tipo} />
+            <Select
+              options={subtiposDisponibles.map((sub) =>
+                typeof sub === "string"
+                  ? { value: sub, label: sub }
+                  : { value: sub.tipo, label: sub.tipo }
+              )}
+              value={
+                formData.tipo
+                  ? { value: formData.tipo, label: formData.tipo }
+                  : null
+              }
+              onChange={(opt) =>
+                handleChange({
+                  target: { name: "tipo", value: opt ? opt.value : "" },
+                })
+              }
+              placeholder=""
+              isClearable
               required
-            >
-              <option value=""></option>
-              {subtiposDisponibles.map((t, i) => (
-                <option key={i} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+            />
           </label>
           <label>
             Persona / Empleado <InputValidator campo={formData.persona} />
-            <select
-              name="persona"
-              value={formData.persona}
-              onChange={handleChange}
-              //required
-            >
-              <option value=""></option>
-              {personas.map((p) => (
-                <option key={p.dni} value={p.dni}>
-                  {p.apellido} {p.nombres} (DNI: {p.dni})
-                </option>
-              ))}
-            </select>
+            <div className="select-with-button">
+              <Select
+                className="select-grow"
+                options={personas
+                  .map((p) => ({
+                    value: p.id,
+                    label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                    apellido: p.apellido, //para odenar
+                  }))
+                  .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+                value={
+                  formData.persona
+                    ? {
+                        value: formData.persona,
+                        label:
+                          personas.find((p) => p.id === formData.persona)
+                            ?.apellido +
+                          " " +
+                          personas.find((p) => p.id === formData.persona)
+                            ?.nombres +
+                          ` (DNI: ${formData.persona})`,
+                      }
+                    : null
+                }
+                onChange={(opt) =>
+                  setFormData({ ...formData, persona: opt ? opt.value : "" })
+                }
+                placeholder=""
+                isClearable
+                required
+              />
+              <TextButton
+                text="+"
+                className="mini-btn"
+                onClick={handleClickPersona}
+              />
+            </div>
           </label>
 
           <label>
-            Tractor <InputValidator campo={formData.tractor} />
-            <select
-              type="number"
-              name="tractor"
-              value={formData.tractor}
-              onChange={handleChange}
-            >
-              <option value=""></option>
-              {tractores.map((t) => (
-                <option key={t.interno} value={t.interno}>
-                  {t.dominio} ({t.interno})
-                </option>
-              ))}
-            </select>
+            Tractor * <InputValidator campo={formData.tractor} />
+            <div className="select-with-button">
+              <Select
+                className="select-grow"
+                options={tractores
+                  .map((t) => ({
+                    value: t.interno,
+                    label: `${t.dominio} (${t.interno})`,
+                    int: t.interno,
+                  }))
+                  .sort((a, b) => a.int - b.int)}
+                value={
+                  formData.tractor
+                    ? {
+                        value: formData.tractor,
+                        label:
+                          tractores.find((t) => t.interno === formData.tractor)
+                            ?.dominio + ` (${formData.tractor})`,
+                      }
+                    : null
+                }
+                onChange={(opt) =>
+                  setFormData({
+                    ...formData,
+                    tractor: opt ? opt.value : "",
+                  })
+                }
+                placeholder=""
+                isClearable
+              />
+              <TextButton
+                text="+"
+                className="mini-btn"
+                onClick={handleClickTractor}
+              />
+            </div>
           </label>
 
           <label>
-            Furgón <InputValidator campo={formData.furgon} />
-            <select
-              type="number"
-              name="furgon"
-              value={formData.furgon}
-              onChange={handleChange}
-            >
-              <option value=""></option>
-              {furgones.map((f) => (
-                <option key={f.interno} value={f.interno}>
-                  {f.dominio} ({f.interno})
-                </option>
-              ))}
-            </select>
+            Carga / Furgón <InputValidator campo={formData.furgon} />
+            <div className="select-with-button">
+              <Select
+                className="select-grow"
+                options={furgones
+                  .map((f) => ({
+                    value: f.id,
+                    label: `${f.dominio} (${f.interno ? f.interno : f.marca})`,
+                  }))
+                  .sort((a, b) => a.label.localeCompare(b.label))}
+                value={
+                  formData.furgon
+                    ? (() => {
+                        const seleccion = furgones.find(
+                          (v) => v.id === formData.furgon
+                        );
+                        return seleccion
+                          ? {
+                              value: seleccion.id,
+                              label: `${seleccion.dominio} (${
+                                seleccion.interno
+                                  ? seleccion.interno
+                                  : seleccion.marca
+                              })`,
+                            }
+                          : null;
+                      })() // 👈 ejecutamos la función acá
+                    : null
+                }
+                onChange={(opt) =>
+                  setFormData({
+                    ...formData,
+                    furgon: opt ? opt.value : "",
+                  })
+                }
+                placeholder="Seleccionar vehículo..."
+                isClearable
+              />
+
+              <TextButton
+                text="+"
+                className="mini-btn"
+                onClick={handleClickFurgon}
+              />
+            </div>
           </label>
 
           <label>
@@ -201,6 +317,33 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
           </div>
         </form>
       </div>
+      {modalTractorVisible && (
+        <FormVehiculo
+          tipoVehiculo={"tractores"}
+          onClose={cerrarModalTractor}
+          onGuardar={cerrarModalTractor}
+        />
+      )}
+      {modalFurgonVisible && (
+        <FormVehiculo
+          tipoVehiculo={"furgones"}
+          onClose={cerrarModalFurgon}
+          onGuardar={cerrarModalFurgon}
+        />
+      )}
+      {modalVehiculoVisible && (
+        <FormVehiculo
+          tipoVehiculo={"vehiculos"}
+          onClose={cerrarModalVehiculo}
+          onGuardar={cerrarModalVehiculo}
+        />
+      )}
+      {modalPersonaVisible && (
+        <FormPersona
+          onClose={cerrarModalPersona}
+          onGuardar={cerrarModalPersona}
+        />
+      )}
     </div>
   );
 };

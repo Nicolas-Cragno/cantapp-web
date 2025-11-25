@@ -7,6 +7,7 @@ import { RiListSettingsLine as LogoSettings } from "react-icons/ri";
 import { PiShippingContainerFill as LogoContainer } from "react-icons/pi";
 import { GrResources as LogoResources } from "react-icons/gr";
 import { BsFillFuelPumpFill as LogoFuel } from "react-icons/bs";
+import { FaSatelliteDish as LogoSatellite } from "react-icons/fa";
 
 // ----------------------------------------------------------------------- imports internos
 import Logo from "../assets/logos/logotruck.svg";
@@ -64,6 +65,12 @@ const SideBar = () => {
       to: "/furgones",
       icon: <LogoContainer className="nav-icon" />,
       label: "Furgones",
+      roles: ["dev", "superadmin", "admin", "user"],
+    },
+    {
+      to: "/satelital",
+      icon: <LogoSatellite className="nav-icon" />,
+      label: "Satelital",
       roles: ["dev", "superadmin", "admin", "user"],
     },
     {

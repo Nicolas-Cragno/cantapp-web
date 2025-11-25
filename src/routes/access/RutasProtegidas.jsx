@@ -14,6 +14,7 @@ const Stock = lazy(() => import("../../containers/Stock"));
 const Combustible = lazy(() => import("../../containers/Combustible"));
 const Tractores = lazy(() => import("../../containers/Tractores"));
 const Furgones = lazy(() => import("../../containers/Furgones"));
+const Satelital = lazy(() => import("../../containers/Satelital"));
 
 // Wrapper de Suspense para no repetir
 const withSuspense = (Component) => (
@@ -37,5 +38,6 @@ export const rutasProtegidas = (
     <Route path="/tractores" element={withSuspense(Tractores)} />
     <Route path="/furgones" element={withSuspense(Furgones)} />
     <Route path="/combustible" element={withSuspense(Combustible)} />
+    <Route path="/satelital" element={withSuspense(Satelital)} />
   </Route>
 );

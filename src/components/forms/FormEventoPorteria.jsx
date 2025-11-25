@@ -21,7 +21,7 @@ import "./css/Forms.css";
 const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const SUCURSAL = "01";
   const area = "porteria";
-  const { personas, tractores, furgones, vehiculos } = useData();
+  const { personas, tractores, furgones, vehiculos, usuario } = useData();
   const [vehiculosCarga, setVehiculosCarga] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState("tractor");
   const [choferFletero, setChoferFletero] = useState(false);
@@ -51,7 +51,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
         subtipos.map((sub) => ({ nArea, subtipo: sub }))
       );
-  const [furgonCargado, setFuegonCargado] = useState(false);
+  const [furgonCargado, setFurgonCargado] = useState(false);
   const [uploading, setUploading] = useState(false);
   useEffect(() => {
     const cargarDatos = async () => {
@@ -86,9 +86,9 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   };
   const handleCarga = (state) => {
     if (state) {
-      setFuegonCargado(true);
+      setFurgonCargado(true);
     } else {
-      setFuegonCargado(false);
+      setFurgonCargado(false);
     }
   };
   const handleSubmit = async (e) => {
@@ -479,7 +479,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           {tipoSeleccionado !== "particular" && (
             <>
               <label>
-                Carga / Furgón <InputValidator campo={formData.furgon} />
+                Carga / Furgón <InputValidator campo={formData.furgon} />{" "}
                 <div className="select-with-button">
                   <Select
                     className="select-grow"

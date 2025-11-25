@@ -1,8 +1,10 @@
 import "./css/Devs.css";
+import { useData } from "../../context/DataContext";
 
 const InputValidator = ({ campo }) => {
   let valor;
   let tipo;
+  const { usuario } = useData();
 
   if (campo === null) tipo = "null";
   else if (campo === undefined) tipo = "undefined";
@@ -46,11 +48,11 @@ const InputValidator = ({ campo }) => {
     }
   }
 
-  return (
+  return usuario.rol === "dev" ? (
     <span className="dev-item">
       {tipo} | {valor}
     </span>
-  );
+  ) : null;
 };
 
 export default InputValidator;

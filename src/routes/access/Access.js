@@ -11,6 +11,7 @@ export const Access = {
     "/porteria": ["user", "admin", "superadmin","dev"],    // seguridad / porteria
     "/tractores" : ["user", "admin", "superadmin", "dev"], // taller tractores
     "/furgones" : ["user", "admin", "superadmin", "dev"],
+    "/satelital" : ["user", "admin", "superadmin", "dev"], 
     
     // Todos
     "/": ["user", "admin", "superadmin", "dev"],
