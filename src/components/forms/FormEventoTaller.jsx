@@ -441,9 +441,11 @@ const FormEventoTaller = ({
               >
                 REALIZADO AFUERA {esServicio ? " *" : null}
               </button>
+              <InputValidator campo={esServicio} />
             </div>
+
             <label>
-              Tipo *
+              Tipo * <InputValidator campo={formData.tipo} />
               <Select
                 options={subtiposDisponibles.map((sub) =>
                   typeof sub === "string"
@@ -467,7 +469,7 @@ const FormEventoTaller = ({
             </label>
             {!esServicio ? (
               <label>
-                Mecánico
+                Mecánico Tipo * <InputValidator campo={formData.mecanico} />
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
@@ -521,7 +523,8 @@ const FormEventoTaller = ({
               </label>
             ) : (
               <label>
-                Proveedor del servicio
+                Proveedor del servicio Tipo *{" "}
+                <InputValidator campo={formData.proveedor} />
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
@@ -574,7 +577,7 @@ const FormEventoTaller = ({
               <>
                 <div className="doble-select">
                   <label>
-                    Tractor *
+                    Tractor * <InputValidator campo={formData.tractor} />
                     <div className="select-with-button">
                       <Select
                         className="select-grow"
@@ -616,7 +619,7 @@ const FormEventoTaller = ({
                     </div>
                   </label>
                   <label>
-                    Kilometraje
+                    Kilometraje <InputValidator campo={formData.kilometraje} />
                     <input
                       className="input-grow"
                       type="number"
@@ -637,7 +640,7 @@ const FormEventoTaller = ({
             {area === "furgones" ? (
               <>
                 <label>
-                  Furgon *
+                  Furgon * <InputValidator campo={formData.furgon} />
                   <div className="select-with-button">
                     <Select
                       className="select-grow"
@@ -680,7 +683,7 @@ const FormEventoTaller = ({
             ) : null}
 
             <label>
-              Chofer
+              Chofer <InputValidator campo={formData.chofer} />
               <div className="select-with-button">
                 <Select
                   className="select-grow"
@@ -721,7 +724,7 @@ const FormEventoTaller = ({
             </label>
 
             <label>
-              Detalle
+              Detalle <InputValidator campo={formData.detalle} />
               <textarea
                 name="detalle"
                 value={formData.detalle}
@@ -736,7 +739,7 @@ const FormEventoTaller = ({
               }`}
             >
               <label>
-                Cargar repuesto
+                Cargar repuesto <InputValidator campo={articuloSeleccionado} />
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
@@ -803,7 +806,7 @@ const FormEventoTaller = ({
               </label>
               <div className="input-inline">
                 <label>
-                  Cantidad
+                  Cantidad <InputValidator campo={cantidad} />
                   <input
                     type="number"
                     value={cantidad}
@@ -873,7 +876,8 @@ const FormEventoTaller = ({
                 ))}
               </ul>
             </div>
-
+            <InputValidator campo={ingresos} />
+            <InputValidator campo={articulosUsados} />
             <div className={`form-box-footer ${esServicio ? "form-null" : ""}`}>
               {evento.id ? (
                 <img
