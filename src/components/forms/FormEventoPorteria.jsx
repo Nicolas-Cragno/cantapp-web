@@ -14,14 +14,13 @@ import FormPersona from "./FormPersona";
 import chequeosPorteria from "../../functions/data/chequeosPorteria.json";
 import tiposEventos from "../../functions/data/eventos.json";
 import InputValidator from "../devs/InputValidator";
-import BooleanValidator from "../devs/BooleanValidator";
 import TextButton from "../buttons/TextButton";
 import "./css/Forms.css";
 
 const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   const SUCURSAL = "01";
   const area = "porteria";
-  const { personas, tractores, furgones, vehiculos, usuario } = useData();
+  const { personas, tractores, furgones, vehiculos } = useData();
   const [vehiculosCarga, setVehiculosCarga] = useState([]);
   const [tipoSeleccionado, setTipoSeleccionado] = useState("tractor");
   const [choferFletero, setChoferFletero] = useState(false);
@@ -51,7 +50,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
         subtipos.map((sub) => ({ nArea, subtipo: sub }))
       );
-  const [furgonCargado, setFurgonCargado] = useState(false);
+  const [furgonCargado, setFuegonCargado] = useState(false);
   const [uploading, setUploading] = useState(false);
   useEffect(() => {
     const cargarDatos = async () => {
@@ -86,9 +85,9 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
   };
   const handleCarga = (state) => {
     if (state) {
-      setFurgonCargado(true);
+      setFuegonCargado(true);
     } else {
-      setFurgonCargado(false);
+      setFuegonCargado(false);
     }
   };
   const handleSubmit = async (e) => {
@@ -158,19 +157,20 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
       console.log("TRACTOR:", JSON.stringify(datosAGuardar.tractor, null, 2));
       console.log("FURGON:", JSON.stringify(datosAGuardar.furgon, null, 2));
 
+      
       await agregarEvento(datosAGuardar, area, elemento?.id ?? null);
-      if (datosAGuardar.tractor) {
+      if(datosAGuardar.tractor){
         if (datosAGuardar.tipo === "ENTRADA") {
-          agregarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
-          if (datosAGuardar.furgon) {
-            agregarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
-          }
-        } else if (datosAGuardar.tipo === "SALIDA") {
-          quitarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
-          if (datosAGuardar.furgon) {
-            quitarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
-          }
+        agregarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
+        if (datosAGuardar.furgon) {
+          agregarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
         }
+      } else if (datosAGuardar.tipo === "SALIDA") {
+        quitarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
+        if (datosAGuardar.furgon) {
+          quitarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
+        }
+      }
       }
 
       if (onGuardar) onGuardar();
@@ -227,7 +227,6 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           <hr />
         </div>
         {/* Tipo de ingreso /tractor/ /particular/ */}
-        <InputValidator campo={tipoSeleccionado} />
         <div className="type-container-small">
           <button
             type="button"
@@ -256,7 +255,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         <form onSubmit={handleSubmit}>
           {/* Tipo de evento /entrada/ /salida/ /inventario/ */}
           <label>
-            Tipo * <InputValidator campo={formData.tipo} />
+            Tipo *
             <Select
               options={subtiposDisponibles.map((sub) =>
                 typeof sub === "string"
@@ -280,7 +279,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           </label>
           {/* /operador/ que carga */}
           <label>
-            Operador * <InputValidator campo={formData.operador} />
+            Operador *
             <Select
               options={personas
                 .filter((o) => o.especializacion === "SERENO")
@@ -315,39 +314,31 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           <br />
           {/* Chofer o fletero */}
           {tipoSeleccionado === "tractor" && (
-            <>
-              <InputValidator campo={choferFletero} />
-              <div className="type-container-small">
-                <button
-                  type="button"
-                  className={
-                    !choferFletero
-                      ? "type-btn positive-active-black"
-                      : "type-btn"
-                  }
-                  onClick={() => setChoferFletero(false)}
-                >
-                  CHOFER {!choferFletero ? " *" : null}{" "}
-                </button>
-                <button
-                  type="button"
-                  className={
-                    choferFletero
-                      ? "type-btn positive-active-black"
-                      : "type-btn"
-                  }
-                  onClick={() => setChoferFletero(true)}
-                >
-                  FLETERO {choferFletero ? " *" : null}{" "}
-                </button>
-              </div>
-            </>
+            <div className="type-container-small">
+              <button
+                type="button"
+                className={
+                  !choferFletero ? "type-btn positive-active-black" : "type-btn"
+                }
+                onClick={() => setChoferFletero(false)}
+              >
+                CHOFER {!choferFletero ? " *" : null}{" "}
+              </button>
+              <button
+                type="button"
+                className={
+                  choferFletero ? "type-btn positive-active-black" : "type-btn"
+                }
+                onClick={() => setChoferFletero(true)}
+              >
+                FLETERO {choferFletero ? " *" : null}{" "}
+              </button>
+            </div>
           )}
           {/* /persona/ o /chofer/ */}
           <label>
             {" "}
             {tipoSeleccionado === "particular" ? "Persona *" : "Chofer *"}
-            <InputValidator campo={formData.persona} />
             <div className="select-with-button">
               <Select
                 className="select-grow"
@@ -391,7 +382,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           {tipoSeleccionado === "tractor" && !choferFletero ? (
             <>
               <label>
-                Tractor * <InputValidator campo={formData.tractor} />
+                Tractor *
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
@@ -434,7 +425,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           ) : (
             <>
               <label>
-                Vehiculo <InputValidator campo={formData.vehiculo} />
+                Vehiculo
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
@@ -479,7 +470,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           {tipoSeleccionado !== "particular" && (
             <>
               <label>
-                Carga / Furgón <InputValidator campo={formData.furgon} />{" "}
+                Carga / Furgón
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
@@ -530,7 +521,6 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
               <div className="type-container">
                 {formData.furgon && (
                   <>
-                    <InputValidator campo={furgonCargado} />
                     <button
                       type="button"
                       className={
@@ -559,8 +549,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           )}
           {tipoSeleccionado === "tractor" && (
             <div>
-              <label>Chequeos</label>{" "}
-              <BooleanValidator campo={formData.chequeos} />
+              <label>Chequeos</label>
               <div className="checkbox-list">
                 {chequeosPorteria.map((nombre, i) => (
                   <label
@@ -590,7 +579,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           {/* datalle */}
           <br />
           <label>
-            Detalle <InputValidator campo={formData.detalle} />
+            Detalle
             <textarea
               name="detalle"
               value={formData.detalle}
@@ -631,10 +620,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         />
       )}
       {modalPersonaVisible && (
-        <FormPersona
-          onClose={cerrarModalPersona}
-          onGuardar={cerrarModalPersona}
-        />
+        <FormPersona onClose={cerrarModalPersona} onGuardar={cerrarModalPersona} />
       )}
     </div>
   );

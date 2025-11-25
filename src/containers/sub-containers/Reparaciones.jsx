@@ -68,7 +68,16 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         render: (v, ev) => ev.fechaReducida,
         onresponsive: true,
       },
-      { titulo: "TIPO", campo: "tipo" },
+      { titulo: "TIPO", campo: "tipo",  render: (v, ev) => (
+    <span
+      style={{
+        backgroundColor: ev.tipo === "SERVICE" ? "#efb810" : ev.tipo === "SERVICE CAJA DIFERENCIAL" ? "#ef1010ff" : "transparent",
+        padding: ev.tipo === "SERVICE" || ev.tipo === "SERVICE CAJA DIFERENCIAL" ? "4px 4px" : undefined,
+      }}
+    >
+      {v}
+    </span>
+  )},
       { titulo: "MECÁNICO / PROVEEDOR", campo: "mecanicoTxt", render: (v, ev) => (
     <span
       style={{
@@ -90,7 +99,17 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     if (AREA === "tractores") {
       return [
         ...base,
-        { titulo: "TRACTOR", campo: "tractor", render: (t, ev) => `${t} (${ev.dominioTractor})` },
+        //{ titulo: "TRACTOR", campo: "tractor", render: (t, ev) => `${t} (${ev.dominioTractor})` },
+        {
+      titulo: "TRACTOR",
+      campo: "tractor",
+      render: (t, ev) => {
+        if (Array.isArray(ev.tractor)) {
+          return ev.tractor.join(", "); 
+        }
+        return ev.tractor || "";
+      }
+    },
         { titulo: "KM", campo: "kilometraje", offresponsive: true },
         ...fin,
       ];
@@ -99,7 +118,13 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
     if (AREA === "furgones") {
       return [
         ...base,
-        { titulo: "FURGÓN", campo: "furgon", render: (f, ev) => `${f} (${ev.dominioFurgon})` },
+        //{ titulo: "FURGÓN", campo: "furgon", render: (f, ev) => `${f} (${ev.dominioFurgon})` },
+        {titulo: "FURGÓN", campo: "furgon", render: (t, ev) => {
+        if (Array.isArray(ev.furgon)) {
+          return ev.furgon.join(", "); 
+        }
+        return ev.furgon || "";
+      }},
         ...fin,
       ];
     }

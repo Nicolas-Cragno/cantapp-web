@@ -7,6 +7,8 @@ import { useData } from "../../context/DataContext";
 import TablaVirtual from "../../components/tablas/TablaVirtual";
 import FichaStock from "../../components/fichas/FichaStock";
 import FormStock from "../../components/forms/FormStock";
+import FormRemito from "../../components/forms/FormRemito";
+import FormFactura from "../../components/forms/FormFactura";
 import FormHerramienta from "../../components/forms/FormHerramienta";
 import FormMovimientoStock from "../../components/forms/FormMovimientoStock";
 import ModalEventos from "../../components/modales/ModalEventos";
@@ -25,6 +27,8 @@ const Deposito = ({ taller = null }) => {
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
   const [modalEventosVisible, setModalEventosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
+  const [modalRemitoVisible, setModalRemitoVisible] = useState(false);
+  const [modalFacturaVisible, setModalFacturaVisible] = useState(false);
   const [modalHerramientasVisible, setModalHerramientasVisible] = useState(false);
 
 const { stock = [], proveedores = [] } = useData();
@@ -99,12 +103,22 @@ const { stock = [], proveedores = [] } = useData();
       {modalHerramientasVisible && <FormHerramienta sector={taller} onClose={() => setModalHerramientasVisible(false)} onGuardar={() => setModalHerramientasVisible(false)} />}
       {modalEventosVisible && <ModalEventos tipo="STOCK" onClose={() => setModalEventosVisible(false)} />}
       {modalProveedorVisible && <ModalProveedor onClose={() => setModalProveedorVisible(false)} />}
+      {modalRemitoVisible && <FormRemito onClose={()=> setModalRemitoVisible(false)}/>}
+      {modalFacturaVisible && <FormFactura onClose={()=> setModalFacturaVisible(false)}/>}
 
       <div className="table-options">
         <div className="table-options-group">
           <button className="table-agregar" onClick={() => setModalProveedorVisible(true)}>
             <img src={LogoProveedor} alt="" className="table-logo2" />
             <span className="table-logo-span">Proveedores</span>
+          </button>
+          <button className="table-agregar" onClick={() => setModalRemitoVisible(true)}>
+            <img src={LogoProveedor} alt="" className="table-logo2" />
+            <span className="table-logo-span">Remitos</span>
+          </button>
+          <button className="table-agregar" onClick={() => setModalFacturaVisible(true)}>
+            <img src={LogoProveedor} alt="" className="table-logo2" />
+            <span className="table-logo-span">Facturas</span>
           </button>
         </div>
         <div className="table-options-group">

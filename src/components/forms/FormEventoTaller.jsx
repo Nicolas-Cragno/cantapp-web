@@ -59,9 +59,17 @@ const FormEventoTaller = ({
         : [evento.mecanico]
       : [], // 1 o varios mecanico/s
     proveedor: evento?.proveedor ? String(evento.proveedor) : "",
-    tractor: evento?.tractor || "",
+    tractor: evento?.tractor
+      ? Array.isArray(elemento.tractor)
+        ? elemento.tractor
+        : [elemento.tractor]
+      : [],
     kilometraje: evento?.kilometraje || "",
-    furgon: evento?.furgon || "",
+    furgon: evento?.furgon
+      ? Array.isArray(elemento.furgon)
+        ? elemento.furgon
+        : [elemento.furgon]
+      : [],
     detalle: evento?.detalle || "",
     area: evento?.area || area,
     subarea: evento?.subarea || subarea,
@@ -196,8 +204,10 @@ const FormEventoTaller = ({
         subtipo: formData.subtipo?.toUpperCase() || null,
         persona: formData.persona ? Number(formData.persona) : null,
         vehiculo: formData.vehiculo ? Number(formData.vehiculo) : null,
-        tractor: formData.tractor ? Number(formData.tractor) : null,
-        furgon: formData.furgon ? Number(formData.furgon) : null,
+        //tractor: formData.tractor ? Number(formData.tractor) : null,
+        tractor: formData.tractor ? formData.tractor.map(Number) : [], // array de internos
+        //furgon: formData.furgon ? Number(formData.furgon) : null,
+        furgon: formData.furgon ? formData.furgon.map(Number) : [], // array de internos
         kilometraje: formData.kilometraje ? Number(formData.kilometraje) : null,
         area: formData.area || area,
         subarea: formData.subarea || subarea,
@@ -577,47 +587,34 @@ const FormEventoTaller = ({
               <>
                 <div className="doble-select">
                   <label>
-                    Tractor * <InputValidator campo={formData.tractor} />
-                    <div className="select-with-button">
-                      <Select
-                        className="select-grow"
-                        options={tractores
-                          .map((t) => ({
-                            value: t.interno,
-                            label: `${t.dominio} (${t.interno}) ${
-                              t.chasis ? "- " + t.chasis : ""
-                            }`,
-                            int: t.interno,
-                          }))
-                          .sort((a, b) => a.int - b.int)}
-                        value={
-                          formData.tractor
-                            ? {
-                                value: formData.tractor,
-                                label:
-                                  tractores.find(
-                                    (t) => t.interno === formData.tractor
-                                  )?.dominio + ` (${formData.tractor})`,
-                              }
-                            : null
-                        }
-                        onChange={(opt) =>
-                          setFormData({
-                            ...formData,
-                            tractor: opt ? opt.value : "",
-                          })
-                        }
-                        placeholder=""
-                        isClearable
-                        required={area === "tractores"}
-                      />
-                      <TextButton
-                        text="+"
-                        className="mini-btn"
-                        onClick={handleClickVehiculo}
-                      />
-                    </div>
-                  </label>
+            Tractor * <InputValidator campo={formData.tractor} />
+            <Select
+              options={tractores.map((t) => ({
+                value: t.id,
+                label: `${t.interno} (${t.dominio})`,
+              }))}
+              value={tractores
+                .map((t) => ({
+                  value: t.id,
+                  label: `${t.interno} (${t.dominio})`,
+                }))
+                .filter((opt) =>
+                  formData.tractor.map(String).includes(opt.value)
+                )}
+              onChange={(opts) =>
+                handleChange({
+                  target: {
+                    name: "tractor",
+                    value: opts ? opts.map((o) => o.value) : [],
+                  },
+                })
+              }
+              placeholder=""
+              isClearable
+              isMulti
+              required
+            />
+          </label>
                   <label>
                     Kilometraje <InputValidator campo={formData.kilometraje} />
                     <input
@@ -640,45 +637,34 @@ const FormEventoTaller = ({
             {area === "furgones" ? (
               <>
                 <label>
-                  Furgon * <InputValidator campo={formData.furgon} />
-                  <div className="select-with-button">
-                    <Select
-                      className="select-grow"
-                      options={furgones
-                        .map((f) => ({
-                          value: f.interno,
-                          label: `${f.dominio} (${f.interno})`,
-                          int: f.interno,
-                        }))
-                        .sort((a, b) => a.int - b.int)}
-                      value={
-                        formData.furgon
-                          ? {
-                              value: formData.furgon,
-                              label:
-                                furgones.find(
-                                  (t) => t.interno === formData.furgon
-                                )?.dominio + ` (${formData.furgon})`,
-                            }
-                          : null
-                      }
-                      onChange={(opt) =>
-                        setFormData({
-                          ...formData,
-                          furgon: opt ? opt.value : "",
-                        })
-                      }
-                      placeholder=""
-                      isClearable
-                      required={area === "furgones"}
-                    />
-                    <TextButton
-                      text="+"
-                      className="mini-btn"
-                      //onClick={handleClickFurgon}
-                    />
-                  </div>
-                </label>
+            Furgon * <InputValidator campo={formData.furgon} />
+            <Select
+              options={furgones.map((t) => ({
+                value: t.id,
+                label: `${t.interno} (${t.dominio})`,
+              }))}
+              value={furgones
+                .map((t) => ({
+                  value: t.id,
+                  label: `${t.interno} (${t.dominio})`,
+                }))
+                .filter((opt) =>
+                  formData.furgon.map(String).includes(opt.value)
+                )}
+              onChange={(opts) =>
+                handleChange({
+                  target: {
+                    name: "furgon",
+                    value: opts ? opts.map((o) => o.value) : [],
+                  },
+                })
+              }
+              placeholder=""
+              isClearable
+              isMulti
+              required
+            />
+          </label>
               </>
             ) : null}
 
@@ -734,9 +720,7 @@ const FormEventoTaller = ({
           </div>
           <div className="form-right">
             <div
-              className={`form-box overflow-visible ${
-                esServicio ? "form-null" : ""
-              }`}
+              className={`form-box overflow-visible`}
             >
               <label>
                 Cargar repuesto <InputValidator campo={articuloSeleccionado} />
