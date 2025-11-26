@@ -35,7 +35,7 @@ export default function useReparaciones(AREA = "tractores") {
     if (!eventosOrdenados || eventosOrdenados.length === 0) return [];
 
     const filtrados = eventosOrdenados.filter(
-      (e) => e.area?.toLowerCase() === AREA && e.tipo !== "STOCK"
+      (e) => e.area?.toLowerCase() === AREA && e.tipo !== "STOCK" && e.tipo !== "REMITO" && e.tipo !=="FACTURA"
     );
 
     return filtrados.map((e) => {

@@ -134,6 +134,21 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
+.form-special-txt{
+  font-weight: bolder;
+  font-size: small;
+  text-transform: uppercase;
+  padding: .5rem;
+}
+.form-special-txt2{
+  font-weight: bolder;
+  font-style: italic;
+  font-size: smaller;
+  text-transform:lowercase;
+  padding: .5rem;
+  color: #007bff;
+}
+
 .margin-bt {
   margin-top: 1rem;
 }
@@ -307,6 +322,10 @@
   align-items: flex-end;
   gap: 1rem;
   margin-top: 10px;
+}
+
+.mini-input{
+  width: 2px;
 }
 
 .unidad-display {

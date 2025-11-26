@@ -313,117 +313,127 @@ const FormMovimientoStock = ({
 
         <hr />
         <form>
-          <InputValidator campo={esFactura} />
-          <div className="type-container">
-            <button
-              type="button"
-              className={
-                esFactura ? "type-btn positive-active-black" : "type-btn"
-              }
-              onClick={() => {
-                setEsFactura(!esFactura);
-                setTipoMovimiento("ALTA");
-              }}
-            >
-              PROVEEDOR
-            </button>
-          </div>
-          {/* info de la factura */}
-          {esFactura && (
+          {elemento?.factura && (
             <>
-              <label className="form-title">Datos del remito/factura</label>
-              <div className="form-box2">
-                <label>Remito</label> <InputValidator campo={formData.remito} />
-                <input
-                  type="text"
-                  style={{ textTransform: "uppercase" }}
-                  value={formData.remito}
-                  onChange={handleChange}
-                  name="remito"
-                ></input>
-                <label>Factura</label>{" "}
-                <InputValidator campo={formData.factura} />
-                <InputValidator campo={formData.moneda} />
-                <div className="select-with-button">
-                  <input
-                    type="text"
-                    style={{ textTransform: "uppercase" }}
-                    value={formData.factura}
-                    onChange={handleChange}
-                    name="factura"
-                  ></input>
-                  <button
-                    type="button"
-                    className={
-                      moneda === "pesos" ? "type-btn active" : "type-btn"
-                    }
-                    onClick={() => setMoneda("pesos")}
-                  >
-                    AR$
-                  </button>
-                  <button
-                    type="button"
-                    className={
-                      moneda === "dolares"
-                        ? "type-btn active-green"
-                        : "type-btn"
-                    }
-                    onClick={() => setMoneda("dolares")}
-                  >
-                    U$D
-                  </button>
-                </div>
-                <label>Proveedor</label>
-                <InputValidator campo={formData.proveedor} />
-                <div className="select-with-button">
-                  <Select
-                    className="select-grow"
-                    options={proveedores
-                      .filter((pr) => pr.id !== "01")
-                      .map((opt) => ({
-                        value: String(opt.id),
-                        label:
-                          opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
-                        cuit: opt.cuit,
-                      }))}
-                    value={
-                      formData.proveedor
-                        ? proveedores
-                            .map((opt) => ({
-                              value: String(opt.id),
-                              label:
-                                opt.id +
-                                " - " +
-                                opt.nombre +
-                                " (" +
-                                opt.marca +
-                                ")",
-                              cuit: opt.cuit,
-                            }))
-                            .find(
-                              (opt) =>
-                                opt.value === formData.proveedor ||
-                                String(opt.value) === String(proveedor)
-                            )
-                        : null
-                    }
-                    onChange={(selectedProv) => {
-                      const valor = selectedProv ? selectedProv.value : "";
-                      handleChange({
-                        target: {
-                          name: "proveedor",
-                          value: valor,
-                        },
-                      });
+              {/* bloqueado porque ya no se gestionan aca las fc y rm, esto es para los eventos viejos
+              <InputValidator campo={esFactura} />
+              <div className="type-container">
+                <button
+                  type="button"
+                  className={
+                    esFactura ? "type-btn positive-active-black" : "type-btn"
+                  }
+                  onClick={() => {
+                    setEsFactura(!esFactura);
+                    setTipoMovimiento("ALTA");
+                  }}
+                >
+                  PROVEEDOR
+                </button>
+              </div>
+              */}
+              {/* info de la factura */}
+              {esFactura && (
+                <>
+                  <label className="form-title">Datos del remito/factura</label>
+                  <div className="form-box2">
+                    <label>Remito</label>{" "}
+                    <InputValidator campo={formData.remito} />
+                    <input
+                      type="text"
+                      style={{ textTransform: "uppercase" }}
+                      value={formData.remito}
+                      onChange={handleChange}
+                      name="remito"
+                    ></input>
+                    <label>Factura</label>{" "}
+                    <InputValidator campo={formData.factura} />
+                    <InputValidator campo={formData.moneda} />
+                    <div className="select-with-button">
+                      <input
+                        type="text"
+                        style={{ textTransform: "uppercase" }}
+                        value={formData.factura}
+                        onChange={handleChange}
+                        name="factura"
+                      ></input>
+                      <button
+                        type="button"
+                        className={
+                          moneda === "pesos" ? "type-btn active" : "type-btn"
+                        }
+                        onClick={() => setMoneda("pesos")}
+                      >
+                        AR$
+                      </button>
+                      <button
+                        type="button"
+                        className={
+                          moneda === "dolares"
+                            ? "type-btn active-green"
+                            : "type-btn"
+                        }
+                        onClick={() => setMoneda("dolares")}
+                      >
+                        U$D
+                      </button>
+                    </div>
+                    <label>Proveedor</label>
+                    <InputValidator campo={formData.proveedor} />
+                    <div className="select-with-button">
+                      <Select
+                        className="select-grow"
+                        options={proveedores
+                          .filter((pr) => pr.id !== "01")
+                          .map((opt) => ({
+                            value: String(opt.id),
+                            label:
+                              opt.id +
+                              " - " +
+                              opt.nombre +
+                              " (" +
+                              opt.marca +
+                              ")",
+                            cuit: opt.cuit,
+                          }))}
+                        value={
+                          formData.proveedor
+                            ? proveedores
+                                .map((opt) => ({
+                                  value: String(opt.id),
+                                  label:
+                                    opt.id +
+                                    " - " +
+                                    opt.nombre +
+                                    " (" +
+                                    opt.marca +
+                                    ")",
+                                  cuit: opt.cuit,
+                                }))
+                                .find(
+                                  (opt) =>
+                                    opt.value === formData.proveedor ||
+                                    String(opt.value) === String(proveedor)
+                                )
+                            : null
+                        }
+                        onChange={(selectedProv) => {
+                          const valor = selectedProv ? selectedProv.value : "";
+                          handleChange({
+                            target: {
+                              name: "proveedor",
+                              value: valor,
+                            },
+                          });
 
-                      // 2. Actualiza estado proveedor
-                      setProveedor(valor);
-                    }}
-                    placeholder=""
-                    isClearable
-                    required
-                  />
-                  {/*
+                          // 2. Actualiza estado proveedor
+                          setProveedor(valor);
+                        }}
+                        placeholder=""
+                        isClearable
+                        required
+                      />
+                      {/*
                   <TextButton
                     text="+"
                     className="mini-btn"
@@ -431,12 +441,14 @@ const FormMovimientoStock = ({
                     type="button"
                   />
                    */}
-                </div>
-              </div>
+                    </div>
+                  </div>
+                  <br />
+                </>
+              )}
             </>
           )}
           {/* carga de ingresos*/}
-          <br />
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
             <label>
@@ -556,6 +568,20 @@ const FormMovimientoStock = ({
                  */}
               </div>
             </label>
+
+            {esFactura && (
+              <div className="input-inline">
+                <label>
+                  Valor / Precio <InputValidator campo={valor} />
+                  <input
+                    type="number"
+                    value={valor}
+                    onChange={(e) => setValor(e.target.value)}
+                    min="0"
+                  />
+                </label>
+              </div>
+            )}
             <div className="input-inline">
               <label>
                 Cantidad <InputValidator campo={cantidad} />
@@ -569,18 +595,6 @@ const FormMovimientoStock = ({
               <div className="unidad-display">
                 <input type="text" value={unidad.toUpperCase()} disabled />
               </div>
-            </div>
-            <div className="input-inline">
-              <label>
-                Valor / Precio <InputValidator campo={valor} />
-                <input
-                  type="number"
-                  value={valor}
-                  onChange={(e) => setValor(e.target.value)}
-                  min="0"
-                />
-              </label>
-
               <div className="type-container">
                 <button
                   className="plus-btn"
@@ -626,13 +640,15 @@ const FormMovimientoStock = ({
                         ? item.descripcion
                         : stock.find((s) => s.id === item.id).descripcion}
                     </div>
-                    <div className="item-info-small">
-                      <strong>$ </strong>{" "}
-                      {item.valor.toLocaleString("es-AR", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </div>
+                    {esFactura && (
+                      <div className="item-info-small">
+                        <strong>$ </strong>{" "}
+                        {item.valor.toLocaleString("es-AR", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </div>
+                    )}
 
                     <div className="item-actions">
                       <span className="list-cant3">

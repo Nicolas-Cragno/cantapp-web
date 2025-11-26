@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { FaSpinner as LogoLoading } from "react-icons/fa";
 import { FaKey as LogoKey } from "react-icons/fa";
+import { PiHandDepositDuotone as LogoDeposit } from "react-icons/pi";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
@@ -32,7 +33,7 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
   const AREA = filtroSector.toLowerCase();
 
   const { reparaciones, loading } = useReparaciones(filtroSector);
-  const {tractores, furgones} = useData();
+  const { tractores, furgones } = useData();
 
   const [filtro, setFiltro] = useState("");
   const [filtroDebounced, setFiltroDebounced] = useState("");
@@ -59,7 +60,8 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       {
         titulo: "FECHA",
         campo: "fecha",
-        render: (v, ev) => ev.fechaFormateada + " - " + ev.horaFormateada + " hs",
+        render: (v, ev) =>
+          ev.fechaFormateada + " - " + ev.horaFormateada + " hs",
         offresponsive: true,
       },
       {
@@ -68,32 +70,52 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         render: (v, ev) => ev.fechaReducida,
         onresponsive: true,
       },
-      { titulo: "TIPO", campo: "tipo",  render: (v, ev) => (
-    <span
-      style={{
-        backgroundColor: ev.tipo === "SERVICE" ? "#efb810" : ev.tipo === "SERVICE CAJA DIFERENCIAL" ? "#ef1010ff" : "transparent",
-        padding: ev.tipo === "SERVICE" || ev.tipo === "SERVICE CAJA DIFERENCIAL" ? "4px 4px" : undefined,
-      }}
-    >
-      {v}
-    </span>
-  )},
-      { titulo: "MECÁNICO / PROVEEDOR", campo: "mecanicoTxt", render: (v, ev) => (
-    <span
-      style={{
-        backgroundColor: ev.esServicio ? "#efb810" : "transparent",
-        padding: ev.esServicio ? "4px 4px" : undefined,
-        //borderRadius: ev.esServicio ? "4px" : undefined,
-      }}
-    >
-      {v}
-    </span>
-  ), },
+      {
+        titulo: "TIPO",
+        campo: "tipo",
+        render: (v, ev) => (
+          <span
+            style={{
+              backgroundColor:
+                ev.tipo === "SERVICE"
+                  ? "#efb810"
+                  : ev.tipo === "SERVICE CAJA DIFERENCIAL"
+                  ? "#ef1010ff"
+                  : "transparent",
+              padding:
+                ev.tipo === "SERVICE" || ev.tipo === "SERVICE CAJA DIFERENCIAL"
+                  ? "4px 4px"
+                  : undefined,
+            }}
+          >
+            {v}
+          </span>
+        ),
+      },
+      {
+        titulo: "MECÁNICO / PROVEEDOR",
+        campo: "mecanicoTxt",
+        render: (v, ev) => (
+          <span
+            style={{
+              backgroundColor: ev.esServicio ? "#efb810" : "transparent",
+              padding: ev.esServicio ? "4px 4px" : undefined,
+              //borderRadius: ev.esServicio ? "4px" : undefined,
+            }}
+          >
+            {v}
+          </span>
+        ),
+      },
     ];
 
     const fin = [
       { titulo: "DETALLE", campo: "detalle", offresponsive: true },
-      { titulo: "SUCURSAL", campo: "sucursal", render: (v, ev) => ev.nombreSucursal },
+      {
+        titulo: "SUCURSAL",
+        campo: "sucursal",
+        render: (v, ev) => ev.nombreSucursal,
+      },
     ];
 
     if (AREA === "tractores") {
@@ -101,15 +123,15 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
         ...base,
         //{ titulo: "TRACTOR", campo: "tractor", render: (t, ev) => `${t} (${ev.dominioTractor})` },
         {
-      titulo: "TRACTOR",
-      campo: "tractor",
-      render: (t, ev) => {
-        if (Array.isArray(ev.tractor)) {
-          return ev.tractor.join(", "); 
-        }
-        return ev.tractor || "";
-      }
-    },
+          titulo: "TRACTOR",
+          campo: "tractor",
+          render: (t, ev) => {
+            if (Array.isArray(ev.tractor)) {
+              return ev.tractor.join(", ");
+            }
+            return ev.tractor || "";
+          },
+        },
         { titulo: "KM", campo: "kilometraje", offresponsive: true },
         ...fin,
       ];
@@ -119,12 +141,16 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       return [
         ...base,
         //{ titulo: "FURGÓN", campo: "furgon", render: (f, ev) => `${f} (${ev.dominioFurgon})` },
-        {titulo: "FURGÓN", campo: "furgon", render: (t, ev) => {
-        if (Array.isArray(ev.furgon)) {
-          return ev.furgon.join(", "); 
-        }
-        return ev.furgon || "";
-      }},
+        {
+          titulo: "FURGÓN",
+          campo: "furgon",
+          render: (t, ev) => {
+            if (Array.isArray(ev.furgon)) {
+              return ev.furgon.join(", ");
+            }
+            return ev.furgon || "";
+          },
+        },
         ...fin,
       ];
     }
@@ -146,14 +172,25 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       <div className="table-header">
         <h1 className="table-logo-box">
           <img
-            src={AREA === "tractores" ? LogoTractor : AREA === "furgones" ? LogoFurgon : LogoDefault}
+            src={
+              AREA === "tractores"
+                ? LogoTractor
+                : AREA === "furgones"
+                ? LogoFurgon
+                : LogoDefault
+            }
             alt=""
             className="table-logo"
           />
           TALLER {AREA.toUpperCase()}
         </h1>
 
-        <TextButton text="Ver ingresos" onClick={() => setModalIngresosVisible(true)} />
+        <TextButton
+          text="VER INGRESOS"
+          onClick={() => {
+            setModalIngresosVisible(true);
+          }}
+        />
 
         <input
           type="text"
@@ -169,12 +206,20 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
           <LogoLoading className="spinner" />
         </div>
       ) : (
-        <TablaVirtual columnas={columnas} data={reparacionesFiltradas} onRowClick={setEventoSeleccionado} />
+        <TablaVirtual
+          columnas={columnas}
+          data={reparacionesFiltradas}
+          onRowClick={setEventoSeleccionado}
+        />
       )}
 
       {eventoSeleccionado && (
         <FichaGestor
-          tipo={["RETIRA", "ENTREGA"].includes(eventoSeleccionado.tipo) ? "llave" : AREA}
+          tipo={
+            ["RETIRA", "ENTREGA"].includes(eventoSeleccionado.tipo)
+              ? "llave"
+              : AREA
+          }
           filtroVehiculo={AREA}
           elemento={eventoSeleccionado}
           onClose={cerrar}
@@ -183,34 +228,102 @@ const Reparaciones = ({ filtroSector = "tractores" }) => {
       )}
 
       {modalAgregarVisible && (
-        <FormGestor tipo={AREA} filtroVehiculo={AREA} onClose={() => setModalAgregarVisible(false)} onGuardar={cerrar} />
+        <FormGestor
+          tipo={AREA}
+          filtroVehiculo={AREA}
+          onClose={() => setModalAgregarVisible(false)}
+          onGuardar={cerrar}
+        />
       )}
 
       {modalKeyVisible && (
-        <FormLlave sector={AREA} onClose={() => setModalKeyVisible(false)} onGuardar={cerrar} />
+        <FormLlave
+          sector={AREA}
+          onClose={() => setModalKeyVisible(false)}
+          onGuardar={cerrar}
+        />
       )}
-      {modalTractorVisible && <ModalVehiculo coleccion={tractores} tipo={AREA} onClose={()=>setModalTractorVisible(false)}/>}
-        {modalFurgonVisible && <ModalVehiculo coleccion={furgones} tipo={AREA} onClose={()=>setModalFurgonVisible(false)}/>}
-      {modalStockVisible && <ModalStock taller={AREA} onClose={() => setModalStockVisible(false)} />}
-      {modalProveedorVisible && <ModalProveedor onClose={() => setModalProveedorVisible(false)} />}
-      {modalPersonaVisible && <ModalPersona puesto="mecanico" onClose={() => setModalPersonaVisible(false)} />}
-      {modalIngresosVisible && <ModalEventos tipo="STOCK" filtroSector={AREA} onClose={() => setModalIngresosVisible(false)} />}
+      {modalTractorVisible && (
+        <ModalVehiculo
+          coleccion={tractores}
+          tipo={AREA}
+          onClose={() => setModalTractorVisible(false)}
+        />
+      )}
+      {modalFurgonVisible && (
+        <ModalVehiculo
+          coleccion={furgones}
+          tipo={AREA}
+          onClose={() => setModalFurgonVisible(false)}
+        />
+      )}
+      {modalStockVisible && (
+        <ModalStock taller={AREA} onClose={() => setModalStockVisible(false)} />
+      )}
+      {modalProveedorVisible && (
+        <ModalProveedor onClose={() => setModalProveedorVisible(false)} />
+      )}
+      {modalPersonaVisible && (
+        <ModalPersona
+          puesto="mecanico"
+          onClose={() => setModalPersonaVisible(false)}
+        />
+      )}
+      {modalIngresosVisible && (
+        <ModalEventos
+          tipo="STOCK"
+          filtroSector={AREA}
+          onClose={() => setModalIngresosVisible(false)}
+        />
+      )}
 
       {/* ---------------- OPCIONES ---------------- */}
       <div className="table-options">
         <div className="table-options-group">
-          {AREA === "tractores" && (<FullButton logo={LogoTractor} text="TRACTORES" onClick={() => {setModalTractorVisible(true)}}/>)}
-          {AREA === "furgones" && ( <FullButton logo={LogoFurgon} text="FURGONES" onClick={() => {setModalFurgonVisible(true)}} />)}
-          <FullButton logo={LogoStock} text="REPUESTOS" onClick={() => {setModalStockVisible(true)}} />
-          <FullButton logo={LogoPersona} text="MECANICOS" onClick={() => setModalPersonaVisible(true)} />
+          {AREA === "tractores" && (
+            <FullButton
+              logo={LogoTractor}
+              text="TRACTORES"
+              onClick={() => {
+                setModalTractorVisible(true);
+              }}
+            />
+          )}
+          {AREA === "furgones" && (
+            <FullButton
+              logo={LogoFurgon}
+              text="FURGONES"
+              onClick={() => {
+                setModalFurgonVisible(true);
+              }}
+            />
+          )}
+          <FullButton
+            logo={LogoStock}
+            text="REPUESTOS"
+            onClick={() => {
+              setModalStockVisible(true);
+            }}
+          />
+          <FullButton
+            logo={LogoPersona}
+            text="MECANICOS"
+            onClick={() => setModalPersonaVisible(true)}
+          />
         </div>
         <div className="table-options-group">
           {AREA === "tractores" && (
-            <button className="table-agregar" onClick={() => setModalKeyVisible(true)}>
+            <button
+              className="table-agregar"
+              onClick={() => setModalKeyVisible(true)}
+            >
               <LogoKey className="button-logo" />
             </button>
           )}
-          <TextButton text="+ AGREGAR" onClick={() => setModalAgregarVisible(true)} />
+          <TextButton
+            text="+ AGREGAR"
+            onClick={() => setModalAgregarVisible(true)}
+          />
         </div>
       </div>
     </section>

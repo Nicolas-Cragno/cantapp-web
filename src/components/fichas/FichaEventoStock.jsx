@@ -20,7 +20,7 @@ import "./css/Fichas.css";
 const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
   const { proveedores, stock } = useData();
   const [modoEdicion, setModoEdicion] = useState(false);
-
+  let tipoParaFicha;
   if (!elemento) {
     console.log(
       "[Error] se esperaba recibir un elemento (evento) por parámetro."
@@ -28,16 +28,33 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
     return null;
   }
 
+  switch (elemento.tipo) {
+    case "STOCK":
+      tipoParaFicha = "movimientoStock";
+      break;
+    case "REMITO":
+      tipoParaFicha = "remito";
+      break;
+    case "FACTURA":
+      tipoParaFicha = "factura";
+      break;
+    default:
+      tipoParaFicha = "movimientoStock";
+      break;
+  }
+
   let totalValor = 0;
   let valorFinal = 0;
   let monedaValor = "";
 
   if (elemento.ingresos) {
-    totalValor = elemento.ingresos?.reduce((acum, ingreso) => {
-      const cantidad = Number(ingreso.cantidad) || 0;
-      const valor = Number(ingreso.valor) || 0;
-      return acum + cantidad * valor;
-    }, 0);
+    totalValor = elemento.total
+      ? elemento.total
+      : elemento.ingresos?.reduce((acum, ingreso) => {
+          const cantidad = Number(ingreso.cantidad) || 0;
+          const valor = Number(ingreso.valor) || 0;
+          return acum + cantidad * valor;
+        }, 0);
 
     valorFinal = totalValor.toLocaleString("es-AR", {
       minimumFractionDigits: 2,
@@ -83,11 +100,15 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
             </div>
 
             <div className="ficha-info">
-              <p>
-                <strong>Tipo: </strong> {elemento.tipo}
-              </p>
-              <p>
-                <strong>Área / Sector: </strong> {elemento.area?.toUpperCase()}
+              <p style={{ fontSize: "large" }}>
+                <strong>
+                  {elemento.tipo}{" "}
+                  {elemento.tipo === "FACTURA"
+                    ? elemento.factura
+                    : elemento.tipo === "REMITO"
+                    ? elemento.remito
+                    : ""}
+                </strong>{" "}
               </p>
               {elemento.proveedor && (
                 <p>
@@ -95,18 +116,42 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                   {buscarEmpresa(proveedores, elemento.proveedor)}
                 </p>
               )}
-              {elemento.remito && (
+              {elemento.remito && elemento.tipo !== "REMITO" && (
                 <p>
                   <strong>Remito: </strong> {elemento.remito}
                 </p>
               )}
-              {elemento.factura && (
+
+              {elemento.factura && elemento.tipo !== "FACTURA" && (
+                <p>
+                  <strong>Factura: </strong> {elemento.factura.toUpperCase()}
+                </p>
+              )}
+
+              {elemento.factura && elemento.tipo === "FACTURA" && (
                 <>
+                  {elemento.subtotal && elemento.descuento && (
+                    <>
+                      <p>
+                        <strong>
+                          Subtotal:{" "}
+                          <span
+                            style={{
+                              fontStyle: "italic",
+                              fontWeight: "bold",
+                              fontSize: "smaller",
+                              marginLeft: "5px",
+                            }}
+                          >
+                            {monedaValor}
+                          </span>{" "}
+                        </strong>{" "}
+                        {elemento.subtotal}
+                      </p>
+                    </>
+                  )}
                   <p>
-                    <strong>Factura: </strong> {elemento.factura.toUpperCase()}
-                  </p>
-                  <p>
-                    <strong>Valor: </strong>{" "}
+                    <strong>Total: </strong>{" "}
                     <span
                       style={{
                         fontStyle: "italic",
@@ -119,8 +164,18 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                     </span>{" "}
                     {valorFinal}
                   </p>
+                  {elemento.descuento && (
+                    <>
+                      <p>
+                        <strong>Descuento: </strong> {elemento.descuento} %
+                      </p>
+                    </>
+                  )}
                 </>
               )}
+              <p>
+                <strong>Área / Sector: </strong> {elemento.area?.toUpperCase()}
+              </p>
             </div>
 
             <div className="ficha-info">
@@ -179,7 +234,7 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
         </div>
       ) : (
         <FormGestor
-          tipo={"movimientoStock"}
+          tipo={tipoParaFicha}
           elemento={elemento}
           onClose={() => setModoEdicion(false)}
           onGuardar={handleGuardado}

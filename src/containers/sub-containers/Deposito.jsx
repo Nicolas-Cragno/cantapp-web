@@ -1,6 +1,10 @@
 // ----------------------------------------------------------------------- imports externos
 import { useState, useMemo } from "react";
 import { FaSpinner as LogoLoading, FaTools as LogoTool } from "react-icons/fa";
+import {
+  IoDocumentsSharp as LogoDoc,
+  IoDocumentsOutline as LogoDoc2,
+} from "react-icons/io5";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -29,9 +33,10 @@ const Deposito = ({ taller = null }) => {
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
   const [modalRemitoVisible, setModalRemitoVisible] = useState(false);
   const [modalFacturaVisible, setModalFacturaVisible] = useState(false);
-  const [modalHerramientasVisible, setModalHerramientasVisible] = useState(false);
+  const [modalHerramientasVisible, setModalHerramientasVisible] =
+    useState(false);
 
-const { stock = [], proveedores = [] } = useData();
+  const { stock = [], proveedores = [] } = useData();
   const loading = !stock || stock.length === 0;
 
   // ------------------ Columnas de la tabla
@@ -39,7 +44,11 @@ const { stock = [], proveedores = [] } = useData();
     { titulo: "ID", campo: "id", offresponsive: true },
     { titulo: "DESCRIPCIÓN", campo: "descripcion" },
     { titulo: "MARCA", campo: "marca" },
-    { titulo: "PROVEEDOR", campo: "proveedor", render: (p) => buscarNombre(proveedores, p) },
+    {
+      titulo: "PROVEEDOR",
+      campo: "proveedor",
+      render: (p) => buscarNombre(proveedores, p),
+    },
     { titulo: "COD. PROVEEDOR", campo: "codigoProveedor", offresponsive: true },
     {
       titulo: "CANTIDAD",
@@ -54,8 +63,10 @@ const { stock = [], proveedores = [] } = useData();
   // ------------------ Filtrado y ordenado
   const articulosFiltrados = useMemo(() => {
     return stock
-      .filter(a => {
-        const texto = `${a.id || ""} ${a.codigoProveedor || ""} ${a.descripcion || ""} ${a.marca || ""} ${a.cantidad || ""} ${a.unidad || ""}`;
+      .filter((a) => {
+        const texto = `${a.id || ""} ${a.codigoProveedor || ""} ${
+          a.descripcion || ""
+        } ${a.marca || ""} ${a.cantidad || ""} ${a.unidad || ""}`;
         return texto.toLowerCase().includes(filtro.toLowerCase());
       })
       .sort((a, b) => (a.id || "").localeCompare(b.id || ""));
@@ -66,9 +77,12 @@ const { stock = [], proveedores = [] } = useData();
       <div className="table-header">
         <h1 className="table-logo-box">
           <img src={LogoStock} alt="" className="table-logo" />
-          REGISTRO DE STOCK 
+          REGISTRO DE STOCK
         </h1>
-        <TextButton text="Ver movimientos" onClick={() => setModalEventosVisible(true)} />
+        <TextButton
+          text="Ver movimientos"
+          onClick={() => setModalEventosVisible(true)}
+        />
         <input
           type="text"
           placeholder="Buscar ..."
@@ -98,35 +112,80 @@ const { stock = [], proveedores = [] } = useData();
         />
       )}
 
-      {modalAgregarVisible && <FormStock onClose={() => setModalAgregarVisible(false)} onGuardar={() => setModalAgregarVisible(false)} />}
-      {modalMovimientoVisible && <FormMovimientoStock onClose={() => setModalMovimientoVisible(false)} onGuardar={() => setModalMovimientoVisible(false)} />}
-      {modalHerramientasVisible && <FormHerramienta sector={taller} onClose={() => setModalHerramientasVisible(false)} onGuardar={() => setModalHerramientasVisible(false)} />}
-      {modalEventosVisible && <ModalEventos tipo="STOCK" onClose={() => setModalEventosVisible(false)} />}
-      {modalProveedorVisible && <ModalProveedor onClose={() => setModalProveedorVisible(false)} />}
-      {modalRemitoVisible && <FormRemito onClose={()=> setModalRemitoVisible(false)}/>}
-      {modalFacturaVisible && <FormFactura onClose={()=> setModalFacturaVisible(false)}/>}
+      {modalAgregarVisible && (
+        <FormStock
+          onClose={() => setModalAgregarVisible(false)}
+          onGuardar={() => setModalAgregarVisible(false)}
+        />
+      )}
+      {modalMovimientoVisible && (
+        <FormMovimientoStock
+          onClose={() => setModalMovimientoVisible(false)}
+          onGuardar={() => setModalMovimientoVisible(false)}
+        />
+      )}
+      {modalHerramientasVisible && (
+        <FormHerramienta
+          sector={taller}
+          onClose={() => setModalHerramientasVisible(false)}
+          onGuardar={() => setModalHerramientasVisible(false)}
+        />
+      )}
+      {modalEventosVisible && (
+        <ModalEventos
+          tipo="STOCK"
+          onClose={() => setModalEventosVisible(false)}
+        />
+      )}
+      {modalProveedorVisible && (
+        <ModalProveedor onClose={() => setModalProveedorVisible(false)} />
+      )}
+      {modalRemitoVisible && (
+        <FormRemito onClose={() => setModalRemitoVisible(false)} />
+      )}
+      {modalFacturaVisible && (
+        <FormFactura onClose={() => setModalFacturaVisible(false)} />
+      )}
 
       <div className="table-options">
         <div className="table-options-group">
-          <button className="table-agregar" onClick={() => setModalProveedorVisible(true)}>
+          <button
+            className="table-agregar"
+            onClick={() => setModalProveedorVisible(true)}
+          >
             <img src={LogoProveedor} alt="" className="table-logo2" />
             <span className="table-logo-span">Proveedores</span>
           </button>
-          <button className="table-agregar" onClick={() => setModalRemitoVisible(true)}>
-            <img src={LogoProveedor} alt="" className="table-logo2" />
+          <button
+            className="table-agregar"
+            onClick={() => setModalRemitoVisible(true)}
+          >
+            <LogoDoc2 className="table-logo3" />
             <span className="table-logo-span">Remitos</span>
           </button>
-          <button className="table-agregar" onClick={() => setModalFacturaVisible(true)}>
-            <img src={LogoProveedor} alt="" className="table-logo2" />
+          <button
+            className="table-agregar"
+            onClick={() => setModalFacturaVisible(true)}
+          >
+            <LogoDoc className="table-logo3" />
             <span className="table-logo-span">Facturas</span>
           </button>
         </div>
         <div className="table-options-group">
-          <button className="table-agregar" onClick={() => setModalHerramientasVisible(true)}>
+          <button
+            className="table-agregar"
+            onClick={() => setModalHerramientasVisible(true)}
+          >
             <LogoTool className="button-logo" />
           </button>
-          <TextButton text="↓↑ MOVIMIENTO" onClick={() => setModalMovimientoVisible(true)} />
-          <TextButton text="+ AGREGAR" onClick={() => setModalAgregarVisible(true)} />
+          <TextButton
+            text="↓↑ MOVIMIENTO"
+            onClick={() => setModalMovimientoVisible(true)}
+          />
+          <TextButton
+            text="+ AGREGAR"
+            onClick={() => setModalAgregarVisible(true)}
+          />
         </div>
       </div>
     </section>

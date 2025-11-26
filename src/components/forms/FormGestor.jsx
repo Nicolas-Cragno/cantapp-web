@@ -13,6 +13,8 @@ const formularios = {
   llave: lazy(() => import("./FormLlave")),
   stock: lazy(() => import("./FormStock")),
   movimientoStock: lazy(() => import("./FormMovimientoStock")),
+  factura: lazy(() => import("./FormFactura")),
+  remito: lazy(() => import("./FormRemito")),
   viaje: lazy(() => import("./FormViaje")),
   movimiento: lazy(() => import("./FormMovimiento")),
 };

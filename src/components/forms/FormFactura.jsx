@@ -44,6 +44,7 @@ const FormFactura = ({
   const [unidad, setUnidad] = useState("");
   const [valor, setValor] = useState(0);
   const [valorFinal, setValorFinal] = useState(0);
+  const [valorConDescuento, setValorConDescuento] = useState(0);
   const [moneda, setMoneda] = useState("pesos");
   const [modoEdicion, setModoEdicion] = useState(false);
   const [ingresos, setIngresos] = useState(
@@ -66,10 +67,12 @@ const FormFactura = ({
       valor: ings.valor,
       moneda: ings.moneda,
       logo: ings.cantidad < 0 ? <LogoDown /> : <LogoPlus />,
-
     })),
     moneda: elemento?.moneda ? elemento.moneda : "pesos",
     factura: elemento?.factura ? elemento.factura : "",
+    descuento: elemento?.descuento ? elemento.descuento : 0,
+    subtotal: elemento?.subtotal ? elemento.subtotal : 0,
+    total: elemento?.total ? elemento.total : 0,
     remito: elemento?.remito ? elemento.remito : "",
     proveedor: elemento?.proveedor ? elemento.proveedor : "",
     detalle: elemento?.detalle ? elemento.detalle : "",
@@ -92,8 +95,13 @@ const FormFactura = ({
       (total, i) => total + i.cantidad * (i.valor || 0),
       0
     );
+    const nuevoValorConDescuento =
+      formData.descuento > 0
+        ? nuevoValorFinal * (1 - formData.descuento * 0.01)
+        : nuevoValorFinal;
     setValorFinal(nuevoValorFinal);
-  }, [ingresos]);
+    setValorConDescuento(nuevoValorConDescuento);
+  }, [ingresos, formData.descuento]);
 
   console.log("Ingresos:", ingresos);
 
@@ -202,11 +210,13 @@ const FormFactura = ({
       .join("<br>");
 
     const confirmacion = await Swal.fire({
-      title: "Confirmar movimiento",
+      title: "Confirmar Factura",
       html: `
       <div style="text-align:center;margin-top:10px;" class="form-box2">
         ${resumenIngresos}
       </div>
+      <p>Subtotal: ${formData.moneda} ${valorFinal}</p>
+      <p><strong>Total: ${formData.moneda} ${valorFinal}</strong></p>
       <p>Sector: ${formData.area}</p>
       
     `,
@@ -241,6 +251,9 @@ const FormFactura = ({
           valor: i.valor,
           moneda: i.moneda,
         })),
+        descuento: formData.descuento || 0,
+        subtotal: valorFinal || 0,
+        total: valorConDescuento || 0, // valorConDescuento si no tiene descuento toma el valorFinal
         detalle: formData.detalle || "",
       };
 
@@ -276,24 +289,48 @@ const FormFactura = ({
         <h2>CARGAR FACTURA</h2>
 
         <hr />
-        <form>
-          <div className="type-container">
-          </div>
+        <form onSubmit={handleSubmit}>
+          <div className="type-container"></div>
           {/* info del remito */}
-            <>
-              <label className="form-title">Datos de la factura</label>
-              <div className="form-box2">
-                
-                <label>Factura *</label> <InputValidator campo={formData.factura}/><InputValidator campo={formData.moneda}/>
-                <div className="select-with-button">
-                  <input
-                    type="text"
-                    style={{ textTransform: "uppercase" }}
-                    value={formData.factura}
-                    onChange={handleChange}
-                    name="factura"
-                    required
-                  ></input>
+          <>
+            <label className="form-title">Datos de la factura</label>
+            <div className="form-box2">
+              <label>Factura *</label>{" "}
+              <InputValidator campo={formData.factura} />
+              <div className="select-with-button">
+                <input
+                  type="text"
+                  style={{ textTransform: "uppercase" }}
+                  value={formData.factura}
+                  onChange={handleChange}
+                  name="factura"
+                  required
+                ></input>
+              </div>
+              <div className="select-with-button">
+                <div className="col-md-8">
+                  <label>
+                    Descuento
+                    <InputValidator campo={formData.descuento} />
+                    <input
+                      type="number"
+                      name="descuento"
+                      value={formData.descuento}
+                      onChange={(e) => {
+                        let v = Number(e.target.value);
+                        if (v < 0) v = 0;
+                        if (v > 100) v = 100;
+                        handleChange({
+                          target: { name: "descuento", value: v },
+                        });
+                      }}
+                      min="1"
+                      max="100"
+                    />
+                  </label>
+                </div>
+                <div className="col-md-4">
+                  <InputValidator campo={formData.moneda} />
                   <button
                     type="button"
                     className={
@@ -315,65 +352,67 @@ const FormFactura = ({
                     U$D
                   </button>
                 </div>
-                <label>Remito relacionado</label> <InputValidator campo={formData.remito}/>
-                <input
-                  type="text"
-                  style={{ textTransform: "uppercase" }}
-                  value={formData.remito}
-                  onChange={handleChange}
-                  name="remito"
-                ></input>
-                <label>Proveedor</label> <InputValidator campo={formData.proveedor}/>
+              </div>
+              <label>Remito relacionado</label>{" "}
+              <InputValidator campo={formData.remito} />
+              <input
+                type="text"
+                style={{ textTransform: "uppercase" }}
+                value={formData.remito}
+                onChange={handleChange}
+                name="remito"
+              ></input>
+              <label>Proveedor</label>{" "}
+              <InputValidator campo={formData.proveedor} />
+              <div className="select-with-button">
+                <Select
+                  className="select-grow"
+                  options={proveedores
+                    .filter((pr) => pr.id !== "01")
+                    .map((opt) => ({
+                      value: String(opt.id),
+                      label:
+                        opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
+                      cuit: opt.cuit,
+                    }))}
+                  value={
+                    formData.proveedor
+                      ? proveedores
+                          .map((opt) => ({
+                            value: String(opt.id),
+                            label:
+                              opt.id +
+                              " - " +
+                              opt.nombre +
+                              " (" +
+                              opt.marca +
+                              ")",
+                            cuit: opt.cuit,
+                          }))
+                          .find(
+                            (opt) =>
+                              opt.value === formData.proveedor ||
+                              String(opt.value) === String(proveedor)
+                          )
+                      : null
+                  }
+                  onChange={(selectedProv) => {
+                    const valor = selectedProv ? selectedProv.value : "";
+                    handleChange({
+                      target: {
+                        name: "proveedor",
+                        value: valor,
+                      },
+                    });
 
-                <div className="select-with-button">
-                  <Select
-                    className="select-grow"
-                    options={proveedores
-                      .filter((pr) => pr.id !== "01")
-                      .map((opt) => ({
-                        value: String(opt.id),
-                        label:
-                          opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
-                        cuit: opt.cuit,
-                      }))}
-                    value={
-                      formData.proveedor
-                        ? proveedores
-                            .map((opt) => ({
-                              value: String(opt.id),
-                              label:
-                                opt.id +
-                                " - " +
-                                opt.nombre +
-                                " (" +
-                                opt.marca +
-                                ")",
-                              cuit: opt.cuit,
-                            }))
-                            .find(
-                              (opt) =>
-                                opt.value === formData.proveedor ||
-                                String(opt.value) === String(proveedor)
-                            )
-                        : null
-                    }
-                    onChange={(selectedProv) => {
-                      const valor = selectedProv ? selectedProv.value : "";
-                      handleChange({
-                        target: {
-                          name: "proveedor",
-                          value: valor,
-                        },
-                      });
-
-                      // 2. Actualiza estado proveedor
-                      setProveedor(valor);
-                    }}
-                    placeholder=""
-                    isClearable
-                    required
-                  />
-                  {/*
+                    // 2. Actualiza estado proveedor
+                    setProveedor(valor);
+                  }}
+                  placeholder=""
+                  isClearable
+                  required
+                />
+                {/*
                   <TextButton
                     text="+"
                     className="mini-btn"
@@ -381,16 +420,16 @@ const FormFactura = ({
                     type="button"
                   />
                    */}
-                </div>
               </div>
-            </>
-          
+            </div>
+          </>
+
           {/* carga de ingresos*/}
           <br />
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
-            <label> 
-              Area / Sector <InputValidator campo={formData.area}/>
+            <label>
+              Area / Sector <InputValidator campo={formData.area} />
               <Select
                 options={sectores.map((opt) => ({
                   value: opt.nombre, // o opt.id si querés usar el id
@@ -425,13 +464,12 @@ const FormFactura = ({
           </div>
           <br />
           <label className="form-title">
-            Registro articulos, repuestos, etc 
+            Registro articulos, repuestos, etc
           </label>
           <div className="form-box2">
             <br />
-            
             <label>
-              Artículo <InputValidator campo={articuloSeleccionado}/>
+              Artículo <InputValidator campo={articuloSeleccionado} />
               <div className="select-with-button">
                 <Select
                   className="select-grow"
@@ -481,8 +519,9 @@ const FormFactura = ({
               </div>
             </label>
             <div className="input-inline">
-                <label>
-                Cantidad<InputValidator campo={cantidad}/>
+              <label>
+                Cantidad
+                <InputValidator campo={cantidad} />
                 <input
                   type="number"
                   value={cantidad}
@@ -495,39 +534,69 @@ const FormFactura = ({
               </div>
             </div>
             <div className="input-inline">
-              
               <label>
-                              Valor / Precio <InputValidator campo={valor} />
-                              <input
-                                type="number"
-                                value={valor}
-                                onChange={(e) => setValor(e.target.value)}
-                                min="0"
-                              />
-                            </label>
-              
+                Valor / Precio <InputValidator campo={valor} />
+                <input
+                  type="number"
+                  value={valor}
+                  onChange={(e) => setValor(e.target.value)}
+                  min="0"
+                />
+              </label>
+
               <div className="type-container">
-                              <button
-                                className="plus-btn"
-                                type="button"
-                                onClick={handleAgregar}
-                              >
-                                <LogoPlus className="plus-logo" />
-                              </button>
-                            </div>
+                <button
+                  className="plus-btn"
+                  type="button"
+                  onClick={handleAgregar}
+                >
+                  <LogoPlus className="plus-logo" />
+                </button>
+              </div>
             </div>
-            
           </div>
+
           <br />
           {/* listado de ingresos */}
-          <label className="form-title">Movimiento a registrar</label><InputValidator campo={ingresos}/>
-          <label className="form-title">
-              {moneda === "pesos" ? "AR$" : "U$D"}{" "}
-              {valorFinal.toLocaleString("es-AR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
+          <label className="form-title">Movimiento a registrar</label>
+
+          <div className="">
+            <label className="form-title">
+              {formData.descuento > 0 ? (
+                <>
+                  <div>
+                    <span className="form-special-txt">Subtotal </span>
+                    {moneda === "pesos" ? "AR$" : "U$D"}{" "}
+                    {valorFinal.toLocaleString("es-AR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    <span className="form-special-txt2">{`+ ${formData.descuento}% descuento`}</span>
+                  </div>
+                  <div>
+                    <span className="form-special-txt">Total </span>
+                    {moneda === "pesos" ? "AR$" : "U$D"}{" "}
+                    {valorConDescuento.toLocaleString("es-AR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    <span className="form-special-txt">+IVA</span>
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <span className="form-special-txt">Total </span>
+                  {moneda === "pesos" ? "AR$" : "U$D"}{" "}
+                  {valorFinal.toLocaleString("es-AR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                  <span className="form-special-txt">+IVA</span>
+                </div>
+              )}
             </label>
+            <InputValidator campo={ingresos} />
+          </div>
           <div className="form-box2">
             {ingresos.length === 0 ? (
               <p>...</p>
@@ -574,10 +643,10 @@ const FormFactura = ({
                 ))}
               </ul>
             )}
-             
-          </div><br/>
+          </div>
+          <br />
           <label>
-            Detalle <InputValidator campo={formData.detalle}/>
+            Detalle <InputValidator campo={formData.detalle} />
             <textarea
               name="detalle"
               value={formData.detalle}

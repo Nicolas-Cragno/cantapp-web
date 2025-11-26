@@ -132,6 +132,11 @@
   max-width: 2rem;
 }
 
+.table-logo3{
+  font-size: 1.5rem;
+}
+
+
 .table-busqueda {
   padding: 0.5rem 1rem;
   font-size: 1rem;
@@ -154,6 +159,7 @@
   white-space: nowrap;
   display: flex;
   justify-content: space-around;
+  align-items: center;
 }
 
 .table-logo-span{
