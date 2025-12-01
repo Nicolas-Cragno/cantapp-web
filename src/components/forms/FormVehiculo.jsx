@@ -213,7 +213,7 @@ const FormVehiculo = ({
                   type="text"
                   inputMode="numeric"
                   pattern="\d*"
-                  maxLength={3}
+                  maxLength={4}
                   value={interno}
                   onChange={(e) => setInterno(e.target.value)}
                   disabled={modoEdicion || loading}
