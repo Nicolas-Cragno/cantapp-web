@@ -405,6 +405,8 @@ const ModalEventos = ({
                 ? "llave"
                 : filtroSector === "porteria"
                 ? "porteria"
+                : eventoSeleccionado.tipo
+                ? eventoSeleccionado.tipo
                 : "tractores"
             }
             elemento={eventoSeleccionado}

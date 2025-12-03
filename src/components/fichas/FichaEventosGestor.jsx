@@ -3,6 +3,8 @@ import { lazy, Suspense } from "react";
 const fichas = {
   // desde evento.tipo
   stock: lazy(() => import("./FichaEventoStock")),
+  factura: lazy(() => import("./FichaEventoStock")),
+  remito: lazy(() => import("./FichaEventoStock")),
   llave: lazy(() => import("./FichaLlave")),
   viaje: lazy(() => import("./FichaViaje")),
   entrada: lazy(() => import("./FichaEventoPorteria")),

@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 // ----------------------------------------------------------------------- imports INTERNOS
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../tablas/TablaColeccion";
+import FichaVehiculo from "../fichas/FichaVehiculo";
 import "./css/Modales.css";
 
 const ModalBranch = ({ sucursalId, onClose }) => {
@@ -13,11 +14,17 @@ const ModalBranch = ({ sucursalId, onClose }) => {
   const [cantTractores, setCantTractores] = useState(0);
   const [cantFurgones, setCantFurgones] = useState(0);
   const [cantLlaves, setCantLlaves] = useState(0);
+  const [tipoSeleccionado, setTipoSeleccionado] = useState(null);
+  const [itemSeleccionado, setItemSeleccionado] = useState(null);
+  const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
+
+  console.log("ID recibido:", sucursalId);
+  console.log("Ubicaciones:", ubicaciones);
 
   // --- Obtener datos de la sucursal
   const sucursalData = useMemo(() => {
     return (
-      ubicaciones[sucursalId] || {
+      ubicaciones.find((s) => s.id === sucursalId) || {
         llaves: [],
         ["llaves-taller-tractores"]: [],
         tractores: [],
@@ -82,7 +89,7 @@ const ModalBranch = ({ sucursalId, onClose }) => {
       },
       offresponsive: true,
     },
-    { titulo: "UBICACIÓN", campo: "ubicacion" },
+    { titulo: "UBICACIÓN", campo: "ubicacion", render: (u) => u.toUpperCase() },
   ];
 
   const columnasTractores = [
@@ -161,7 +168,10 @@ const ModalBranch = ({ sucursalId, onClose }) => {
                 ? "type-btn positive-active-black"
                 : "type-btn"
             }
-            onClick={() => setActiveTab("llaves")}
+            onClick={() => {
+              setActiveTab("llaves");
+              setTipoSeleccionado(null);
+            }}
           >
             Llaves ({cantLlaves})
           </button>
@@ -171,7 +181,10 @@ const ModalBranch = ({ sucursalId, onClose }) => {
                 ? "type-btn positive-active-black"
                 : "type-btn"
             }
-            onClick={() => setActiveTab("tractores")}
+            onClick={() => {
+              setActiveTab("tractores");
+              setTipoSeleccionado("tractores");
+            }}
           >
             Tractores ({cantTractores})
           </button>
@@ -181,13 +194,33 @@ const ModalBranch = ({ sucursalId, onClose }) => {
                 ? "type-btn positive-active-black"
                 : "type-btn"
             }
-            onClick={() => setActiveTab("furgones")}
+            onClick={() => {
+              setActiveTab("furgones");
+              setTipoSeleccionado("furgones");
+            }}
           >
             Furgones ({cantFurgones})
           </button>
         </div>
 
-        <TablaColeccion columnas={columnasActivas} datos={datosActivos} />
+        <TablaColeccion
+          columnas={columnasActivas}
+          datos={datosActivos}
+          onRowClick={(i) => {
+            setItemSeleccionado(i);
+            setModalVehiculoVisible(true);
+          }}
+        />
+
+        {/*  Abre la ficha solo con id (no trae el resto de la info)
+        {modalVehiculoVisible && (
+          <FichaVehiculo
+            elemento={itemSeleccionado}
+            tipoVehiculo={tipoSeleccionado}
+            onClose={() => setModalVehiculoVisible(false)}
+          />
+        )} 
+         */}
       </div>
     </div>
   );
