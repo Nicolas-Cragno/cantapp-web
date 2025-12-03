@@ -8,7 +8,28 @@
 .section-banner{
   width: 100%;
   height: 35vh;
-  background-image: url("../../assets/images/truckgrey.png");
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  padding-right: 2rem;
+}
+
+.banner-tractores{
+  background-image: url("../../assets/images/tools2.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position:center;
+}
+
+.banner-furgones{
+  background-image: url("../../assets/images/tools3.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position:center;
+}
+
+.banner-porteria{
+  background-image: url("../../assets/images/proteria.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position:center;

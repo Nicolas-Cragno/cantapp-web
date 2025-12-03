@@ -56,7 +56,9 @@ export default function useReparaciones(AREA = "tractores") {
       const nombrePersona = buscarPersona(personas, e.persona);
       const nombreOperador = buscarPersona(personas, e.operador);
       const dominioTractor = buscarDominio(e.tractor, tractores);
+      const fullTractor = `${e.tractor} (${e.dominioTractor})`;
       const dominioFurgon = buscarDominio(e.furgon, furgones);
+      const fullFurgon = `${e.furgon} (${e.dominioFurgon})`;
       const nombreSucursal = buscarNombre(ubicaciones, e.sucursal);
 
       // ---------------- Fecha
@@ -69,7 +71,8 @@ export default function useReparaciones(AREA = "tractores") {
         ${e.id} ${e.subtipo || ""} ${nombrePersona || ""} ${e.tractor || ""}
         ${e.furgon || ""} ${fechaFormateada} ${horaFormateada} ${fechaReducida}
         ${e.tipo || ""} ${e.usuario || ""} ${e.operador || ""} ${nombreOperador || ""}
-        ${nombreServicio || ""} ${e.vehiculo || ""} ${dominioTractor || ""} ${dominioFurgon || ""}
+        ${nombreServicio || ""} ${e.vehiculo || ""} ${dominioTractor || ""} ${dominioFurgon || ""} 
+        ${fullTractor} ${fullFurgon}
         ${e.persona || ""} ${e.servicio || ""} ${mecanicoTxt || ""} ${e.proveedor || ""}
         ${e.detalle || ""} ${e.sucursal || ""} ${nombreSucursal || ""} ${e.kilometraje}
       `

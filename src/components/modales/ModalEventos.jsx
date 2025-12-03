@@ -9,6 +9,7 @@ import { BsBoxes as LogoBox } from "react-icons/bs";
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
 import useReparaciones from "../../context/hooks/useReparaciones";
+import useMovimientos from "../../context/hooks/useMovimientos";
 import {
   formatearFecha,
   formatearFechaCorta,
@@ -26,6 +27,7 @@ import "./css/Modales.css";
 const ModalEventos = ({
   tipo = null,
   filtroSector = null,
+  filtroArea = "tractores",
   onRowClick = null,
   onClose,
 }) => {
@@ -36,15 +38,17 @@ const ModalEventos = ({
   const [modalFacturaVisible, setModalFacturaVisible] = useState(false);
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
   const { eventos, proveedores, personas, stock } = useData();
-  const {reparaciones} = useReparaciones();
+  const { reparaciones } = useReparaciones(filtroSector);
+  const { movimientos } = useMovimientos();
   let coleccion = eventos;
 
-  
-  if(filtroSector !== null){
-    if(filtroSector === "tractores" || filtroSector === "furgones"){
+  if (filtroSector !== null) {
+    if (filtroSector === "tractores" || filtroSector === "furgones") {
       coleccion = reparaciones;
+    } else if (filtroSector === "porteria") {
+      coleccion = movimientos;
     }
-  } 
+  }
   const columnasDerecha = [
     {
       titulo: "CARGA",
@@ -73,6 +77,24 @@ const ModalEventos = ({
     {
       titulo: "TIPO",
       campo: "tipo",
+      render: (v, ev) => (
+        <span
+          style={{
+            backgroundColor:
+              ev.tipo === "SERVICE"
+                ? "#efb810"
+                : ev.tipo === "SERVICE CAJA DIFERENCIAL"
+                ? "#ef1010ff"
+                : "transparent",
+            padding:
+              ev.tipo === "SERVICE" || ev.tipo === "SERVICE CAJA DIFERENCIAL"
+                ? "4px 4px"
+                : undefined,
+          }}
+        >
+          {v}
+        </span>
+      ),
     },
     {
       titulo: "AREA/SECTOR",
@@ -153,6 +175,98 @@ const ModalEventos = ({
     },
     ...columnasDerecha,
   ];
+  const columnasReparacionesFin = [
+    { titulo: "DETALLE", campo: "detalle", offresponsive: true },
+    {
+      titulo: "SUCURSAL",
+      campo: "sucursal",
+      render: (v, ev) => ev.nombreSucursal,
+    },
+  ];
+  const columnasReparacionesTr = [
+    ...columnas,
+    {
+      titulo: "MECÁNICO / PROVEEDOR",
+      campo: "mecanicoTxt",
+      render: (v, ev) => (
+        <span
+          style={{
+            backgroundColor: ev.esServicio ? "#efb810" : "transparent",
+            padding: ev.esServicio ? "4px 4px" : undefined,
+            //borderRadius: ev.esServicio ? "4px" : undefined,
+          }}
+        >
+          {v}
+        </span>
+      ),
+    },
+    {
+      titulo: "TRACTOR",
+      campo: "tractor",
+      render: (t, ev) => {
+        if (Array.isArray(ev.tractor)) {
+          return ev.tractor.join(", ");
+        }
+        return ev.tractor || "";
+      },
+    },
+    { titulo: "KM", campo: "kilometraje", offresponsive: true },
+    ...columnasReparacionesFin,
+  ];
+  const columnasPorteria = [
+    ...columnas,
+    {
+      titulo: "PERSONA",
+      campo: "persona",
+      render: (p, ev) => ev.nombrePersona,
+    },
+    {
+      titulo: "VEHICULO",
+      campo: "movil",
+      render: (p, ev) => {
+        if (Array.isArray(ev.movil)) {
+          return ev.movil.join(", ");
+        }
+        return ev.movil || "";
+      },
+    },
+    { titulo: "CARGA / FURGON", campo: "furgon", offresponsive: true },
+    {
+      titulo: "CARGA",
+      campo: "operador",
+      render: (p, ev) => ev.nombreOperador,
+      offresponsive: true,
+    },
+  ];
+  const columnasReparacionesFg = [
+    ...columnas,
+    {
+      titulo: "MECÁNICO / PROVEEDOR",
+      campo: "mecanicoTxt",
+      render: (v, ev) => (
+        <span
+          style={{
+            backgroundColor: ev.esServicio ? "#efb810" : "transparent",
+            padding: ev.esServicio ? "4px 4px" : undefined,
+            //borderRadius: ev.esServicio ? "4px" : undefined,
+          }}
+        >
+          {v}
+        </span>
+      ),
+    },
+    {
+      titulo: "FURGÓN",
+      campo: "furgon",
+      render: (f, ev) => {
+        if (Array.isArray(ev.furgon)) {
+          return ev.furgon.join(", ");
+        }
+        return ev.furgon || "";
+      },
+    },
+    ...columnasReparacionesFin,
+  ];
   const botonesIngresos = [
     {
       titulo: "Movimiento",
@@ -173,8 +287,17 @@ const ModalEventos = ({
 
   let columnasFinal;
 
-  if (tipo !== null && (tipo === "STOCK" || tipo === "REMITO" || tipo === "FACTURA")) {
+  if (
+    tipo !== null &&
+    (tipo === "STOCK" || tipo === "REMITO" || tipo === "FACTURA")
+  ) {
     columnasFinal = columnasMovimientoStock;
+  } else if (filtroSector === "tractores" && tipo !== "STOCK") {
+    columnasFinal = columnasReparacionesTr;
+  } else if (filtroSector === "furgones" && tipo !== "STOCK") {
+    columnasFinal = columnasReparacionesFg;
+  } else if (filtroSector === "porteria" && tipo !== "STOCK") {
+    columnasFinal = columnasPorteria;
   } else {
     columnasFinal = columnas;
   }
@@ -201,15 +324,15 @@ const ModalEventos = ({
         e.carga
       } ${e.factura} ${e.remito} ${e.valor} ${e.moneda} ${
         e.proveedor
-      } ${buscarEmpresa(proveedores, e.proveedor)}`;
+      } ${buscarEmpresa(proveedores, e.proveedor)} ${e.persona} ${
+        e.searchText
+      }`;
       return textoFiltro.toLocaleLowerCase().includes(filtro.toLowerCase());
     });
   });
-
   const cerrarModalFicha = () => {
     setModalFichaVisible(false);
   };
-
   const handleGuardar = async () => {
     setModalFichaVisible(false);
     setEventoSeleccionado(null);
@@ -256,15 +379,22 @@ const ModalEventos = ({
         )}
 
         {modalRemitoVisible && (
-          <FormRemito onClose={() => setModalRemitoVisible(false)} />
+          <FormRemito
+            taller={filtroArea}
+            onClose={() => setModalRemitoVisible(false)}
+          />
         )}
 
         {modalFacturaVisible && (
-          <FormFactura onClose={() => setModalFacturaVisible(false)} />
+          <FormFactura
+            taller={filtroArea}
+            onClose={() => setModalFacturaVisible(false)}
+          />
         )}
 
         {modalMovimientoVisible && (
           <FormMovimientoStock
+            taller={filtroArea}
             onClose={() => setModalMovimientoVisible(false)}
           />
         )}
@@ -273,6 +403,8 @@ const ModalEventos = ({
             tipo={
               ["RETIRA", "ENTREGA"].includes(eventoSeleccionado.tipo)
                 ? "llave"
+                : filtroSector === "porteria"
+                ? "porteria"
                 : "tractores"
             }
             elemento={eventoSeleccionado}
