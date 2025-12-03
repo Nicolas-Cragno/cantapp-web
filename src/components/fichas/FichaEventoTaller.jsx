@@ -107,6 +107,7 @@ const FichaEventoTaller = ({
     cargarDatos();
     console.log(`  ~ Carga de la ficha del evento ${elemento.id}  ✓️`);
   }, [evento]);
+ 
 
   if (!evento) return null;
 

@@ -627,7 +627,7 @@ const FormEventoTaller = ({
                           kilometraje: e ? Number(e.target.value) : 0,
                         })
                       }
-                      min="1"
+                      min="0"
                     />
                   </label>
                 </div>

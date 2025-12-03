@@ -8,6 +8,7 @@ import { BsBoxes as LogoBox } from "react-icons/bs";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
+import useReparaciones from "../../context/hooks/useReparaciones";
 import {
   formatearFecha,
   formatearFechaCorta,
@@ -35,6 +36,15 @@ const ModalEventos = ({
   const [modalFacturaVisible, setModalFacturaVisible] = useState(false);
   const [modalMovimientoVisible, setModalMovimientoVisible] = useState(false);
   const { eventos, proveedores, personas, stock } = useData();
+  const {reparaciones} = useReparaciones();
+  let coleccion = eventos;
+
+  
+  if(filtroSector !== null){
+    if(filtroSector === "tractores" || filtroSector === "furgones"){
+      coleccion = reparaciones;
+    }
+  } 
   const columnasDerecha = [
     {
       titulo: "CARGA",
@@ -71,7 +81,6 @@ const ModalEventos = ({
       offresponsive: true,
     },
   ];
-
   const columnasMovimientoStock = [
     ...columnas,
     {
@@ -164,7 +173,7 @@ const ModalEventos = ({
 
   let columnasFinal;
 
-  if (tipo === "STOCK" || tipo === "REMITO" || tipo === "FACTURA") {
+  if (tipo !== null && (tipo === "STOCK" || tipo === "REMITO" || tipo === "FACTURA")) {
     columnasFinal = columnasMovimientoStock;
   } else {
     columnasFinal = columnas;
@@ -172,10 +181,10 @@ const ModalEventos = ({
 
   const eventosFiltrados = useMemo(() => {
     const listadoArea = filtroSector
-      ? eventos.filter(
+      ? coleccion.filter(
           (e) => e.area.toLowerCase() === filtroSector.toLowerCase()
         )
-      : eventos;
+      : coleccion;
 
     const listadoEventos = tipo
       ? listadoArea.filter((e) => {
@@ -261,7 +270,11 @@ const ModalEventos = ({
         )}
         {modalFichaVisible && (
           <FichaEventosGestor
-            tipo={tipo.toLowerCase()}
+            tipo={
+              ["RETIRA", "ENTREGA"].includes(eventoSeleccionado.tipo)
+                ? "llave"
+                : "tractores"
+            }
             elemento={eventoSeleccionado}
             onClose={cerrarModalFicha}
             onGuardar={handleGuardar}
