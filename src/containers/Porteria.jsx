@@ -44,10 +44,12 @@ const Porteria = () => {
   return (
     <section className="section-containers">
       <div className="section-banner banner-porteria">
-        <h1 className="table-logo-box">
-          <img src={LogoPorteria} alt="" className="table-logo" />
-          {AREA.toUpperCase()}
-        </h1>
+        <div className="banner-footer">
+          <h1 className="section-logo-box">
+            <img src={LogoPorteria} alt="" className="section-logo" />
+            {AREA.toUpperCase()}
+          </h1>
+        </div>
       </div>
       <div className="section-options">
         {modalAgregarVisible && (

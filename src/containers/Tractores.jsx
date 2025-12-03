@@ -39,10 +39,12 @@ const Tractores = () => {
   return (
     <section className="section-containers">
       <div className="section-banner banner-tractores">
-        <h1 className="table-logo-box">
-          <img src={LogoTractor} alt="" className="table-logo" />
-          TALLER {AREA.toUpperCase()}
-        </h1>
+        <div className="banner-footer">
+          <h1 className="section-logo-box">
+            <img src={LogoTractor} alt="" className="section-logo" />
+            TALLER {AREA.toUpperCase()}
+          </h1>
+        </div>
       </div>
       <div className="section-options">
         {modalAgregarVisible && (
