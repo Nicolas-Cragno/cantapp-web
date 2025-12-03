@@ -20,15 +20,8 @@ const FichaEventoTaller = ({
   onClose,
   onGuardar,
 }) => {
-  const {
-    tractores,
-    furgones,
-    personas,
-    proveedores,
-    usoStock,
-    stock,
-    ubicaciones,
-  } = useData();
+  const { tractores, furgones, personas, proveedores, stock, ubicaciones } =
+    useData();
   const evento = elemento;
   const AREA = elemento.area || tipoVehiculo;
   const [modoEdicion, setModoEdicion] = useState(false);

@@ -7,7 +7,6 @@ const DataContext = createContext();
 const coleccionesFirestore = [
   "empresas",
   "sectores",
-  "satelitales",
   "users",
   "personas",
   "furgones",
@@ -17,10 +16,9 @@ const coleccionesFirestore = [
   "stock",
   "proveedores",
   "eventos",
-  "usoStock",
   "ubicaciones",
   "depositos",
-  "estaciones"
+  "estaciones",
 ];
 let coleccionesCont = 0;
 
@@ -42,7 +40,10 @@ export function DataProvider({ children }) {
         setData((prev) => {
           const nuevoData = {
             ...prev,
-            [nombreColeccion]: snapshot.docs.map((d) => ({ id: d.id, ...d.data() })),
+            [nombreColeccion]: snapshot.docs.map((d) => ({
+              id: d.id,
+              ...d.data(),
+            })),
           };
 
           // Si ya se cargaron todas las colecciones, ponemos loading false
@@ -60,11 +61,17 @@ export function DataProvider({ children }) {
 
     return () => unsubscribers.forEach((fn) => fn());
   }, []);
-  
-  return <DataContext.Provider value={{ ...data, usuario, loading }}>{children}</DataContext.Provider>;
+
+  return (
+    <DataContext.Provider value={{ ...data, usuario, loading }}>
+      {children}
+    </DataContext.Provider>
+  );
 }
 
-
-
-console.log(`[Firestore] Carga Finalizada (${coleccionesCont}/${coleccionesFirestore.length} coleccion${coleccionesFirestore.length !== 1 ? "es" : ""}) ✓✓`);
+console.log(
+  `[Firestore] Carga Finalizada (${coleccionesCont}/${
+    coleccionesFirestore.length
+  } coleccion${coleccionesFirestore.length !== 1 ? "es" : ""}) ✓✓`
+);
 export const useData = () => useContext(DataContext);

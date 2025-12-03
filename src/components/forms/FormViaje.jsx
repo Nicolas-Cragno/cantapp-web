@@ -33,7 +33,7 @@ export default function FormViaje({ elemento = {}, onClose, onGuardar }) {
     tipo: viaje.tipo,
   });
   const { personas, tractores, furgones, estaciones } = useData();
-  const [satelitales, setSatelitales] = useState([]);
+
   const [uploading, setUploading] = useState(false);
   const [tramos, setTramos] = useState([]);
   const [finalizado, setFinalizado] = useState(false);
