@@ -51,6 +51,20 @@
   background-position:center;
 }
 
+.banner-combustible{
+  background-image: url("../../assets/images/estacion.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position:center;
+}
+
+.banner-stock{
+  background-image: url("../../assets/images/deposito.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position:center;
+}
+
 .section-logo-box{
   width: max-content;
   padding-right: 1rem;

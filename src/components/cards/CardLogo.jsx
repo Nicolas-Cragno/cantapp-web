@@ -9,8 +9,7 @@ const Card = ({ title, logo = LogoDefault, route = null, onClick = null }) => {
         <Link to={route} className="card-route">
           <div className="card2">
             <div className="card-section-line">
-                
-            <img src={logo} alt="" className="card-logo"/>
+              <img src={logo} alt="" className="card-logo" />
               <h3 className="card-title2">{title}</h3>
             </div>
           </div>
@@ -18,7 +17,7 @@ const Card = ({ title, logo = LogoDefault, route = null, onClick = null }) => {
       ) : (
         <div className="card2" onClick={onClick}>
           <div className="card-section-line">
-            <img src={logo} alt="" className="card-logo"/>
+            <img src={logo} alt="" className="card-logo" />
             <h3 className="card-title2">{title}</h3>
           </div>
         </div>
