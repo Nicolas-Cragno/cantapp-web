@@ -162,10 +162,11 @@
   border-style: solid;
   border-width: 0.1rem;
   border-color: #888; 
-  max-height: 35rem;
+  /*max-height: 35rem;*/
   overflow-x: auto;
   scrollbar-width: thin;
 }
+
 
 .form-info-alert{
   background-color: #ffdd1c;

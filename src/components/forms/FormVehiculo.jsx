@@ -35,6 +35,10 @@ const FormVehiculo = ({
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
   const [empresa, setEmpresa] = useState("");
+  const [satelital, setSatelital] = useState("");
+  const [comentarioSatelital, setComentarioSatelital] = useState("");
+  const [detalleSatelital, setDetalleSatelital] = useState("");
+  const [estadoSatelital, setEstadoSatelital] = useState(false);
   const [motor, setMotor] = useState("");
   const [chasis, setChasis] = useState("");
   const [persona, setPersona] = useState("");
@@ -52,6 +56,7 @@ const FormVehiculo = ({
       setMotor(vehiculo.motor || "");
       setChasis(vehiculo.chasis || "");
       setEmpresa(buscarEmpresa(empresas, vehiculo.empresa) || "");
+      setSatelital(buscarEmpresa(empresas, vehiculo.satelital) || "");
       setDetalle(vehiculo.detalle || "");
       setPersona(vehiculo.persona || "");
     }
@@ -97,6 +102,10 @@ const FormVehiculo = ({
       motor: motor.toUpperCase(),
       chasis: chasis.toUpperCase(),
       empresa: buscarCuitEmpresa(empresas, empresa) || null,
+      satelital: buscarCuitEmpresa(empresas, satelital) || null,
+      comentarioSatelital: comentarioSatelital.toUpperCase(),
+      detalleSatelital: detalleSatelital.toUpperCase(),
+      estadoSatelital: estadoSatelital,
       estado: empresa ? true : false,
       detalle: detalle.toUpperCase().trim(),
       persona: persona || null,
@@ -222,107 +231,154 @@ const FormVehiculo = ({
             </>
           ) : null}
 
-          <label>
-            Dominio <InputValidator campo={dominio} />
-            <input
-              type="text"
-              value={dominio}
-              onChange={(e) => setDominio(e.target.value)}
-              disabled={
-                (tipoVehiculo === "vehiculos" && modoEdicion) || loading
-              }
-            />
-          </label>
+          <p className="form-info-title">
+            <strong>INFORMACIÓN</strong>
+          </p>
+          <div className="form-info-box">
+            <label>
+              Dominio <InputValidator campo={dominio} />
+              <input
+                type="text"
+                value={dominio}
+                onChange={(e) => setDominio(e.target.value)}
+                disabled={
+                  (tipoVehiculo === "vehiculos" && modoEdicion) || loading
+                }
+              />
+            </label>
 
-          <label>
-            Marca <InputValidator campo={marca} />
-            <input
-              type="text"
-              value={marca}
-              onChange={(e) => setMarca(e.target.value)}
-              disabled={loading}
-            />
-          </label>
+            <label>
+              Marca <InputValidator campo={marca} />
+              <input
+                type="text"
+                value={marca}
+                onChange={(e) => setMarca(e.target.value)}
+                disabled={loading}
+              />
+            </label>
 
-          <label>
-            Modelo <InputValidator campo={modelo} />
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="\d*"
-              maxLength={4}
-              value={modelo}
-              onChange={(e) => setModelo(e.target.value)}
-              disabled={modoEdicion || loading}
-            />
-          </label>
+            <label>
+              Modelo <InputValidator campo={modelo} />
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="\d*"
+                maxLength={4}
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+                disabled={modoEdicion || loading}
+              />
+            </label>
+            {tipoSeleccionado === "tractores" && (
+              <>
+                <label>
+                  Motor <InputValidator campo={motor} />
+                  <input
+                    type="text"
+                    value={motor}
+                    onChange={(e) => setMotor(e.target.value)}
+                    disabled={loading}
+                  />
+                </label>
+                <label>
+                  Chasis <InputValidator campo={chasis} />
+                  <input
+                    type="text"
+                    value={chasis}
+                    onChange={(e) => setChasis(e.target.value)}
+                    disabled={loading}
+                  />
+                </label>
+              </>
+            )}
+            <label>
+              Detalle <InputValidator campo={detalle} />
+              <textarea
+                value={detalle}
+                onChange={(e) => setDetalle(e.target.value)}
+                disabled={loading}
+              />
+            </label>
+          </div>
 
-          {tipoSeleccionado === "tractores" && (
-            <>
-              <label>
-                Motor <InputValidator campo={motor} />
-                <input
-                  type="text"
-                  value={motor}
-                  onChange={(e) => setMotor(e.target.value)}
-                  disabled={loading}
-                />
-              </label>
-              <label>
-                Chasis <InputValidator campo={chasis} />
-                <input
-                  type="text"
-                  value={chasis}
-                  onChange={(e) => setChasis(e.target.value)}
-                  disabled={loading}
-                />
-              </label>
-            </>
-          )}
+          <p className="form-info-title">
+            <strong>EMPRESA</strong>
+          </p>
+          <div className="form-info-box">
+            <label>
+              Empresa <InputValidator campo={empresa} />
+              <select
+                value={empresa}
+                onChange={(e) => setEmpresa(e.target.value)}
+                disabled={loading}
+              >
+                <option value=""></option>
+                {empresas
+                  .filter((e) => e.tipo === "propia")
+                  .map((e) => (
+                    <option key={e.cuit} value={e.nombre}>
+                      {e.nombre}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Persona asignada / Dueño <InputValidator campo={persona} />
+              <select
+                value={persona}
+                onChange={(e) => setPersona(e.target.value)}
+                disabled={loading}
+              >
+                <option value=""></option>
+                {personas
+                  .sort((a, b) => a.apellido.localeCompare(b.apellido))
+                  .map((e) => (
+                    <option key={e.id} value={e.dni}>
+                      {e.apellido}, {e.nombres} (DNI: {e.dni})
+                    </option>
+                  ))}
+              </select>
+            </label>
+          </div>
 
-          <label>
-            Empresa <InputValidator campo={empresa} />
-            <select
-              value={empresa}
-              onChange={(e) => setEmpresa(e.target.value)}
-              disabled={loading}
-            >
-              <option value=""></option>
-              {empresas
-                .filter((e) => e.tipo === "propia")
-                .map((e) => (
-                  <option key={e.cuit} value={e.nombre}>
-                    {e.nombre}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <label>
-            Persona asignada / Dueño <InputValidator campo={persona} />
-            <select
-              value={persona}
-              onChange={(e) => setPersona(e.target.value)}
-              disabled={loading}
-            >
-              <option value=""></option>
-              {personas
-                .sort((a, b) => a.apellido.localeCompare(b.apellido))
-                .map((e) => (
-                  <option key={e.id} value={e.dni}>
-                    {e.apellido}, {e.nombres} (DNI: {e.dni})
-                  </option>
-                ))}
-            </select>
-          </label>
-
-          <label>
-            Detalle <InputValidator campo={detalle} />
-            <textarea
-              value={detalle}
-              onChange={(e) => setDetalle(e.target.value)}
-              disabled={loading}
-            />
-          </label>
+          <p className="form-info-title">
+            <strong>SATELITAL</strong>
+          </p>
+          <div className="form-info-box">
+            <label>
+              Satelital <InputValidator campo={satelital} />
+              <select
+                value={satelital}
+                onChange={(e) => setSatelital(e.target.value)}
+                disabled={loading}
+              >
+                <option value=""></option>
+                {empresas
+                  .filter((e) => e.tipo !== "propia")
+                  .map((e) => (
+                    <option key={e.cuit} value={e.nombre}>
+                      {e.nombre}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
+              Comentario <InputValidator campo={comentarioSatelital} />
+              <textarea
+                value={comentarioSatelital}
+                onChange={(e) => setComentarioSatelital(e.target.value)}
+                disabled={loading}
+              />
+            </label>
+            <label>
+              Detalle (satelital) <InputValidator campo={detalleSatelital} />
+              <textarea
+                value={detalleSatelital}
+                onChange={(e) => setDetalleSatelital(e.target.value)}
+                disabled={loading}
+              />
+            </label>
+          </div>
 
           <div className="form-buttons">
             <button type="submit" disabled={loading}>
