@@ -95,6 +95,13 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
 
   const empresa = buscarEmpresa(empresas, vehiculo.empresa);
   const persona = buscarPersona(personas, vehiculo.persona);
+  const satelital = buscarEmpresa(empresas, vehiculo.satelital);
+  const estadoSatelital =
+    vehiculo.estadoSatelital === "1" ||
+    vehiculo.estadoSatelital === 1 ||
+    vehiculo.estadoSatelital === true
+      ? "ACTIVO"
+      : "INACTIVO";
 
   const handleGuardado = async (vehiculoModificado) => {
     setModoEdicion(false);
@@ -138,6 +145,9 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
             <p className="puesto">
               <strong>{minimizarTipo(tipoVehiculo)}</strong>
             </p>
+            <p className="ficha-info-title">
+              <strong>INFORMACIÓN</strong>
+            </p>
             <div className="ficha-info">
               <p>
                 <strong>Marca: </strong>
@@ -158,6 +168,16 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                 </p>
               )}
 
+              <p>
+                <strong>Detalle: </strong>
+                {vehiculo.detalle || ""}
+              </p>
+            </div>
+            <p className="ficha-info-title">
+              <strong>EMPRESA</strong>
+            </p>
+            <div className="ficha-info-box">
+              {" "}
               {vehiculo.empresa ? (
                 <p>
                   <strong>Empresa: </strong>
@@ -170,10 +190,36 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                   {persona}
                 </p>
               )}
-              <p>
-                <strong>Detalle: </strong>
-                {vehiculo.detalle || ""}
-              </p>
+            </div>
+            <p className="ficha-info-title">
+              <strong>SATELITAL</strong>
+            </p>
+            <div className="ficha-info-box">
+              {vehiculo.satelital ? (
+                <p>
+                  <strong>Satelital: </strong>
+                  {satelital}{" "}
+                  <span
+                    className={`stateBox2 ${
+                      estadoSatelital === "ACTIVO" ? "greenbox" : "redbox"
+                    }`}
+                  >
+                    {estadoSatelital}
+                  </span>
+                </p>
+              ) : null}
+              {vehiculo.comentarioSatelital ? (
+                <p>
+                  <strong>Comentario: </strong>
+                  {vehiculo.comentarioSatelital}
+                </p>
+              ) : null}
+              {vehiculo.detalleSatelital ? (
+                <p>
+                  <strong>Detalle: </strong>
+                  {vehiculo.detalleSatelital}
+                </p>
+              ) : null}
             </div>
 
             {eventosFiltrados.length > 0 ? (

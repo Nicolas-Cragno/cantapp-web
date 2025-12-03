@@ -39,6 +39,17 @@
  cursor: pointer;
 }
 
+.stateBox2{
+  border-radius: 5rem;
+  background-color: #000;
+  color: #f1f1f1;
+  padding-right: .4rem;
+  padding-left: .4rem;
+  font-weight: bolder;
+  font-size: small;
+  margin-left: .5rem;
+}
+
 .ficha-type-logo{
   margin-right: .4rem;
 }
