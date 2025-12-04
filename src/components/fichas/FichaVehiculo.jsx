@@ -6,6 +6,7 @@ import {
   IoEnterSharp as LogoEnter,
   IoLogOutSharp as LogoOut,
 } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 // ----------------------------------------------------------------------- internos
 import { useData } from "../../context/DataContext";
@@ -14,7 +15,10 @@ import {
   buscarEmpresa,
   formatearFecha,
   formatearHora,
+  buscarNombre,
+  buscarId,
 } from "../../functions/dataFunctions";
+import { cambiarEstadoSatelital } from "../../functions/dbFunctions";
 import FichaEventosGestor from "./FichaEventosGestor";
 import FormVehiculo from "../forms/FormVehiculo";
 import "./css/Fichas.css";
@@ -23,7 +27,8 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   const vehiculo = elemento;
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
-  const { personas, eventos, empresas } = useData();
+  const [estadoSatelital, setEstadoSatelital] = useState(false);
+  const { personas, eventos, empresas, usuario } = useData();
   const [eventosFiltrados, setEventosFiltrados] = useState([]);
 
   const cargarEventos = async () => {
@@ -92,22 +97,74 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   useEffect(() => {
     cargarEventos();
   }, []);
+  useEffect(() => {
+    let auxEstadoSatelital =
+      vehiculo.estadoSatelital === "1" ||
+      vehiculo.estadoSatelital === 1 ||
+      vehiculo.estadoSatelital === true;
+
+    setEstadoSatelital(auxEstadoSatelital);
+  }, [vehiculo]);
 
   const empresa = buscarEmpresa(empresas, vehiculo.empresa);
   const persona = buscarPersona(personas, vehiculo.persona);
   const satelital = buscarEmpresa(empresas, vehiculo.satelital);
-  const estadoSatelital =
-    vehiculo.estadoSatelital === "1" ||
-    vehiculo.estadoSatelital === 1 ||
-    vehiculo.estadoSatelital === true
-      ? "ACTIVO"
-      : "INACTIVO";
 
   const handleGuardado = async (vehiculoModificado) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(vehiculoModificado);
   };
-
+  const handleBajaSatelital = async () => {
+    Swal.fire({
+      title: `SEGUIMIENTO SATELITAL`,
+      text: `¿Desea cambiar estado del satelital del interno ${vehiculo.id} a innactivo?`,
+      showCancelButton: true,
+      confirmButtonText: "CONFIRMAR",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const auxEmpresa = buscarId(empresas, "nombre", vehiculo.satelital);
+        await cambiarEstadoSatelital(
+          "tractores",
+          vehiculo.id,
+          auxEmpresa,
+          false
+        );
+        setEstadoSatelital(false);
+      }
+    });
+  };
+  const handleAltaSatelital = async () => {
+    const empresasSatelital = empresas?.filter(
+      (e) => e.tipo === "proveedor" && (e.combustible || e.ubicacion)
+    );
+    let empresasOptions = {};
+    empresasSatelital.forEach((e) => {
+      empresasOptions[e.id] = e.nombre;
+    });
+    Swal.fire({
+      title: `SEGUIMIENTO SATELITAL`,
+      text: `¿Desea cambiar estado del satelital del interno ${vehiculo.id} a innactivo?`,
+      icon: "question",
+      input: "select",
+      inputOptions: empresasOptions,
+      inputPlaceholder: "Seleccionar un satelital",
+      showCancelButton: true,
+      confirmButtonText: "CONFIRMAR",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const auxEmpresa = result.value;
+        await cambiarEstadoSatelital(
+          "tractores",
+          vehiculo.id,
+          auxEmpresa,
+          true
+        );
+        setEstadoSatelital(true);
+      }
+    });
+  };
   const minimizarTipo = (tipoMax) => {
     let auxTipo;
     switch (tipoMax) {
@@ -190,38 +247,46 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                   {persona}
                 </p>
               )}
-            </div>
-            <p className="ficha-info-title">
-              <strong>SATELITAL</strong>
-            </p>
-            <div className="ficha-info-box">
-              {vehiculo.satelital ? (
-                <p>
-                  <strong>Satelital: </strong>
-                  {satelital}{" "}
-                  <span
-                    className={`stateBox2 ${
-                      estadoSatelital === "ACTIVO" ? "greenbox" : "redbox"
-                    }`}
-                  >
-                    {estadoSatelital}
-                  </span>
+            </div>{" "}
+            {tipoVehiculo === "tractores" && (
+              <>
+                <p className="ficha-info-title">
+                  <strong>SATELITAL</strong>
                 </p>
-              ) : null}
-              {vehiculo.comentarioSatelital ? (
-                <p>
-                  <strong>Comentario: </strong>
-                  {vehiculo.comentarioSatelital}
-                </p>
-              ) : null}
-              {vehiculo.detalleSatelital ? (
-                <p>
-                  <strong>Detalle: </strong>
-                  {vehiculo.detalleSatelital}
-                </p>
-              ) : null}
-            </div>
-
+                <div className="ficha-info-box">
+                  {vehiculo.satelital ? (
+                    <p>
+                      <strong>Satelital: </strong>
+                      {satelital}{" "}
+                      <span
+                        className={`stateBox2 linker ${
+                          estadoSatelital ? "greenbox" : "redbox"
+                        }`}
+                        onClick={
+                          estadoSatelital
+                            ? handleBajaSatelital
+                            : handleAltaSatelital
+                        }
+                      >
+                        {estadoSatelital ? "ACTIVO" : "INNACTIVO"}
+                      </span>
+                    </p>
+                  ) : null}
+                  {vehiculo.comentarioSatelital ? (
+                    <p>
+                      <strong>Comentario: </strong>
+                      {vehiculo.comentarioSatelital}
+                    </p>
+                  ) : null}
+                  {vehiculo.detalleSatelital ? (
+                    <p>
+                      <strong>Detalle: </strong>
+                      {vehiculo.detalleSatelital}
+                    </p>
+                  ) : null}
+                </div>
+              </>
+            )}
             {eventosFiltrados.length > 0 ? (
               <>
                 <p className="ficha-info-title">

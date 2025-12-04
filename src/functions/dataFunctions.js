@@ -16,8 +16,7 @@ export const buscarId = (coleccion, campo, valor) => {
   if(!resultado) console.log("[Error] No se encontró un id");
 
   return resultado ? resultado.id : "";
-}
-
+};
 // ----------------------------------------------------------------------- Nombre de empresas
 export const useNombreEmpresa = (cuit) => {
   const { empresas } = useData();
@@ -30,7 +29,7 @@ export const useNombreEmpresa = (cuit) => {
   const empresa = empresas.find((e) => e.id === cuit || e.cuit === cuit);
   if(!empresa) {console.log(`[Error] useNombreEmpresa espera un 'cuit' por parámetro.`);}
   return empresa ? empresa.nombre : nombreError;
-}
+};
 export const useObtenerCuitPorNombre = (nombreEmpresa) => {
   const {empresas} = useData();
   const valorError = 0;
@@ -43,7 +42,7 @@ export const useObtenerCuitPorNombre = (nombreEmpresa) => {
   if(!empresa){    console.log(`[Error] useObtenerCuitPorNombre esperaba un nombreEmpresa(string) por parámetro.`);
 }
   return empresa ? empresa.cuit : valorError;
-}
+};
 export const buscarEmpresa = (coleccion, cuit, completo=true) => {
   if (!cuit || !Array.isArray(coleccion)){
     return "";
@@ -55,7 +54,7 @@ export const buscarEmpresa = (coleccion, cuit, completo=true) => {
   const nombreCompleto = `${empresa.nombre}`;
   const abreviatura = `${empresa.abreviatura}`;
   return completo ? nombreCompleto : abreviatura;
-}
+};
 export const buscarCuitEmpresa = (coleccion, nombre, verificar = false) => {
   // Verificación inicial
   if (!nombre || typeof nombre !== "string") {
@@ -93,7 +92,6 @@ export const buscarCuitEmpresa = (coleccion, nombre, verificar = false) => {
   const cuit = empresa.cuit || empresa.id || 0;
   return cuit;
 };
-
 export const verificarDuplicado = (coleccion, idx) => {
   return coleccion.some((p) => String(p.idx) === String(idx));
 };
@@ -139,13 +137,7 @@ export const buscarNombre = (coleccion, idx) => {
     return "";
   }
 };
-
-
-
-
-
 // ----------------------------------------------------------------------- Personas
-
 export const useBuscarDni = (nombrePersona) => {
   const {personas} = useData();
   const valorError = 0;
@@ -159,7 +151,7 @@ export const useBuscarDni = (nombrePersona) => {
   if(!persona){    console.log(`[Error] useBuscarDni esperaba un nombrePersona(string) como parametro.`)
 };
   return persona ? persona.dni : valorError;
-}
+};
 export const useBuscarPersona = (dni, completo=true) => {
   const {personas} = useData();
   const valorError = "";
@@ -176,7 +168,7 @@ export const useBuscarPersona = (dni, completo=true) => {
   const nombreAbreviado = `${persona.apellido}, ${persona.nombres[0]}`;
 
   return completo ? nombreCompleto : nombreAbreviado;
-}
+};
 export const buscarPersona = (coleccion, dni, completo = true) => {
   if (!dni){ 
     return "";}
@@ -346,7 +338,6 @@ export const finalizarPeriodo = async (idPersona, cuitEmpresa=null, fechaFin = n
   }
 };
 // ----------------------------------------------------------------------- Vehiculos
-
 export const useBuscarDominio = (interno, tipo = "tractor") => {
   const {tractores, furgones} = useData();
   const valorError = "";
@@ -363,7 +354,7 @@ export const useBuscarDominio = (interno, tipo = "tractor") => {
   }
 
   return vehiculo ? vehiculo.dominio : valorError;
-}
+};
 export const buscarDominio = (interno, coleccion = []) => {
   if (!interno || !Array.isArray(coleccion))
   {
@@ -386,7 +377,7 @@ export const minimizarVehiculo = (tipoVehiculo) => {
     default: tipo = "VEHICULO"; break;
   }
   return tipo;
-}
+};
 export const buscarMarca = (id, coleccion = []) => {
   if (!id || !Array.isArray(coleccion)){
     return "";
@@ -397,16 +388,14 @@ if(!vehiculo) {    console.log(`[Error] buscarMarca esperaba un id y/o una colec
 };
   return vehiculo ? vehiculo.marca : "";
 };
-
 // ----------------------------------------------------------------------- Stock
-
 export const buscarRepuestoPorID = async (coleccion, id) => {
   if (!id || !Array.isArray(coleccion)) return "";
 
   const articulo = coleccion.find((v) => String(v.id) === String(id));
 
   return articulo ? articulo.descripcion : "";
-}
+};
 export const codigoStock = async (coleccion, tipo, prefijo, proveedor="01") => {
     
 
@@ -533,16 +522,11 @@ export const agregarFaltante = async (coleccion, idDoc, repuestoId, cantidad, un
     throw err;
   }
 };
-
-
 // ----------------------------------------------------------------------- Validaciones
-
 export const verificarEstado = (empresa) => {
 
-}
-
+};
 // ----------------------------------------------------------------------- Formato fecha
-
 export const formatearFecha = (fechaInput) => {
   if (!fechaInput) return "";
 
@@ -562,7 +546,6 @@ export const formatearFecha = (fechaInput) => {
 
   return `${dia}/${mes}/${anio}`;
 };
-
 export const formatearFechaCorta = (fechaInput) => {
   if (!fechaInput) return "";
 
@@ -581,7 +564,6 @@ export const formatearFechaCorta = (fechaInput) => {
 
   return `${dia}-${mes}`;
 };
-
 export const formatearHora = (fechaInput) => {
   if (!fechaInput) return "";
 
@@ -600,7 +582,6 @@ export const formatearHora = (fechaInput) => {
 
   return `${horas}:${minutos}`;
 };
-
 export const formatearFechaInput = (fecha) => {
   if (!fecha) return "";
 
@@ -620,7 +601,6 @@ export const formatearFechaInput = (fecha) => {
 
   return f.toISOString().split("T")[0]; // yyyy-mm-dd
 };
-
 export const formatearFechaHoraInput = (fecha) => {
   if (!fecha) return "";
   const d = new Date(fecha);
@@ -633,7 +613,6 @@ export const formatearFechaHoraInput = (fecha) => {
   const ss = pad(d.getSeconds());
   return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 };
-
 export const calcularTiempo = (inicio, fin = new Date()) => {
   const fechaInicio = normalizarFecha(inicio);
   const fechaFin = normalizarFecha(fin);
@@ -656,17 +635,13 @@ export const calcularTiempo = (inicio, fin = new Date()) => {
 
   return texto || "menos de un mes";
 };
-
 // ----------------------------------------------------------------------- valores / unidades
-
 export const obtenerNombreUnidad = (abreviatura) => {
   return Object.entries(unidades).find(([, abrev]) => abrev === abreviatura)?.[0] || "";
 };
-
 export const abreviarUnidad = (unidad) => {
   return unidades[unidad] || ""; 
-}
-
+};
 export const singularTipoVehiculo = (tipo) => {
   let tipoSingular;
   switch(tipo.toUpperCase()){
@@ -686,16 +661,14 @@ export const singularTipoVehiculo = (tipo) => {
   return tipoSingular;
   
 };
-
 export const unidadArticulo = (coleccion, id) => {
     if (!id || !Array.isArray(coleccion)) return "";
 
     const articulo = coleccion.find((a) => a.id === id);
 
     return articulo ? articulo.unidad : "no";
-}
+};
 // ----------------------------------------------------------------------- colores & estilos
-
 export const colorSatelital = (satelital) => {
     let color;
     switch (satelital) {
@@ -711,15 +684,13 @@ export const colorSatelital = (satelital) => {
     }
 
     return color;
-  };
-
+};
 export const colorBatman = (nro) => {
     if (nro >= 90) return "#cb3234";
     if (nro >= 30) return "#efb810";
     if (nro >= 0) return "#008f39";
     return "#000";
-  };
-
+};
 export const colorPromedio = (nro) => {
   // Promedio +/- ideal 36 p/abajo
   const minimo = 20;

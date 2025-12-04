@@ -56,7 +56,7 @@ const FormVehiculo = ({
       setMotor(vehiculo.motor || "");
       setChasis(vehiculo.chasis || "");
       setEmpresa(buscarEmpresa(empresas, vehiculo.empresa) || "");
-      setSatelital(buscarEmpresa(empresas, vehiculo.satelital) || "");
+      setSatelital(vehiculo.satelital || "");
       setDetalle(vehiculo.detalle || "");
       setPersona(vehiculo.persona || "");
     }
@@ -102,14 +102,14 @@ const FormVehiculo = ({
       motor: motor.toUpperCase(),
       chasis: chasis.toUpperCase(),
       empresa: buscarCuitEmpresa(empresas, empresa) || null,
-      satelital: buscarCuitEmpresa(empresas, satelital) || null,
+      satelital: satelital || null,
       comentarioSatelital: comentarioSatelital.toUpperCase(),
       detalleSatelital: detalleSatelital.toUpperCase(),
       estadoSatelital: estadoSatelital,
       estado: empresa ? true : false,
       detalle: detalle.toUpperCase().trim(),
       persona: persona || null,
-      estado: buscarEmpresa(empresas, empresa, true), // para verificar devuelve t o f
+      //estado: buscarEmpresa(empresas, empresa, true), // para verificar devuelve t o f
     };
 
     try {
@@ -341,44 +341,54 @@ const FormVehiculo = ({
             </label>
           </div>
 
-          <p className="form-info-title">
-            <strong>SATELITAL</strong>
-          </p>
-          <div className="form-info-box">
-            <label>
-              Satelital <InputValidator campo={satelital} />
-              <select
-                value={satelital}
-                onChange={(e) => setSatelital(e.target.value)}
-                disabled={loading}
-              >
-                <option value=""></option>
-                {empresas
-                  .filter((e) => e.tipo !== "propia")
-                  .map((e) => (
-                    <option key={e.cuit} value={e.nombre}>
-                      {e.nombre}
-                    </option>
-                  ))}
-              </select>
-            </label>
-            <label>
-              Comentario <InputValidator campo={comentarioSatelital} />
-              <textarea
-                value={comentarioSatelital}
-                onChange={(e) => setComentarioSatelital(e.target.value)}
-                disabled={loading}
-              />
-            </label>
-            <label>
-              Detalle (satelital) <InputValidator campo={detalleSatelital} />
-              <textarea
-                value={detalleSatelital}
-                onChange={(e) => setDetalleSatelital(e.target.value)}
-                disabled={loading}
-              />
-            </label>
-          </div>
+          {tipoVehiculo === "tractores" && (
+            <>
+              <p className="form-info-title">
+                <strong>SATELITAL</strong>
+              </p>
+              <div className="form-info-box">
+                <label>
+                  Satelital <InputValidator campo={satelital} />{" "}
+                  {estadoSatelital ? "a" : "b"}
+                  <select
+                    value={satelital}
+                    onChange={(e) => {
+                      setSatelital(e.target.value);
+                      const auxEstado = satelital.length > 0;
+                      setEstadoSatelital(auxEstado);
+                    }}
+                    disabled={loading}
+                  >
+                    <option value=""></option>
+                    {empresas
+                      .filter((e) => e.tipo !== "propia")
+                      .map((e) => (
+                        <option key={e.cuit} value={e.id}>
+                          {e.nombre}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label>
+                  Comentario <InputValidator campo={comentarioSatelital} />
+                  <textarea
+                    value={comentarioSatelital}
+                    onChange={(e) => setComentarioSatelital(e.target.value)}
+                    disabled={loading}
+                  />
+                </label>
+                <label>
+                  Detalle (satelital){" "}
+                  <InputValidator campo={detalleSatelital} />
+                  <textarea
+                    value={detalleSatelital}
+                    onChange={(e) => setDetalleSatelital(e.target.value)}
+                    disabled={loading}
+                  />
+                </label>
+              </div>
+            </>
+          )}
 
           <div className="form-buttons">
             <button type="submit" disabled={loading}>

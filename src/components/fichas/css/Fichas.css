@@ -383,7 +383,9 @@ opacity: .5;
   margin-left: 10px;
 }
 
-
+.linker{
+  cursor: pointer;
+}
 
 .ficha-info-box{
   margin-top: 2rem;

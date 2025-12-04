@@ -22,7 +22,6 @@ export const agregar = async (nombreColeccion, nuevoDoc, idPersonalizado) => {
     throw error;
   }
 };
-
 // Modificar documento
 export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
   try {
@@ -35,7 +34,7 @@ export const modificar = async (nombreColeccion, idDoc, datosActualizados) => {
     throw error;
   }
 };
-
+// alta baja de empleado
 export const altaBaja = async (nombreColeccion, idDoc, empresa=null, tipo=true) => {
    if (!idDoc || typeof idDoc !== "string") {
     throw new Error("ID de documento inválido: " + idDoc);
@@ -52,4 +51,20 @@ export const altaBaja = async (nombreColeccion, idDoc, empresa=null, tipo=true) 
     throw error;
   }
 };
-
+// alta baja satelital
+export const cambiarEstadoSatelital = async (nombreColeccion, idDoc, idSatelital = null, boolEstado =true) => {
+  if(!idDoc || typeof idDoc !== "string") {
+    throw new Error("[Error] No se pudo cambiar el estado del satelital." + idDoc);
+  }
+  try{
+    const idStr = String(idDoc);
+    await modificar(nombreColeccion, idStr, {satelital: idSatelital, estadoSatelital: boolEstado});
+    return true;
+  } catch(error){
+    console.error(
+      `[Error] no se pudo cambiar el estado del satelital del interno ${idDoc}.`,
+      error
+    );
+    throw error;
+  }
+};
