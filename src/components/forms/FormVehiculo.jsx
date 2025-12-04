@@ -349,12 +349,11 @@ const FormVehiculo = ({
               <div className="form-info-box">
                 <label>
                   Satelital <InputValidator campo={satelital} />{" "}
-                  {estadoSatelital ? "a" : "b"}
                   <select
                     value={satelital}
                     onChange={(e) => {
                       setSatelital(e.target.value);
-                      const auxEstado = satelital.length > 0;
+                      const auxEstado = e.target.value.length !== 0;
                       setEstadoSatelital(auxEstado);
                     }}
                     disabled={loading}
