@@ -76,6 +76,7 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
 
   const fechaFormateada = formatearFecha(elemento.fecha);
   const horaFormateada = formatearHora(elemento.fecha);
+  const fechaEmisionFormateada = formatearFecha(elemento.fechaEmision);
 
   const ingresos = Array.isArray(elemento.ingresos) ? elemento.ingresos : [];
 
@@ -128,28 +129,35 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                 </p>
               )}
 
+              {elemento.fechaEmision && (
+                <p>
+                  <strong>Emisión: </strong> {fechaEmisionFormateada}
+                </p>
+              )}
+
               {elemento.factura && elemento.tipo === "FACTURA" && (
                 <>
-                  {elemento.subtotal && elemento.descuento && (
-                    <>
-                      <p>
-                        <strong>
-                          Subtotal:{" "}
-                          <span
-                            style={{
-                              fontStyle: "italic",
-                              fontWeight: "bold",
-                              fontSize: "smaller",
-                              marginLeft: "5px",
-                            }}
-                          >
-                            {monedaValor}
-                          </span>{" "}
-                        </strong>{" "}
-                        {elemento.subtotal}
-                      </p>
-                    </>
-                  )}
+                  {elemento.subtotal !== null &&
+                    elemento.descuento !== null && (
+                      <>
+                        <p>
+                          <strong>
+                            Subtotal:{" "}
+                            <span
+                              style={{
+                                fontStyle: "italic",
+                                fontWeight: "bold",
+                                fontSize: "smaller",
+                                marginLeft: "5px",
+                              }}
+                            >
+                              {monedaValor}
+                            </span>{" "}
+                          </strong>{" "}
+                          {elemento.subtotal}
+                        </p>
+                      </>
+                    )}
                   <p>
                     <strong>Total: </strong>{" "}
                     <span
@@ -164,13 +172,14 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
                     </span>{" "}
                     {valorFinal}
                   </p>
-                  {elemento.descuento && (
-                    <>
-                      <p>
-                        <strong>Descuento: </strong> {elemento.descuento} %
-                      </p>
-                    </>
-                  )}
+                  {elemento.descuento !== null &&
+                    elemento.descuento !== undefined && (
+                      <>
+                        <p>
+                          <strong>Descuento: </strong> {elemento.descuento} %
+                        </p>
+                      </>
+                    )}
                 </>
               )}
               <p>

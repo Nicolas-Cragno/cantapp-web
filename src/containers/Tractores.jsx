@@ -16,6 +16,7 @@ import CardLogo from "../components/cards/CardLogo";
 import ListLogo from "../assets/logos/listLogo.png";
 import PlusLogo from "../assets/logos/plusLogo-w.png";
 import KeyLogo from "../assets/logos/keylogo.png";
+import LogoCheck from "../assets/logos/oklogo.png";
 import LogoInOut from "../assets/logos/inOutLogo.png";
 import LogoTractor from "../assets/logos/logotractor-w.png";
 import LogoStock from "../assets/logos/logostock-w.png";
@@ -139,6 +140,7 @@ const Tractores = () => {
               onClick={() => setModalStockVisible(true)}
             />
           </div>
+          <div className="section-options-row"></div>
         </div>
       </div>
       {/*

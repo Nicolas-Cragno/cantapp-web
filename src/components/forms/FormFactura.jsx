@@ -70,6 +70,7 @@ const FormFactura = ({
     })),
     moneda: elemento?.moneda ? elemento.moneda : "pesos",
     factura: elemento?.factura ? elemento.factura : "",
+    fechaEmision: elemento?.fechaEmision || "",
     descuento: elemento?.descuento ? elemento.descuento : 0,
     subtotal: elemento?.subtotal ? elemento.subtotal : 0,
     total: elemento?.total ? elemento.total : 0,
@@ -235,9 +236,15 @@ const FormFactura = ({
     }
 
     try {
-      // registro para evento
+      let FechaEmisionFinal;
+      if (formData.fechaEmision) {
+        const [yyyy, mm, dd] = formData.fechaEmision.split("-");
+        FechaEmisionFinal = `${dd}/${mm}/${yyyy}`;
+      }
+      // regis  tro para evento
       const datosEvento = {
         fecha: new Date(),
+        fechaEmision: FechaEmisionFinal || null,
         tipo: "FACTURA",
         area: formData.area || null,
         proveedor: formData.proveedor || null,
@@ -305,6 +312,16 @@ const FormFactura = ({
                   onChange={handleChange}
                   name="factura"
                   required
+                ></input>
+              </div>
+              <label>Fecha de emisión</label>
+              <InputValidator campo={formData.fechaEmision} />
+              <div className="select-with-button">
+                <input
+                  type="date"
+                  value={formData.fechaEmision}
+                  onChange={handleChange}
+                  name={"fechaEmision"}
                 ></input>
               </div>
               <div className="select-with-button">

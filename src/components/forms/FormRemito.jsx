@@ -66,10 +66,10 @@ const FormRemito = ({
       valor: ings.valor,
       moneda: ings.moneda,
       logo: ings.cantidad < 0 ? <LogoDown /> : <LogoPlus />,
-
     })),
     moneda: elemento?.moneda ? elemento.moneda : "pesos",
     remito: elemento?.remito ? elemento.remito : "",
+    fechaEmision: elemento?.fechaEmision ? elemento.fechaEmision : "",
     factura: elemento?.factura ? elemento.factura : "",
     proveedor: elemento?.proveedor ? elemento.proveedor : "",
     detalle: elemento?.detalle ? elemento.detalle : "",
@@ -237,6 +237,12 @@ const FormRemito = ({
 
       await sumarMultiplesCantidades(ingresosMap);
 
+      let FechaEmisionFinal;
+      if (formData.fechaEmision) {
+        const [yyyy, mm, dd] = formData.fechaEmision.split("-");
+        FechaEmisionFinal = `${dd}/${mm}/${yyyy}`;
+      }
+
       // registro para evento
       const datosEvento = {
         fecha: new Date(),
@@ -244,6 +250,7 @@ const FormRemito = ({
         area: formData.area || null,
         proveedor: formData.proveedor || null,
         remito: formData.remito || null,
+        fechaEmision: FechaEmisionFinal || null,
         factura: formData.factura || null,
         moneda: moneda || "pesos",
         ingresos: ingresos.map((i) => ({
@@ -299,82 +306,92 @@ const FormRemito = ({
 
         <hr />
         <form>
-          <div className="type-container">
-          </div>
+          <div className="type-container"></div>
           {/* info del remito */}
-            <>
-              <label className="form-title">Datos del remito</label>
-              <div className="form-box2">
-                <label>Remito</label> <InputValidator campo={formData.remito}/>
+          <>
+            <label className="form-title">Datos del remito</label>
+            <div className="form-box2">
+              <label>Remito</label> <InputValidator campo={formData.remito} />
+              <input
+                type="text"
+                style={{ textTransform: "uppercase" }}
+                value={formData.remito}
+                onChange={handleChange}
+                name="remito"
+                required
+              ></input>
+              <label>Fecha de emisión</label>
+              <InputValidator campo={formData.fechaEmision} />
+              <div className="select-with-button">
+                <input
+                  type="date"
+                  value={formData.fechaEmision}
+                  onChange={handleChange}
+                  name={"fechaEmision"}
+                ></input>
+              </div>
+              <label>Factura Relacionada</label>{" "}
+              <InputValidator campo={formData.factura} />
+              <div className="select-with-button">
                 <input
                   type="text"
                   style={{ textTransform: "uppercase" }}
-                  value={formData.remito}
+                  value={formData.factura}
                   onChange={handleChange}
-                  name="remito"
-                  required
+                  name="factura"
                 ></input>
-                <label>Factura Relacionada</label> <InputValidator campo={formData.factura}/>
-                <div className="select-with-button">
-                  <input
-                    type="text"
-                    style={{ textTransform: "uppercase" }}
-                    value={formData.factura}
-                    onChange={handleChange}
-                    name="factura"
-                  ></input>
-                </div>
-                <label>Proveedor</label> <InputValidator campo={formData.proveedor}/>
+              </div>
+              <label>Proveedor</label>{" "}
+              <InputValidator campo={formData.proveedor} />
+              <div className="select-with-button">
+                <Select
+                  className="select-grow"
+                  options={proveedores
+                    .filter((pr) => pr.id !== "01")
+                    .map((opt) => ({
+                      value: String(opt.id),
+                      label:
+                        opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
+                      cuit: opt.cuit,
+                    }))}
+                  value={
+                    formData.proveedor
+                      ? proveedores
+                          .map((opt) => ({
+                            value: String(opt.id),
+                            label:
+                              opt.id +
+                              " - " +
+                              opt.nombre +
+                              " (" +
+                              opt.marca +
+                              ")",
+                            cuit: opt.cuit,
+                          }))
+                          .find(
+                            (opt) =>
+                              opt.value === formData.proveedor ||
+                              String(opt.value) === String(proveedor)
+                          )
+                      : null
+                  }
+                  onChange={(selectedProv) => {
+                    const valor = selectedProv ? selectedProv.value : "";
+                    handleChange({
+                      target: {
+                        name: "proveedor",
+                        value: valor,
+                      },
+                    });
 
-                <div className="select-with-button">
-                  <Select
-                    className="select-grow"
-                    options={proveedores
-                      .filter((pr) => pr.id !== "01")
-                      .map((opt) => ({
-                        value: String(opt.id),
-                        label:
-                          opt.id + " - " + opt.nombre + " (" + opt.marca + ")",
-                        cuit: opt.cuit,
-                      }))}
-                    value={
-                      formData.proveedor
-                        ? proveedores
-                            .map((opt) => ({
-                              value: String(opt.id),
-                              label:
-                                opt.id +
-                                " - " +
-                                opt.nombre +
-                                " (" +
-                                opt.marca +
-                                ")",
-                              cuit: opt.cuit,
-                            }))
-                            .find(
-                              (opt) =>
-                                opt.value === formData.proveedor ||
-                                String(opt.value) === String(proveedor)
-                            )
-                        : null
-                    }
-                    onChange={(selectedProv) => {
-                      const valor = selectedProv ? selectedProv.value : "";
-                      handleChange({
-                        target: {
-                          name: "proveedor",
-                          value: valor,
-                        },
-                      });
-
-                      // 2. Actualiza estado proveedor
-                      setProveedor(valor);
-                    }}
-                    placeholder=""
-                    isClearable
-                    required
-                  />
-                  {/*
+                    // 2. Actualiza estado proveedor
+                    setProveedor(valor);
+                  }}
+                  placeholder=""
+                  isClearable
+                  required
+                />
+                {/*
                   <TextButton
                     text="+"
                     className="mini-btn"
@@ -382,16 +399,16 @@ const FormRemito = ({
                     type="button"
                   />
                    */}
-                </div>
               </div>
-            </>
-          
+            </div>
+          </>
+
           {/* carga de ingresos*/}
           <br />
           <label className="form-title">Area o sector correspondiente</label>
           <div className="form-box2">
-            <label> 
-              Area / Sector <InputValidator campo={formData.area}/>
+            <label>
+              Area / Sector <InputValidator campo={formData.area} />
               <Select
                 options={sectores.map((opt) => ({
                   value: opt.nombre, // o opt.id si querés usar el id
@@ -426,34 +443,34 @@ const FormRemito = ({
           </div>
           <br />
           <label className="form-title">
-            Registro articulos, repuestos, etc 
+            Registro articulos, repuestos, etc
           </label>
           <div className="form-box2">
             <br />
-            <InputValidator campo={tipoMovimiento}/>
-              <div className="type-container">
-                <button
-                  type="button"
-                  className={
-                    tipoMovimiento === "ALTA" ? "type-btn active" : "type-btn"
-                  }
-                  onClick={() => setTipoMovimiento("ALTA")}
-                >
-                  ALTA
-                </button>
-                <button
-                  type="button"
-                  className={
-                    tipoMovimiento === "BAJA" ? "type-btn active" : "type-btn"
-                  }
-                  onClick={() => setTipoMovimiento("BAJA")}
-                >
-                  BAJA
-                </button>
-              </div>
-            
+            <InputValidator campo={tipoMovimiento} />
+            <div className="type-container">
+              <button
+                type="button"
+                className={
+                  tipoMovimiento === "ALTA" ? "type-btn active" : "type-btn"
+                }
+                onClick={() => setTipoMovimiento("ALTA")}
+              >
+                ALTA
+              </button>
+              <button
+                type="button"
+                className={
+                  tipoMovimiento === "BAJA" ? "type-btn active" : "type-btn"
+                }
+                onClick={() => setTipoMovimiento("BAJA")}
+              >
+                BAJA
+              </button>
+            </div>
+
             <label>
-              Artículo <InputValidator campo={articuloSeleccionado}/>
+              Artículo <InputValidator campo={articuloSeleccionado} />
               <div className="select-with-button">
                 <Select
                   className="select-grow"
@@ -504,7 +521,8 @@ const FormRemito = ({
             </label>
             <div className="input-inline">
               <label>
-                Cantidad<InputValidator campo={cantidad}/>
+                Cantidad
+                <InputValidator campo={cantidad} />
                 <input
                   type="number"
                   value={cantidad}
@@ -516,21 +534,21 @@ const FormRemito = ({
                 <input type="text" value={unidad.toUpperCase()} disabled />
               </div>
               <div className="type-container">
-                              <button
-                                className="plus-btn"
-                                type="button"
-                                onClick={handleAgregar}
-                              >
-                                <LogoPlus className="plus-logo" />
-                              </button>
-                            </div>
+                <button
+                  className="plus-btn"
+                  type="button"
+                  onClick={handleAgregar}
+                >
+                  <LogoPlus className="plus-logo" />
+                </button>
+              </div>
             </div>
-            
           </div>
           <br />
           {/* listado de ingresos */}
-          <label className="form-title">Movimiento a registrar</label><InputValidator campo={ingresos}/>
-          
+          <label className="form-title">Movimiento a registrar</label>
+          <InputValidator campo={ingresos} />
+
           <div className="form-box2">
             {ingresos.length === 0 ? (
               <p>...</p>
@@ -553,7 +571,7 @@ const FormRemito = ({
                         ? item.descripcion
                         : stock.find((s) => s.id === item.id).descripcion}
                     </div>
-                    
+
                     <div className="item-actions">
                       <span className="list-cant3">
                         {item.cantidad} {Unidades[item.unidad.toUpperCase()]}{" "}
@@ -571,10 +589,10 @@ const FormRemito = ({
                 ))}
               </ul>
             )}
-             
-          </div><br/>
+          </div>
+          <br />
           <label>
-            Detalle <InputValidator campo={formData.detalle}/>
+            Detalle <InputValidator campo={formData.detalle} />
             <textarea
               name="detalle"
               value={formData.detalle}
