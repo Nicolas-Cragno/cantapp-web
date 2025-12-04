@@ -237,11 +237,9 @@ const FormRemito = ({
 
       await sumarMultiplesCantidades(ingresosMap);
 
-      let FechaEmisionFinal;
-      if (formData.fechaEmision) {
-        const [yyyy, mm, dd] = formData.fechaEmision.split("-");
-        FechaEmisionFinal = `${dd}/${mm}/${yyyy}`;
-      }
+      const FechaEmisionFinal = formData.fechaEmision
+        ? new Date(formData.fechaEmision)
+        : null;
 
       // registro para evento
       const datosEvento = {
