@@ -72,6 +72,7 @@ const FormMovimientoStock = ({
     remito: elemento?.remito ? elemento.remito : "",
     factura: elemento?.factura ? elemento.factura : "",
     proveedor: elemento?.proveedor ? elemento.proveedor : "",
+    detalle: elemento?.detalle ? elemento.detalle : "",
   });
 
   useEffect(() => {
@@ -266,6 +267,7 @@ const FormMovimientoStock = ({
           valor: i.valor,
           moneda: i.moneda,
         })),
+        detalle: formData.detalle || null,
       };
 
       let idEvento;
@@ -669,6 +671,15 @@ const FormMovimientoStock = ({
             )}
           </div>
           <InputValidator campo={ingresos} />
+          <br />
+          <label>
+            Detalle <InputValidator campo={formData.detalle} />
+            <textarea
+              name="detalle"
+              value={formData.detalle}
+              onChange={handleChange}
+            />
+          </label>
           {modalProveedorVisible && (
             <FormProveedor
               onClose={cerrarModalProveedor}

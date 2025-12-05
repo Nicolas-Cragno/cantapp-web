@@ -97,7 +97,7 @@ const ModalEventos = ({
       ),
     },
     {
-      titulo: "AREA/SECTOR",
+      titulo: "SECTOR",
       campo: "area",
       render: (a) => a.toUpperCase(),
       offresponsive: true,
@@ -105,6 +105,12 @@ const ModalEventos = ({
   ];
   const columnasMovimientoStock = [
     ...columnas,
+    {
+      titulo: "EMISIÓN",
+      campo: "fechaEmision",
+      render: (v) => formatearFecha(v),
+      onresponsive: false,
+    },
     {
       titulo: "N° FC",
       campo: "factura",

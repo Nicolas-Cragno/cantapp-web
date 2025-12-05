@@ -185,6 +185,11 @@ const FichaEventoStock = ({ elemento, onClose, onGuardar }) => {
               <p>
                 <strong>Área / Sector: </strong> {elemento.area?.toUpperCase()}
               </p>
+              {elemento.detalle && (
+                <p>
+                  <strong>Detalle</strong> {elemento.detalle?.toUpperCase()}
+                </p>
+              )}
             </div>
 
             <div className="ficha-info">

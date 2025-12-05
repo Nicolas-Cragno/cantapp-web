@@ -6,6 +6,7 @@ import "./css/Sections.css";
 // formularios y modales
 import FormGestor from "../components/forms/FormGestor";
 import FormLlave from "../components/forms/FormLlave";
+import FormToDoList from "../components/forms/FormToDoList";
 import ModalVehiculo from "../components/modales/ModalVehiculo";
 import ModalStock from "../components/modales/ModalStock";
 import ModalEventos from "../components/modales/ModalEventos";
@@ -35,6 +36,7 @@ const Tractores = () => {
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
+  const [modalToDoListVisible, setModalToDoListVisible] = useState(false);
   const { tractores } = useData();
 
   return (
@@ -54,6 +56,12 @@ const Tractores = () => {
             filtroVehiculo={AREA}
             onClose={() => setModalAgregarVisible(false)}
             onGuardar={() => setModalAgregarVisible(false)}
+          />
+        )}
+        {modalToDoListVisible && (
+          <FormToDoList
+            onClose={() => setModalToDoListVisible(false)}
+            onGuardar={() => setModalToDoListVisible(false)}
           />
         )}
 
@@ -101,6 +109,11 @@ const Tractores = () => {
         )}
         <div className="table-options-group">
           <div className="sections-options-row">
+            <CardLogo
+              title="Programar"
+              logo={PlusLogo}
+              onClick={() => setModalToDoListVisible(true)}
+            />
             <CardLogo
               title="Nuevo Trabajo"
               logo={PlusLogo}
