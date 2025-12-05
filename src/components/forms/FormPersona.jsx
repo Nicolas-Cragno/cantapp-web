@@ -47,6 +47,7 @@ const FormPersona = ({
     sucursal: persona?.sucursal || "",
     estado: persona?.estado ? "Activo" : "Inactivo",
     detalle: persona?.detalle?.toUpperCase() || "",
+
     // super admin
     periodos:
       persona?.periodos?.map((p) => ({

@@ -213,7 +213,7 @@ const FormEventoTaller = ({
         subarea: formData.subarea || subarea,
         detalle: formData.detalle?.toUpperCase() || null,
         usuario: evento.id ? evento.usuario || usuarioDeCarga : usuarioDeCarga,
-        repuestos: esServicio ? [] : repuestos,
+        repuestos: repuestos,
         sucursal: formData.sucursal,
       };
 
@@ -587,34 +587,34 @@ const FormEventoTaller = ({
               <>
                 <div className="doble-select">
                   <label>
-            Tractor * <InputValidator campo={formData.tractor} />
-            <Select
-              options={tractores.map((t) => ({
-                value: t.id,
-                label: `${t.interno} (${t.dominio})`,
-              }))}
-              value={tractores
-                .map((t) => ({
-                  value: t.id,
-                  label: `${t.interno} (${t.dominio})`,
-                }))
-                .filter((opt) =>
-                  formData.tractor.map(String).includes(opt.value)
-                )}
-              onChange={(opts) =>
-                handleChange({
-                  target: {
-                    name: "tractor",
-                    value: opts ? opts.map((o) => o.value) : [],
-                  },
-                })
-              }
-              placeholder=""
-              isClearable
-              isMulti
-              required
-            />
-          </label>
+                    Tractor * <InputValidator campo={formData.tractor} />
+                    <Select
+                      options={tractores.map((t) => ({
+                        value: t.id,
+                        label: `${t.interno} (${t.dominio})`,
+                      }))}
+                      value={tractores
+                        .map((t) => ({
+                          value: t.id,
+                          label: `${t.interno} (${t.dominio})`,
+                        }))
+                        .filter((opt) =>
+                          formData.tractor.map(String).includes(opt.value)
+                        )}
+                      onChange={(opts) =>
+                        handleChange({
+                          target: {
+                            name: "tractor",
+                            value: opts ? opts.map((o) => o.value) : [],
+                          },
+                        })
+                      }
+                      placeholder=""
+                      isClearable
+                      isMulti
+                      required
+                    />
+                  </label>
                   <label>
                     Kilometraje <InputValidator campo={formData.kilometraje} />
                     <input
@@ -637,34 +637,34 @@ const FormEventoTaller = ({
             {area === "furgones" ? (
               <>
                 <label>
-            Furgon * <InputValidator campo={formData.furgon} />
-            <Select
-              options={furgones.map((t) => ({
-                value: t.id,
-                label: `${t.interno} (${t.dominio})`,
-              }))}
-              value={furgones
-                .map((t) => ({
-                  value: t.id,
-                  label: `${t.interno} (${t.dominio})`,
-                }))
-                .filter((opt) =>
-                  formData.furgon.map(String).includes(opt.value)
-                )}
-              onChange={(opts) =>
-                handleChange({
-                  target: {
-                    name: "furgon",
-                    value: opts ? opts.map((o) => o.value) : [],
-                  },
-                })
-              }
-              placeholder=""
-              isClearable
-              isMulti
-              required
-            />
-          </label>
+                  Furgon * <InputValidator campo={formData.furgon} />
+                  <Select
+                    options={furgones.map((t) => ({
+                      value: t.id,
+                      label: `${t.interno} (${t.dominio})`,
+                    }))}
+                    value={furgones
+                      .map((t) => ({
+                        value: t.id,
+                        label: `${t.interno} (${t.dominio})`,
+                      }))
+                      .filter((opt) =>
+                        formData.furgon.map(String).includes(opt.value)
+                      )}
+                    onChange={(opts) =>
+                      handleChange({
+                        target: {
+                          name: "furgon",
+                          value: opts ? opts.map((o) => o.value) : [],
+                        },
+                      })
+                    }
+                    placeholder=""
+                    isClearable
+                    isMulti
+                    required
+                  />
+                </label>
               </>
             ) : null}
 
@@ -719,9 +719,7 @@ const FormEventoTaller = ({
             </label>
           </div>
           <div className="form-right">
-            <div
-              className={`form-box overflow-visible`}
-            >
+            <div className={`form-box overflow-visible`}>
               <label>
                 Cargar repuesto <InputValidator campo={articuloSeleccionado} />
                 <div className="select-with-button">
