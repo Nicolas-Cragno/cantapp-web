@@ -109,11 +109,13 @@ const Tractores = () => {
         )}
         <div className="table-options-group">
           <div className="sections-options-row">
-            <CardLogo
+            {/*
+              <CardLogo
               title="Programar"
               logo={PlusLogo}
               onClick={() => setModalToDoListVisible(true)}
             />
+              */}
             <CardLogo
               title="Nuevo Trabajo"
               logo={PlusLogo}

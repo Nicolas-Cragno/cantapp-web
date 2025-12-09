@@ -37,6 +37,8 @@ const FormVehiculo = ({
   });
   const [interno, setInterno] = useState("");
   const [dominio, setDominio] = useState("");
+  const [tractor, setTractor] = useState("");
+  const [furgon, setFurgon] = useState("");
   const [loading, setLoading] = useState(false);
   const [tipoSeleccionado, setTipoSeleccionado] = useState(tipoDefault);
   const subtiposDisponibles = tiposEventos[tipoSeleccionado.toUpperCase()];
@@ -168,6 +170,7 @@ const FormVehiculo = ({
         {!bloquearSwitch ? (
           <>
             <div className="type-container-small">
+              <InputValidator campo={tipoSeleccionado} />
               <button
                 type="button"
                 className={
@@ -175,7 +178,10 @@ const FormVehiculo = ({
                     ? "type-btn positive-active-black"
                     : "type-btn"
                 }
-                onClick={() => setTipoSeleccionado("tractores")}
+                onClick={() => {
+                  setTipoSeleccionado("tractores");
+                  setFurgon("");
+                }}
               >
                 TRACTOR {tipoSeleccionado === "tractores" ? " *" : null}{" "}
               </button>
@@ -197,7 +203,7 @@ const FormVehiculo = ({
           {tipoSeleccionado === "tractores" && (
             <>
               <label>
-                Tractor *
+                Tractor * <InputValidator campo={tipoSeleccionado} />
                 <div className="select-with-button">
                   <Select
                     className="select-grow"
