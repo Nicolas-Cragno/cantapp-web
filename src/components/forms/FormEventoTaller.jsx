@@ -815,7 +815,7 @@ const FormEventoTaller = ({
                 </div>
               </div>
             </div>
-            <div className={`form-box ${esServicio ? "form-null" : ""}`}>
+            <div className={`form-box`}>
               <ul className="list">
                 {[...articulosUsados, ...ingresos].map((item, index) => (
                   <li key={index} className="list-item">

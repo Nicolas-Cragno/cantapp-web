@@ -31,14 +31,18 @@ const FichaEventoSatelital = ({ elemento, onClose, onGuardar }) => {
       }
 
       if (evento.tractor) {
-        const dTractor = tractores.find((t) => t.interno === evento.tractor);
+        const dTractor = tractores.find(
+          (t) => String(t.interno) === String(evento.tractor)
+        );
         if (dTractor) {
           setTractor(`${dTractor.dominio} (${dTractor.interno})`);
         }
       }
 
       if (evento.furgon) {
-        const dFurgon = furgones.find((f) => f.interno === evento.furgon);
+        const dFurgon = furgones.find(
+          (f) => String(f.interno) === String(evento.furgon)
+        );
         if (dFurgon) {
           setFurgon(`${dFurgon.dominio} (${dFurgon.interno})`);
         }

@@ -10,6 +10,7 @@ import { BsBoxes as LogoBox } from "react-icons/bs";
 import { useData } from "../../context/DataContext";
 import useReparaciones from "../../context/hooks/useReparaciones";
 import useMovimientos from "../../context/hooks/useMovimientos";
+import useEventosSatelital from "../../context/hooks/useEventosSatelital";
 import {
   formatearFecha,
   formatearFechaCorta,
@@ -40,6 +41,7 @@ const ModalEventos = ({
   const { eventos, proveedores, personas, stock } = useData();
   const { reparaciones } = useReparaciones(filtroSector);
   const { movimientos } = useMovimientos();
+  const { eventosSatelital } = useEventosSatelital();
   let coleccion = eventos;
 
   if (filtroSector !== null) {
@@ -47,6 +49,8 @@ const ModalEventos = ({
       coleccion = reparaciones;
     } else if (filtroSector === "porteria") {
       coleccion = movimientos;
+    } else if (filtroSector === "satelital") {
+      coleccion = eventosSatelital;
     }
   }
   const columnasDerecha = [
@@ -244,6 +248,30 @@ const ModalEventos = ({
       offresponsive: true,
     },
   ];
+  const columnasSatelital = [
+    ...columnas,
+    {
+      titulo: "PERSONA",
+      campo: "persona",
+      render: (p, ev) => ev.nombrePersona,
+    },
+    {
+      titulo: "TRACTOR",
+      campo: "tractor",
+      render: (p, ev) => {
+        if (Array.isArray(ev.tractor)) {
+          return ev.tractor.join(", ");
+        }
+        return ev.tractor || "";
+      },
+    },
+    { titulo: "FURGON", campo: "furgon", offresponsive: true },
+    {
+      titulo: "DETALLE",
+      campo: "detalle",
+      offresponsive: true,
+    },
+  ];
   const columnasReparacionesFg = [
     ...columnas,
     {
@@ -304,6 +332,8 @@ const ModalEventos = ({
     columnasFinal = columnasReparacionesFg;
   } else if (filtroSector === "porteria" && tipo !== "STOCK") {
     columnasFinal = columnasPorteria;
+  } else if (filtroSector === "satelital" && tipo !== "STOCK") {
+    columnasFinal = columnasSatelital;
   } else {
     columnasFinal = columnas;
   }

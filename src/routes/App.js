@@ -1,5 +1,8 @@
 // ----------------------------------------------------------------------- imports externos
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase/firebaseConfig";
+import { signOut } from "firebase/auth";
 
 // ----------------------------------------------------------------------- imports internos
 import { rutasProtegidas } from './access/RutasProtegidas.jsx';
@@ -11,9 +14,12 @@ import Page404 from './404.jsx';
 import '../assets/css/App.css';
 
 function App() {
+ 
   
   useLogoutOnStart(); // cerrar sesión anterior si la hubiese
   useLogoutOnClose(); // cerrar automáticamente al cerrar ventana
+
+  
   
   return (
     <div className="App">

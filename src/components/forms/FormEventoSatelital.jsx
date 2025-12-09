@@ -30,7 +30,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
     personaRelacionada: evento.personaRelacionada
       ? String(evento.personaRelacionada)
       : "",
-    tractor: evento.tractor || "",
+    tractor: evento.tractor ? String(evento.tractor) : "",
     tractorRelacionado: evento.tractorRelacionado || "",
     furgon: evento.furgon || "",
     cliente: evento.cliente || "",
