@@ -36,6 +36,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
     cliente: evento.cliente || "",
     ubicacion: evento.ubicacion || "",
     detalle: evento.detalle || "",
+    observacion: evento.observacion || "",
     area: area,
   });
 
@@ -106,6 +107,9 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
         area: area,
         ubicacion: formData.ubicacion ? formData.ubicacion.toUpperCase() : null,
         detalle: formData.detalle ? formData.detalle.toUpperCase() : null,
+        observacion: formData.observacion
+          ? formData.observacion.toUpperCase()
+          : null,
       };
 
       await agregarEvento(datosAGuardar, area, evento.id);
@@ -269,104 +273,191 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
               </div>
             </label>
           </div>
-          {formData.tipo === "CAMBIO" && (
+          {formData.tipo === "CAMBIO" ||
+          formData.tipo === "AUXILIO" ||
+          formData.tipo === "ACCIDENTE" ? (
             <>
               <p className="ficha-info-title">
                 <strong>Información del cambio</strong>
               </p>
               <div className="ficha-info">
                 {/* 2° Persona / Empleado */}
-                <label>
-                  2° Persona / Empleado{" "}
-                  <InputValidator campo={formData.personaRelacionada} />
-                  <div className="select-with-button">
-                    <Select
-                      className="select-grow"
-                      options={personas
-                        .map((p) => ({
-                          value: p.id,
-                          label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
-                          apellido: p.apellido, //para odenar
-                        }))
-                        .sort((a, b) => a.apellido.localeCompare(b.apellido))}
-                      value={
-                        formData.personaRelacionada
-                          ? {
-                              value: formData.personaRelacionada,
-                              label:
-                                personas.find(
-                                  (p) => p.id === formData.personaRelacionada
-                                )?.apellido +
-                                " " +
-                                personas.find(
-                                  (p) => p.id === formData.personaRelacionada
-                                )?.nombres +
-                                ` (DNI: ${formData.personaRelacionada})`,
-                            }
-                          : null
-                      }
-                      onChange={(opt) =>
-                        setFormData({
-                          ...formData,
-                          personaRelacionada: opt ? opt.value : "",
-                        })
-                      }
-                      placeholder=""
-                      isClearable
-                    />
-                    <TextButton
-                      text="+"
-                      className="mini-btn"
-                      onClick={handleClickPersona}
-                    />
-                  </div>
-                </label>
+
                 {/* 2° Tractor */}
+                {formData.tipo !== "ACCIDENTE" ? (
+                  <>
+                    <label>
+                      Persona/empleado relacionado{" "}
+                      <InputValidator campo={formData.personaRelacionada} />
+                      <div className="select-with-button">
+                        <Select
+                          className="select-grow"
+                          options={personas
+                            .map((p) => ({
+                              value: p.id,
+                              label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
+                              apellido: p.apellido, //para odenar
+                            }))
+                            .sort((a, b) =>
+                              a.apellido.localeCompare(b.apellido)
+                            )}
+                          value={
+                            formData.personaRelacionada
+                              ? {
+                                  value: formData.personaRelacionada,
+                                  label:
+                                    personas.find(
+                                      (p) =>
+                                        p.id === formData.personaRelacionada
+                                    )?.apellido +
+                                    " " +
+                                    personas.find(
+                                      (p) =>
+                                        p.id === formData.personaRelacionada
+                                    )?.nombres +
+                                    ` (DNI: ${formData.personaRelacionada})`,
+                                }
+                              : null
+                          }
+                          onChange={(opt) =>
+                            setFormData({
+                              ...formData,
+                              personaRelacionada: opt ? opt.value : "",
+                            })
+                          }
+                          placeholder=""
+                          isClearable
+                        />
+                        <TextButton
+                          text="+"
+                          className="mini-btn"
+                          onClick={handleClickPersona}
+                        />
+                      </div>
+                    </label>
+                    <label>
+                      Tractor relacionado *{" "}
+                      <InputValidator campo={formData.tractorRelacionado} />
+                      <div className="select-with-button">
+                        <Select
+                          className="select-grow"
+                          options={tractores
+                            .map((t) => ({
+                              value: t.interno,
+                              label: `${t.dominio} (${t.interno})`,
+                              int: t.interno,
+                            }))
+                            .sort((a, b) => a.int - b.int)}
+                          value={
+                            formData.tractorRelacionado
+                              ? {
+                                  value: formData.tractorRelacionado,
+                                  label:
+                                    tractores.find(
+                                      (t) =>
+                                        t.interno ===
+                                        formData.tractorRelacionado
+                                    )?.dominio +
+                                    ` (${formData.tractorRelacionado})`,
+                                }
+                              : null
+                          }
+                          onChange={(opt) =>
+                            setFormData({
+                              ...formData,
+                              tractorRelacionado: opt ? opt.value : "",
+                            })
+                          }
+                          placeholder=""
+                          isClearable
+                        />
+                        <TextButton
+                          text="+"
+                          className="mini-btn"
+                          onClick={handleClickTractor}
+                        />
+                      </div>
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <label>
+                      Patente (del otro vehiculo){" "}
+                      <InputValidator campo={formData.dominioRelacionado} />
+                      <input
+                        className="input-grow"
+                        type="text"
+                        value={formData.dominioRelacionado}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dominioRelacionado: e ? String(e.target.value) : "",
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      Modelo (del otro vehiculo){" "}
+                      <InputValidator campo={formData.modeloRelacionado} />
+                      <input
+                        className="input-grow"
+                        type="text"
+                        value={formData.modeloRelacionado}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            modeloRelacionado: e ? String(e.target.value) : "",
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      Conductor (del otro vehiculo){" "}
+                      <InputValidator campo={formData.personaRelacionada} />
+                      <input
+                        className="input-grow"
+                        type="number"
+                        value={formData.personaRelacionada}
+                        placeholder="Número de documento"
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            personaRelacionada: e ? String(e.target.value) : "",
+                          })
+                        }
+                      />
+                      <InputValidator
+                        campo={formData.nombrePersonaRelacionada}
+                      />
+                      <input
+                        className="input-grow"
+                        type="text"
+                        value={formData.nombrePersonaRelacionada}
+                        placeholder="Nombre"
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            nombrePersonaRelacionada: e
+                              ? String(e.target.value)
+                              : "",
+                          })
+                        }
+                      />
+                    </label>
+                  </>
+                )}
                 <label>
-                  2° Tractor *{" "}
-                  <InputValidator campo={formData.tractorRelacionado} />
-                  <div className="select-with-button">
-                    <Select
-                      className="select-grow"
-                      options={tractores
-                        .map((t) => ({
-                          value: t.interno,
-                          label: `${t.dominio} (${t.interno})`,
-                          int: t.interno,
-                        }))
-                        .sort((a, b) => a.int - b.int)}
-                      value={
-                        formData.tractorRelacionado
-                          ? {
-                              value: formData.tractorRelacionado,
-                              label:
-                                tractores.find(
-                                  (t) =>
-                                    t.interno === formData.tractorRelacionado
-                                )?.dominio +
-                                ` (${formData.tractorRelacionado})`,
-                            }
-                          : null
-                      }
-                      onChange={(opt) =>
-                        setFormData({
-                          ...formData,
-                          tractorRelacionado: opt ? opt.value : "",
-                        })
-                      }
-                      placeholder=""
-                      isClearable
-                    />
-                    <TextButton
-                      text="+"
-                      className="mini-btn"
-                      onClick={handleClickTractor}
-                    />
-                  </div>
+                  Detalle del {formData.tipo.toLowerCase()}{" "}
+                  <InputValidator campo={formData.observacion} />
+                  <textarea
+                    name="observacion"
+                    value={formData.observacion}
+                    onChange={handleChange}
+                  />
                 </label>
               </div>
             </>
-          )}
+          ) : null}
           <p className="ficha-info-title">
             <strong>Información de carga</strong>
           </p>
