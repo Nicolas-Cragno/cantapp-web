@@ -28,7 +28,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [estadoSatelital, setEstadoSatelital] = useState(false);
-  const { personas, eventos, empresas, usuario } = useData();
+  const { personas, eventos, empresas, stock } = useData();
   const [eventosFiltrados, setEventosFiltrados] = useState([]);
 
   const cargarEventos = async () => {
@@ -284,6 +284,24 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                       {vehiculo.detalleSatelital}
                     </p>
                   ) : null}
+                </div>
+              </>
+            )}
+            {vehiculo.faltantes && (
+              <>
+                <p className="ficha-info-title">
+                  <strong>FALTANTES</strong>
+                </p>
+                <div className="ficha-info-box">
+                  {vehiculo.faltantes.map((e) => (
+                    <p key={e.id} className="item-list">
+                      <span>
+                        <strong>{e.idFaltante}</strong>{" "}
+                        {buscarNombre(stock, e.idFaltante)}
+                      </span>{" "}
+                      <span className="cant-detail">x{e.cantidad}</span>
+                    </p>
+                  ))}
                 </div>
               </>
             )}

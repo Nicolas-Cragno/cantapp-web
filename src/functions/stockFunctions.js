@@ -1,4 +1,4 @@
-import { doc, updateDoc, arrayUnion, arrayRemove, setDoc } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, arrayRemove, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
 export async function agregarItem(idDocumento, nombreColeccion, tipoCampo, valor) {
@@ -33,6 +33,40 @@ export async function reemplazarItems(idDocumento, nombreColeccion, tipoCampo, v
     { merge: true }
   );
 }
+
+export async function actualizarFaltante(idVehiculo, coleccion, idFaltante, nuevaCantidad) {
+  const ref = doc(db, String(coleccion), String(idVehiculo));
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const faltantes = data.faltantes || [];
+
+  const existe = faltantes.some(f => f.idFaltante === idFaltante);
+
+  let actualizado;
+
+  if (existe) {
+    actualizado = faltantes.map(f =>
+      f.idFaltante === idFaltante
+        ? { ...f, cantidad: nuevaCantidad }
+        : f
+    );
+  } else {
+    actualizado = [
+      ...faltantes,
+      {
+        idFaltante,
+        cantidad: nuevaCantidad,
+      }
+    ];
+  }
+
+  await updateDoc(ref, { faltantes: actualizado });
+}
+
+
 
 
 export async function actualizarHerramientas(idDocumento, nombreColeccion, tipoCampo, herramientas = []) {

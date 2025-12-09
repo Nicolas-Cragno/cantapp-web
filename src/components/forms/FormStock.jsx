@@ -13,11 +13,16 @@ import Codigos from "../../functions/data/articulos.json";
 import Unidades from "../../functions/data/unidades.json";
 import InputValidator from "../devs/InputValidator";
 import "./css/Forms.css";
+import {
+  agregarItem,
+  actualizarFaltante,
+} from "../../functions/stockFunctions";
 
 const FormStock = ({ articulo = null, onClose, onGuardar }) => {
   const [loading, setLoading] = useState(false);
   const { stock, proveedores, tractores, furgones, vehiculos } = useData();
   const [tipoSeleccionado, setTipoSeleccionado] = useState("tractor");
+  const [cantidad, setCantidad] = useState(1);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,12 +33,12 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
     proveedor: articulo?.proveedor || "",
     codigoProveedor: articulo?.codigoProveedor || "",
     marca: articulo?.marca || "",
-    cantidad: articulo?.cantidad || 0,
     detalle: articulo?.detalle || "",
     // en caso de ser recuperacion
     tractor: articulo?.tractor || "",
     furgon: articulo?.furgon || "",
     vehiculo: articulo?.vehiculo || "",
+    //cantidad: articulo?.cantidad || 0,
   });
   const tiposDisponibles = Object.entries(Codigos).map(([key, value]) => ({
     value: key,
@@ -80,10 +85,31 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
     if (e?.preventDefault) e.preventDefault(); // para evitar el error al abrirlo desde otro form como modal
     setLoading(true);
 
+    let coleccionACargar, internoACargar;
+    switch (tipoSeleccionado) {
+      case "tractor":
+        coleccionACargar = "tractores";
+        internoACargar = formData.tractor;
+        break;
+      case "furgon":
+        coleccionACargar = "furgones";
+        internoACargar = formData.furgon;
+        break;
+      case "vehiculo":
+        coleccionACargar = "vehiculos";
+        internoACargar = formData.vehiculo;
+        break;
+      default:
+        coleccionACargar = "tractores";
+        internoACargar = formData.tractor;
+        break;
+    }
+
     try {
       if (modoEdicion) {
         const articuloEditado = {
           ...formData,
+          tipo: formData.tipo.toUpperCase(),
           descripcion: formData.descripcion.toUpperCase(),
           unidad: articulo.unidad.toUpperCase() || "UNIDADES",
           proveedor: formData.proveedor || null,
@@ -97,6 +123,16 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
         };
 
         await modificar("stock", articulo.id, articuloEditado);
+
+        if (formData.tipo === "RC") {
+          await actualizarFaltante(
+            internoACargar,
+            coleccionACargar,
+            articulo.id,
+            cantidad
+          );
+        }
+
         onGuardar?.(articuloEditado);
       } else {
         // Obtener solo los códigos correctos
@@ -138,7 +174,24 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
       });
       */
 
-        await agregar("stock", nuevoArticulo, nuevoArticulo.codigo);
+        const idNuevoArticulo = await agregar(
+          "stock",
+          nuevoArticulo,
+          nuevoArticulo.codigo
+        );
+        const datosVehiculo = {
+          idFaltante: idNuevoArticulo.id,
+          faltante: formData.descripcion.toUpperCase(),
+          cantidad: cantidad,
+        };
+        if (formData.tipo === "RC") {
+          await agregarItem(
+            internoACargar,
+            coleccionACargar,
+            "faltantes",
+            datosVehiculo
+          );
+        }
         onGuardar?.(nuevoArticulo);
 
         //en caso de recuperación, el faltante se le va a restar al vehiculo desde el eventotaller
@@ -169,6 +222,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
         <hr />
         <form onSubmit={handleSubmit}>
           <p className="ficha-info-title">
+            {" "}
             <strong>Informacion</strong>
           </p>
           <div className="ficha-info">
@@ -494,6 +548,15 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                       </div>
                     </label>
                   )}
+                  <label>
+                    Cantidad <InputValidator campo={cantidad} />
+                    <input
+                      type="number"
+                      value={cantidad}
+                      onChange={(e) => setCantidad(e.target.value)}
+                      min="1"
+                    />
+                  </label>
                 </label>
               </div>
             </>
