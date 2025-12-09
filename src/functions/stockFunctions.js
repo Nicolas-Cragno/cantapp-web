@@ -66,9 +66,6 @@ export async function actualizarFaltante(idVehiculo, coleccion, idFaltante, nuev
   await updateDoc(ref, { faltantes: actualizado });
 }
 
-
-
-
 export async function actualizarHerramientas(idDocumento, nombreColeccion, tipoCampo, herramientas = []) {
   if (!idDocumento || !nombreColeccion || !tipoCampo) {
     console.error("[Error] Faltan parámetros para actualizarHerramientas:", {

@@ -464,6 +464,14 @@ padding-top: 1rem;}
   justify-content: space-between;
 }
 
+.item-blue2{
+  background-color: #152f76;
+  color: white;
+  padding-right: 5px;
+  padding-left: 5px;
+  font-size: small;
+}
+
 .item-black{
   background-color: #000;
 }

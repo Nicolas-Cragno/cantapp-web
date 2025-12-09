@@ -14,6 +14,7 @@ import {
   buscarPersona,
   buscarEmpresa,
   formatearFecha,
+  formatearFechaCorta,
   formatearHora,
   buscarNombre,
   buscarId,
@@ -21,6 +22,7 @@ import {
 import { cambiarEstadoSatelital } from "../../functions/dbFunctions";
 import FichaEventosGestor from "./FichaEventosGestor";
 import FormVehiculo from "../forms/FormVehiculo";
+import FormToDolist from "../forms/FormToDoList";
 import "./css/Fichas.css";
 
 const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
@@ -30,6 +32,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   const [estadoSatelital, setEstadoSatelital] = useState(false);
   const { personas, eventos, empresas, stock } = useData();
   const [eventosFiltrados, setEventosFiltrados] = useState([]);
+  const [modalProgramarVisible, setModalProgramarVisible] = useState(false);
 
   const cargarEventos = async () => {
     try {
@@ -93,7 +96,6 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
       console.log("Error al listar eventos: ", error);
     }
   };
-
   useEffect(() => {
     cargarEventos();
   }, []);
@@ -105,11 +107,9 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
 
     setEstadoSatelital(auxEstadoSatelital);
   }, [vehiculo]);
-
   const empresa = buscarEmpresa(empresas, vehiculo.empresa);
   const persona = buscarPersona(personas, vehiculo.persona);
   const satelital = buscarEmpresa(empresas, vehiculo.satelital);
-
   const handleGuardado = async (vehiculoModificado) => {
     setModoEdicion(false);
     if (onGuardar) await onGuardar(vehiculoModificado);
@@ -200,7 +200,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
             </h1>
             <hr />
             <p className="puesto">
-              <strong>{minimizarTipo(tipoVehiculo)}</strong>
+              <strong>{minimizarTipo(tipoVehiculo)}</strong>{" "}
             </p>
             <p className="ficha-info-title">
               <strong>INFORMACIÓN</strong>
@@ -287,6 +287,38 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                 </div>
               </>
             )}
+            <>
+              <p className="ficha-info-title">
+                <strong>PENDIENTES A REALIZAR</strong>
+              </p>
+              <div className="ficha-info-box">
+                {vehiculo.pendientes ? (
+                  <>
+                    {vehiculo.pendientes.map((pend) => (
+                      <p key={pend.id} className="item-list">
+                        <span>
+                          <strong className="item-blue2">{pend.tipo}</strong>{" "}
+                          {pend.detalle}
+                        </span>
+                        <span className="cant-detail">
+                          {formatearFechaCorta(pend.fecha)}
+                        </span>
+                      </p>
+                    ))}
+                  </>
+                ) : (
+                  <span>Sin pendientes</span>
+                )}
+              </div>
+              <div className="ficha-info-footer">
+                <span
+                  className="stateBox2 linker"
+                  onClick={() => setModalProgramarVisible(true)}
+                >
+                  EDITAR PENDIENTES
+                </span>
+              </div>
+            </>
             {vehiculo.faltantes && (
               <>
                 <p className="ficha-info-title">
@@ -385,6 +417,13 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
           elemento={eventoSeleccionado}
           onClose={() => setEventoSeleccionado(null)}
           onGuardar={onGuardar}
+        />
+      )}
+      {modalProgramarVisible && (
+        <FormToDolist
+          tipoVehiculo={tipoVehiculo}
+          vehiculo={vehiculo}
+          onClose={() => setModalProgramarVisible(false)}
         />
       )}
     </>
