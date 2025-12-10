@@ -42,6 +42,7 @@ const ModalEventos = ({
   const { reparaciones } = useReparaciones(filtroSector);
   const { movimientos } = useMovimientos();
   const { eventosSatelital } = useEventosSatelital();
+
   let coleccion = eventos;
 
   if (filtroSector !== null) {
@@ -441,8 +442,8 @@ const ModalEventos = ({
                 ? "llave"
                 : filtroSector === "porteria"
                 ? "porteria"
-                : eventoSeleccionado.area
-                ? eventoSeleccionado.area
+                : eventoSeleccionado.tipo
+                ? eventoSeleccionado.tipo
                 : "tractores"
             }
             elemento={eventoSeleccionado}
