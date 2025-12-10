@@ -5,6 +5,11 @@ import { useState, useMemo } from "react";
 import { useData } from "../../context/DataContext";
 import TablaColeccion from "../tablas/TablaColeccion";
 import FichaVehiculo from "../fichas/FichaVehiculo";
+import {
+  buscarNombre,
+  buscarPersona,
+  formatearFecha,
+} from "../../functions/dataFunctions";
 import "./css/Modales.css";
 
 const ModalPendientes = ({
@@ -15,7 +20,7 @@ const ModalPendientes = ({
   const [filtro, setFiltro] = useState("");
   const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
   const [modalFichaVisible, setModalFichaVisible] = useState(false);
-  const { tractores, furgones, vehiculos } = useData();
+  const { tractores, furgones, vehiculos, personas } = useData();
 
   const columnas = [
     {
@@ -27,12 +32,27 @@ const ModalPendientes = ({
       campo: "dominio",
     },
     {
+      titulo: "CHOFER",
+      campo: "persona",
+      render: (p) => buscarPersona(personas, p),
+    },
+    {
       titulo: "PENDIENTES",
       campo: "pendientes",
       render: (p, ev) => {
         if (!Array.isArray(ev.pendientes)) return "";
 
-        return ev.pendientes.map((pend) => pend.detalle).join(", ");
+        return (
+          <div>
+            {ev.pendientes.map((pend, i) => (
+              <>
+                <span className="datebox">{formatearFecha(pend.fecha)}</span>
+                {"     "}
+                <span>{pend.detalle}</span>
+              </>
+            ))}
+          </div>
+        );
       },
     },
   ];

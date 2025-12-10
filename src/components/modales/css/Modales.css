@@ -50,9 +50,7 @@ font-size: 1.8rem;
 }
 
 .modal-footer2{
-
   margin-top: 4rem;
-  
 }
 
 .type-btn{
@@ -96,6 +94,20 @@ font-size: 1.8rem;
   background-color: #000;
   color: #fff;
   opacity: 1;
+}
+
+.datebox{
+  background-color: #000;
+  color: #fff;
+  padding-right: .2rem;
+  padding-left: .2rem;
+  margin-left: .5rem;
+  border-radius: 5rem;
+  font-size: small;
+  font-weight: bolder;
+  display: inline-flex;
+  justify-self: center;
+  align-items: center;
 }
 
 .type-btn.negative-active{
