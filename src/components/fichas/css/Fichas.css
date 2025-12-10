@@ -166,12 +166,20 @@
 background-color: #058516;
 }
 
+.greenlightbox{
+  background-color: #2ecc71;
+}
+
 .blackbox{
 background-color: black;
 }
 
 .redbox{
 background-color: #d8252a;
+}
+
+.yellowbox{
+  background-color: #ffdd1c;
 }
 
 .nombres {

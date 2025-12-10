@@ -202,6 +202,44 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
             <p className="puesto">
               <strong>{minimizarTipo(tipoVehiculo)}</strong>{" "}
             </p>
+            <>
+              <p
+                className={`ficha-info-title ${
+                  vehiculo.pendientes ? "yellowbox" : "greenlightbox"
+                }`}
+              >
+                <strong>PARTE DEL {minimizarTipo(tipoVehiculo)}</strong>
+              </p>
+              <div className="ficha-info-box">
+                {vehiculo.pendientes ? (
+                  <>
+                    {vehiculo.pendientes.map((pend) => (
+                      <p key={pend.id} className="item-list">
+                        <span>
+                          <strong className="item-blue2">{pend.tipo}</strong>{" "}
+                          {pend.detalle}
+                        </span>
+                        <span className="cant-detail">
+                          {formatearFechaCorta(pend.fecha)}
+                        </span>
+                      </p>
+                    ))}
+                  </>
+                ) : (
+                  <span>
+                    Sin pendientes, arreglos o limitantes para circular
+                  </span>
+                )}
+              </div>
+              <div className="ficha-info-footer">
+                <span
+                  className="stateBox2 linker"
+                  onClick={() => setModalProgramarVisible(true)}
+                >
+                  EDITAR
+                </span>
+              </div>
+            </>
             <p className="ficha-info-title">
               <strong>INFORMACIÓN</strong>
             </p>
@@ -287,38 +325,6 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                 </div>
               </>
             )}
-            <>
-              <p className="ficha-info-title">
-                <strong>PENDIENTES A REALIZAR</strong>
-              </p>
-              <div className="ficha-info-box">
-                {vehiculo.pendientes ? (
-                  <>
-                    {vehiculo.pendientes.map((pend) => (
-                      <p key={pend.id} className="item-list">
-                        <span>
-                          <strong className="item-blue2">{pend.tipo}</strong>{" "}
-                          {pend.detalle}
-                        </span>
-                        <span className="cant-detail">
-                          {formatearFechaCorta(pend.fecha)}
-                        </span>
-                      </p>
-                    ))}
-                  </>
-                ) : (
-                  <span>Sin pendientes</span>
-                )}
-              </div>
-              <div className="ficha-info-footer">
-                <span
-                  className="stateBox2 linker"
-                  onClick={() => setModalProgramarVisible(true)}
-                >
-                  EDITAR PENDIENTES
-                </span>
-              </div>
-            </>
             {vehiculo.faltantes && (
               <>
                 <p className="ficha-info-title">

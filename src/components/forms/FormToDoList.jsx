@@ -5,6 +5,7 @@ import Select from "react-select";
 
 // ----------------------------------------------------------------------- imports internos
 import { modificar } from "../../functions/dbFunctions";
+import { useData } from "../../context/DataContext";
 import {
   formatearFecha,
   formatearFechaCorta,
@@ -15,7 +16,7 @@ import TextButton from "../buttons/TextButton";
 
 import "./css/Forms.css";
 
-const FormVehiculo = ({
+const FormToDoList = ({
   tipoVehiculo,
   vehiculo = null,
   onClose,
@@ -26,7 +27,7 @@ const FormVehiculo = ({
     tipo: "",
     detalle: "",
   });
-
+  const { tractores, furgones, vehiculos } = useData();
   const [pendienteEditando, setPendienteEditando] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -34,9 +35,9 @@ const FormVehiculo = ({
 
   const title =
     tipoVehiculo === "tractores"
-      ? `TRACTOR ${vehiculo.interno}`
+      ? `TRACTOR ${vehiculo.id}`
       : tipoVehiculo === "furgones"
-      ? `FURGÓN ${vehiculo.interno}`
+      ? `FURGÓN ${vehiculo.id}`
       : vehiculo.dominio;
 
   useEffect(() => {
@@ -170,40 +171,38 @@ const FormVehiculo = ({
             />
           </div>
 
-          {vehiculo.pendientes && (
-            <>
-              {pendientes.length > 0 && (
-                <>
-                  <p className="form-info-title">
-                    <strong>PENDIENTES</strong>
-                  </p>
+          <>
+            {pendientes.length > 0 && (
+              <>
+                <p className="form-info-title">
+                  <strong>PENDIENTES</strong>
+                </p>
 
-                  <div className="form-info-box">
-                    <ul className="pendientes-lista">
-                      {pendientes.map((pend) => (
-                        <p key={pend.id} className="item-list">
-                          <span>
-                            <strong className="item-blue2">{pend.tipo}</strong>{" "}
-                            {pend.detalle}
-                          </span>
-                          <span className="cant-detail">
-                            {formatearFechaCorta(pend.fecha)}
-                          </span>
-                          <button
-                            type="button"
-                            className="delete-btn"
-                            onClick={() => eliminarPendiente(pend.id)}
-                          >
-                            ✕
-                          </button>
-                        </p>
-                      ))}
-                    </ul>
-                  </div>
-                </>
-              )}
-            </>
-          )}
+                <div className="form-info-box">
+                  <ul className="pendientes-lista">
+                    {pendientes.map((pend) => (
+                      <p key={pend.id} className="item-list">
+                        <span>
+                          <strong className="item-blue2">{pend.tipo}</strong>{" "}
+                          {pend.detalle}
+                        </span>
+                        <span className="cant-detail">
+                          {formatearFechaCorta(pend.fecha)}
+                        </span>
+                        <button
+                          type="button"
+                          className="delete-btn"
+                          onClick={() => eliminarPendiente(pend.id)}
+                        >
+                          ✕
+                        </button>
+                      </p>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
+          </>
 
           <div className="form-buttons">
             <button type="submit" disabled={loading}>
@@ -220,4 +219,4 @@ const FormVehiculo = ({
   );
 };
 
-export default FormVehiculo;
+export default FormToDoList;

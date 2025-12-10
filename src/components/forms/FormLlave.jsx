@@ -12,6 +12,7 @@ import {
 } from "../../functions/stockFunctions";
 import { agregarEvento } from "../../functions/eventFunctions";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
+import FormToDoList from "./FormToDoList";
 import tiposEventos from "../../functions/data/eventos.json";
 import TextButton from "../buttons/TextButton";
 import InputValidator from "../devs/InputValidator";
@@ -32,6 +33,7 @@ const FormLlave = ({
   };
   const area = sector;
   const subarea = "llaveporteria"; // para listar tipos de eventos únicament
+  const [modalParteVisible, setModalParteVisible] = useState(false);
   const [formData, setFormData] = useState({
     tipo: elemento.tipo || "",
     persona: elemento.persona ? elemento.persona : "",
@@ -424,17 +426,22 @@ const FormLlave = ({
           </label>
           <InputValidator campo={formData.parteTr} />
           <div className="type-container">
-            <button
-              type="button"
-              className={
-                formData.parteTr
-                  ? "type-btn positive-active-yellow"
-                  : "type-btn"
-              }
-              onClick={() => handleParteTr(!dejaParteTr)}
-            >
-              PARTE TALLER TRACTORES
-            </button>
+            {formData.tractor !== 0 && (
+              <button
+                type="button"
+                className={
+                  formData.parteTr
+                    ? "type-btn positive-active-yellow"
+                    : "type-btn"
+                }
+                onClick={() => {
+                  handleParteTr(!dejaParteTr);
+                  setModalParteVisible(true);
+                }}
+              >
+                PARTE TALLER TRACTORES
+              </button>
+            )}
           </div>
 
           <label>
@@ -455,6 +462,14 @@ const FormLlave = ({
             <TextButton text="Cancelar" type="button" onClick={onClose} />
           </div>
         </form>
+        {modalParteVisible && (
+          <FormToDoList
+            tipoVehiculo={"tractores"}
+            vehiculo={formData.tractor || null}
+            onClose={() => setModalParteVisible(false)}
+            onGuardar={() => setModalParteVisible(false)}
+          />
+        )}
       </div>
     </div>
   );
