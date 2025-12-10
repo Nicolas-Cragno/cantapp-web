@@ -117,13 +117,11 @@ const FormFactura = ({
 
       let filtrados = stock;
 
-      /* bloquado hasta determinar parametro de carga de articulos
       if (proveedor !== null) {
         filtrados = stock.filter(
-          (a) => a.proveedor === proveedor
+          (a) => a.proveedor === proveedor || a.proveedor === "01"
         );
       }
-      */
 
       setArticulos(filtrados);
       setLoading(false);
