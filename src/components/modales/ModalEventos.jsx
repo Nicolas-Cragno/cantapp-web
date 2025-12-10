@@ -442,9 +442,11 @@ const ModalEventos = ({
                 ? "llave"
                 : filtroSector === "porteria"
                 ? "porteria"
-                : eventoSeleccionado.tipo
+                : eventoSeleccionado.tipo === "STOCK" ||
+                  eventoSeleccionado.tipo === "FACTURA" ||
+                  eventoSeleccionado.tipo === "REMITO"
                 ? eventoSeleccionado.tipo
-                : "tractores"
+                : eventoSeleccionado.area
             }
             elemento={eventoSeleccionado}
             onClose={cerrarModalFicha}
