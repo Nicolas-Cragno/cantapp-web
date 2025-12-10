@@ -434,10 +434,7 @@ const FormLlave = ({
                     ? "type-btn positive-active-yellow"
                     : "type-btn"
                 }
-                onClick={() => {
-                  handleParteTr(!dejaParteTr);
-                  setModalParteVisible(true);
-                }}
+                onClick={() => handleParteTr(!dejaParteTr)}
               >
                 PARTE TALLER TRACTORES
               </button>

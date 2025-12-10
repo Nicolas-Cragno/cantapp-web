@@ -12,6 +12,7 @@ import ModalStock from "../components/modales/ModalStock";
 import ModalEventos from "../components/modales/ModalEventos";
 import ModalPersona from "../components/modales/ModalPersona";
 import ModalProveedor from "../components/modales/ModalProveedor";
+import ModalPendientes from "../components/modales/ModalPendientes";
 // elementos
 import CardLogo from "../components/cards/CardLogo";
 import ListLogo from "../assets/logos/listLogo.png";
@@ -36,6 +37,7 @@ const Tractores = () => {
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
   const [modalIngresosVisible, setModalIngresosVisible] = useState(false);
   const [modalProveedorVisible, setModalProveedorVisible] = useState(false);
+  const [modalPendientesVisible, setModalPendientesVisible] = useState(false);
   const [modalToDoListVisible, setModalToDoListVisible] = useState(false);
   const { tractores } = useData();
 
@@ -64,7 +66,12 @@ const Tractores = () => {
             onGuardar={() => setModalToDoListVisible(false)}
           />
         )}
-
+        {modalPendientesVisible && (
+          <ModalPendientes
+            filtroSector={"tractores"}
+            onClose={() => setModalPendientesVisible(false)}
+          />
+        )}
         {modalKeyVisible && (
           <FormLlave
             sector={AREA}
@@ -116,6 +123,11 @@ const Tractores = () => {
               onClick={() => setModalToDoListVisible(true)}
             />
               */}
+            <CardLogo
+              title="Pendientes"
+              logo={ListLogo}
+              onClick={() => setModalPendientesVisible(true)}
+            />
             <CardLogo
               title="Nuevo Trabajo"
               logo={PlusLogo}
