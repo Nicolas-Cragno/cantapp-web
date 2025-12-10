@@ -19,6 +19,7 @@ import ListLogo from "../assets/logos/listLogo.png";
 import PlusLogo from "../assets/logos/plusLogo-w.png";
 import KeyLogo from "../assets/logos/keylogo.png";
 import LogoCheck from "../assets/logos/oklogo.png";
+import LogoPendiente from "../assets/logos/pendienteslogo.png";
 import LogoInOut from "../assets/logos/inOutLogo.png";
 import LogoTractor from "../assets/logos/logotractor-w.png";
 import LogoStock from "../assets/logos/logostock-w.png";
@@ -124,15 +125,11 @@ const Tractores = () => {
             />
               */}
             <CardLogo
-              title="Pendientes"
-              logo={ListLogo}
-              onClick={() => setModalPendientesVisible(true)}
-            />
-            <CardLogo
               title="Nuevo Trabajo"
               logo={PlusLogo}
               onClick={() => setModalAgregarVisible(true)}
             />
+
             <CardLogo
               title="Historial Trabajos"
               logo={ListLogo}
@@ -151,6 +148,11 @@ const Tractores = () => {
           </div>
 
           <div className="sections-options-row">
+            <CardLogo
+              title="Pendientes"
+              logo={LogoPendiente}
+              onClick={() => setModalPendientesVisible(true)}
+            />
             <CardLogo
               title="Tractores"
               logo={LogoTractor}
