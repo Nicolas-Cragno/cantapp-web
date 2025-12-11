@@ -202,11 +202,29 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
             <p className="puesto">
               <strong>{minimizarTipo(tipoVehiculo)}</strong>{" "}
             </p>
+            {vehiculo.faltantes && (
+              <>
+                <p className="ficha-info-title redbox2 spaceright">
+                  <strong>FALTANTES</strong>
+                </p>
+                <div className="ficha-info-box">
+                  {vehiculo.faltantes.map((e) => (
+                    <p key={e.id} className="item-list">
+                      <span>
+                        <strong>{e.idFaltante}</strong>{" "}
+                        {buscarNombre(stock, e.idFaltante)}
+                      </span>{" "}
+                      <span className="cant-detail">x{e.cantidad}</span>
+                    </p>
+                  ))}
+                </div>
+              </>
+            )}
             <>
               <p
                 className={`ficha-info-title ${
                   vehiculo.pendientes ? "yellowbox" : "greenlightbox"
-                }`}
+                } spaceright`}
               >
                 <strong>PARTE DEL {minimizarTipo(tipoVehiculo)}</strong>
               </p>
@@ -322,24 +340,6 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                       {vehiculo.detalleSatelital}
                     </p>
                   ) : null}
-                </div>
-              </>
-            )}
-            {vehiculo.faltantes && (
-              <>
-                <p className="ficha-info-title">
-                  <strong>FALTANTES</strong>
-                </p>
-                <div className="ficha-info-box">
-                  {vehiculo.faltantes.map((e) => (
-                    <p key={e.id} className="item-list">
-                      <span>
-                        <strong>{e.idFaltante}</strong>{" "}
-                        {buscarNombre(stock, e.idFaltante)}
-                      </span>{" "}
-                      <span className="cant-detail">x{e.cantidad}</span>
-                    </p>
-                  ))}
                 </div>
               </>
             )}

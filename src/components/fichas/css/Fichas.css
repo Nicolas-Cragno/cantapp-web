@@ -161,6 +161,10 @@
   font-weight: bold;
 }
 
+.spaceright{
+  padding-left: .5rem;
+}
+
 
 .greenbox{
 background-color: #058516;
@@ -176,6 +180,9 @@ background-color: black;
 
 .redbox{
 background-color: #d8252a;
+}
+.redbox2{
+background-color: #fa545a;
 }
 
 .yellowbox{

@@ -55,7 +55,7 @@ const FormToDoList = ({
     const nuevo = {
       id: maxId + 1,
       tipo: nuevoPendiente.tipo,
-      detalle: nuevoPendiente.detalle.trim(),
+      detalle: nuevoPendiente.detalle.toUpperCase().trim(),
       fecha: formatearFecha(new Date()),
     };
 
@@ -99,6 +99,8 @@ const FormToDoList = ({
         icon: "success",
         confirmButtonColor: "#4161bd",
       });
+
+      onClose();
     } catch (error) {
       console.error("Error al guardar vehículo: ", error);
       Swal.fire({
@@ -107,6 +109,7 @@ const FormToDoList = ({
         icon: "error",
         confirmButtonColor: "#4161bd",
       });
+      onClose();
     } finally {
       setLoading(false);
     }
