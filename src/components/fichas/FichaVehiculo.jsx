@@ -136,7 +136,18 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
           auxEmpresa,
           false
         );
+
+        const datosBajaSat = {
+          fecha: new Date(),
+          tipo: "SATELITAL",
+          tractor: vehiculo.id,
+          empresa: auxEmpresa,
+          detalle: "BAJA DEL SATELITAL",
+        };
+
+        await agregarEvento(datosBajaSat, "satelital");
         setEstadoSatelital(false);
+        cargarEventos();
       }
     });
   };
@@ -167,7 +178,19 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
           auxEmpresa,
           true
         );
+
+        const datosAltaSat = {
+          fecha: new Date(),
+          tipo: "SATELITAL",
+          tractor: vehiculo.id,
+          empresa: auxEmpresa,
+          detalle: "ALTA DEL SATELITAL",
+        };
+
+        await agregarEvento(datosAltaSat, "satelital");
+
         setEstadoSatelital(true);
+        cargarEventos();
       }
     });
   };
@@ -460,7 +483,9 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                         {formatearFecha(e.fecha)}
                       </span>{" "}
                       <strong>{e.tipo.toUpperCase()}</strong>
-                      <span className="infobox-mini2">{e.area}</span>
+                      <span className="infobox-mini2">
+                        {e.detalle?.slice(0, 10)} ...
+                      </span>
                     </p>
                   ))}
                 </div>
