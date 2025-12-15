@@ -16,8 +16,8 @@ import '../assets/css/App.css';
 function App() {
  
   
-  //useLogoutOnStart(); // cerrar sesión anterior si la hubiese
-  //useLogoutOnClose(); // cerrar automáticamente al cerrar ventana
+  useLogoutOnStart(); // cerrar sesión anterior si la hubiese
+  useLogoutOnClose(); // cerrar automáticamente al cerrar ventana
 
   
   

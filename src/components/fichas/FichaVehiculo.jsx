@@ -408,24 +408,27 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                   <strong>SATELITAL</strong>
                 </p>
                 <div className="ficha-info-box">
-                  {vehiculo.satelital ? (
-                    <p>
-                      <strong>Satelital: </strong>
-                      {satelital}{" "}
-                      <span
-                        className={`stateBox2 linker ${
-                          estadoSatelital ? "greenbox" : "redbox"
-                        }`}
-                        onClick={
-                          estadoSatelital
-                            ? handleBajaSatelital
-                            : handleAltaSatelital
-                        }
-                      >
-                        {estadoSatelital ? "ACTIVO" : "INNACTIVO"}
-                      </span>
-                    </p>
-                  ) : null}
+                  <p>
+                    <strong>Satelital: </strong>
+                    {satelital}{" "}
+                    <span
+                      className={`stateBox2 linker ${
+                        estadoSatelital || estadoSatelital === 1
+                          ? "greenbox"
+                          : "redbox"
+                      }`}
+                      onClick={
+                        estadoSatelital || estadoSatelital === 1
+                          ? handleBajaSatelital
+                          : handleAltaSatelital
+                      }
+                    >
+                      {estadoSatelital || estadoSatelital === 1
+                        ? "ACTIVO"
+                        : "NO TIENE"}
+                    </span>
+                  </p>
+
                   {vehiculo.comentarioSatelital ? (
                     <p>
                       <strong>Comentario: </strong>
