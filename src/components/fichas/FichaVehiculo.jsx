@@ -223,7 +223,9 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
             <>
               <p
                 className={`ficha-info-title ${
-                  vehiculo.pendientes ? "yellowbox" : "greenlightbox"
+                  vehiculo.pendientes && vehiculo.pendientes.length > 0
+                    ? "yellowbox"
+                    : "greenlightbox"
                 } spaceright`}
               >
                 <strong>PARTE DEL {minimizarTipo(tipoVehiculo)}</strong>
@@ -235,7 +237,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                       <p key={pend.id} className="item-list">
                         <span>
                           <strong className="item-blue2">{pend.tipo}</strong>{" "}
-                          {pend.detalle}
+                          {pend.detalle.toUpperCase()}
                         </span>
                         <span className="cant-detail">
                           {formatearFechaCorta(pend.fecha)}
@@ -430,6 +432,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
           tipoVehiculo={tipoVehiculo}
           vehiculo={vehiculo}
           onClose={() => setModalProgramarVisible(false)}
+          onGuardar={() => onClose()}
         />
       )}
     </>

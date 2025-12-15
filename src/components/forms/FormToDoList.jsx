@@ -156,6 +156,7 @@ const FormToDoList = ({
             <label>
               Detalle <InputValidator campo={nuevoPendiente.detalle} />
               <textarea
+                style={{ textTransform: "uppercase" }}
                 value={nuevoPendiente.detalle}
                 onChange={(e) =>
                   setNuevoPendiente({
@@ -187,7 +188,7 @@ const FormToDoList = ({
                       <p key={pend.id} className="item-list">
                         <span>
                           <strong className="item-blue2">{pend.tipo}</strong>{" "}
-                          {pend.detalle}
+                          {pend.detalle.toUpperCase()}
                         </span>
                         <span className="cant-detail">
                           {formatearFechaCorta(pend.fecha)}
