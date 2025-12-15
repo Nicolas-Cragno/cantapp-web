@@ -19,7 +19,13 @@ import {
   buscarNombre,
   buscarId,
 } from "../../functions/dataFunctions";
-import { cambiarEstadoSatelital } from "../../functions/dbFunctions";
+import {
+  cambiarEstadoSatelital,
+  ventaVehiculo,
+  altaBaja,
+  modificar,
+} from "../../functions/dbFunctions";
+import { agregarEvento } from "../../functions/eventFunctions";
 import FichaEventosGestor from "./FichaEventosGestor";
 import FormVehiculo from "../forms/FormVehiculo";
 import FormToDolist from "../forms/FormToDoList";
@@ -30,7 +36,7 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
   const [modoEdicion, setModoEdicion] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   const [estadoSatelital, setEstadoSatelital] = useState(false);
-  const { personas, eventos, empresas, stock } = useData();
+  const { personas, eventos, empresas, stock, usuario } = useData();
   const [eventosFiltrados, setEventosFiltrados] = useState([]);
   const [modalProgramarVisible, setModalProgramarVisible] = useState(false);
 
@@ -73,9 +79,9 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
       });
 
       const dataOrdenada = listaFiltrada.sort((a, b) => {
-        const fechaA = new Date(a.fecha);
-        const fechaB = new Date(b.fecha);
-        return fechaB - fechaA; // más nuevo primero
+        const fechaA = a.fecha?.toDate?.() ?? new Date(0);
+        const fechaB = b.fecha?.toDate?.() ?? new Date(0);
+        return fechaA - fechaB;
       });
 
       /*
@@ -184,6 +190,69 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
 
     return auxTipo;
   };
+  const handleBaja = () => {
+    if (usuario.rol === "superadmin" || usuario.rol === "dev") {
+      Swal.fire({
+        title: `BAJA ${minimizarTipo(tipoVehiculo)}`,
+        text: `${vehiculo.interno} (${vehiculo.dominio})`,
+        icon: "warning",
+        input: "text",
+        inputPlaceholder: "Detalle",
+        showConfirmButton: true,
+        confirmButtonText: "Baja normal",
+        showDenyButton: true,
+        denyButtonText: "Venta",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isDismissed) return;
+
+        const motivo = result.value || "Sin motivo";
+        const esVenta = result.isDenied;
+
+        const datosBaja = {
+          fecha: new Date(),
+          tipo: esVenta ? "VENTA" : "BAJA",
+          tractor: tipoVehiculo === "tractores" ? vehiculo.id : "",
+          furgon: tipoVehiculo === "furgones" ? vehiculo.id : "",
+          vehiculo: tipoVehiculo === "vehiculos" ? vehiculo.id : "",
+          detalle: motivo,
+        };
+
+        try {
+          if (esVenta) {
+            await ventaVehiculo(tipoVehiculo, vehiculo.id);
+          }
+
+          await altaBaja(tipoVehiculo, vehiculo.id, false);
+
+          elemento.estado = false;
+          elemento.empresa = null;
+          elemento.vendido = esVenta;
+
+          await agregarEvento(datosBaja, "administracion");
+          await modificar(tipoVehiculo, vehiculo.id, { estado: false });
+
+          onClose();
+        } catch (error) {
+          console.error("Error al registrar baja:", error);
+          Swal.fire({
+            title: "Error",
+            text: "No se pudo completar la baja.",
+            icon: "error",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "#4161bd",
+          });
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No posee autorización para esta acción.",
+      });
+    }
+  };
 
   return (
     <>
@@ -195,13 +264,40 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
               ✕{" "}
             </button>
             <h1 className="vehiculo-name">
-              <strong className="dominio">{vehiculo.dominio}</strong>
+              <strong className="dominio">{vehiculo.dominio} </strong>
               <span className="interno"> {vehiculo.interno} </span>
             </h1>
+            {vehiculo.vendido ? (
+              <>
+                <p className={"ficha-info-title2 yellowbox2"}>
+                  <strong>
+                    VENDIDO{" "}
+                    {vehiculo.fechaVenta
+                      ? formatearFecha(vehiculo.fechaVenta)
+                      : ""}
+                  </strong>
+                </p>
+              </>
+            ) : (
+              ""
+            )}
             <hr />
-            <p className="puesto">
-              <strong>{minimizarTipo(tipoVehiculo)}</strong>{" "}
-            </p>
+            <div className="info-subname">
+              <strong>{minimizarTipo(tipoVehiculo)}</strong>
+              {usuario["rol"] !== "user" &&
+                (vehiculo.estado ? (
+                  <p
+                    className="info-minitext stateBox greenlightbox"
+                    onClick={handleBaja}
+                  >
+                    activo{" "}
+                  </p>
+                ) : (
+                  <p className="info-minitext stateBox greylightbox">
+                    innactivo{" "}
+                  </p>
+                ))}
+            </div>
             {vehiculo.faltantes && (
               <>
                 <p className="ficha-info-title redbox2 spaceright">
@@ -357,41 +453,11 @@ const FichaVehiculo = ({ elemento, tipoVehiculo, onClose, onGuardar }) => {
                       className="item-list"
                       onClick={() => setEventoSeleccionado(e)}
                     >
-                      {/* ---------------------------------------------------------------- TIPOS */}
-                      {/* ----------------------------- PORTERIA */}
-                      {e.tipo === "ENTREGA" ||
-                      e.tipo === "RETIRA" ||
-                      e.tipo === "DEJA" ? (
-                        <>
-                          <LogoKey /> {e.tipo} LLAVES
-                        </>
-                      ) : null}
-                      {e.tipo === "ENTRADA" && (
-                        <>
-                          <LogoEnter /> {e.tipo}
-                          {e.cargado && (
-                            <span className="infobox-mini redbox">Cargado</span>
-                          )}
-                        </>
-                      )}
-                      {e.tipo === "SALIDA" && (
-                        <>
-                          <LogoOut /> {e.tipo}
-                          {e.cargado && (
-                            <span className="infobox-mini redbox">Cargado</span>
-                          )}
-                        </>
-                      )}
-                      {/* ----------------------------- COMBUSTIBLE */}
-                      {e.tipo === "VIAJE" ||
-                        (e.tipo === "viaje" && (
-                          <>
-                            <LogoRoute /> {e.tipo.toUpperCase()}
-                          </>
-                        ))}
-                      <span>
-                        {formatearFecha(e.fecha)} | {formatearHora(e.fecha)} hs
+                      <span className="list-cant3">
+                        {formatearFecha(e.fecha)}
                       </span>{" "}
+                      <strong>{e.tipo.toUpperCase()}</strong>
+                      <span className="infobox-mini2">{e.area}</span>
                     </p>
                   ))}
                 </div>

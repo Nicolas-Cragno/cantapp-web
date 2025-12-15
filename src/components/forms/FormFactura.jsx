@@ -115,6 +115,7 @@ const FormFactura = ({
     const fetchArticulos = async () => {
       setLoading(true);
 
+      /*
       let filtrados = stock;
 
       if (proveedor !== null) {
@@ -124,6 +125,8 @@ const FormFactura = ({
       }
 
       setArticulos(filtrados);
+      */
+      setArticulos(stock);
       setLoading(false);
     };
 
@@ -234,12 +237,14 @@ const FormFactura = ({
     }
 
     try {
-      const FechaEmisionFinal = formData.fechaEmision
-        ? new Date(formData.fechaEmision)
-        : null;
+      const FechaEmisionFinal =
+        formData.fechaEmision &&
+        !isNaN(new Date(formData.fechaEmision).getTime())
+          ? new Date(formData.fechaEmision)
+          : null;
       // regis  tro para evento
       const datosEvento = {
-        fecha: new Date(),
+        fecha: !modoEdicion ? new Date() : elemento.fecha,
         fechaEmision: FechaEmisionFinal || null,
         tipo: "FACTURA",
         area: formData.area || null,

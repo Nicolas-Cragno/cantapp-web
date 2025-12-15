@@ -47,11 +47,12 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
     activarPanelOculto();
   }, []);
 
-  useEffect(()=> {
-    const valor = elemento.herramientas || elemento.puesto === "MECANICO" ? true : false;
+  useEffect(() => {
+    const valor =
+      elemento.herramientas || elemento.puesto === "MECANICO" ? true : false;
 
     setMostrarHerramientas(valor);
-  }, [])
+  }, []);
   if (!persona) return null;
 
   const fechaNacimiento = formatearFecha(persona.nacimiento);
@@ -59,7 +60,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
   const edad = calcularEdad(persona.nacimiento);
 
   const handleBaja = () => {
-    if (usuario.rol === "superadmin") {
+    if (usuario.rol === "superadmin" || usuario.rol === "dev") {
       Swal.fire({
         title: `BAJA ${persona.puesto}`,
         text: `${persona.apellido}, ${persona.nombres}`,
@@ -278,48 +279,43 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
             </div>
 
             <p className="ficha-info-title">
-                  <strong>Herramientas asignadas</strong>
-                  {persona.herramientas && persona.herramientas.length > 0 && (
-                    <span className="list-cant2">
-                      {persona.herramientas.length} herramienta
-                      {persona.herramientas.length !== 1 && "s"}
-                    </span>
-                  )}
-                </p>
-                <div className="ficha-info-box special2">
-                  {persona.herramientas
-                    ? persona.herramientas
-                        ?.slice()
-                        .sort((a, b) => a.id.localeCompare(b.id))
-                        .map((h, index) => {
-                          return (
-                            <div key={index} className="special-item">
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <span className="special-fechas">
-                                  <strong>{h.id}</strong> | {h.descripcion}{" "}
-                                </span>
-                                <span className="list-cant3">
-                                  x{h.cantidad}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })
-                    : "Sin herramientas asignadas"}
-                </div>
-                <div className="ficha-info-footer">
-                  <p
-                    className="info-minitext info-minibtn"
-                    onClick={handleTools}
-                  >
-                    EDITAR
-                  </p>
-                </div>
+              <strong>Herramientas asignadas</strong>
+              {persona.herramientas && persona.herramientas.length > 0 && (
+                <span className="list-cant2">
+                  {persona.herramientas.length} herramienta
+                  {persona.herramientas.length !== 1 && "s"}
+                </span>
+              )}
+            </p>
+            <div className="ficha-info-box special2">
+              {persona.herramientas
+                ? persona.herramientas
+                    ?.slice()
+                    .sort((a, b) => a.id.localeCompare(b.id))
+                    .map((h, index) => {
+                      return (
+                        <div key={index} className="special-item">
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <span className="special-fechas">
+                              <strong>{h.id}</strong> | {h.descripcion}{" "}
+                            </span>
+                            <span className="list-cant3">x{h.cantidad}</span>
+                          </div>
+                        </div>
+                      );
+                    })
+                : "Sin herramientas asignadas"}
+            </div>
+            <div className="ficha-info-footer">
+              <p className="info-minitext info-minibtn" onClick={handleTools}>
+                EDITAR
+              </p>
+            </div>
 
             {persona.detalle && (
               <>

@@ -48,7 +48,7 @@ const ModalPendientes = ({
               <>
                 <span className="datebox">{formatearFecha(pend.fecha)}</span>
                 {"     "}
-                <span>{pend.detalle}</span>
+                <span>{pend.detalle.toUpperCase()}</span>
               </>
             ))}
           </div>

@@ -146,6 +146,17 @@
   margin-left: -1rem;
 }
 
+.infobox-mini2{
+  border-radius: 1rem;
+  padding: .1rem;
+  padding-right: .3rem;
+  padding-left: .3rem;
+  color: #333;
+  font-size: small;
+  font-weight: 500;
+  margin-left: -1rem;
+}
+
 .item-list{
   list-style: none;
   display: flex;
@@ -174,6 +185,10 @@ background-color: #058516;
   background-color: #2ecc71;
 }
 
+.greylightbox{
+  background-color: #d2d2d2;
+}
+
 .blackbox{
 background-color: black;
 }
@@ -187,6 +202,10 @@ background-color: #fa545a;
 
 .yellowbox{
   background-color: #ffdd1c;
+}
+
+.yellowbox2{
+  background-color: #fbff00;
 }
 
 .nombres {
@@ -243,6 +262,12 @@ opacity: .5;
   display: flex;
   justify-content: space-between;
   margin-bottom: -2rem;
+}
+
+.ficha-info-title2{
+  display: flex;
+  justify-content: center;
+  margin-bottom: -1rem;
 }
 
 .ficha-info-alert{
