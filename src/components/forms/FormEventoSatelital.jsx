@@ -17,11 +17,12 @@ import "./css/Forms.css";
 const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   //const evento = elemento
   const area = "satelital";
-  const { personas, tractores, furgones } = useData();
+  const { personas, tractores, furgones, vehiculos } = useData();
   const [modalTractorVisible, setModalTractorVisible] = useState(false);
   const [modalFurgonVisible, setModalFurgonVisible] = useState(false);
   const [modalVehiculoVisible, setModalVehiculoVisible] = useState(false);
   const [modalPersonaVisible, setModalPersonaVisible] = useState(false);
+  const [segundoVehiculoPropio, setSegundoVehiculoPropio] = useState(true);
   const [formData, setFormData] = useState({
     tipo: evento.tipo,
     fecha: formatearFecha(evento.fecha),
@@ -64,6 +65,9 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   const handleClickVehiculo = async () => {
     setModalVehiculoVisible(true);
   };
+  const handleClickSegundoVehiculo = async (state) => {
+    setSegundoVehiculoPropio(!state);
+  };
   const handleClickPersona = async () => {
     setModalPersonaVisible(true);
   };
@@ -99,9 +103,14 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
           ? Number(formData.personaRelacionada)
           : null,
         tractor: formData.tractor ? Number(formData.tractor) : null,
-        tractorRelacionado: formData.tractorRelacionado
-          ? Number(formData.tractorRelacionado)
-          : null,
+        tractorRelacionado:
+          formData.tractorRelacionado && segundoVehiculoPropio
+            ? Number(formData.tractorRelacionado)
+            : null,
+        vehiculoRelacionado:
+          formData.vehiculoRelacionado && !segundoVehiculoPropio
+            ? String(formData.vehiculoRelacionado)
+            : null,
         furgon: formData.furgon ? Number(formData.furgon) : null,
         cliente: formData.cliente ? formData.cliente.toUpperCase() : null,
         area: area,
@@ -203,7 +212,9 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                       label: `${p.apellido} ${p.nombres} (DNI: ${p.dni})`,
                       apellido: p.apellido, //para odenar
                     }))
-                    .sort((a, b) => a.apellido.localeCompare(b.apellido))}
+                    .sort((a, b) =>
+                      (a.apellido ?? "").localeCompare(b.apellido ?? "")
+                    )}
                   value={
                     formData.persona
                       ? {
@@ -283,9 +294,37 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
               <div className="ficha-info">
                 {/* 2° Persona / Empleado */}
 
-                {/* 2° Tractor */}
+                {/* 2° Tractor acaaa */}
                 {formData.tipo !== "ACCIDENTE" ? (
                   <>
+                    <div className="type-container-small">
+                      <button
+                        type="button"
+                        className={
+                          segundoVehiculoPropio
+                            ? "type-btn positive-active-black"
+                            : "type-btn"
+                        }
+                        onClick={() =>
+                          handleClickSegundoVehiculo(segundoVehiculoPropio)
+                        }
+                      >
+                        INTERNO {segundoVehiculoPropio ? " *" : null}
+                      </button>
+                      <button
+                        type="button"
+                        className={
+                          !segundoVehiculoPropio
+                            ? "type-btn positive-active-black"
+                            : "type-btn"
+                        }
+                        onClick={() =>
+                          handleClickSegundoVehiculo(segundoVehiculoPropio)
+                        }
+                      >
+                        EXTERNO {!segundoVehiculoPropio ? " *" : null}
+                      </button>
+                    </div>
                     <label>
                       Persona/empleado relacionado{" "}
                       <InputValidator campo={formData.personaRelacionada} />
@@ -299,7 +338,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                               apellido: p.apellido, //para odenar
                             }))
                             .sort((a, b) =>
-                              a.apellido.localeCompare(b.apellido)
+                              (a.apellido ?? "").localeCompare(b.apellido ?? "")
                             )}
                           value={
                             formData.personaRelacionada
@@ -336,47 +375,100 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                       </div>
                     </label>
                     <label>
-                      Tractor relacionado *{" "}
-                      <InputValidator campo={formData.tractorRelacionado} />
-                      <div className="select-with-button">
-                        <Select
-                          className="select-grow"
-                          options={tractores
-                            .map((t) => ({
-                              value: t.interno,
-                              label: `${t.dominio} (${t.interno})`,
-                              int: t.interno,
-                            }))
-                            .sort((a, b) => a.int - b.int)}
-                          value={
-                            formData.tractorRelacionado
-                              ? {
-                                  value: formData.tractorRelacionado,
-                                  label:
-                                    tractores.find(
-                                      (t) =>
-                                        t.interno ===
-                                        formData.tractorRelacionado
-                                    )?.dominio +
-                                    ` (${formData.tractorRelacionado})`,
-                                }
-                              : null
-                          }
-                          onChange={(opt) =>
-                            setFormData({
-                              ...formData,
-                              tractorRelacionado: opt ? opt.value : "",
-                            })
-                          }
-                          placeholder=""
-                          isClearable
-                        />
-                        <TextButton
-                          text="+"
-                          className="mini-btn"
-                          onClick={handleClickTractor}
-                        />
-                      </div>
+                      {segundoVehiculoPropio ? (
+                        <>
+                          Tractor relacionado *{" "}
+                          <InputValidator campo={formData.tractorRelacionado} />
+                          <div className="select-with-button">
+                            <Select
+                              className="select-grow"
+                              options={tractores
+                                .map((t) => ({
+                                  value: t.interno,
+                                  label: `${t.dominio} (${t.interno})`,
+                                  int: t.interno,
+                                }))
+                                .sort((a, b) => a.int - b.int)}
+                              value={
+                                formData.tractorRelacionado
+                                  ? {
+                                      value: formData.tractorRelacionado,
+                                      label:
+                                        tractores.find(
+                                          (t) =>
+                                            t.interno ===
+                                            formData.tractorRelacionado
+                                        )?.dominio +
+                                        ` (${formData.tractorRelacionado})`,
+                                    }
+                                  : null
+                              }
+                              onChange={(opt) =>
+                                setFormData({
+                                  ...formData,
+                                  tractorRelacionado: opt ? opt.value : "",
+                                })
+                              }
+                              placeholder=""
+                              isClearable
+                            />
+                            <TextButton
+                              text="+"
+                              className="mini-btn"
+                              onClick={handleClickTractor}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          Vehiculo relacionado *{" "}
+                          <InputValidator
+                            campo={formData.vehiculoRelacionado}
+                          />
+                          <div className="select-with-button">
+                            <Select
+                              className="select-grow"
+                              options={vehiculos
+                                .map((t) => ({
+                                  value: t.dominio,
+                                  label: `${t.dominio} (${t.marca})`,
+                                }))
+                                .sort((a, b) =>
+                                  (a.dominio ?? "").localeCompare(
+                                    b.dominio ?? ""
+                                  )
+                                )}
+                              value={
+                                formData.vehiculoRelacionado
+                                  ? {
+                                      value: formData.vehiculoRelacionado,
+                                      label:
+                                        vehiculos.find(
+                                          (v) =>
+                                            v.dominio ===
+                                            formData.vehiculoRelacionado
+                                        )?.dominio +
+                                        ` (${formData.vehiculoRelacionado})`,
+                                    }
+                                  : null
+                              }
+                              onChange={(opt) =>
+                                setFormData({
+                                  ...formData,
+                                  vehiculoRelacionado: opt ? opt.value : "",
+                                })
+                              }
+                              placeholder=""
+                              isClearable
+                            />
+                            <TextButton
+                              text="+"
+                              className="mini-btn"
+                              onClick={handleClickVehiculo}
+                            />
+                          </div>
+                        </>
+                      )}
                     </label>
                   </>
                 ) : (
@@ -475,7 +567,9 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                         f.interno ? f.interno : f.marca
                       })`,
                     }))
-                    .sort((a, b) => a.label.localeCompare(b.label))}
+                    .sort((a, b) =>
+                      (a.label ?? "").localeCompare(b.label ?? "")
+                    )}
                   value={
                     formData.furgon
                       ? (() => {

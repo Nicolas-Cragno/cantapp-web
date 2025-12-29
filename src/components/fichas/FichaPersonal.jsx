@@ -108,7 +108,7 @@ const FichaPersonal = ({ elemento, onClose, onGuardar }) => {
     }
   };
   const handleAlta = () => {
-    if (usuario.rol === "superadmin") {
+    if (usuario.rol === "superadmin" || usuario.rol === "dev") {
       const empresasPropias = empresas?.filter((e) => e.tipo === "propia");
       const empresasOptions = {};
       empresasPropias.forEach((e) => {
