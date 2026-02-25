@@ -57,7 +57,7 @@ const FormHerramienta = ({
     if (usuario?.rol === "dev") setEsDev(true);
     if (usuario && personas.length > 0) {
       const personaUsuaria = personas.find(
-        (p) => String(p.dni) === String(usuario.dni)
+        (p) => String(p.dni) === String(usuario.dni),
       );
 
       if (personaUsuaria) {
@@ -69,7 +69,7 @@ const FormHerramienta = ({
     }
     if (elemento && personas.length > 0) {
       const personaFS = personas.find(
-        (p) => String(p.dni) === String(elemento.id)
+        (p) => String(p.dni) === String(elemento.id),
       );
 
       if (personaFS) {
@@ -82,11 +82,11 @@ const FormHerramienta = ({
   }, [usuario, personas]);
   useEffect(() => {
     const listaEmpleados = personas.filter(
-      (p) => p.estado === 1 || p.estado === true
+      (p) => p.estado === 1 || p.estado === true,
     );
 
     const listaHerramientas = stock.filter(
-      (a) => a.tipo.toUpperCase() === "HERRAMIENTA"
+      (a) => a.tipo.toUpperCase() === "HERRAMIENTA",
     );
 
     setEmpleados(listaEmpleados);
@@ -102,7 +102,7 @@ const FormHerramienta = ({
           codigoProveedor: h.codigoProveedor,
           cantidad: h.cantidad,
           unidad: h.unidad,
-        }))
+        })),
       );
       setArticulosUsadosBackUp(elemento.herramientas);
     }
@@ -124,7 +124,7 @@ const FormHerramienta = ({
       Swal.fire(
         "Error",
         "Selecciona un artículo y una cantidad válida",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -214,7 +214,7 @@ const FormHerramienta = ({
         Swal.fire(
           "Datos incompletos",
           "Debe seleccionar persona, operador y al menos una herramienta.",
-          "warning"
+          "warning",
         );
         setUploading(false);
         return;
@@ -233,11 +233,11 @@ const FormHerramienta = ({
               <b>Fecha:</b> ${fechaParaGuardar.toLocaleString()}<hr>
               <b>Persona:</b> ${buscarPersona(
                 personas,
-                datosAGuardar.persona
+                datosAGuardar.persona,
               )}<br>
               <b>Operador:</b> ${buscarPersona(
                 personas,
-                datosAGuardar.operador
+                datosAGuardar.operador,
               )}<br>
               <b>Detalle:</b> ${datosAGuardar.detalle || "-"}<hr>
               <b>Nuevas herramientas asignadas ↓</b><hr> ${
@@ -248,7 +248,7 @@ const FormHerramienta = ({
                       (h) => `
                       <li style="font-size:smaller; list-style:none">
                         <b>${h.id}</b> - ${h.descripcion} <strong style="font-size: xx-smaller">(${h.cantidad} ${h.unidad})</strong>
-                      </li>`
+                      </li>`,
                     )
                     .join("")}
                 </ul>`
@@ -262,7 +262,7 @@ const FormHerramienta = ({
                       (h) => `
                       <li style="font-size:smaller; list-style:none">
                         <b>${h.id}</b> - ${h.descripcion} <strong style="font-size: xx-smaller">(${h.cantidad} ${h.unidad})</strong>
-                      </li>`
+                      </li>`,
                     )
                     .join("")}
                 </ul>`
@@ -289,7 +289,7 @@ const FormHerramienta = ({
         idPersona,
         "personas",
         "herramientas",
-        datosAGuardar.herramientas
+        datosAGuardar.herramientas,
       );
 
       if (onGuardar) onGuardar();
@@ -403,7 +403,7 @@ const FormHerramienta = ({
                     value: a.id,
                     label: `${a.id} - ${a.descripcion} (${marcaPorCodigo(
                       stock,
-                      a.id
+                      a.id,
                     ).toUpperCase()}${
                       a.codigoProveedor
                         ? " " + a.codigoProveedor.toUpperCase()
@@ -415,7 +415,7 @@ const FormHerramienta = ({
                   articuloSeleccionado
                     ? (() => {
                         const articulo = stock.find(
-                          (a) => a.id === articuloSeleccionado
+                          (a) => a.id === articuloSeleccionado,
                         );
                         if (!articulo) return null;
                         return {
@@ -424,7 +424,7 @@ const FormHerramienta = ({
                             articulo.descripcion
                           } (${marcaPorCodigo(
                             stock,
-                            articulo.id
+                            articulo.id,
                           ).toUpperCase()}${
                             articulo.codigoProveedor
                               ? " " + articulo.codigoProveedor.toUpperCase()
@@ -451,11 +451,13 @@ const FormHerramienta = ({
                 isClearable
               />
 
+              {/*
               <TextButton
                 text="+"
                 className="mini-btn"
                 onClick={() => setModalStockVisible(true)}
               />
+              */}
             </div>
 
             <div className="dev">

@@ -79,7 +79,7 @@ const Furgones = () => {
         )}
         {modalPersonaVisible && (
           <ModalPersona
-            puesto="mecanico"
+            puesto="taller"
             onClose={() => setModalPersonaVisible(false)}
           />
         )}
