@@ -36,7 +36,7 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
     }
     const codigoArea = codigosArea[area];
 
-    
+
     const fecha = new Date();
 
     // calcular ID
@@ -70,12 +70,13 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       const dataAGuardar = limpiarUndefined({
         ...evento,
         area,
+        orden: nroOrden,
         fecha: Timestamp.fromDate(fecha),
-        usuario: usuarioCarga, 
+        usuario: usuarioCarga,
         modificaciones: [],    // historial vacío
       });
 
-      await setDoc(docRef, {...dataAGuardar, "orden" : nroOrden});
+      await setDoc(docRef, { ...dataAGuardar, "orden": nroOrden });
     } else {
       // actualizacionn
       let dataAGuardar = limpiarUndefined({
