@@ -129,7 +129,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
             internoACargar,
             coleccionACargar,
             articulo.id,
-            cantidad
+            cantidad,
           );
         }
 
@@ -143,7 +143,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
           stock,
           txtTipo, // tipo en string (ej: "motor")
           formData.tipo, // prefijo string (ej: "MT")
-          formData.proveedor // proveedor string (ej: "02")
+          formData.proveedor, // proveedor string (ej: "02")
         );
 
         const nuevoArticulo = {
@@ -177,7 +177,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
         const idNuevoArticulo = await agregar(
           "stock",
           nuevoArticulo,
-          nuevoArticulo.codigo
+          nuevoArticulo.codigo,
         );
         const datosVehiculo = {
           idFaltante: idNuevoArticulo.id,
@@ -189,7 +189,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
             internoACargar,
             coleccionACargar,
             "faltantes",
-            datosVehiculo
+            datosVehiculo,
           );
         }
         onGuardar?.(nuevoArticulo);
@@ -240,7 +240,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                 value={
                   formData.tipo
                     ? tiposDisponibles.find(
-                        (opt) => String(opt.tipotxt) === String(formData.tipo)
+                        (opt) => String(opt.tipotxt) === String(formData.tipo),
                       )
                     : null
                 }
@@ -276,7 +276,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                 value={
                   formData.unidad
                     ? unidadesDisponibles.find(
-                        (opt) => String(opt.value) === String(formData.unidad)
+                        (opt) => String(opt.value) === String(formData.unidad),
                       )
                     : null
                 }
@@ -320,20 +320,22 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                   formData.tipo === "RC"
                     ? { value: "0X", label: "OX - REUTILIZADO" }
                     : formData.proveedor
-                    ? proveedores
-                        .map((opt) => ({
-                          value: String(opt.id),
-                          label:
-                            opt.id +
-                            " - " +
-                            opt.marca +
-                            " (" +
-                            opt.nombre +
-                            ")",
-                          cuit: opt.cuit,
-                        }))
-                        .find((opt) => opt.value === String(formData.proveedor))
-                    : null
+                      ? proveedores
+                          .map((opt) => ({
+                            value: String(opt.id),
+                            label:
+                              opt.id +
+                              " - " +
+                              opt.marca +
+                              " (" +
+                              opt.nombre +
+                              ")",
+                            cuit: opt.cuit,
+                          }))
+                          .find(
+                            (opt) => opt.value === String(formData.proveedor),
+                          )
+                      : null
                 }
                 onChange={(opt) =>
                   handleChange({
@@ -424,7 +426,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                                   value: formData.tractor,
                                   label:
                                     tractores.find(
-                                      (t) => t.interno === formData.tractor
+                                      (t) => t.interno === formData.tractor,
                                     )?.dominio + ` (${formData.tractor})`,
                                 }
                               : null
@@ -470,7 +472,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                                     value: formData.furgon,
                                     label:
                                       furgones.find(
-                                        (f) => f.interno === formData.furgon
+                                        (f) => f.interno === formData.furgon,
                                       )?.dominio + ` (${formData.furgon})`,
                                   }
                                 : null
@@ -515,7 +517,7 @@ const FormStock = ({ articulo = null, onClose, onGuardar }) => {
                               formData.vehiculo
                                 ? (() => {
                                     const vehiculoSel = vehiculos.find(
-                                      (v) => v.id === formData.vehiculo
+                                      (v) => v.id === formData.vehiculo,
                                     );
                                     return vehiculoSel
                                       ? {

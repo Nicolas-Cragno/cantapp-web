@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
-
+import { Timestamp } from "firebase/firestore";
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import { formatearFecha, formatearHora } from "../../functions/dataFunctions";
@@ -44,7 +44,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
   const subtiposDisponibles = area
     ? tiposEventos[area.toUpperCase()] || []
     : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
-        subtipos.map((sub) => ({ nArea, subtipo: sub }))
+        subtipos.map((sub) => ({ nArea, subtipo: sub })),
       );
 
   const [uploading, setUploading] = useState(false);
@@ -88,11 +88,18 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
     try {
       let fechaParaGuardar;
       if (evento?.id && evento?.fecha) {
-        fechaParaGuardar = evento.fecha.toDate
-          ? evento.fecha.toDate()
-          : new Date(evento.fecha);
+        // si ya existe, conservar la fecha original
+        fechaParaGuardar =
+          evento.fecha instanceof Timestamp
+            ? evento.fecha
+            : Timestamp.fromDate(
+                evento.fecha.toDate
+                  ? evento.fecha.toDate()
+                  : new Date(evento.fecha),
+              );
       } else {
-        fechaParaGuardar = new Date();
+        // nuevo evento
+        fechaParaGuardar = Timestamp.now();
       }
 
       const datosAGuardar = {
@@ -168,7 +175,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                 options={subtiposDisponibles.map((sub) =>
                   typeof sub === "string"
                     ? { value: sub, label: sub }
-                    : { value: sub.tipo, label: sub.tipo }
+                    : { value: sub.tipo, label: sub.tipo },
                 )}
                 value={
                   formData.tipo
@@ -213,7 +220,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                       apellido: p.apellido, //para odenar
                     }))
                     .sort((a, b) =>
-                      (a.apellido ?? "").localeCompare(b.apellido ?? "")
+                      (a.apellido ?? "").localeCompare(b.apellido ?? ""),
                     )}
                   value={
                     formData.persona
@@ -262,7 +269,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                           value: formData.tractor,
                           label:
                             tractores.find(
-                              (t) => t.interno === formData.tractor
+                              (t) => t.interno === formData.tractor,
                             )?.dominio + ` (${formData.tractor})`,
                         }
                       : null
@@ -338,7 +345,9 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                               apellido: p.apellido, //para odenar
                             }))
                             .sort((a, b) =>
-                              (a.apellido ?? "").localeCompare(b.apellido ?? "")
+                              (a.apellido ?? "").localeCompare(
+                                b.apellido ?? "",
+                              ),
                             )}
                           value={
                             formData.personaRelacionada
@@ -347,12 +356,12 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                                   label:
                                     personas.find(
                                       (p) =>
-                                        p.id === formData.personaRelacionada
+                                        p.id === formData.personaRelacionada,
                                     )?.apellido +
                                     " " +
                                     personas.find(
                                       (p) =>
-                                        p.id === formData.personaRelacionada
+                                        p.id === formData.personaRelacionada,
                                     )?.nombres +
                                     ` (DNI: ${formData.personaRelacionada})`,
                                 }
@@ -397,7 +406,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                                         tractores.find(
                                           (t) =>
                                             t.interno ===
-                                            formData.tractorRelacionado
+                                            formData.tractorRelacionado,
                                         )?.dominio +
                                         ` (${formData.tractorRelacionado})`,
                                     }
@@ -435,8 +444,8 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                                 }))
                                 .sort((a, b) =>
                                   (a.dominio ?? "").localeCompare(
-                                    b.dominio ?? ""
-                                  )
+                                    b.dominio ?? "",
+                                  ),
                                 )}
                               value={
                                 formData.vehiculoRelacionado
@@ -446,7 +455,7 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                                         vehiculos.find(
                                           (v) =>
                                             v.dominio ===
-                                            formData.vehiculoRelacionado
+                                            formData.vehiculoRelacionado,
                                         )?.dominio +
                                         ` (${formData.vehiculoRelacionado})`,
                                     }
@@ -568,13 +577,13 @@ const FormEventoSatelital = ({ evento = {}, onClose, onGuardar }) => {
                       })`,
                     }))
                     .sort((a, b) =>
-                      (a.label ?? "").localeCompare(b.label ?? "")
+                      (a.label ?? "").localeCompare(b.label ?? ""),
                     )}
                   value={
                     formData.furgon
                       ? (() => {
                           const seleccion = furgones.find(
-                            (v) => v.id === String(formData.furgon)
+                            (v) => v.id === String(formData.furgon),
                           );
                           return seleccion
                             ? {

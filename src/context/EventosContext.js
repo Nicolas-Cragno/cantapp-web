@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
 const EventosContext = createContext();
@@ -11,7 +11,9 @@ export function EventosProvider({ children }) {
   useEffect(() => {
     const ref = collection(db, "eventos");
 
-    const unsub = onSnapshot(ref, (snap) => {
+    const q = query (ref, orderBy("fecha", "desc"), limit(500));
+
+    const unsub = onSnapshot(q, (snap) => {
       setEventos(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
       setLoadingEventos(false);
     });

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import Swal from "sweetalert2";
-
+import { Timestamp } from "firebase/firestore";
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
 import { agregarEvento } from "../../functions/eventFunctions";
@@ -100,7 +100,7 @@ const FormEventoTaller = ({
     const listadoMecanicos = personas.filter(
       (p) =>
         p.puesto === "TALLER" &&
-        (p.estado === true || p.estado === "1" || p.estado === 1)
+        (p.estado === true || p.estado === "1" || p.estado === 1),
     );
     setMecanicos(listadoMecanicos);
 
@@ -112,7 +112,7 @@ const FormEventoTaller = ({
           (p.estado === true || p.estado === "1" || p.estado === 1)) ||
         (p.especializacion === "FLETERO" &&
           (p.estado === true || p.estado === "1" || p.estado === 1)) ||
-        p.especializacion === "FLETERO"
+        p.especializacion === "FLETERO",
     );
     setChoferes(listadoChoferes);
   }, [personas]);
@@ -142,7 +142,7 @@ const FormEventoTaller = ({
           codigoProveedor: r.codigoProveedor,
           cantidad: r.cantidad,
           unidad: r.unidad,
-        }))
+        })),
       );
       setArticulosUsadosBackUp(evento.repuestos); // para poder restaurar
     }
@@ -164,18 +164,7 @@ const FormEventoTaller = ({
     setUploading(true);
 
     try {
-      /*
       let fechaParaGuardar;
-      if (evento.id) {
-        fechaParaGuardar = evento.fecha?.toDate
-        ? evento.fecha.toDate()
-        : new Date(evento.fecha);
-      } else {
-        fechaParaGuardar = new Date();
-    }
-    if (isNaN(fechaParaGuardar.getTime()))
-    throw new Error("La fecha es inválida");
-    */
 
       const usuarioJSON = JSON.parse(localStorage.usuario);
       const usuarioDeCarga = `${usuarioJSON.apellido} ${usuarioJSON.nombres}`;
@@ -192,7 +181,7 @@ const FormEventoTaller = ({
 
       const datosAGuardar = {
         ...formData,
-        //fecha: elemento?.id ? elemento.fecha : fechaParaGuardar,
+        fecha: elemento?.id ? elemento.fecha : fechaParaGuardar,
         chofer: formData.chofer ? Number(formData.chofer) : null,
         //mecanico: formData.mecanico ? Number(formData.mecanico) : null,
         mecanico: formData?.mecanico
@@ -234,16 +223,16 @@ const FormEventoTaller = ({
               buscarDominio(datosAGuardar.tractor, tractores) +
               ")"
             : datosAGuardar.furgon
-            ? datosAGuardar.furgon +
-              " (" +
-              buscarDominio(datosAGuardar.furgon, furgones) +
-              ")"
-            : datosAGuardar.vehiculo
-            ? datosAGuardar.vehiculo +
-              " (" +
-              buscarDominio(datosAGuardar.vehiculo, vehiculos) +
-              ")"
-            : "-"
+              ? datosAGuardar.furgon +
+                " (" +
+                buscarDominio(datosAGuardar.furgon, furgones) +
+                ")"
+              : datosAGuardar.vehiculo
+                ? datosAGuardar.vehiculo +
+                  " (" +
+                  buscarDominio(datosAGuardar.vehiculo, vehiculos) +
+                  ")"
+                : "-"
         }<br>
         <b>Kilometraje:</b> ${datosAGuardar.kilometraje || "-"}<br><hr>
         <b>Detalle:</b> ${datosAGuardar.detalle || "-"}<hr>
@@ -255,7 +244,7 @@ const FormEventoTaller = ({
                 (r) => `
                 <li style="font-size:smaller; list-style:none">
                   <b>${r.id}</b> - ${r.descripcion} (${r.cantidad} ${r.unidad})
-                </li>`
+                </li>`,
               )
               .join("")}
           </ul>`
@@ -306,7 +295,7 @@ const FormEventoTaller = ({
               idDocu,
               codigoRepuesto,
               cantidad,
-              unidad
+              unidad,
             );
           }
         }
@@ -346,7 +335,7 @@ const FormEventoTaller = ({
       Swal.fire(
         "Error",
         "Selecciona un artículo y una cantidad válida",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -421,7 +410,7 @@ const FormEventoTaller = ({
                   options={sucursales}
                   value={
                     sucursales.find(
-                      (s) => s.value === String(formData.sucursal)
+                      (s) => s.value === String(formData.sucursal),
                     ) || null
                   }
                   onChange={(opt) =>
@@ -460,7 +449,7 @@ const FormEventoTaller = ({
                 options={subtiposDisponibles.map((sub) =>
                   typeof sub === "string"
                     ? { value: sub, label: sub }
-                    : { value: sub.tipo, label: sub.tipo }
+                    : { value: sub.tipo, label: sub.tipo },
                 )}
                 value={
                   formData.tipo
@@ -509,7 +498,7 @@ const FormEventoTaller = ({
                                       : ""
                                   }`,
                                 }
-                              : { value: dni, label: `DNI: ${dni} [INACTIVO]` }
+                              : { value: dni, label: `DNI: ${dni} [INACTIVO]` },
                           )
                         : []
                     }
@@ -560,7 +549,8 @@ const FormEventoTaller = ({
                             }))
                             .find(
                               (opt) =>
-                                String(opt.value) === String(formData.proveedor)
+                                String(opt.value) ===
+                                String(formData.proveedor),
                             )
                         : null
                     }
@@ -599,7 +589,7 @@ const FormEventoTaller = ({
                           label: `${t.interno} (${t.dominio})`,
                         }))
                         .filter((opt) =>
-                          formData.tractor.map(String).includes(opt.value)
+                          formData.tractor.map(String).includes(opt.value),
                         )}
                       onChange={(opts) =>
                         handleChange({
@@ -649,7 +639,7 @@ const FormEventoTaller = ({
                         label: `${t.interno} (${t.dominio})`,
                       }))
                       .filter((opt) =>
-                        formData.furgon.map(String).includes(opt.value)
+                        formData.furgon.map(String).includes(opt.value),
                       )}
                     onChange={(opts) =>
                       handleChange({
@@ -730,7 +720,7 @@ const FormEventoTaller = ({
                         value: a.id,
                         label: `${a.id} - ${a.descripcion} (${marcaPorCodigo(
                           stock,
-                          a.id
+                          a.id,
                         ).toUpperCase()}${
                           a.codigoProveedor
                             ? " " + a.codigoProveedor.toUpperCase()
@@ -742,7 +732,7 @@ const FormEventoTaller = ({
                       articuloSeleccionado
                         ? (() => {
                             const articulo = stock.find(
-                              (a) => a.id === articuloSeleccionado
+                              (a) => a.id === articuloSeleccionado,
                             );
                             if (!articulo) return null;
                             return {
@@ -751,7 +741,7 @@ const FormEventoTaller = ({
                                 articulo.descripcion
                               } (${marcaPorCodigo(
                                 stock,
-                                articulo.id
+                                articulo.id,
                               ).toUpperCase()}${
                                 articulo.codigoProveedor
                                   ? " " + articulo.codigoProveedor.toUpperCase()
@@ -770,7 +760,7 @@ const FormEventoTaller = ({
                         const idSeleccionado = opt.value;
                         setArticuloSeleccionado(idSeleccionado);
                         const articulo = stock.find(
-                          (a) => a.id === idSeleccionado
+                          (a) => a.id === idSeleccionado,
                         );
                       } else {
                         setArticuloSeleccionado("");

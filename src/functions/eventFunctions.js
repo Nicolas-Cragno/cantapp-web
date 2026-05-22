@@ -41,6 +41,7 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
 
     // calcular ID
     let idEvento = idExistente;
+    let nroOrden = null;
     if (!idEvento) {
       const q = query(collection(db, "eventos"), where("area", "==", area));
       const snapshot = await getDocs(q);
@@ -57,6 +58,7 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
       });
 
       const nuevoCorrelativo = maxCorrelativo + 1;
+      nroOrden = nuevoCorrelativo;
       const correlativoStr = String(nuevoCorrelativo).padStart(8, "0");
       idEvento = `${codigoArea}-${correlativoStr}`;
     }
@@ -73,7 +75,7 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
         modificaciones: [],    // historial vacío
       });
 
-      await setDoc(docRef, dataAGuardar);
+      await setDoc(docRef, {...dataAGuardar, "orden" : nroOrden});
     } else {
       // actualizacionn
       let dataAGuardar = limpiarUndefined({

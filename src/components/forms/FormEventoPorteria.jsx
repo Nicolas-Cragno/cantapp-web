@@ -4,6 +4,7 @@ import Select from "react-select";
 import Swal from "sweetalert2";
 import { FaCheck as LogoCheck } from "react-icons/fa";
 import { GiCancel as LogoCancel } from "react-icons/gi";
+import { Timestamp } from "firebase/firestore";
 
 // ----------------------------------------------------------------------- imports internos
 import { useData } from "../../context/DataContext";
@@ -37,18 +38,23 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     tractor: elemento?.tractor || "",
     esFletero: elemento?.esFletero || false,
     vehiculo: elemento?.vehiculo || "",
-    furgon: elemento?.furgon || "",
+    //furgon: elemento?.furgon || "",
+    furgon: elemento?.furgon
+      ? Array.isArray(elemento.furgon)
+        ? elemento.furgon
+        : [elemento.furgon]
+      : [],
     cargado: elemento?.cargado || false,
     detalle: elemento?.detalle || "",
     area: area,
     chequeos: chequeosPorteria.map(
-      ({ key }) => elemento?.chequeos?.[key] || false
+      ({ key }) => elemento?.chequeos?.[key] || false,
     ),
   });
   const subtiposDisponibles = area
     ? tiposEventos[area.toUpperCase()] || []
     : Object.entries(tiposEventos).flatMap(([nArea, subtipos]) =>
-        subtipos.map((sub) => ({ nArea, subtipo: sub }))
+        subtipos.map((sub) => ({ nArea, subtipo: sub })),
       );
   const [furgonCargado, setFuegonCargado] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -62,7 +68,12 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         tractor: elemento?.tractor ?? "",
         esFletero: elemento?.esFletero ?? false,
         vehiculo: elemento?.vehiculo,
-        furgon: elemento?.furgon ?? "",
+        //furgon: elemento?.furgon ?? "",
+        furgon: elemento?.furgon
+          ? Array.isArray(elemento.furgon)
+            ? elemento.furgon
+            : [elemento.furgon]
+          : [],
         cargado: elemento?.cargado ?? false,
         detalle: elemento?.detalle ?? "",
         chequeos: chequeosPorteria.map(({ key }) => {
@@ -71,7 +82,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         }),
       });
       setTipoSeleccionado(
-        elemento?.distincion ? elemento.distincion : "tractor"
+        elemento?.distincion ? elemento.distincion : "tractor",
       );
       setChoferFletero(elemento?.esFletero ?? false);
       setVehiculosCarga([...furgones, ...vehiculos]); // para que figuren los furgones ajenos
@@ -97,11 +108,18 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
     try {
       let fechaParaGuardar;
       if (elemento?.id && elemento?.fecha) {
-        fechaParaGuardar = elemento.fecha.toDate
-          ? elemento.fecha.toDate()
-          : new Date(elemento.fecha);
+        // si ya existe, conservar la fecha original
+        fechaParaGuardar =
+          elemento.fecha instanceof Timestamp
+            ? elemento.fecha
+            : Timestamp.fromDate(
+                elemento.fecha.toDate
+                  ? elemento.fecha.toDate()
+                  : new Date(elemento.fecha),
+              );
       } else {
-        fechaParaGuardar = new Date();
+        // nuevo evento
+        fechaParaGuardar = Timestamp.now();
       }
 
       /*
@@ -115,7 +133,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
           checkList[item.key] = formData.chequeos[index] || false;
           return checkList;
         },
-        {}
+        {},
       );
 
       if (
@@ -150,27 +168,27 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         tractor:
           !choferFletero && formData.tractor ? Number(formData.tractor) : null,
         vehiculo: formData.vehiculo ? String(formData.vehiculo) : null,
-        furgon: formData.furgon ? String(formData.furgon) : null,
+        //furgon: formData.furgon ? String(formData.furgon) : null,
+        furgon: formData.furgon ? formData.furgon.map(Number) : [], // array de internos
         cargado: furgonCargado,
         chequeos: chequeosObjeto,
       };
       console.log("TRACTOR:", JSON.stringify(datosAGuardar.tractor, null, 2));
       console.log("FURGON:", JSON.stringify(datosAGuardar.furgon, null, 2));
 
-      
       await agregarEvento(datosAGuardar, area, elemento?.id ?? null);
-      if(datosAGuardar.tractor){
+      if (datosAGuardar.tractor) {
         if (datosAGuardar.tipo === "ENTRADA") {
-        agregarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
-        if (datosAGuardar.furgon) {
-          agregarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
+          agregarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
+          if (datosAGuardar.furgon) {
+            agregarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
+          }
+        } else if (datosAGuardar.tipo === "SALIDA") {
+          quitarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
+          if (datosAGuardar.furgon) {
+            quitarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
+          }
         }
-      } else if (datosAGuardar.tipo === "SALIDA") {
-        quitarItem(SUCURSAL, "tractores", datosAGuardar.tractor);
-        if (datosAGuardar.furgon) {
-          quitarItem(SUCURSAL, "furgones", datosAGuardar.furgon);
-        }
-      }
       }
 
       if (onGuardar) onGuardar();
@@ -260,7 +278,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
               options={subtiposDisponibles.map((sub) =>
                 typeof sub === "string"
                   ? { value: sub, label: sub }
-                  : { value: sub.tipo, label: sub.tipo }
+                  : { value: sub.tipo, label: sub.tipo },
               )}
               value={
                 formData.tipo
@@ -399,7 +417,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                             value: formData.tractor,
                             label:
                               tractores.find(
-                                (t) => t.interno === formData.tractor
+                                (t) => t.interno === formData.tractor,
                               )?.dominio + ` (${formData.tractor})`,
                           }
                         : null
@@ -442,7 +460,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                             label:
                               vehiculos.find(
                                 (v) =>
-                                  String(v.id) === String(formData.vehiculo)
+                                  String(v.id) === String(formData.vehiculo),
                               )?.id + ` (${formData.vehiculo})`,
                           }
                         : null
@@ -482,33 +500,26 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                         })`,
                       }))
                       .sort((a, b) => a.label.localeCompare(b.label))}
-                    value={
-                      formData.furgon
-                        ? (() => {
-                            const seleccion = vehiculosCarga.find(
-                              (v) => v.id === formData.furgon
-                            );
-                            return seleccion
-                              ? {
-                                  value: seleccion.id,
-                                  label: `${seleccion.dominio} (${
-                                    seleccion.interno
-                                      ? seleccion.interno
-                                      : seleccion.marca
-                                  })`,
-                                }
-                              : null;
-                          })() // 👈 ejecutamos la función acá
-                        : null
-                    }
-                    onChange={(opt) =>
-                      setFormData({
-                        ...formData,
-                        furgon: opt ? opt.value : "",
+                    value={vehiculosCarga
+                      .map((f) => ({
+                        value: f.id,
+                        label: `${f.interno} (${f.dominio})`,
+                      }))
+                      .filter((opt) =>
+                        formData.furgon.map(String).includes(opt.value),
+                      )}
+                    onChange={(opts) =>
+                      handleChange({
+                        target: {
+                          name: "furgon",
+                          value: opts ? opts.map((o) => o.value) : [],
+                        },
                       })
                     }
                     placeholder="Seleccionar vehículo..."
+                    isMulti
                     isClearable
+                    isOptionDisabled={() => formData.furgon.length >= 2}
                   />
 
                   <TextButton
@@ -519,7 +530,7 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
                 </div>
               </label>
               <div className="type-container">
-                {formData.furgon && (
+                {formData.furgon.length > 0 && (
                   <>
                     <button
                       type="button"
@@ -620,7 +631,10 @@ const FormEventoPorteria = ({ elemento = {}, onClose, onGuardar }) => {
         />
       )}
       {modalPersonaVisible && (
-        <FormPersona onClose={cerrarModalPersona} onGuardar={cerrarModalPersona} />
+        <FormPersona
+          onClose={cerrarModalPersona}
+          onGuardar={cerrarModalPersona}
+        />
       )}
     </div>
   );

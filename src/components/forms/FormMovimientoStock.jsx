@@ -50,7 +50,7 @@ const FormMovimientoStock = ({
     elemento?.ingresos?.map((ings) => ({
       ...ings,
       logo: ings.cantidad < 0 ? <LogoDown /> : <LogoUp />,
-    })) || []
+    })) || [],
   );
   const [esFactura, setEsFactura] = useState(false);
   const [tipoMovimiento, setTipoMovimiento] = useState("ALTA");
@@ -90,7 +90,7 @@ const FormMovimientoStock = ({
   useEffect(() => {
     const nuevoValorFinal = ingresos.reduce(
       (total, i) => total + i.cantidad * (i.valor || 0),
-      0
+      0,
     );
     setValorFinal(nuevoValorFinal);
   }, [ingresos]);
@@ -154,7 +154,7 @@ const FormMovimientoStock = ({
       Swal.fire(
         "Error",
         "Selecciona un artículo y una cantidad válida",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -207,7 +207,7 @@ const FormMovimientoStock = ({
             esFactura
               ? (moneda === "pesos" ? "- AR$ " : "- U$D ") + i.valor + " c/u"
               : ""
-          }</p>`
+          }</p>`,
       )
       .join("<br>");
 
@@ -275,7 +275,7 @@ const FormMovimientoStock = ({
       if (!modoEdicion) {
         const { id: idNuevo } = await agregarEvento(
           datosEvento,
-          formData.area.toLowerCase()
+          formData.area.toLowerCase(),
         );
 
         idEvento = idNuevo;
@@ -415,7 +415,7 @@ const FormMovimientoStock = ({
                                 .find(
                                   (opt) =>
                                     opt.value === formData.proveedor ||
-                                    String(opt.value) === String(proveedor)
+                                    String(opt.value) === String(proveedor),
                                 )
                             : null
                         }
@@ -466,7 +466,7 @@ const FormMovimientoStock = ({
                         value: formData.area,
                         label:
                           sectores.find(
-                            (opt) => opt.nombre === formData.area.toUpperCase()
+                            (opt) => opt.nombre === formData.area.toUpperCase(),
                           )?.id +
                             " - " +
                             formData.area.toUpperCase() || "",
@@ -549,7 +549,7 @@ const FormMovimientoStock = ({
                     if (opt) {
                       setArticuloSeleccionado(opt.value);
                       const articulo = articulos.find(
-                        (a) => a.id === opt.value
+                        (a) => a.id === opt.value,
                       );
                       setUnidad(articulo ? articulo.unidad : "");
                     } else {
@@ -654,7 +654,8 @@ const FormMovimientoStock = ({
 
                     <div className="item-actions">
                       <span className="list-cant3">
-                        {item.cantidad} {Unidades[item.unidad.toUpperCase()]}{" "}
+                        {item.cantidad}{" "}
+                        {Unidades[item.unidad.toUpperCase()]}{" "}
                       </span>
 
                       <button
