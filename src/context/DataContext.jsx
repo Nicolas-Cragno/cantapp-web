@@ -19,6 +19,7 @@ const coleccionesFirestore = [
   "ubicaciones",
   "depositos",
   "estaciones",
+  "asignaciones",
 ];
 let coleccionesCont = 0;
 
@@ -72,6 +73,6 @@ export function DataProvider({ children }) {
 console.log(
   `[Firestore] Carga Finalizada (${coleccionesCont}/${
     coleccionesFirestore.length
-  } coleccion${coleccionesFirestore.length !== 1 ? "es" : ""}) ✓✓`
+  } coleccion${coleccionesFirestore.length !== 1 ? "es" : ""}) ✓✓`,
 );
 export const useData = () => useContext(DataContext);

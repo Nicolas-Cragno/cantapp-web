@@ -9,6 +9,7 @@ import {
   Timestamp,
   updateDoc,
   arrayUnion,
+  getDoc
 } from "firebase/firestore";
 import codigosArea from "./data/areas.json";
 import { useData } from "../context/DataContext";
@@ -26,7 +27,7 @@ function limpiarUndefined(obj) {
   return obj;
 }
 
-export const agregarEvento = async (evento, area, idExistente = null) => {
+export const agregarEvento = async (evento, area, idExistente = null, asignacion = false) => {
   const usuarioJson = JSON.parse(localStorage.getItem("usuario"));
   let usuarioCarga = usuarioJson.apellido + ", " + usuarioJson.nombres;
 
@@ -42,28 +43,41 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
     // calcular ID
     let idEvento = idExistente;
     let nroOrden = null;
-    if (!idEvento) {
-      const q = query(collection(db, "eventos"), where("area", "==", area));
-      const snapshot = await getDocs(q);
+    let coleccion = "eventos";
 
-      let maxCorrelativo = 0;
-      snapshot.forEach((docSnap) => {
-        const partes = docSnap.id.split("-");
-        if (partes.length === 2 && partes[0] === codigoArea) {
-          const nro = parseInt(partes[1], 10);
-          if (!isNaN(nro) && nro > maxCorrelativo) {
-            maxCorrelativo = nro;
+    if (asignacion) {
+
+      const resultado = await generarCodigoAsignacion();
+
+      idEvento = resultado.id;
+      nroOrden = resultado.orden;
+
+      coleccion = "asignaciones";
+    } else {
+      if (!idEvento) {
+        const q = query(collection(db, "eventos"), where("area", "==", area));
+        const snapshot = await getDocs(q);
+
+        let maxCorrelativo = 0;
+        snapshot.forEach((docSnap) => {
+          const partes = docSnap.id.split("-");
+          if (partes.length === 2 && partes[0] === codigoArea) {
+            const nro = parseInt(partes[1], 10);
+            if (!isNaN(nro) && nro > maxCorrelativo) {
+              maxCorrelativo = nro;
+            }
           }
-        }
-      });
+        });
 
-      const nuevoCorrelativo = maxCorrelativo + 1;
-      nroOrden = nuevoCorrelativo;
-      const correlativoStr = String(nuevoCorrelativo).padStart(8, "0");
-      idEvento = `${codigoArea}-${correlativoStr}`;
+        const nuevoCorrelativo = maxCorrelativo + 1;
+        nroOrden = nuevoCorrelativo;
+        const correlativoStr = String(nuevoCorrelativo).padStart(8, "0");
+        idEvento = `${codigoArea}-${correlativoStr}`;
+      }
+
     }
 
-    const docRef = doc(db, "eventos", idEvento);
+    const docRef = doc(db, coleccion, idEvento);
 
     if (!idExistente) {
       // 👉 Evento nuevo
@@ -130,4 +144,43 @@ export const agregarEvento = async (evento, area, idExistente = null) => {
     console.error("Error al agregar evento:", error);
     throw error;
   }
+};
+
+
+const generarCodigoAsignacion = async () => {
+
+  const contadorRef = doc(
+    db,
+    "contadores",
+    "asignaciones"
+  );
+
+  const contadorSnap = await getDoc(
+    contadorRef
+  );
+
+  if (!contadorSnap.exists()) {
+    throw new Error(
+      "No existe el contador de asignaciones"
+    );
+  }
+
+  const data = contadorSnap.data();
+
+  const ultimo =
+    Number(data.ultimo || 0);
+
+  const nuevoOrden =
+    ultimo + 1;
+  await updateDoc(
+    contadorRef,
+    {
+      ultimo: nuevoOrden,
+    }
+  );
+
+  return {
+    id: `AS${String(nuevoOrden).padStart(8, "0")}`,
+    orden: nuevoOrden,
+  };
 };

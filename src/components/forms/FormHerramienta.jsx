@@ -282,7 +282,12 @@ const FormHerramienta = ({
         return;
       }
 
-      const eventoGuardado = await agregarEvento(datosAGuardar, AREA);
+      const eventoGuardado = await agregarEvento(
+        datosAGuardar,
+        AREA,
+        null,
+        true,
+      );
       const idPersona = elemento ? elemento.id : datosAGuardar.persona;
 
       await actualizarHerramientas(

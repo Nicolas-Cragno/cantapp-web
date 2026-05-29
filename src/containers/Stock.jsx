@@ -22,6 +22,7 @@ import ModalStock from "../components/modales/ModalStock";
 import ModalEventos from "../components/modales/ModalEventos";
 import ModalPersona from "../components/modales/ModalPersona";
 import ModalProveedor from "../components/modales/ModalProveedor";
+import ModalAsignaciones from "../components/modales/ModalAsignaciones";
 // elementos
 import LogoPorteria from "../assets/logos/logoporteria-w.png";
 import LogoTractor from "../assets/logos/logotractor-w.png";
@@ -47,6 +48,8 @@ const Stock = () => {
   const [modalRemitoVisible, setModalRemitoVisible] = useState(false);
   const [modalFacturaVisible, setModalFacturaVisible] = useState(false);
   const [modalStockVisible, setModalStockVisible] = useState(false);
+  const [modalAsignacionesVisible, setModalAsignacionesVisible] =
+    useState(false);
   const [modalHerramientasVisible, setModalHerramientasVisible] =
     useState(false);
 
@@ -78,6 +81,11 @@ const Stock = () => {
           <ModalEventos
             filtroSector={AREA}
             onClose={() => setModalEventosVisible(false)}
+          />
+        )}
+        {modalAsignacionesVisible && (
+          <ModalAsignaciones
+            onClose={() => setModalAsignacionesVisible(false)}
           />
         )}
         {modalAgregarVisible && (
@@ -130,6 +138,11 @@ const Stock = () => {
               title="Historial Ingresos"
               logo={ListLogo}
               onClick={() => setModalEventosVisible(true)}
+            />
+            <CardLogo
+              title="Asignaciones de Herramientas"
+              logo={ListLogo}
+              onClick={() => setModalAsignacionesVisible(true)}
             />
             {/*
              */}
